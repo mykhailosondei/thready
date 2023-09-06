@@ -132,5 +132,8 @@
       }
     }
   },
-  "defaultProject": "group_project_thread"
+  "defaultProject": "group_project_thread",
+  "cli": {
+    "analytics": false
+  }
 }
