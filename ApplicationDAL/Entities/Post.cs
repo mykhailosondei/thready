@@ -1,5 +1,6 @@
 
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ApplicationDAL.Entities;
 
@@ -7,6 +8,9 @@ public class Post
 {
     public int Id { get; set; }
     public DateTime CreatedAt { get; set; }
+    
+    [ForeignKey("User")]
+    public int UserId { get; set; }
     [Required]
     public User Author { get; set; }
     [Required]

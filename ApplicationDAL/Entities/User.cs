@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,6 +27,8 @@ namespace ApplicationDAL.Entities
         [MaxLength(15)]
         public string Username { get; set; }
 
+        [ForeignKey("Image")]
+        public int ImageId { get; set; }
         public Image Avatar { get; set; }
 
         public List<Post> Posts { get; set; }
