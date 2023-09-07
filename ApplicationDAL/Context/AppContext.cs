@@ -27,7 +27,18 @@ public class AppContext : DbContext
             .HasOne(e => e.ParentComment)
             .WithMany(e => e.Comments)
             .HasForeignKey(e => e.CommentId);
+
+        modelBuilder.Entity<Post>()
+            .HasMany(e => e.Reposters)
+            .WithMany(e => e.Reposts);
+
+        modelBuilder.Entity<Post>()
+            .HasMany(e => e.ViewedBy);
+
+        modelBuilder.Entity<User>()
+            .HasMany(e => e.BookmarkedPosts);
     }
+
 
     public DbSet<User> Users { get; set; }
     public DbSet<Post> Posts { get; set; }

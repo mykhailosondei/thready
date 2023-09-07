@@ -19,7 +19,7 @@ public class Post
     public List<Image> Images { get; set; }
     public List<Like> Likes { get; set; }
     public List<Comment> Comments { get; set; }
-    public List<User> Reposts { get; set; }
+    public List<User> Reposters { get; set; }
     public int Bookmarks { get; set; }
     public List<User> ViewedBy { get; set; }
 }
