@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ApplicationDAL.Entities;
 
-public class Post : ICommentable
+public class Post
 {
     public int Id { get; set; }
     public DateTime CreatedAt { get; set; }
