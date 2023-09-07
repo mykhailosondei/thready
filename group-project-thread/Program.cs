@@ -1,8 +1,17 @@
+using Microsoft.EntityFrameworkCore;
+using AppContext = ApplicationDAL.Context.AppContext;
+
 var builder = WebApplication.CreateBuilder(args);
+
+var config = builder.Configuration;
 
 // Add services to the container.
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddDbContext<AppContext>(options =>
+{
+    options.UseNpgsql(config.GetConnectionString("Default"));
+});
 builder.Services.AddCors(options => options.AddPolicy(name: "Frontend", policy =>
     {
         policy.WithOrigins("https://localhost:44498").AllowAnyHeader().AllowAnyMethod();
