@@ -18,6 +18,7 @@ namespace ApplicationDAL.Entities
         public int CommentId { get; set; }
         public Comment? ParentComment { get; set; }
         public List<Image> Images { get; set; }
+        public List<Comment> Comments { get; set; }
         public List<Like> Likes { get; set; }
         public List<User> Reposts { get; set; }
         public int Bookmarks { get; set; }
