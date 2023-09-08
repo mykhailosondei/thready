@@ -26,7 +26,7 @@ namespace ApplicationDAL.Entities
         [Required]
         [MaxLength(15)]
         public string Username { get; set; }
-
+        
         [ForeignKey("Image")]
         public int ImageId { get; set; }
         public Image Avatar { get; set; }
