@@ -33,7 +33,8 @@ namespace group_project_thread.Controllers
                 Password = "test",
                 Username = "Test",
                 Bio = "test",
-                Location = "test"
+                Location = "test",
+                Avatar = null
             });
             _applicationContext.SaveChanges();
         }

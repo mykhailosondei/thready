@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,17 +29,18 @@ namespace ApplicationDAL.Entities
         public string Username { get; set; }
         
         [ForeignKey("Image")]
-        public int ImageId { get; set; }
-        public Image Avatar { get; set; }
+        
+        public int? ImageId { get; set; }
+        public Image? Avatar { get; set; }
 
         public List<Post> Posts { get; set; }
 
         public List<User> Followers { get; set; }
         public List<User> Following { get; set; }
         [MaxLength(100)]
-        public string Bio { get; set; }
+        public string? Bio { get; set; }
         [MaxLength(30)]
-        public string Location { get; set; }
+        public string? Location { get; set; }
         public List<Post> BookmarkedPosts { get; set; }
         public List<Post> Reposts { get; set; }
     }
