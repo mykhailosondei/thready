@@ -1,5 +1,5 @@
+using ApplicationDAL.Context;
 using Microsoft.EntityFrameworkCore;
-using AppContext = ApplicationDAL.Context.AppContext;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,7 +8,7 @@ var config = builder.Configuration;
 // Add services to the container.
 
 builder.Services.AddControllersWithViews();
-builder.Services.AddDbContext<AppContext>(options =>
+builder.Services.AddDbContext<ApplicationContext>(options =>
 {
     options.UseNpgsql(config.GetConnectionString("Default"));
 });
