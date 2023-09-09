@@ -10,6 +10,7 @@ var config = builder.Configuration;
 
 builder.Services.AddControllersWithViews();
 builder.Services.ConfigureCustomServices();
+builder.Services.AddScoped<ConfigurationManager>(c => config);
 builder.Services.AddDbContext<ApplicationContext>(options =>
 {
     options.UseNpgsql(config.GetConnectionString("Default"));

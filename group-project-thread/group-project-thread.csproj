@@ -34,6 +34,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\ApplicationBLL\ApplicationBLL.csproj" />
+      <ProjectReference Include="..\ApplicationCommon\ApplicationCommon.csproj" />
       <ProjectReference Include="..\ApplicationDAL\ApplicationDAL.csproj" />
     </ItemGroup>
 

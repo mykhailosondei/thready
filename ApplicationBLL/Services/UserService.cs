@@ -1,6 +1,7 @@
 using ApplicationBLL.Services.Abstract;
 using ApplicationDAL.Context;
 using ApplicationDAL.Entities;
+using ApplicationCommon.DTOs.User;
 
 namespace ApplicationBLL.Services;
 
@@ -31,9 +32,15 @@ public class UserService : BaseService
         
     }
 
-    public async Task PostUser(User user)
+    public async Task<User> CreateUser(RegisterUserDTO registerUserDto)
     {
+        var userEntity = new User(){Username = registerUserDto.UserName, Email = registerUserDto.Email, DateOfBirth = registerUserDto.DateOfBirth};
+        userEntity.PasswordHash = BCrypt.Net.BCrypt.HashPassword(registerUserDto.Password);
         
+        _applicationContext.Users.Add(userEntity);
+        await _applicationContext.SaveChangesAsync();
+
+        return userEntity;
     }
 
     public async Task PutUser(int id, User user)
