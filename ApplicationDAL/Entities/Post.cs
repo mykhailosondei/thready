@@ -1,6 +1,7 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace ApplicationDAL.Entities;
 
@@ -21,5 +22,5 @@ public class Post
     public List<Comment> Comments { get; set; }
     public List<User> Reposters { get; set; }
     public int Bookmarks { get; set; }
-    public List<User> ViewedBy { get; set; }
+    public List<int> ViewedBy { get; set; }
 }

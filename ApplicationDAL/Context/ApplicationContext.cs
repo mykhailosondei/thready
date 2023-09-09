@@ -32,8 +32,6 @@ public class ApplicationContext : DbContext
             .HasMany(e => e.Reposters)
             .WithMany(e => e.Reposts);
 
-        modelBuilder.Entity<Post>()
-            .HasMany(e => e.ViewedBy);
 
         modelBuilder.Entity<User>()
             .HasMany(e => e.BookmarkedPosts);

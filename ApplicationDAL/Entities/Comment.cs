@@ -24,7 +24,7 @@ namespace ApplicationDAL.Entities
         public List<Like> Likes { get; set; }
         public List<User> Reposts { get; set; }
         public int Bookmarks { get; set; }
-        public List<User> ViewedBy { get; set; }
+        public List<int> ViewedBy { get; set; }
 
     }
 }

@@ -22,7 +22,7 @@ namespace ApplicationDAL.Entities
 
         [Required]
         [MaxLength(50)]
-        public string Password { get; set; }
+        public string PasswordHash { get; set; }
 
         [Required]
         [MaxLength(15)]
