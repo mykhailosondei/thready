@@ -67,5 +67,10 @@ namespace group_project_thread.Controllers
         {
 
         }
+        [HttpPost("{id}/undoRepost")]
+        public async Task UndoRepost(int id)
+        {
+
+        }
     }
 }
