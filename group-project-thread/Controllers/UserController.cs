@@ -1,4 +1,5 @@
-﻿using ApplicationDAL.Entities;
+﻿using ApplicationBLL.Services;
+using ApplicationDAL.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -10,45 +11,59 @@ namespace group_project_thread.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
+
+        private readonly UserService _userService;
+
+        public UserController(UserService userService)
+        {
+            _userService = userService;
+        }
+
         // GET: api/<UserController>
         [HttpGet]
         public async Task<IEnumerable<User>> GetAllUsers()
         {
-            return new User[] { };
+            return await _userService.GetAllUsers();
         }
 
         // GET api/<UserController>/5
         [HttpGet("{id}")]
         public async Task<User> GetUserById(int id)
         {
-            return new User();
+            return await _userService.GetUserById(id);
         }
 
         // POST api/<UserController>
         [HttpPost]
         public async Task PostUser([FromBody] User value)
         {
+            await _userService.PostUser(value);
         }
-        [HttpPost("{id}")]
+        [HttpPost("{id}/follow")]
         public async Task Follow(int id)
         {
-
+            int currentUserId = 0; //TODO: implement currentUserId getting from httpContext
+            await _userService.Follow(id, currentUserId);
         }
 
         // PUT api/<UserController>/5
         [HttpPut("{id}")]
         public async Task PutUser(int id, [FromBody] User value)
         {
+            await _userService.PutUser(id, value);
         }
 
         // DELETE api/<UserController>/5
         [HttpDelete("{id}")]
         public async Task DeleteUser(int id)
         {
+            await _userService.DeleteUser(id);
         }
-        [HttpPost("{id}")]
+        [HttpPost("{id}/unfollow")]
         public async Task Unfollow(int id)
         {
+            int currentUserId = 0; //TODO: implement currentUserId getting from httpContext
+            await _userService.Follow(id, currentUserId);
         }
     }
 }
