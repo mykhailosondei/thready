@@ -1,3 +1,4 @@
+using ApplicationBLL.Extentions;
 using ApplicationDAL.Context;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,6 +9,7 @@ var config = builder.Configuration;
 // Add services to the container.
 
 builder.Services.AddControllersWithViews();
+builder.Services.ConfigureCustomServices();
 builder.Services.AddDbContext<ApplicationContext>(options =>
 {
     options.UseNpgsql(config.GetConnectionString("Default"));
