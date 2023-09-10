@@ -13,7 +13,7 @@ export class LoginPageComponent {
 
   }
 
-  ngOnInit(){
+  ngOnInit() : void{
 
   }
   hideShowPass(){

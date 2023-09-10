@@ -7,7 +7,7 @@ using AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var config = builder.Configuration;
+ConfigurationManager config = builder.Configuration;
 
 // Add services to the container.
 

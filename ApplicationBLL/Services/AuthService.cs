@@ -7,15 +7,15 @@ using ApplicationCommon.DTOs.User;
 using ApplicationDAL.Context;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Configuration;
 
 namespace ApplicationBLL.Services;
 
 public class AuthService : BaseService
 {
     private readonly ConfigurationManager _configuration;
-    
+
     public AuthService(ApplicationContext applicationContext, ConfigurationManager configuration, IMapper mapper) : base(applicationContext, mapper)
     {
         _configuration = configuration;
@@ -46,7 +46,7 @@ public class AuthService : BaseService
             signingCredentials: creds
         );
 
-        string jwtValue =  new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
+        string jwtValue = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
 
         return jwtValue;
     }
@@ -70,7 +70,7 @@ public class AuthService : BaseService
         var token = GenerateAccessToken(userEntity.Id, userEntity.Username, userEntity.Email);
 
         var user = _mapper.Map<UserDTO>(userEntity);
-        
+
         return new AuthUser()
         {
             User = user,
