@@ -1,12 +1,13 @@
 using ApplicationBLL.Services.Abstract;
 using ApplicationDAL.Context;
 using ApplicationDAL.Entities;
+using AutoMapper;
 
 namespace ApplicationBLL.Services;
 
 public class CommentService : BaseService
 {
-    public CommentService(ApplicationContext applicationContext) : base(applicationContext)
+    public CommentService(ApplicationContext applicationContext, IMapper mapper) : base(applicationContext, mapper)
     {
         
     }

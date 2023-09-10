@@ -25,13 +25,14 @@ namespace group_project_thread.Controllers
 
 
         [HttpPost("register")]
-        public async Task<AuthUser> Register(RegisterUserDTO newUserDto)
+        public async Task<AuthUser> Register([FromBody] RegisterUserDTO newUserDto)
         {
-            var userEntity = _userService.CreateUser(newUserDto);
-            var token = _authService.GenerateAccessToken(newUserDto.UserId, newUserDto.UserName, newUserDto.Email);
+            var userModel = await _userService.CreateUser(newUserDto);
+            var token = _authService.GenerateAccessToken(userModel.Id, userModel.Username, userModel.Email);
 
             return new AuthUser()
             {
+                User = userModel,
                 Token = token
             };
         }

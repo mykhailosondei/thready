@@ -21,7 +21,7 @@ namespace ApplicationDAL.Entities
         public DateOnly DateOfBirth { get; set; }
 
         [Required]
-        [MaxLength(50)]
+        [MaxLength(200)]
         public string PasswordHash { get; set; }
 
         [Required]

@@ -1,3 +1,5 @@
+using ApplicationBLL.Services;
+
 namespace BLLTests;
 
 public class UnitTest1

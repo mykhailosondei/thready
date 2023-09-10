@@ -4,6 +4,7 @@ using System.Security.Principal;
 using System.Text;
 using ApplicationBLL.Services.Abstract;
 using ApplicationDAL.Context;
+using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
@@ -13,7 +14,7 @@ public class AuthService : BaseService
 {
     private readonly ConfigurationManager _configuration;
     
-    public AuthService(ApplicationContext applicationContext, ConfigurationManager configuration) : base(applicationContext)
+    public AuthService(ApplicationContext applicationContext, ConfigurationManager configuration, IMapper mapper) : base(applicationContext, mapper)
     {
         _configuration = configuration;
     }

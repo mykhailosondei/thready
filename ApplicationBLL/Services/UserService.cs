@@ -2,12 +2,13 @@ using ApplicationBLL.Services.Abstract;
 using ApplicationDAL.Context;
 using ApplicationDAL.Entities;
 using ApplicationCommon.DTOs.User;
+using AutoMapper;
 
 namespace ApplicationBLL.Services;
 
 public class UserService : BaseService
 {
-    public UserService(ApplicationContext applicationContext) : base(applicationContext)
+    public UserService(ApplicationContext applicationContext, IMapper mapper) : base(applicationContext, mapper)
     {
         
     }
@@ -32,15 +33,15 @@ public class UserService : BaseService
         
     }
 
-    public async Task<User> CreateUser(RegisterUserDTO registerUserDto)
+    public async Task<UserDTO> CreateUser(RegisterUserDTO registerUserDto)
     {
-        var userEntity = new User(){Username = registerUserDto.UserName, Email = registerUserDto.Email, DateOfBirth = registerUserDto.DateOfBirth};
+        var userEntity = _mapper.Map<User>(registerUserDto);
         userEntity.PasswordHash = BCrypt.Net.BCrypt.HashPassword(registerUserDto.Password);
         
         _applicationContext.Users.Add(userEntity);
         await _applicationContext.SaveChangesAsync();
 
-        return userEntity;
+        return _mapper.Map<UserDTO>(userEntity);
     }
 
     public async Task PutUser(int id, User user)
