@@ -32,13 +32,7 @@ namespace group_project_thread.Controllers
         {
             return await _userService.GetUserById(id);
         }
-
-        // POST api/<UserController>
-        [HttpPost]
-        public async Task PostUser([FromBody] User value)
-        {
-            await _userService.PostUser(value);
-        }
+        
         [HttpPost("{id}/follow")]
         public async Task Follow(int id)
         {

@@ -41,18 +41,21 @@ namespace group_project_thread.Controllers
         {
             await _postService.CreatePost(post);
         }
+        
         [HttpPost("{id}/likePost")]
         public async Task LikePost(int id)
         {
             int authorId = 0; //TODO: implement authorId getting from httpContext
             await _likeService.LikePost(id, authorId);
         }
+        
         [HttpPost("{id}/bookmarkPost")]
         public async Task BookmarkPost(int id)
         {
             int authorId = 0; //TODO: implement authorId getting from httpContext
             await _postService.BookmarkPost(id, authorId);
         }
+        
         // PUT api/<PostController>/5
         [HttpPut("{id}")]
         public async Task PutPost(int id, [FromBody] Post post)
@@ -80,12 +83,14 @@ namespace group_project_thread.Controllers
             int authorId = 0; //TODO: implement authorId getting from httpContext
             await _postService.RemoveFromBookmarksPost(id, authorId);
         }
+        
         [HttpPost("{id}/repost")]
         public async Task Repost(int id)
         {
             int authorId = 0; //TODO: implement authorId getting from httpContext
             await _postService.Repost(id, authorId);
         }
+        
         [HttpPost("{id}/undoRepost")]
         public async Task UndoRepost(int id)
         {

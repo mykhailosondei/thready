@@ -1,6 +1,9 @@
 using ApplicationBLL.Extentions;
+using ApplicationBLL.ProfilesForAutoMapper;
 using ApplicationDAL.Context;
 using Microsoft.EntityFrameworkCore;
+
+using AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,7 +12,11 @@ var config = builder.Configuration;
 // Add services to the container.
 
 builder.Services.AddControllersWithViews();
+
 builder.Services.ConfigureCustomServices();
+builder.Services.AddAutoMapperProfiles();
+
+builder.Services.AddScoped<ConfigurationManager>(c => config);
 builder.Services.AddDbContext<ApplicationContext>(options =>
 {
     options.UseNpgsql(config.GetConnectionString("Default"));

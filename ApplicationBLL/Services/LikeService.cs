@@ -1,11 +1,12 @@
 using ApplicationBLL.Services.Abstract;
 using ApplicationDAL.Context;
+using AutoMapper;
 
 namespace ApplicationBLL.Services;
 
 public class LikeService : BaseService
 {
-    public LikeService(ApplicationContext applicationContext) : base(applicationContext)
+    public LikeService(ApplicationContext applicationContext, IMapper mapper) : base(applicationContext, mapper)
     {
         
     }

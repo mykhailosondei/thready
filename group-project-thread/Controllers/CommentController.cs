@@ -29,9 +29,9 @@ namespace group_project_thread.Controllers
 
         // POST api/<CommentController>
         [HttpPost]
-        public async Task PostComment([FromBody] Comment value)
+        public async Task PostComment([FromBody] Comment comment)
         {
-            await _commentService.PostComment(value);
+            await _commentService.PostComment(comment);
         }
         [HttpPost("{id}/likeComment")]
         public async Task LikeComment(int id)
@@ -42,15 +42,16 @@ namespace group_project_thread.Controllers
 
         // PUT api/<CommentController>/5
         [HttpPut("{id}")]
-        public async Task PutComment(int id, [FromBody] Comment value)
+        public async Task PutComment(int id, [FromBody] Comment comment)
         {
-            await _commentService.PutComment(id, value);
+            await _commentService.PutComment(id, comment);
         }
 
         // DELETE api/<CommentController>/5
         [HttpDelete("{id}")]
         public async Task DeleteComment(int id)
         {
+            await _commentService.DeleteComment(id);
         }
         [HttpDelete("{id}/unlikeComment")]
         public async Task UnlikeComment(int id)

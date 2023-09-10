@@ -18,7 +18,7 @@ namespace ApplicationCommon.DTOs.User
         public DateOnly? DateOfBirth { get; set; }
         public string Password { get; set; }
 
-        public string Username { get; }
+        public string Username { get; set; }
 
         public int? ImageId { get; set; }
         public Image? Avatar { get; set; }

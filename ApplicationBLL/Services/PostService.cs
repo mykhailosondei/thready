@@ -1,12 +1,13 @@
 using ApplicationBLL.Services.Abstract;
 using ApplicationDAL.Context;
 using ApplicationDAL.Entities;
+using AutoMapper;
 
 namespace ApplicationBLL.Services;
 
 public class PostService : BaseService
 {
-    public PostService(ApplicationContext applicationContext) : base(applicationContext)
+    public PostService(ApplicationContext applicationContext, IMapper mapper) : base(applicationContext, mapper)
     {
         
     }
