@@ -1,4 +1,5 @@
-﻿using ApplicationDAL.Entities;
+﻿using ApplicationCommon.DTOs.Like;
+using ApplicationDAL.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace ApplicationCommon.Interfaces
 {
     public interface ILikeable
     {
-        List<Like> Likes { get; set; }
+        List<LikeDTO> Likes { get; set; }
     }
 }
