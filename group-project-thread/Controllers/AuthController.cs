@@ -38,9 +38,9 @@ namespace group_project_thread.Controllers
         }
         
         [HttpPost("login")]
-        public async Task Login()
+        public async Task<AuthUser> Login([FromBody] LoginUserDTO loginUserDto)
         {
-            
+            return await _authService.Authorize(loginUserDto);
         }
     }
 }

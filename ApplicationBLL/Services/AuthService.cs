@@ -3,8 +3,10 @@ using System.Security.Claims;
 using System.Security.Principal;
 using System.Text;
 using ApplicationBLL.Services.Abstract;
+using ApplicationCommon.DTOs.User;
 using ApplicationDAL.Context;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
@@ -47,5 +49,32 @@ public class AuthService : BaseService
         string jwtValue =  new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
 
         return jwtValue;
+    }
+
+    public async Task<AuthUser> Authorize(LoginUserDTO loginUserDto)
+    {
+        var userEntity = await _applicationContext.Users
+            .Include(u => u.Avatar)
+            .FirstOrDefaultAsync(u => u.Email == loginUserDto.Email);
+
+        if (userEntity == null)
+        {
+            throw new Exception("User not found");
+        }
+
+        if (!BCrypt.Net.BCrypt.Verify(loginUserDto.Password, userEntity.PasswordHash))
+        {
+            throw new Exception("Invalid password");
+        }
+
+        var token = GenerateAccessToken(userEntity.Id, userEntity.Username, userEntity.Email);
+
+        var user = _mapper.Map<UserDTO>(userEntity);
+        
+        return new AuthUser()
+        {
+            User = user,
+            Token = token
+        };
     }
 }
