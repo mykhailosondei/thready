@@ -1,5 +1,7 @@
 ﻿using ApplicationBLL.Services;
+using ApplicationCommon.Interfaces;
 using ApplicationDAL.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -9,18 +11,22 @@ namespace group_project_thread.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UserController : ControllerBase
     {
 
         private readonly UserService _userService;
+        private readonly IUserIdGetter _userIdGetter;
 
-        public UserController(UserService userService)
+        public UserController(UserService userService, IUserIdGetter userIdGetter)
         {
             _userService = userService;
+            _userIdGetter = userIdGetter;
         }
 
         // GET: api/<UserController>
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IEnumerable<User>> GetAllUsers()
         {
             return await _userService.GetAllUsers();
@@ -28,9 +34,17 @@ namespace group_project_thread.Controllers
 
         // GET api/<UserController>/5
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<User> GetUserById(int id)
         {
             return await _userService.GetUserById(id);
+        }
+        
+        [HttpGet("currentUser")]
+        [Authorize]
+        public async Task<User> GetCurrentUser()
+        {
+            return await _userService.GetUserById(_userIdGetter.CurrentId);
         }
         
         [HttpPost("{id}/follow")]

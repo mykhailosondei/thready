@@ -10,6 +10,7 @@ namespace ApplicationCommon.DTOs.User
     public class RegisterUserDTO
     {
         public int UsertId { get; set; }
+        public string? Avatar { get; set; }
         public string UserName { get; set; }
         public string Email { get; set; }
         public DateOnly DateOfBirth { get; set; }

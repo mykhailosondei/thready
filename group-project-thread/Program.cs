@@ -1,9 +1,13 @@
+using System.Text;
 using ApplicationBLL.Extentions;
 using ApplicationBLL.ProfilesForAutoMapper;
 using ApplicationDAL.Context;
 using Microsoft.EntityFrameworkCore;
 
+
 using AutoMapper;
+using group_project_thread.Middlewares;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +19,17 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.ConfigureCustomServices();
 builder.Services.AddAutoMapperProfiles();
+
+builder.Services.AddAuthentication().AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JwtKey"]))
+    };
+});
 
 builder.Services.AddScoped<ConfigurationManager>(c => config);
 builder.Services.AddDbContext<ApplicationContext>(options =>
@@ -40,6 +55,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseCors("Frontend");
+app.UseAuthentication();
+app.UseAuthorization();
+app.UseMiddleware<UserIdSaverMiddleware>();
 
 
 app.MapControllerRoute(

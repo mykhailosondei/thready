@@ -1,5 +1,6 @@
 ﻿using ApplicationBLL.Services;
 using ApplicationDAL.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Build.Framework;
 
@@ -9,6 +10,7 @@ namespace group_project_thread.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class PostController : ControllerBase
     {
 
@@ -23,6 +25,7 @@ namespace group_project_thread.Controllers
 
         // GET: api/<PostController>
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IEnumerable<Post>> GetAllPosts()
         {
             return await _postService.GetAllPosts();
@@ -30,6 +33,7 @@ namespace group_project_thread.Controllers
 
         // GET api/<PostController>/5
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<Post> GetPostById(int id)
         {
             return await _postService.GetPostById(id);

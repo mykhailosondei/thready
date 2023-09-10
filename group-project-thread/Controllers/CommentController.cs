@@ -1,5 +1,6 @@
 ﻿using ApplicationBLL.Services;
 using ApplicationDAL.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -8,6 +9,7 @@ namespace group_project_thread.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CommentController : ControllerBase
     {
 
@@ -22,6 +24,7 @@ namespace group_project_thread.Controllers
 
         // GET api/<CommentController>/5
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<Comment> GetCommentById(int id)
         {
             return await _commentService.GetCommentById(id);

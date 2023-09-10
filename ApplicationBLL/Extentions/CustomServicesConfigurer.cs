@@ -1,6 +1,8 @@
 using System.Reflection;
+using ApplicationBLL.Logic;
 using ApplicationBLL.ProfilesForAutoMapper;
 using ApplicationBLL.Services;
+using ApplicationCommon.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using AutoMapper;
 
@@ -10,11 +12,15 @@ public static class CustomServicesConfigurer
 {
     public static void ConfigureCustomServices(this IServiceCollection services)
     {
-        services.AddTransient<CommentService>();
-        services.AddTransient<LikeService>();
-        services.AddTransient<PostService>();
-        services.AddTransient<UserService>();
-        services.AddTransient<AuthService>();
+        services.AddScoped<CommentService>();
+        services.AddScoped<LikeService>();
+        services.AddScoped<PostService>();
+        services.AddScoped<UserService>();
+        services.AddScoped<AuthService>();
+
+        services.AddScoped<CurrentUserIdProvider>();
+        services.AddTransient<IUserIdSetter>(provider => provider.GetService<CurrentUserIdProvider>());
+        services.AddTransient<IUserIdGetter>(provider => provider.GetService<CurrentUserIdProvider>());
     }
 
     public static void AddAutoMapperProfiles(this IServiceCollection services)

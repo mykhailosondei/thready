@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using ApplicationBLL.Services;
 using ApplicationCommon.DTOs.User;
 using ApplicationDAL.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,6 +13,7 @@ namespace group_project_thread.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [AllowAnonymous]
     public class AuthController : ControllerBase
     {
         private readonly UserService _userService;
