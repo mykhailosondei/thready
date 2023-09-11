@@ -3,12 +3,20 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-sign-up-page',
   templateUrl: './sign-up-page.component.html',
-  styleUrls: ['./sign-up-page.component.scss']
+  styleUrls: ['./sign-up-page.component.scss', '../../../assets/LoginAndRegisCommon.scss']
 })
 export class SignUpPageComponent {
   passType: string = "password";
+  repeatPassType: string = "password";
   isText: boolean = false;
-  eyeIcon: string = "fa-eye-slash"
+  isTextRepeatPass: boolean = false;
+  eyeIcon: string = "fa-eye-slash";
+  repeatEyeIcon: string = "fa-eye-slash";
+  firstpassword: string = "";
+  repeatedPassword: string = "";
+  isEqualMessage: string = "";
+  messageColor: string = "red";
+  passwordsMatch: boolean = false;
   selectedDay: number | null = null;
   days: number[] = [];
   selectedYear: number | null = null;
@@ -48,22 +56,57 @@ export class SignUpPageComponent {
     this.isText ? this.passType = "text" : this.passType = "password";
   }
 
+  hideShowRepeatPass(){
+    this.isTextRepeatPass = !this.isTextRepeatPass;
+    this.isTextRepeatPass ? this.repeatEyeIcon = "fa-eye" : this.repeatEyeIcon = "fa-eye-slash";
+    this.isTextRepeatPass ? this.repeatPassType = "text" : this.repeatPassType = "password";
+  }
+
+  checkPasswordMatch() {
+    if (this.firstpassword === this.repeatedPassword) {
+      this.isEqualMessage = "";
+    } else {
+      this.messageColor = "red";
+      this.isEqualMessage = "Passwords are different";
+    }
+  }
+
+
   updateDates(){
-    let daysInMonth: number = 0;
-    if (this.selectedYear !== null && this.selectedMonth !== null) {
-      daysInMonth = new Date(this.selectedYear, this.selectedMonth, 0).getDate();
-      // Now you can safely use daysInMonth
-    } 
-    else if(this.selectedYear !== null || this.selectedMonth !== null){
-      daysInMonth = 31;
-    }
-    else {
-      // Handle the case where either selectedYear or selectedMonth is null
-      console.error('selectedYear or selectedMonth is null.');
-    }
+    let daysInMonth: number = this.daysBasedOnDropDowns();
+    
     this.days = [];
     for (let i = 1; i <= daysInMonth; i++) {
     this.days.push(i);
-}
+    }
+  }
+  
+  daysBasedOnDropDowns(): number{
+    if (this.selectedYear != null && this.selectedMonth != null) {
+      return new Date(this.selectedYear, this.selectedMonth, 0).getDate();
+    } 
+    else if(this.selectedMonth != null){ 
+      return this.getDaysInMonth();
+    }
+    else {
+      return 31;
+    }
+  }
+
+  getDaysInMonth(): number{
+    
+    let thirtyDays: number[] = [4, 6, 9, 11];
+    let monthToNum: number = Number(this.selectedMonth!);
+    console.log(typeof(monthToNum));
+    if(thirtyDays.includes(monthToNum)){
+      return 30;
+    }
+    else if (monthToNum === 2){
+      return 29;
+    }
+    else{
+      return 31;
+    }
+    
   }
 }

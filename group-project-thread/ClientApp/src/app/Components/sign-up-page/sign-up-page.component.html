@@ -9,23 +9,27 @@
                     <div class="panel-body" style="padding: 1rem;">
                         <form>
                             <div class="input-box" >
-                                <span class="fa fa-user custom-user" ></span>
+                                <span class="fa fa-user custom-icon" ></span>
                                 <input type="text" placeholder="Username" required>
                             </div>
                             <div class="input-box" >
-                                <span class="fa fa-envelope custom-user" ></span>
+                                <span class="fa fa-envelope custom-icon" ></span>
                                 <input type="text" placeholder="Email" required>
                             </div>
                             <div class="input-box" >
-                                <span class="fa fa-lock custom-user"></span>
-                                <input [type]="passType" placeholder="Password (at least 8 characters)" required>
+                                <span class="fa fa-lock custom-icon"></span>
+                                <input [(ngModel)]="firstpassword" name="origpassword"  [type]="passType" placeholder="Password (at least 8 characters)" required (ngModelChange)="checkPasswordMatch()">
                                 <span (click)="hideShowPass()" class="fa {{eyeIcon}} fa-eye-slash-btn" style="padding-right: 4px;"></span>
                             </div>
                             <div class="input-box" >
-                                <span class="fa fa-lock custom-user"></span>
-                                <input [type]="passType" placeholder="Repeat password" required>
-                                <span (click)="hideShowPass()" class="fa {{eyeIcon}} fa-eye-slash-btn" style="padding-right: 4px;"></span>
+                                <span class="fa fa-lock custom-icon"></span>
+                                <input [(ngModel)]="repeatedPassword" name="repeatedpassword" [type]="repeatPassType" placeholder="Repeat password" required (ngModelChange)="checkPasswordMatch()">
+                                <span (click)="hideShowRepeatPass()" class="fa {{repeatEyeIcon}} fa-eye-slash-repeat-btn" style="padding-right: 4px;" ></span>
                             </div>
+                            <ng-container>
+                                <p class="error-message error-{{messageColor}}">{{isEqualMessage}}</p>
+                                
+                            </ng-container>
                             <div class="date-of-birth">
                                 <div class="date-of-birth-header" style="text-align: left;">
                                     <label style=>Date of birth</label>
@@ -34,17 +38,20 @@
                                     <form>
                                         <div class="row-form">
                                             <div>
-                                                <select id = "month" name="month" [(ngModel)]="selectedMonth" (change)="updateDates()">
+                                                <select class="date-picker" name="month" [(ngModel)]="selectedMonth" (change)="updateDates()">
+                                                    <option value="" disabled selected style="text-align: left; vertical-align: top;">Select a month</option>
                                                     <option *ngFor="let month of months" [value]="month.value">{{ month.name }}</option>
                                                 </select>
                                             </div>
-                                            <div>
-                                                <select id="day" name="day" [(ngModel)]="selectedDay">
+                                            <div >
+                                                <select class="date-picker" name="day" [(ngModel)]="selectedDay">
+                                                    <option value="" disabled selected style="text-align: left; vertical-align: top;">Select a day</option>
                                                     <option *ngFor="let day of days" [value]="day">{{ day }}</option>
                                                 </select>
                                             </div>
-                                            <div>
-                                                <select id="year" name="year" [(ngModel)]="selectedYear" (change)="updateDates()">
+                                            <div >
+                                                <select class="date-picker" name="year" [(ngModel)]="selectedYear" (change)="updateDates()">
+                                                    <option value="" disabled selected style="text-align: left; vertical-align: top;">Select a year</option>
                                                     <option *ngFor="let year of years" [value]="year">{{ year }}</option>
                                                 </select>
                                             </div>
