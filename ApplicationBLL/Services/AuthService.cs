@@ -14,9 +14,9 @@ namespace ApplicationBLL.Services;
 
 public class AuthService : BaseService
 {
-    private readonly ConfigurationManager _configuration;
+    private readonly IConfiguration _configuration;
 
-    public AuthService(ApplicationContext applicationContext, ConfigurationManager configuration, IMapper mapper) : base(applicationContext, mapper)
+    public AuthService(ApplicationContext applicationContext, IConfiguration configuration, IMapper mapper) : base(applicationContext, mapper)
     {
         _configuration = configuration;
     }

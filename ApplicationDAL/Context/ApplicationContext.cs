@@ -10,6 +10,11 @@ public class ApplicationContext : DbContext
         
     }
 
+    public ApplicationContext()
+    {
+        
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<User>()
@@ -38,9 +43,9 @@ public class ApplicationContext : DbContext
     }
 
 
-    public DbSet<User> Users { get; set; }
-    public DbSet<Post> Posts { get; set; }
-    public DbSet<Comment> Comments { get; set; }
-    public DbSet<Image> Images { get; set; }
-    public DbSet<Like> Like { get; set; }
+    public virtual DbSet<User> Users { get; set; }
+    public virtual DbSet<Post> Posts { get; set; }
+    public virtual DbSet<Comment> Comments { get; set; }
+    public virtual DbSet<Image> Images { get; set; }
+    public virtual DbSet<Like> Like { get; set; }
 }

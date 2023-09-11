@@ -14,8 +14,6 @@ public class UserIdSaverMiddleware
     public async Task InvokeAsync(HttpContext httpContext, IUserIdSetter userIdSetter)
     {
         string? userIdentityClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
-        
-        Console.WriteLine(userIdentityClaim);
 
         if (userIdentityClaim != null && int.TryParse(userIdentityClaim, out int id))
         {

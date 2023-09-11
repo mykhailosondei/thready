@@ -31,7 +31,7 @@ builder.Services.AddAuthentication().AddJwtBearer(options =>
     };
 });
 
-builder.Services.AddScoped<ConfigurationManager>(c => config);
+builder.Services.AddScoped<IConfiguration>(c => config);
 builder.Services.AddDbContext<ApplicationContext>(options =>
 {
     options.UseNpgsql(config.GetConnectionString("Default"));
