@@ -67,4 +67,29 @@ public class AuthServiceTests
         //Assert
         Assert.Equal(true, result);
     }
+    
+    [Fact]
+    public void Authorize_ShouldThrowException_OnInvalidPassword()
+    {
+        //Arrange
+        var loginCreds = new LoginUserDTO
+        {
+            Email = "wrong",
+            Password = "Any"
+        };
+        bool? result = null;
+        _applicationContextMock.Setup(c => c.Users).Returns(new InternalDbSet<User>(_applicationContextMock.Object, "User"));
+        
+        //Act
+        try
+        {
+            var authorizeTry = _authService.Authorize(loginCreds).Result;
+        }
+        catch (Exception e)
+        {
+            result = true;
+        }
+        //Assert
+        Assert.Equal(true, result);
+    }
 }
