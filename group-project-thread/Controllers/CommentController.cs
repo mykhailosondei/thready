@@ -1,4 +1,5 @@
 ﻿using ApplicationBLL.Services;
+using ApplicationCommon.Interfaces;
 using ApplicationDAL.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,11 +16,13 @@ namespace group_project_thread.Controllers
 
         private readonly CommentService _commentService;
         private readonly LikeService _likeService;
+        private readonly IUserIdGetter _userIdGetter;
 
-        public CommentController(CommentService commentService, LikeService likeService)
+        public CommentController(CommentService commentService, LikeService likeService, IUserIdGetter userIdGetter)
         {
             _commentService = commentService;
             _likeService = likeService;
+            _userIdGetter = userIdGetter;
         }
 
         // GET api/<CommentController>/5
@@ -39,7 +42,7 @@ namespace group_project_thread.Controllers
         [HttpPost("{id}/likeComment")]
         public async Task LikeComment(int id)
         {
-            int authorId = 0; //TODO: implement authorId getting from httpContext
+            int authorId = _userIdGetter.CurrentId;
             await _likeService.LikeComment(id, authorId);
         }
 
@@ -59,7 +62,7 @@ namespace group_project_thread.Controllers
         [HttpDelete("{id}/unlikeComment")]
         public async Task UnlikeComment(int id)
         {
-            int authorId = 0; //TODO: implement authorId getting from httpContext
+            int authorId = _userIdGetter.CurrentId;
             await _likeService.DislikeComment(id, authorId);
         }
     }

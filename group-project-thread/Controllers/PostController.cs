@@ -1,4 +1,5 @@
 ﻿using ApplicationBLL.Services;
+using ApplicationCommon.Interfaces;
 using ApplicationDAL.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,11 +17,13 @@ namespace group_project_thread.Controllers
 
         private readonly PostService _postService;
         private readonly LikeService _likeService;
+        private readonly IUserIdGetter _userIdGetter;
 
-        public PostController(PostService postService, LikeService likeService)
+        public PostController(PostService postService, LikeService likeService, IUserIdGetter userIdGetter)
         {
             _postService = postService;
             _likeService = likeService;
+            _userIdGetter = userIdGetter;
         }
 
         // GET: api/<PostController>
@@ -49,14 +52,14 @@ namespace group_project_thread.Controllers
         [HttpPost("{id}/likePost")]
         public async Task LikePost(int id)
         {
-            int authorId = 0; //TODO: implement authorId getting from httpContext
+            int authorId = _userIdGetter.CurrentId;
             await _likeService.LikePost(id, authorId);
         }
         
         [HttpPost("{id}/bookmarkPost")]
         public async Task BookmarkPost(int id)
         {
-            int authorId = 0; //TODO: implement authorId getting from httpContext
+            int authorId = _userIdGetter.CurrentId;
             await _postService.BookmarkPost(id, authorId);
         }
         
@@ -77,28 +80,28 @@ namespace group_project_thread.Controllers
         [HttpPost("{id}/unlikePost")]
         public async Task UnlikePost(int id)
         {
-            int authorId = 0; //TODO: implement authorId getting from httpContext
+            int authorId = _userIdGetter.CurrentId;
             await _likeService.DislikePost(id, authorId);
         }
 
         [HttpPost("{id}/removeFromBookmarks")]
         public async Task RemoveFromBookmarksPost(int id)
         {
-            int authorId = 0; //TODO: implement authorId getting from httpContext
+            int authorId = _userIdGetter.CurrentId;
             await _postService.RemoveFromBookmarksPost(id, authorId);
         }
         
         [HttpPost("{id}/repost")]
         public async Task Repost(int id)
         {
-            int authorId = 0; //TODO: implement authorId getting from httpContext
+            int authorId = _userIdGetter.CurrentId;
             await _postService.Repost(id, authorId);
         }
         
         [HttpPost("{id}/undoRepost")]
         public async Task UndoRepost(int id)
         {
-            int authorId = 0; //TODO: implement authorId getting from httpContext
+            int authorId = _userIdGetter.CurrentId;
             await _postService.UndoRepost(id, authorId);
         }
     }

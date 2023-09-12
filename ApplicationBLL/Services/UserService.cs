@@ -1,8 +1,10 @@
+using ApplicationBLL.Exceptions;
 using ApplicationBLL.Services.Abstract;
 using ApplicationDAL.Context;
 using ApplicationDAL.Entities;
 using ApplicationCommon.DTOs.User;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace ApplicationBLL.Services;
 
@@ -15,12 +17,12 @@ public class UserService : BaseService
 
     public async Task<IEnumerable<User>> GetAllUsers()
     {
-        return default;
+        return _applicationContext.Users;
     }
 
     public async Task<User> GetUserById(int id)
     {
-        return default;
+        return await _applicationContext.Users.FirstOrDefaultAsync(u => u.Id == id);
     }
 
     public async Task Follow(int userId, int currentUserId)
@@ -36,6 +38,12 @@ public class UserService : BaseService
     public async Task<UserDTO> CreateUser(RegisterUserDTO registerUserDto)
     {
         var userEntity = _mapper.Map<User>(registerUserDto);
+
+        if (await _applicationContext.Users.AnyAsync(u => u.Email == userEntity.Email))
+        {
+            throw new UserAlreadyExistsException("User already exists");
+        }
+        
         userEntity.PasswordHash = BCrypt.Net.BCrypt.HashPassword(registerUserDto.Password);
         
         _applicationContext.Users.Add(userEntity);
@@ -51,6 +59,7 @@ public class UserService : BaseService
 
     public async Task DeleteUser(int id)
     {
-        
+        _applicationContext.Users.Remove(await GetUserById(id));
+        await _applicationContext.SaveChangesAsync();
     }
 }

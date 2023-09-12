@@ -50,7 +50,7 @@ namespace group_project_thread.Controllers
         [HttpPost("{id}/follow")]
         public async Task Follow(int id)
         {
-            int currentUserId = 0; //TODO: implement currentUserId getting from httpContext
+            int currentUserId = _userIdGetter.CurrentId; 
             await _userService.Follow(id, currentUserId);
         }
 
@@ -70,7 +70,7 @@ namespace group_project_thread.Controllers
         [HttpPost("{id}/unfollow")]
         public async Task Unfollow(int id)
         {
-            int currentUserId = 0; //TODO: implement currentUserId getting from httpContext
+            int currentUserId = _userIdGetter.CurrentId;
             await _userService.Follow(id, currentUserId);
         }
     }
