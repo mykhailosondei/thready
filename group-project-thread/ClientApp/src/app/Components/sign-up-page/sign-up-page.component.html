@@ -7,59 +7,62 @@
                         <h3 style="padding-top: 1rem; font-weight: bold;">Sign Up</h3>
                     </div>
                     <div class="panel-body" style="padding: 1rem;">
-                        <form>
+                        <form [formGroup] ="regisForm">
                             <div class="input-box" >
                                 <span class="fa fa-user custom-icon" ></span>
-                                <input type="text" placeholder="Username" required>
+                                <input formControlName="username" type="text" placeholder="Username" required>
                             </div>
                             <div class="input-box" >
                                 <span class="fa fa-envelope custom-icon" ></span>
-                                <input type="text" placeholder="Email" required>
+                                <input formControlName="email" type="text" placeholder="Email" required>
                             </div>
                             <div class="input-box" >
                                 <span class="fa fa-lock custom-icon"></span>
-                                <input [(ngModel)]="firstpassword" name="origpassword"  [type]="passType" placeholder="Password (at least 8 characters)" required (ngModelChange)="checkPasswordMatch()">
+                                <input formControlName="password" [(ngModel)]="firstpassword" name="origpassword"  [type]="passType" placeholder="Password (at least 8 characters)" required>
                                 <span (click)="hideShowPass()" class="fa {{eyeIcon}} fa-eye-slash-btn" style="padding-right: 4px;"></span>
                             </div>
-                            <div class="input-box" >
-                                <span class="fa fa-lock custom-icon"></span>
-                                <input [(ngModel)]="repeatedPassword" name="repeatedpassword" [type]="repeatPassType" placeholder="Repeat password" required (ngModelChange)="checkPasswordMatch()">
-                                <span (click)="hideShowRepeatPass()" class="fa {{repeatEyeIcon}} fa-eye-slash-repeat-btn" style="padding-right: 4px;" ></span>
+                            <div class="required-messages">
+                                <small *ngIf="regisForm.controls['password'].dirty && regisForm.hasError('passwordLength', 'password')">*Your password needs to be at least 8 characters. Please enter a longer one.</small>
                             </div>
-                            <ng-container>
-                                <p class="error-message error-{{messageColor}}">{{isEqualMessage}}</p>
-                                
-                            </ng-container>
+                            <div class="input-box" style="margin-bottom: 1px;">
+                                <span class="fa fa-lock custom-icon"></span>
+                                <input formControlName="repeatPassword" [(ngModel)]="repeatedPassword" name="repeatedpassword" [type]="repeatPassType" placeholder="Repeat password" required>
+                                <span (click)="hideShowRepeatPass()" class="fa {{repeatEyeIcon}} fa-eye-slash-btn" style="padding-right: 4px;" ></span>
+                            </div>
+                            <div class="required-messages">
+                                <small *ngIf="(regisForm.controls['repeatPassword'].dirty && regisForm.hasError('passwordMatch', 'repeatPassword'))">*Passwords do not match</small>
+                            </div>
+                            
                             <div class="date-of-birth">
                                 <div class="date-of-birth-header" style="text-align: left;">
-                                    <label style=>Date of birth</label>
+                                  <label>Date of birth</label>
                                 </div>
                                 <div class="selector">
-                                    <form>
-                                        <div class="row-form">
-                                            <div>
-                                                <select class="date-picker" name="month" [(ngModel)]="selectedMonth" (change)="updateDates()">
-                                                    <option value="" disabled selected style="text-align: left; vertical-align: top;">Select a month</option>
-                                                    <option *ngFor="let month of months" [value]="month.value">{{ month.name }}</option>
-                                                </select>
-                                            </div>
-                                            <div >
-                                                <select class="date-picker" name="day" [(ngModel)]="selectedDay">
-                                                    <option value="" disabled selected style="text-align: left; vertical-align: top;">Select a day</option>
-                                                    <option *ngFor="let day of days" [value]="day">{{ day }}</option>
-                                                </select>
-                                            </div>
-                                            <div >
-                                                <select class="date-picker" name="year" [(ngModel)]="selectedYear" (change)="updateDates()">
-                                                    <option value="" disabled selected style="text-align: left; vertical-align: top;">Select a year</option>
-                                                    <option *ngFor="let year of years" [value]="year">{{ year }}</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                            
-                                    </form>
+                                  <form>
+                                    <div class="row-form">
+                                      <div>
+                                        <select class="date-picker" formControlName="selectedMonth" (change)="updateDates()">
+                                          <option value="" disabled selected>Select a month</option>
+                                          <option *ngFor="let month of months" [value]="month.value">{{ month.name }}</option>
+                                        </select>
+                                      </div>
+                                      <div>
+                                        <select class="date-picker" formControlName="selectedDay">
+                                          <option value="" disabled selected>Select a day</option>
+                                          <option *ngFor="let day of days" [value]="day">{{ day }}</option>
+                                        </select>
+                                      </div>
+                                      <div>
+                                        <select class="date-picker" formControlName="selectedYear" (change)="updateDates()">
+                                          <option value="" disabled selected>Select a year</option>
+                                          <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+                                        </select>
+                                      </div>
+                                    </div>
+                                  </form>
                                 </div>
-                            </div>
+                              </div>
+                              
                             <button type="submit" class="btn-block">Sign up</button>
                             <div class="register-link" style="font: 14px -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
                                 <p>Already have an account? <a id="forget" routerLink="/login">Sign in</a></p>

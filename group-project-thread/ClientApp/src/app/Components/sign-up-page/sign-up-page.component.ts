@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-sign-up-page',
@@ -15,6 +16,7 @@ export class SignUpPageComponent {
   firstpassword: string = "";
   repeatedPassword: string = "";
   isEqualMessage: string = "";
+  isEnoughChrMessage: string = "";
   messageColor: string = "red";
   passwordsMatch: boolean = false;
   selectedDay: number | null = null;
@@ -36,8 +38,9 @@ export class SignUpPageComponent {
     { value: 11, name: 'November' },
     { value: 12, name: 'December' }
   ];
+  regisForm!: FormGroup;
 
-  constructor() {
+  constructor(private fb: FormBuilder) {
     // Generate an array of days (1 to 31) and populate the 'days' property
     for (let i = 1; i <= 31; i++) {
       this.days.push(i);
@@ -47,7 +50,15 @@ export class SignUpPageComponent {
     }
   }
   ngOnInit() : void{
-
+    this.regisForm=this.fb.group({
+      username: ['', Validators.required],
+      email: ['', Validators.required],
+      password: ['', [Validators.required, this.passwordValidator()]],
+      repeatPassword: ['', [Validators.required, this.repeatpasswordValidator()]],
+      selectedMonth: ['', Validators.required],
+      selectedDay: ['', Validators.required],
+      selectedYear: ['', Validators.required]
+    })
   }
   
   hideShowPass(){
@@ -62,15 +73,41 @@ export class SignUpPageComponent {
     this.isTextRepeatPass ? this.repeatPassType = "text" : this.repeatPassType = "password";
   }
 
-  checkPasswordMatch() {
-    if (this.firstpassword === this.repeatedPassword) {
-      this.isEqualMessage = "";
-    } else {
-      this.messageColor = "red";
-      this.isEqualMessage = "Passwords are different";
-    }
+
+  private validateAllFields(formGroup: FormGroup){
+    Object.keys(formGroup.controls).forEach(field => {
+      const control = formGroup.get(field);
+      if (control instanceof FormControl){
+        control.markAsDirty({onlySelf:true});
+      }else if(control instanceof FormGroup){
+        this.validateAllFields(control);
+      }
+    })
   }
 
+  passwordValidator(): Validators {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const password = control.value;
+
+      
+      if (password.length < 8) {
+        return { 'passwordLength': true };
+      }
+
+      return null; 
+    };
+  }
+
+  repeatpasswordValidator(): Validators {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const repeatpassword = control.value;
+      
+      if (repeatpassword !== this.firstpassword) {
+        return { 'passwordMatch': true };
+      }
+      return null;
+    };
+  }
 
   updateDates(){
     let daysInMonth: number = this.daysBasedOnDropDowns();
