@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Principal;
 using System.Text;
+using ApplicationBLL.Exceptions;
 using ApplicationBLL.Services.Abstract;
 using ApplicationCommon.DTOs.User;
 using ApplicationDAL.Context;
@@ -59,12 +60,12 @@ public class AuthService : BaseService
 
         if (userEntity == null)
         {
-            throw new Exception("User not found");
+            throw new UserNotFoundException("User not found");
         }
 
         if (!BCrypt.Net.BCrypt.Verify(loginUserDto.Password, userEntity.PasswordHash))
         {
-            throw new Exception("Invalid password");
+            throw new InvalidPasswordException("Invalid password");
         }
 
         var token = GenerateAccessToken(userEntity.Id, userEntity.Username, userEntity.Email);
