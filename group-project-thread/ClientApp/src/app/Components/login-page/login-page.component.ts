@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import ValidateForm from 'src/app/helpers/validateForm';
 
 @Component({
   selector: 'app-login-page',
@@ -7,7 +8,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
   styleUrls: ['./login-page.component.scss', '../../../assets/LoginAndRegisCommon.scss']
 })
 export class LoginPageComponent {
-  passType: string = "password";
+  passwordType: string = "password";
   isText: boolean = false;
   eyeIcon: string = "fa-eye-slash"
   loginForm!: FormGroup;
@@ -24,7 +25,7 @@ export class LoginPageComponent {
   hideShowPass(){
     this.isText = !this.isText;
     this.isText ? this.eyeIcon = "fa-eye" : this.eyeIcon = "fa-eye-slash";
-    this.isText ? this.passType = "text" : this.passType = "password";
+    this.isText ? this.passwordType = "text" : this.passwordType = "password";
   }
   onSubmit(){
     if(this.loginForm.valid){
@@ -32,19 +33,8 @@ export class LoginPageComponent {
     }
     else{
       //throw the error
-      this.validateAllFields(this.loginForm);
+      ValidateForm.validateAllFields(this.loginForm);
     }
-  }
-
-  private validateAllFields(formGroup: FormGroup){
-    Object.keys(formGroup.controls).forEach(field => {
-      const control = formGroup.get(field);
-      if (control instanceof FormControl){
-        control.markAsDirty({onlySelf:true});
-      }else if(control instanceof FormGroup){
-        this.validateAllFields(control);
-      }
-    })
   }
 }
 

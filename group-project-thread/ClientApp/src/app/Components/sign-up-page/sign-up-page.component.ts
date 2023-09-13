@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import ValidateForm from 'src/app/helpers/validateForm';
 
 @Component({
   selector: 'app-sign-up-page',
@@ -7,13 +8,13 @@ import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from
   styleUrls: ['./sign-up-page.component.scss', '../../../assets/LoginAndRegisCommon.scss']
 })
 export class SignUpPageComponent {
-  passType: string = "password";
-  repeatPassType: string = "password";
+  passwordType: string = "password";
+  repeatedPasswordType: string = "password";
   isText: boolean = false;
-  isTextRepeatPass: boolean = false;
+  isTextRepeatedPass: boolean = false;
   eyeIcon: string = "fa-eye-slash";
-  repeatEyeIcon: string = "fa-eye-slash";
-  firstpassword: string = "";
+  repeatedEyeIcon: string = "fa-eye-slash";
+  originalPassword: string = "";
   repeatedPassword: string = "";
   isEqualMessage: string = "";
   isEnoughChrMessage: string = "";
@@ -68,13 +69,13 @@ export class SignUpPageComponent {
   hideShowPass(){
     this.isText = !this.isText;
     this.isText ? this.eyeIcon = "fa-eye" : this.eyeIcon = "fa-eye-slash";
-    this.isText ? this.passType = "text" : this.passType = "password";
+    this.isText ? this.passwordType = "text" : this.passwordType = "password";
   }
 
   hideShowRepeatPass(){
-    this.isTextRepeatPass = !this.isTextRepeatPass;
-    this.isTextRepeatPass ? this.repeatEyeIcon = "fa-eye" : this.repeatEyeIcon = "fa-eye-slash";
-    this.isTextRepeatPass ? this.repeatPassType = "text" : this.repeatPassType = "password";
+    this.isTextRepeatedPass = !this.isTextRepeatedPass;
+    this.isTextRepeatedPass ? this.repeatedEyeIcon = "fa-eye" : this.repeatedEyeIcon = "fa-eye-slash";
+    this.isTextRepeatedPass ? this.repeatedPasswordType = "text" : this.repeatedPasswordType = "password";
   }
 
   passwordValidator(): Validators {
@@ -109,7 +110,7 @@ export class SignUpPageComponent {
     return (control: AbstractControl): { [key: string]: any } | null => {
       const repeatpassword = control.value;
       this.touched2 = true;
-      if (repeatpassword !== this.firstpassword) {
+      if (repeatpassword !== this.originalPassword) {
         this.origPassMatchError = false;
         this.repPassMatchError = true;
         return { 'passwordMatch': true };
@@ -120,23 +121,12 @@ export class SignUpPageComponent {
     };
   }
 
-  private validateAllFields(formGroup: FormGroup){
-    Object.keys(formGroup.controls).forEach(field => {
-      const control = formGroup.get(field);
-      if (control instanceof FormControl){
-        control.markAsDirty({onlySelf:true});
-      }else if(control instanceof FormGroup){
-        this.validateAllFields(control);
-      }
-    })
-  }
-
   onSubmit(){
     if(this.regisForm.valid){
     }
     else{
       //throw the error
-      this.validateAllFields(this.regisForm);
+      ValidateForm.validateAllFields(this.regisForm);
     }
   }
 
