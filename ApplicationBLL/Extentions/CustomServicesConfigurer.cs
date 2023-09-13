@@ -17,6 +17,7 @@ public static class CustomServicesConfigurer
         services.AddScoped<PostService>();
         services.AddScoped<UserService>();
         services.AddScoped<AuthService>();
+        services.AddScoped<EmailValidatorService>();
 
         services.AddScoped<CurrentUserIdProvider>();
         services.AddTransient<IUserIdSetter>(provider => provider.GetService<CurrentUserIdProvider>());

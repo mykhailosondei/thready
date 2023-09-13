@@ -17,11 +17,13 @@ namespace group_project_thread.Controllers
 
         private readonly UserService _userService;
         private readonly IUserIdGetter _userIdGetter;
+        private readonly EmailValidatorService _emailValidatorService;
 
-        public UserController(UserService userService, IUserIdGetter userIdGetter)
+        public UserController(UserService userService, IUserIdGetter userIdGetter, EmailValidatorService emailValidatorService)
         {
             _userService = userService;
             _userIdGetter = userIdGetter;
+            _emailValidatorService = emailValidatorService;
         }
 
         // GET: api/<UserController>
@@ -46,6 +48,15 @@ namespace group_project_thread.Controllers
         {
             return await _userService.GetUserById(_userIdGetter.CurrentId);
         }
+
+        //GET: api/User/isValidEmail?email={your email}
+        [HttpGet("isEmailAvailable")]
+        [AllowAnonymous]
+        public async Task<bool> IsEmailAvailable(string email)
+        {
+            return await _emailValidatorService.IsEmailAvailable(email);
+        }
+        
         
         [HttpPost("{id}/follow")]
         public async Task Follow(int id)
@@ -71,7 +82,7 @@ namespace group_project_thread.Controllers
         public async Task Unfollow(int id)
         {
             int currentUserId = _userIdGetter.CurrentId;
-            await _userService.Follow(id, currentUserId);
+            await _userService.Unfollow(id, currentUserId);
         }
     }
 }

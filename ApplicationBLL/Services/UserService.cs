@@ -10,9 +10,11 @@ namespace ApplicationBLL.Services;
 
 public class UserService : BaseService
 {
-    public UserService(ApplicationContext applicationContext, IMapper mapper) : base(applicationContext, mapper)
+    private readonly EmailValidatorService _emailValidatorService;
+    
+    public UserService(ApplicationContext applicationContext, IMapper mapper, EmailValidatorService emailValidatorService) : base(applicationContext, mapper)
     {
-        
+        _emailValidatorService = emailValidatorService;
     }
 
     public async Task<IEnumerable<User>> GetAllUsers()
@@ -24,6 +26,8 @@ public class UserService : BaseService
     {
         return await _applicationContext.Users.FirstOrDefaultAsync(u => u.Id == id);
     }
+    
+    
 
     public async Task Follow(int userId, int currentUserId)
     {
@@ -39,10 +43,18 @@ public class UserService : BaseService
     {
         var userEntity = _mapper.Map<User>(registerUserDto);
 
-        if (await _applicationContext.Users.AnyAsync(u => u.Email == userEntity.Email))
+        if (!await _emailValidatorService.IsEmailAvailable(registerUserDto.Email))
         {
-            throw new UserAlreadyExistsException("User already exists");
+            throw new UserAlreadyExistsException("Email is already in use.");
         }
+
+        userEntity.Posts = new List<Post>();
+        userEntity.Followers = new List<User>();
+        userEntity.Following = new List<User>();
+        userEntity.Bio = "";
+        userEntity.Location = "";
+        userEntity.BookmarkedPosts = new List<Post>();
+        userEntity.Reposts = new List<Post>();
         
         userEntity.PasswordHash = BCrypt.Net.BCrypt.HashPassword(registerUserDto.Password);
         
