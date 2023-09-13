@@ -30,7 +30,12 @@
                                 <span (click)="hideShowRepeatPass()" class="fa {{repeatEyeIcon}} fa-eye-slash-btn" style="padding-right: 4px;" ></span>
                             </div>
                             <div class="required-messages">
-                                <small *ngIf="(regisForm.controls['repeatPassword'].dirty && regisForm.hasError('passwordMatch', 'repeatPassword'))">*Passwords do not match</small>
+                              <div *ngIf="origPassMatchError">
+                                <small *ngIf="regisForm.get('repeatPassword')!.touched && (regisForm.controls['password'].dirty && regisForm.hasError('passwordMatch', 'password'))">*Passwords do not match</small>
+                              </div>
+                              <div *ngIf="repPassMatchError">
+                                <small *ngIf="regisForm.get('password')!.touched && (regisForm.controls['repeatPassword'].dirty && regisForm.hasError('passwordMatch', 'repeatPassword'))">*Passwords do not match</small>
+                              </div>
                             </div>
                             
                             <div class="date-of-birth">
@@ -38,32 +43,39 @@
                                   <label>Date of birth</label>
                                 </div>
                                 <div class="selector">
-                                  <form>
-                                    <div class="row-form">
-                                      <div>
-                                        <select class="date-picker" formControlName="selectedMonth" (change)="updateDates()">
-                                          <option value="" disabled selected>Select a month</option>
-                                          <option *ngFor="let month of months" [value]="month.value">{{ month.name }}</option>
-                                        </select>
-                                      </div>
-                                      <div>
-                                        <select class="date-picker" formControlName="selectedDay">
-                                          <option value="" disabled selected>Select a day</option>
-                                          <option *ngFor="let day of days" [value]="day">{{ day }}</option>
-                                        </select>
-                                      </div>
-                                      <div>
-                                        <select class="date-picker" formControlName="selectedYear" (change)="updateDates()">
-                                          <option value="" disabled selected>Select a year</option>
-                                          <option *ngFor="let year of years" [value]="year">{{ year }}</option>
-                                        </select>
-                                      </div>
+                                  <div class="row-form">
+                                    <div>
+                                      <select class="date-picker" formControlName="selectedMonth" (change)="updateDates()">
+                                        <option hidden></option>
+                                        <option value="" disabled selected>Select a month</option>
+                                        <option *ngFor="let month of months" [value]="month.value">{{ month.name }}</option>
+                                      </select>
                                     </div>
-                                  </form>
+                                    <div>
+                                      <select class="date-picker" formControlName="selectedDay">
+                                        <option hidden></option>
+                                        <option value="" disabled selected>Select a day</option>
+                                        <option *ngFor="let day of days" [value]="day">{{ day }}</option>
+                                      </select>
+                                    </div>
+                                    <div>
+                                      <select class="date-picker" formControlName="selectedYear" (change)="updateDates()">
+                                        <option hidden></option>
+                                        <option value="" disabled selected>Select a year</option>
+                                        <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+                                      </select>
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
-                              
-                            <button type="submit" class="btn-block">Sign up</button>
+                              <div class="required-messages" style="margin-top: 15px;">
+                                <small *ngIf="(regisForm.controls['username'].dirty && regisForm.hasError('required', 'username'))
+                                || (regisForm.controls['email'].dirty && regisForm.hasError('required', 'email'))
+                                || (regisForm.controls['selectedMonth'].dirty && regisForm.hasError('required', 'selectedMonth'))
+                                || (regisForm.controls['selectedDay'].dirty && regisForm.hasError('required', 'selectedDay'))
+                                || (regisForm.controls['selectedYear'].dirty && regisForm.hasError('required', 'selectedYear'))">*Provide all fields with appropriate information</small>
+                              </div>
+                            <button (click)="onSubmit()" type="submit" class="btn-block">Sign up</button>
                             <div class="register-link" style="font: 14px -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
                                 <p>Already have an account? <a id="forget" routerLink="/login">Sign in</a></p>
                             </div>

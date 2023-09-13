@@ -39,6 +39,10 @@ export class SignUpPageComponent {
     { value: 12, name: 'December' }
   ];
   regisForm!: FormGroup;
+  origPassMatchError: boolean = false;
+  repPassMatchError: boolean = false;
+  touched1: boolean = false;
+  touched2: boolean = false;
 
   constructor(private fb: FormBuilder) {
     // Generate an array of days (1 to 31) and populate the 'days' property
@@ -53,8 +57,8 @@ export class SignUpPageComponent {
     this.regisForm=this.fb.group({
       username: ['', Validators.required],
       email: ['', Validators.required],
-      password: ['', [Validators.required, this.passwordValidator()]],
-      repeatPassword: ['', [Validators.required, this.repeatpasswordValidator()]],
+      password: ['', [Validators.required, this.passwordValidator(), this.originalPasswordMatchValidator()]],
+      repeatPassword: ['', [Validators.required, this.repeatedPasswordMatchValidator()]],
       selectedMonth: ['', Validators.required],
       selectedDay: ['', Validators.required],
       selectedYear: ['', Validators.required]
@@ -73,18 +77,6 @@ export class SignUpPageComponent {
     this.isTextRepeatPass ? this.repeatPassType = "text" : this.repeatPassType = "password";
   }
 
-
-  private validateAllFields(formGroup: FormGroup){
-    Object.keys(formGroup.controls).forEach(field => {
-      const control = formGroup.get(field);
-      if (control instanceof FormControl){
-        control.markAsDirty({onlySelf:true});
-      }else if(control instanceof FormGroup){
-        this.validateAllFields(control);
-      }
-    })
-  }
-
   passwordValidator(): Validators {
     return (control: AbstractControl): { [key: string]: any } | null => {
       const password = control.value;
@@ -98,15 +90,54 @@ export class SignUpPageComponent {
     };
   }
 
-  repeatpasswordValidator(): Validators {
+  originalPasswordMatchValidator(): Validators {
     return (control: AbstractControl): { [key: string]: any } | null => {
-      const repeatpassword = control.value;
-      
-      if (repeatpassword !== this.firstpassword) {
+      const password = control.value;
+      this.touched1 = true;
+      if (password !== this.repeatedPassword) {
+        this.origPassMatchError = true;
+        this.repPassMatchError = false;
         return { 'passwordMatch': true };
       }
+      this.repPassMatchError = false;
+      this.origPassMatchError = false;
       return null;
     };
+  }
+
+  repeatedPasswordMatchValidator(): Validators {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const repeatpassword = control.value;
+      this.touched2 = true;
+      if (repeatpassword !== this.firstpassword) {
+        this.origPassMatchError = false;
+        this.repPassMatchError = true;
+        return { 'passwordMatch': true };
+      }
+      this.repPassMatchError = false;
+      this.origPassMatchError = false;
+      return null;
+    };
+  }
+
+  private validateAllFields(formGroup: FormGroup){
+    Object.keys(formGroup.controls).forEach(field => {
+      const control = formGroup.get(field);
+      if (control instanceof FormControl){
+        control.markAsDirty({onlySelf:true});
+      }else if(control instanceof FormGroup){
+        this.validateAllFields(control);
+      }
+    })
+  }
+
+  onSubmit(){
+    if(this.regisForm.valid){
+    }
+    else{
+      //throw the error
+      this.validateAllFields(this.regisForm);
+    }
   }
 
   updateDates(){
