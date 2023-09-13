@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import ValidateForm from 'src/app/helpers/validateForm';
 
 @Component({
   selector: 'app-sign-up-page',
@@ -6,15 +8,16 @@ import { Component } from '@angular/core';
   styleUrls: ['./sign-up-page.component.scss', '../../../assets/LoginAndRegisCommon.scss']
 })
 export class SignUpPageComponent {
-  passType: string = "password";
-  repeatPassType: string = "password";
+  passwordType: string = "password";
+  repeatedPasswordType: string = "password";
   isText: boolean = false;
-  isTextRepeatPass: boolean = false;
+  isTextRepeatedPass: boolean = false;
   eyeIcon: string = "fa-eye-slash";
-  repeatEyeIcon: string = "fa-eye-slash";
-  firstpassword: string = "";
+  repeatedEyeIcon: string = "fa-eye-slash";
+  originalPassword: string = "";
   repeatedPassword: string = "";
   isEqualMessage: string = "";
+  isEnoughChrMessage: string = "";
   messageColor: string = "red";
   passwordsMatch: boolean = false;
   selectedDay: number | null = null;
@@ -36,8 +39,13 @@ export class SignUpPageComponent {
     { value: 11, name: 'November' },
     { value: 12, name: 'December' }
   ];
+  regisForm!: FormGroup;
+  origPassMatchError: boolean = false;
+  repPassMatchError: boolean = false;
+  touched1: boolean = false;
+  touched2: boolean = false;
 
-  constructor() {
+  constructor(private fb: FormBuilder) {
     // Generate an array of days (1 to 31) and populate the 'days' property
     for (let i = 1; i <= 31; i++) {
       this.days.push(i);
@@ -47,30 +55,80 @@ export class SignUpPageComponent {
     }
   }
   ngOnInit() : void{
-
+    this.regisForm=this.fb.group({
+      username: ['', Validators.required],
+      email: ['', Validators.required],
+      password: ['', [Validators.required, this.passwordValidator(), this.originalPasswordMatchValidator()]],
+      repeatPassword: ['', [Validators.required, this.repeatedPasswordMatchValidator()]],
+      selectedMonth: ['', Validators.required],
+      selectedDay: ['', Validators.required],
+      selectedYear: ['', Validators.required]
+    })
   }
   
   hideShowPass(){
     this.isText = !this.isText;
     this.isText ? this.eyeIcon = "fa-eye" : this.eyeIcon = "fa-eye-slash";
-    this.isText ? this.passType = "text" : this.passType = "password";
+    this.isText ? this.passwordType = "text" : this.passwordType = "password";
   }
 
   hideShowRepeatPass(){
-    this.isTextRepeatPass = !this.isTextRepeatPass;
-    this.isTextRepeatPass ? this.repeatEyeIcon = "fa-eye" : this.repeatEyeIcon = "fa-eye-slash";
-    this.isTextRepeatPass ? this.repeatPassType = "text" : this.repeatPassType = "password";
+    this.isTextRepeatedPass = !this.isTextRepeatedPass;
+    this.isTextRepeatedPass ? this.repeatedEyeIcon = "fa-eye" : this.repeatedEyeIcon = "fa-eye-slash";
+    this.isTextRepeatedPass ? this.repeatedPasswordType = "text" : this.repeatedPasswordType = "password";
   }
 
-  checkPasswordMatch() {
-    if (this.firstpassword === this.repeatedPassword) {
-      this.isEqualMessage = "";
-    } else {
-      this.messageColor = "red";
-      this.isEqualMessage = "Passwords are different";
+  passwordValidator(): Validators {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const password = control.value;
+
+      
+      if (password.length < 8) {
+        return { 'passwordLength': true };
+      }
+
+      return null; 
+    };
+  }
+
+  originalPasswordMatchValidator(): Validators {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const password = control.value;
+      this.touched1 = true;
+      if (password !== this.repeatedPassword) {
+        this.origPassMatchError = true;
+        this.repPassMatchError = false;
+        return { 'passwordMatch': true };
+      }
+      this.repPassMatchError = false;
+      this.origPassMatchError = false;
+      return null;
+    };
+  }
+
+  repeatedPasswordMatchValidator(): Validators {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const repeatpassword = control.value;
+      this.touched2 = true;
+      if (repeatpassword !== this.originalPassword) {
+        this.origPassMatchError = false;
+        this.repPassMatchError = true;
+        return { 'passwordMatch': true };
+      }
+      this.repPassMatchError = false;
+      this.origPassMatchError = false;
+      return null;
+    };
+  }
+
+  onSubmit(){
+    if(this.regisForm.valid){
+    }
+    else{
+      //throw the error
+      ValidateForm.validateAllFields(this.regisForm);
     }
   }
-
 
   updateDates(){
     let daysInMonth: number = this.daysBasedOnDropDowns();

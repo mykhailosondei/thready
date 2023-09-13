@@ -1,3 +1,5 @@
+$font: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+
 .outer{
     position: absolute;
     width: 100%;
@@ -8,7 +10,7 @@
 .panel-header{
     text-align: center;
     margin-bottom: 10px;
-    font: 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-family: $font;
 }
 
 a:hover{
@@ -39,6 +41,14 @@ a:hover{
     align-items: center;
     border: 1px solid #ddd;
     color: #000004;
+    margin-bottom: 0px;
+}
+.required-messages{
+    text-align: left;
+    font-family: $font;
+    font-size: 10px;
+    margin-left: 10px;
+    color: red;;
 }
 
 .custom-icon{
@@ -53,7 +63,7 @@ a:hover{
     align-items: center;
     font-size: 15px;
     font-weight: 700;
-    margin-top: 1.5rem;
+    margin-top: 1rem;
     border-radius: 10px;
     width: 50%;
     height: fit-content;
@@ -79,4 +89,11 @@ input[type="password"]{
     outline: none;
     box-shadow: none;
     cursor: pointer;
+}
+
+
+@media (max-width: 550px){
+    .plate{
+        width: 70%;
+    }
 }

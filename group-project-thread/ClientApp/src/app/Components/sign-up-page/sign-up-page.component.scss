@@ -1,37 +1,33 @@
+$font: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+
 .date-picker{
     border: 1px solid #ddd;
     border-radius: 3px;
     height: 100%;
     margin-top: 10px;
+    width: 100%;
 }
 .date-of-birth{
     text-align: left;
     padding-left: 10px;
-    font: 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-family: $font;
+    font-size: 14px;
     font-weight: 500;
 }
 .row-form {
     display: flex;
-    gap: 10px; /* Adjust the gap between selects as needed */
+    gap: 10px;
 }
 .row-form select {
-    flex: 1; /* Allow each select to grow and take up available space */
+    flex: 1;
 }
 .error-message{
-    font: 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    text-align: left;
+    margin: 0px;
+    margin-left: 10px;
+    font-family: $font;
+    font-size: 14px;
 }
 .error-red{
     color: red;
-}
-.fa-eye-slash-btn{
-    border: none;
-    outline: none;
-    box-shadow: none;
-    cursor: pointer;
-}
-.fa-eye-slash-repeat-btn{
-    border: none;
-    outline: none;
-    box-shadow: none;
-    cursor: pointer;
 }
