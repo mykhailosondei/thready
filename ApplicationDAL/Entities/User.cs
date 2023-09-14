@@ -35,13 +35,13 @@ namespace ApplicationDAL.Entities
 
         public List<Post> Posts { get; set; }
 
-        public List<User> Followers { get; set; }
-        public List<User> Following { get; set; }
+        public List<int> FollowersIds { get; set; }
+        public List<int> FollowingIds { get; set; }
         [MaxLength(100)]
         public string? Bio { get; set; }
         [MaxLength(30)]
         public string? Location { get; set; }
-        public List<Post> BookmarkedPosts { get; set; }
-        public List<Post> Reposts { get; set; }
+        public List<int> BookmarkedPostsIds { get; set; }
+        public List<int> RepostsIds { get; set; }
     }
 }

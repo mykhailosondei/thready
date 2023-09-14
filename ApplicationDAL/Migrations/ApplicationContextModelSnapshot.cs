@@ -37,6 +37,17 @@ namespace ApplicationDAL.Migrations
                     b.Property<int?>("CommentId")
                         .HasColumnType("integer");
 
+                    b.Property<List<int>>("CommentsIds")
+                        .IsRequired()
+                        .HasColumnType("integer[]");
+
+                    b.Property<List<int>>("LikesIds")
+                        .IsRequired()
+                        .HasColumnType("integer[]");
+
+                    b.Property<int?>("ParentCommentId")
+                        .HasColumnType("integer");
+
                     b.Property<int?>("PostId")
                         .HasColumnType("integer");
 
@@ -49,7 +60,7 @@ namespace ApplicationDAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CommentId");
+                    b.HasIndex("ParentCommentId");
 
                     b.HasIndex("PostId");
 
@@ -124,8 +135,20 @@ namespace ApplicationDAL.Migrations
                     b.Property<int>("Bookmarks")
                         .HasColumnType("integer");
 
+                    b.Property<List<int>>("CommentsIds")
+                        .IsRequired()
+                        .HasColumnType("integer[]");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<List<int>>("LikesIds")
+                        .IsRequired()
+                        .HasColumnType("integer[]");
+
+                    b.Property<List<int>>("RepostersIds")
+                        .IsRequired()
+                        .HasColumnType("integer[]");
 
                     b.Property<string>("TextContent")
                         .IsRequired()
@@ -135,9 +158,6 @@ namespace ApplicationDAL.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("UserId1")
-                        .HasColumnType("integer");
-
                     b.Property<List<int>>("ViewedBy")
                         .IsRequired()
                         .HasColumnType("integer[]");
@@ -145,8 +165,6 @@ namespace ApplicationDAL.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
-
-                    b.HasIndex("UserId1");
 
                     b.ToTable("Posts");
                 });
@@ -163,8 +181,9 @@ namespace ApplicationDAL.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<int?>("CommentId")
-                        .HasColumnType("integer");
+                    b.Property<List<int>>("BookmarkedPostsIds")
+                        .IsRequired()
+                        .HasColumnType("integer[]");
 
                     b.Property<DateOnly>("DateOfBirth")
                         .HasColumnType("date");
@@ -173,6 +192,14 @@ namespace ApplicationDAL.Migrations
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
+
+                    b.Property<List<int>>("FollowersIds")
+                        .IsRequired()
+                        .HasColumnType("integer[]");
+
+                    b.Property<List<int>>("FollowingIds")
+                        .IsRequired()
+                        .HasColumnType("integer[]");
 
                     b.Property<int?>("ImageId")
                         .HasColumnType("integer");
@@ -186,6 +213,10 @@ namespace ApplicationDAL.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
+                    b.Property<List<int>>("RepostsIds")
+                        .IsRequired()
+                        .HasColumnType("integer[]");
+
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasMaxLength(15)
@@ -193,51 +224,19 @@ namespace ApplicationDAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CommentId");
-
                     b.HasIndex("ImageId");
 
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("PostUser", b =>
-                {
-                    b.Property<int>("RepostersId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("RepostsId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("RepostersId", "RepostsId");
-
-                    b.HasIndex("RepostsId");
-
-                    b.ToTable("PostUser");
-                });
-
-            modelBuilder.Entity("UserUser", b =>
-                {
-                    b.Property<int>("FollowersId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("FollowingId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("FollowersId", "FollowingId");
-
-                    b.HasIndex("FollowingId");
-
-                    b.ToTable("UserUser");
-                });
-
             modelBuilder.Entity("ApplicationDAL.Entities.Comment", b =>
                 {
                     b.HasOne("ApplicationDAL.Entities.Comment", "ParentComment")
-                        .WithMany("Comments")
-                        .HasForeignKey("CommentId");
+                        .WithMany()
+                        .HasForeignKey("ParentCommentId");
 
                     b.HasOne("ApplicationDAL.Entities.Post", "Post")
-                        .WithMany("Comments")
+                        .WithMany()
                         .HasForeignKey("PostId");
 
                     b.HasOne("ApplicationDAL.Entities.User", "Author")
@@ -267,11 +266,11 @@ namespace ApplicationDAL.Migrations
             modelBuilder.Entity("ApplicationDAL.Entities.Like", b =>
                 {
                     b.HasOne("ApplicationDAL.Entities.Comment", "Comment")
-                        .WithMany("Likes")
+                        .WithMany()
                         .HasForeignKey("CommentId");
 
                     b.HasOne("ApplicationDAL.Entities.Post", "Post")
-                        .WithMany("Likes")
+                        .WithMany()
                         .HasForeignKey("PostId");
 
                     b.HasOne("ApplicationDAL.Entities.User", "User")
@@ -295,19 +294,11 @@ namespace ApplicationDAL.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ApplicationDAL.Entities.User", null)
-                        .WithMany("BookmarkedPosts")
-                        .HasForeignKey("UserId1");
-
                     b.Navigation("Author");
                 });
 
             modelBuilder.Entity("ApplicationDAL.Entities.User", b =>
                 {
-                    b.HasOne("ApplicationDAL.Entities.Comment", null)
-                        .WithMany("Reposts")
-                        .HasForeignKey("CommentId");
-
                     b.HasOne("ApplicationDAL.Entities.Image", "Avatar")
                         .WithMany()
                         .HasForeignKey("ImageId");
@@ -315,60 +306,18 @@ namespace ApplicationDAL.Migrations
                     b.Navigation("Avatar");
                 });
 
-            modelBuilder.Entity("PostUser", b =>
-                {
-                    b.HasOne("ApplicationDAL.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("RepostersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ApplicationDAL.Entities.Post", null)
-                        .WithMany()
-                        .HasForeignKey("RepostsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("UserUser", b =>
-                {
-                    b.HasOne("ApplicationDAL.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("FollowersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ApplicationDAL.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("FollowingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("ApplicationDAL.Entities.Comment", b =>
                 {
-                    b.Navigation("Comments");
-
                     b.Navigation("Images");
-
-                    b.Navigation("Likes");
-
-                    b.Navigation("Reposts");
                 });
 
             modelBuilder.Entity("ApplicationDAL.Entities.Post", b =>
                 {
-                    b.Navigation("Comments");
-
                     b.Navigation("Images");
-
-                    b.Navigation("Likes");
                 });
 
             modelBuilder.Entity("ApplicationDAL.Entities.User", b =>
                 {
-                    b.Navigation("BookmarkedPosts");
-
                     b.Navigation("Posts");
                 });
 #pragma warning restore 612, 618

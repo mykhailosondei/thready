@@ -14,7 +14,7 @@ using ApplicationCommon.DTOs.Like;
 
 namespace ApplicationCommon.DTOs.Post
 {
-    public class PostDTO : ICommentable, ILikeable
+    public class PostDTO
     {
         [JsonIgnore]
         public int PostId { get; set; }
@@ -24,9 +24,9 @@ namespace ApplicationCommon.DTOs.Post
         public UserDTO Author { get; set; }
         public string TextContent { get; set; }
         public List<Image> Images { get; set; }
-        public List<LikeDTO> Likes { get; set; }
-        public List<CommentDTO> Comments { get; set; }
-        public List<UserDTO> Reposters { get; set; }
+        public List<int> LikesIds { get; set; }
+        public List<int> CommentsIds { get; set; }
+        public List<int> RepostersIds { get; set; }
         public int Bookmarks { get; set; }
         public List<int> ViewedBy { get; set; }
         

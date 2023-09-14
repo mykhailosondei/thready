@@ -18,9 +18,9 @@ public class Post
     [MaxLength(500)]
     public string TextContent { get; set; }
     public List<Image> Images { get; set; }
-    public List<Like> Likes { get; set; }
-    public List<Comment> Comments { get; set; }
-    public List<User> Reposters { get; set; }
+    public List<int> LikesIds { get; set; }
+    public List<int> CommentsIds { get; set; }
+    public List<int> RepostersIds { get; set; }
     public int Bookmarks { get; set; }
     public List<int> ViewedBy { get; set; }
 }

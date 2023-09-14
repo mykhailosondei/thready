@@ -25,11 +25,11 @@ namespace ApplicationCommon.DTOs.User
 
         public List<PostDTO> Posts { get; set; }
 
-        public List<UserDTO> Followers { get; set; }
-        public List<UserDTO> Following { get; set; }
+        public List<int> FollowersId { get; set; }
+        public List<int> FollowingId { get; set; }
         public string? Bio { get; set; }
         public string? Location { get; set; }
-        public List<PostDTO> BookmarkedPosts { get; set; }
-        public List<PostDTO> Reposts { get; set; }
+        public List<int> BookmarkedPostsIds { get; set; }
+        public List<int> RepostsIds { get; set; }
     }
 }

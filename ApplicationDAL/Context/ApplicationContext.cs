@@ -22,24 +22,7 @@ public class ApplicationContext : DbContext
             .WithOne(e => e.Author)
             .HasForeignKey(e => e.UserId)
             .IsRequired();
-
-        modelBuilder.Entity<Post>()
-            .HasMany(e => e.Comments)
-            .WithOne(e => e.Post)
-            .HasForeignKey(e => e.PostId);
         
-        modelBuilder.Entity<Comment>()
-            .HasOne(e => e.ParentComment)
-            .WithMany(e => e.Comments)
-            .HasForeignKey(e => e.CommentId);
-
-        modelBuilder.Entity<Post>()
-            .HasMany(e => e.Reposters)
-            .WithMany(e => e.Reposts);
-
-
-        modelBuilder.Entity<User>()
-            .HasMany(e => e.BookmarkedPosts);
     }
 
 

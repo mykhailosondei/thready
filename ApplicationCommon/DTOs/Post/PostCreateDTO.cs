@@ -10,7 +10,6 @@ namespace ApplicationCommon.DTOs.Post
 {
     public class PostCreateDTO
     {
-        [JsonIgnore]
         public int AuthorId { get; set; }
         public string TextContent { get; set; }
         public List<Image> Images { get; set; }

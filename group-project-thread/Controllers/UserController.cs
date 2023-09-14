@@ -1,4 +1,5 @@
 ﻿using ApplicationBLL.Services;
+using ApplicationCommon.DTOs.User;
 using ApplicationCommon.Interfaces;
 using ApplicationDAL.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -67,7 +68,7 @@ namespace group_project_thread.Controllers
 
         // PUT api/<UserController>/5
         [HttpPut("{id}")]
-        public async Task PutUser(int id, [FromBody] User value)
+        public async Task PutUser(int id, [FromBody] UserDTO value)
         {
             await _userService.PutUser(id, value);
         }
@@ -76,6 +77,7 @@ namespace group_project_thread.Controllers
         [HttpDelete("{id}")]
         public async Task DeleteUser(int id)
         {
+            if(id != _userIdGetter.CurrentId) return;
             await _userService.DeleteUser(id);
         }
         [HttpPost("{id}/unfollow")]

@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace ApplicationCommon.DTOs.Comment
 {
-    public class CommentDTO : ICommentable, ILikeable
+    public class CommentDTO
     {
         [JsonIgnore]
         public int Id { get; set; }
@@ -20,14 +20,17 @@ namespace ApplicationCommon.DTOs.Comment
         public int UserId { get; set; }
         [JsonIgnore]
         public int? PostId { get; set; }
+        public PostDTO? Post { get; set; }
+        
         [JsonIgnore]
         public int? CommentId { get; set; }
+        public CommentDTO? ParentComment { get; set; }
+        
         public DateTime Created { get; set; }
-        public ICommentable Commentable { get; set; }
         public string TextContext { get; set; }
         public List<Image> Images { get; set; }
-        public List<LikeDTO> Likes { get; set; }
-        public List<CommentDTO> Comments { get; set; }
+        public List<int> LikesIds { get; set; }
+        public List<int> CommentsIds { get; set; }
         public List<int> ViewedBy { get; set; }
 
     }
