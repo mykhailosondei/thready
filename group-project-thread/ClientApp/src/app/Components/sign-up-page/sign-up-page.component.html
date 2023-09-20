@@ -17,7 +17,7 @@
                         </div>
                         <div class="input-box" >
                             <span class="fa fa-lock custom-icon"></span>
-                            <input formControlName="password" [(ngModel)]="originalPassword" name="origpassword"  [type]="passwordType" placeholder="Password (at least 8 characters)" required>
+                            <input class="" formControlName="password" [(ngModel)]="originalPassword" name="origpassword"  [type]="passwordType" placeholder="Password (at least 8 characters)" required>
                             <span (click)="hideShowPass()" class="fa {{eyeIcon}} fa-eye-slash-btn" style="padding-right: 4px;"></span>
                         </div>
                         <div class="required-messages">
@@ -25,18 +25,12 @@
                         </div>
                         <div class="input-box" style="margin-bottom: 1px;">
                             <span class="fa fa-lock custom-icon"></span>
-                            <input formControlName="repeatPassword" [(ngModel)]="repeatedPassword" name="repeatedpassword" [type]="repeatedPasswordType" placeholder="Repeat password" required>
+                            <input class="" formControlName="repeatedPassword" [(ngModel)]="repeatedPassword" name="repeatedpassword" [type]="repeatedPasswordType" placeholder="Repeat password" required>
                             <span (click)="hideShowRepeatPass()" class="fa {{repeatedEyeIcon}} fa-eye-slash-btn" style="padding-right: 4px;" ></span>
                         </div>
                         <div class="required-messages">
-                          <div *ngIf="origPassMatchError">
-                            <small *ngIf="regisForm.get('repeatPassword')!.touched && (regisForm.controls['password'].dirty && regisForm.hasError('passwordMatch', 'password'))">*Passwords do not match</small>
-                          </div>
-                          <div *ngIf="repPassMatchError">
-                            <small *ngIf="regisForm.get('password')!.touched && (regisForm.controls['repeatPassword'].dirty && regisForm.hasError('passwordMatch', 'repeatPassword'))">*Passwords do not match</small>
-                          </div>
-                        </div>
-                        
+                          <small *ngIf="regisForm.errors?.['passwordMatcherror'] && regisForm.controls['password'].dirty && regisForm.controls['repeatedPassword'].dirty">*Passwords don't match.</small>
+                      </div>
                         <div class="date-of-birth">
                             <div class="date-of-birth-header" style="text-align: left;">
                               <label>Date of birth</label>

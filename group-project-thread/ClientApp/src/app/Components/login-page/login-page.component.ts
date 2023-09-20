@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
+import { AuthService } from 'src/app/Services/auth.service';
 import ValidateForm from 'src/app/helpers/validateForm';
 
 @Component({
@@ -12,7 +15,8 @@ export class LoginPageComponent {
   isText: boolean = false;
   eyeIcon: string = "fa-eye-slash"
   loginForm!: FormGroup;
-  constructor(private fb: FormBuilder) {
+  private unsubscribe$ = new Subject<void>();
+  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
     
   }
 
@@ -29,7 +33,15 @@ export class LoginPageComponent {
   }
   onSubmit(){
     if(this.loginForm.valid){
-      // Send obj to database
+      this.authService.login({email : "test@gmail.com", password: "das"}).pipe(takeUntil(this.unsubscribe$))
+      .subscribe(
+        (response) => {
+          console.log('Login successful:', response);
+          this.router.navigate(['/signup']);
+        },
+        (error)=> {
+          console.log("Login error", error);
+        });
     }
     else{
       //throw the error

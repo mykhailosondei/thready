@@ -1,11 +1,16 @@
+import { HttpHeaders } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
+import { AuthService } from 'src/app/Services/auth.service';
 import ValidateForm from 'src/app/helpers/validateForm';
+import { RegisterUserDTO } from 'src/app/models/auth/registerUserDTO';
 
 @Component({
   selector: 'app-sign-up-page',
   templateUrl: './sign-up-page.component.html',
-  styleUrls: ['./sign-up-page.component.scss', '../../../assets/LoginAndRegisCommon.scss']
+  styleUrls: ['./sign-up-page.component.scss', '../../../assets/LoginAndRegisCommon.scss'],
 })
 export class SignUpPageComponent {
   passwordType: string = "password";
@@ -40,13 +45,10 @@ export class SignUpPageComponent {
     { value: 12, name: 'December' }
   ];
   regisForm!: FormGroup;
-  origPassMatchError: boolean = false;
-  repPassMatchError: boolean = false;
-  touched1: boolean = false;
-  touched2: boolean = false;
+  private unsubscribe$ = new Subject<void>();
+  
 
-  constructor(private fb: FormBuilder) {
-    // Generate an array of days (1 to 31) and populate the 'days' property
+  constructor(private fb: FormBuilder, private authService : AuthService, private router: Router) {
     for (let i = 1; i <= 31; i++) {
       this.days.push(i);
     }
@@ -54,17 +56,80 @@ export class SignUpPageComponent {
       this.years.push(i);
     }
   }
+
   ngOnInit() : void{
     this.regisForm=this.fb.group({
       username: ['', Validators.required],
       email: ['', Validators.required],
-      password: ['', [Validators.required, this.passwordValidator(), this.originalPasswordMatchValidator()]],
-      repeatPassword: ['', [Validators.required, this.repeatedPasswordMatchValidator()]],
+      password: ['', [Validators.required, this.passwordValidator()]],
+      repeatedPassword: ['', [Validators.required]],
       selectedMonth: ['', Validators.required],
       selectedDay: ['', Validators.required],
       selectedYear: ['', Validators.required]
+    },
+    {
+      validators : this.matchPassword
     })
   }
+
+  matchPassword : ValidatorFn = (control : AbstractControl) : ValidationErrors | null => {
+    let password  = control.get('password');
+    let repeatedPassword = control.get('repeatedPassword');
+    if (password && repeatedPassword && password?.value != repeatedPassword?.value){
+      return {passwordMatcherror : true}
+    }
+    return null;
+  }
+
+  public ngOnDestroy() {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
+}
+
+  createUserFromForm(): RegisterUserDTO{
+      const registerUser: RegisterUserDTO = {
+      username: this.regisForm.get('username')!.value,
+      email: this.regisForm.get('email')!.value,
+      password: this.regisForm.get('password')!.value,
+      dateOfBirth: new Date(
+        this.regisForm.get('selectedYear')!.value,
+        this.regisForm.get('selectedMonth')!.value - 1, 
+        this.regisForm.get('selectedDay')!.value
+      ),
+    };
+    return registerUser;
+
+  }
+
+  onSubmit(){
+    if(this.regisForm.valid){
+      this.authService.register({username : "John", email : "test@gmail.com", password: "das", dateOfBirth: new Date(2000, 11, 30) }).pipe(takeUntil(this.unsubscribe$))
+      .subscribe(
+        (response) => {
+          console.log('Registration successful:', response);
+          this.router.navigate(['/login']);
+        },
+        (error)=> {
+          console.log(this.createUserFromForm());
+          console.log("registration error", error);
+        });
+    }
+    else{
+      console.log(this.findInvalidControls());
+      ValidateForm.validateAllFields(this.regisForm);
+    }
+  }
+
+  public findInvalidControls() {
+    const invalid = [];
+    const controls = this.regisForm.controls;
+    for (const name in controls) {
+        if (controls[name].invalid) {
+            invalid.push(name);
+        }
+    }
+    return invalid;
+}
   
   hideShowPass(){
     this.isText = !this.isText;
@@ -91,45 +156,6 @@ export class SignUpPageComponent {
     };
   }
 
-  originalPasswordMatchValidator(): Validators {
-    return (control: AbstractControl): { [key: string]: any } | null => {
-      const password = control.value;
-      this.touched1 = true;
-      if (password !== this.repeatedPassword) {
-        this.origPassMatchError = true;
-        this.repPassMatchError = false;
-        return { 'passwordMatch': true };
-      }
-      this.repPassMatchError = false;
-      this.origPassMatchError = false;
-      return null;
-    };
-  }
-
-  repeatedPasswordMatchValidator(): Validators {
-    return (control: AbstractControl): { [key: string]: any } | null => {
-      const repeatpassword = control.value;
-      this.touched2 = true;
-      if (repeatpassword !== this.originalPassword) {
-        this.origPassMatchError = false;
-        this.repPassMatchError = true;
-        return { 'passwordMatch': true };
-      }
-      this.repPassMatchError = false;
-      this.origPassMatchError = false;
-      return null;
-    };
-  }
-
-  onSubmit(){
-    if(this.regisForm.valid){
-    }
-    else{
-      //throw the error
-      ValidateForm.validateAllFields(this.regisForm);
-    }
-  }
-
   updateDates(){
     let daysInMonth: number = this.daysBasedOnDropDowns();
     
@@ -150,7 +176,7 @@ export class SignUpPageComponent {
       return 31;
     }
   }
-
+  
   getDaysInMonth(): number{
     
     let thirtyDays: number[] = [4, 6, 9, 11];
@@ -165,6 +191,7 @@ export class SignUpPageComponent {
     else{
       return 31;
     }
-    
   }
+
+  
 }
