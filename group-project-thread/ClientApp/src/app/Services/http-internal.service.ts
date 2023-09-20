@@ -13,7 +13,7 @@ export class HttpInternalService {
   constructor(private http: HttpClient) { }
 
   public getHeaders() : HttpHeaders{
-    return this.headers
+    return this.headers;
   }
 
   public getHeader(header : string ) : string | null{
