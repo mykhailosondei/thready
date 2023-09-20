@@ -1,4 +1,5 @@
 using ApplicationBLL.Services.Abstract;
+using ApplicationCommon.DTOs.Comment;
 using ApplicationDAL.Context;
 using ApplicationDAL.Entities;
 using AutoMapper;
@@ -12,22 +13,22 @@ public class CommentService : BaseService
         
     }
 
-    public async Task<Comment> GetCommentById(int id)
+    public async Task<CommentDTO> GetCommentById(int id)
     {
         return default;
     }
     
-    public async Task<IEnumerable<Comment>> GetCommentsOfPostId(int postId)
+    public async Task<IEnumerable<CommentDTO>> GetCommentsOfPostId(int postId)
     {
         return default;
     }
 
-    public async Task PostComment(Comment Comment)
+    public async Task PostComment(CommentCreateDTO Comment)
     {
         
     }
 
-    public async Task PutComment(int id, Comment Comment)
+    public async Task PutComment(int id, CommentDTO Comment)
     {
         
     }

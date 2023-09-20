@@ -8,12 +8,17 @@ namespace ApplicationBLL.Services;
 
 public class EmailValidatorService : BaseService
 {
+    public EmailValidatorService() : base(null, null)
+    {
+        
+    }
+    
     public EmailValidatorService(ApplicationContext applicationContext, IMapper mapper) : base(applicationContext, mapper)
     {
         
     }
 
-    public async Task<bool> IsEmailAvailable(string email)
+    public virtual async Task<bool> IsEmailAvailable(string email)
     {
         if (!ValidEmail(email)) return false;
         return await _applicationContext.Users.AnyAsync(u => u.Email == email); 

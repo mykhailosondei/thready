@@ -30,7 +30,7 @@ namespace group_project_thread.Controllers
         // GET: api/<UserController>
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IEnumerable<User>> GetAllUsers()
+        public async Task<IEnumerable<UserDTO>> GetAllUsers()
         {
             return await _userService.GetAllUsers();
         }
@@ -38,14 +38,14 @@ namespace group_project_thread.Controllers
         // GET api/<UserController>/5
         [HttpGet("{id}")]
         [AllowAnonymous]
-        public async Task<User> GetUserById(int id)
+        public async Task<UserDTO> GetUserById(int id)
         {
             return await _userService.GetUserById(id);
         }
         
         [HttpGet("currentUser")]
         [Authorize]
-        public async Task<User> GetCurrentUser()
+        public async Task<UserDTO> GetCurrentUser()
         {
             return await _userService.GetUserById(_userIdGetter.CurrentId);
         }

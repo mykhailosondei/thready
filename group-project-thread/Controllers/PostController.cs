@@ -1,4 +1,5 @@
 ﻿using ApplicationBLL.Services;
+using ApplicationCommon.DTOs.Post;
 using ApplicationCommon.Interfaces;
 using ApplicationDAL.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -29,7 +30,7 @@ namespace group_project_thread.Controllers
         // GET: api/<PostController>
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IEnumerable<Post>> GetAllPosts()
+        public async Task<IEnumerable<PostDTO>> GetAllPosts()
         {
             return await _postService.GetAllPosts();
         }
@@ -37,14 +38,14 @@ namespace group_project_thread.Controllers
         // GET api/<PostController>/5
         [HttpGet("{id}")]
         [AllowAnonymous]
-        public async Task<Post> GetPostById(int id)
+        public async Task<PostDTO> GetPostById(int id)
         {
             return await _postService.GetPostById(id);
         }
 
         // POST api/<PostController>
         [HttpPost]
-        public async Task CreatePost([FromBody] Post post)
+        public async Task CreatePost([FromBody] PostCreateDTO post)
         {
             await _postService.CreatePost(post);
         }
@@ -65,7 +66,7 @@ namespace group_project_thread.Controllers
         
         // PUT api/<PostController>/5
         [HttpPut("{id}")]
-        public async Task PutPost(int id, [FromBody] Post post)
+        public async Task PutPost(int id, [FromBody] PostDTO post)
         {
             await _postService.PutPost(id, post);
         }

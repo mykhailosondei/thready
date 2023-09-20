@@ -15,7 +15,7 @@ namespace ApplicationCommon.DTOs.User
         public int Id { get; set; }
         public string Email { get; set; }
 
-        public DateOnly? DateOfBirth { get; set; }
+        public DateOnly DateOfBirth { get; set; }
         public string Password { get; set; }
 
         public string Username { get; set; }
@@ -25,8 +25,8 @@ namespace ApplicationCommon.DTOs.User
 
         public List<PostDTO> Posts { get; set; }
 
-        public List<int> FollowersId { get; set; }
-        public List<int> FollowingId { get; set; }
+        public List<int> FollowersIds { get; set; }
+        public List<int> FollowingIds { get; set; }
         public string? Bio { get; set; }
         public string? Location { get; set; }
         public List<int> BookmarkedPostsIds { get; set; }

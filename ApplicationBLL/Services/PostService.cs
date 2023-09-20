@@ -1,4 +1,5 @@
 using ApplicationBLL.Services.Abstract;
+using ApplicationCommon.DTOs.Post;
 using ApplicationDAL.Context;
 using ApplicationDAL.Entities;
 using AutoMapper;
@@ -12,17 +13,17 @@ public class PostService : BaseService
         
     }
     
-    public async Task<IEnumerable<Post>> GetAllPosts()
+    public async Task<IEnumerable<PostDTO>> GetAllPosts()
     {
         return default;
     }
 
-    public async Task<Post> GetPostById(int id)
+    public async Task<PostDTO> GetPostById(int id)
     {
         return default;
     }
     
-    public async Task<IEnumerable<Post>> GetPostsByUserId(int id)
+    public async Task<IEnumerable<PostDTO>> GetPostsByUserId(int id)
     {
         return default;
     }
@@ -47,12 +48,12 @@ public class PostService : BaseService
         
     }
 
-    public async Task CreatePost(Post post)
+    public async Task CreatePost(PostCreateDTO post)
     {
         
     }
 
-    public async Task PutPost(int id, Post post)
+    public async Task PutPost(int id, PostDTO post)
     {
         
     }

@@ -11,18 +11,20 @@ namespace ApplicationBLL.Services;
 public class UserService : BaseService
 {
     private readonly EmailValidatorService _emailValidatorService;
+    private readonly UsernameValidatorService _usernameValidatorService;
     
-    public UserService(ApplicationContext applicationContext, IMapper mapper, EmailValidatorService emailValidatorService) : base(applicationContext, mapper)
+    public UserService(ApplicationContext applicationContext, IMapper mapper, EmailValidatorService emailValidatorService, UsernameValidatorService usernameValidatorService) : base(applicationContext, mapper)
     {
         _emailValidatorService = emailValidatorService;
+        _usernameValidatorService = usernameValidatorService;
     }
 
-    public async Task<IEnumerable<User>> GetAllUsers()
+    public async Task<IEnumerable<UserDTO>> GetAllUsers()
     {
-        return _applicationContext.Users;
+        return _applicationContext.Users.Select(u => _mapper.Map<UserDTO>(u));
     }
 
-    public async Task<User> GetUserById(int id)
+    public async Task<UserDTO> GetUserById(int id)
     {
         var userModel = await _applicationContext.Users.FirstOrDefaultAsync(u => u.Id == id);
 
@@ -31,7 +33,7 @@ public class UserService : BaseService
             throw new UserNotFoundException("User with specified id does not exist");
         }
 
-        return userModel;
+        return _mapper.Map<UserDTO>(userModel);
     }
     
     public async Task Follow(int userId, int currentUserId)
@@ -43,13 +45,16 @@ public class UserService : BaseService
             throw new UserNotFoundException("User with specified id does not exist");
         }
 
-        /*if (userThatFollowsModel.Following.Contains(userToFollowModel) || userToFollowModel.Followers.Contains(userThatFollowsModel))
+        if (userThatFollowsModel.FollowingIds.Contains(userToFollowModel.Id) || userToFollowModel.FollowersIds.Contains(userThatFollowsModel.Id))
         {
             throw new InvalidOperationException("You are already following this user");
         }
         
-        userToFollowModel.Followers.Add(userThatFollowsModel);
-        userThatFollowsModel.Following.Add(userToFollowModel);*/
+        userToFollowModel.FollowersIds.Add(userThatFollowsModel.Id);
+        userThatFollowsModel.FollowingIds.Add(userToFollowModel.Id);
+
+        _applicationContext.Users.Update(_mapper.Map<User>(userToFollowModel));
+        _applicationContext.Users.Update(_mapper.Map<User>(userThatFollowsModel));
 
         await _applicationContext.SaveChangesAsync();
     }
@@ -64,14 +69,17 @@ public class UserService : BaseService
             throw new UserNotFoundException("User with specified id does not exist");
         }
 
-        /*if (!userThatUnfollowsModel.Following.Contains(userToUnfollowModel) ||
-            !userToUnfollowModel.Followers.Contains(userThatUnfollowsModel))
+        if (!userThatUnfollowsModel.FollowingIds.Contains(userToUnfollowModel.Id) ||
+            !userToUnfollowModel.FollowersIds.Contains(userThatUnfollowsModel.Id))
         {
             throw new InvalidOperationException("You do not follow this user");
         }
 
-        userToUnfollowModel.Followers.Remove(userThatUnfollowsModel);
-        userThatUnfollowsModel.Following.Remove(userToUnfollowModel);*/
+        userToUnfollowModel.FollowersIds.Remove(userThatUnfollowsModel.Id);
+        userThatUnfollowsModel.FollowingIds.Remove(userToUnfollowModel.Id);
+        
+        _applicationContext.Users.Update(_mapper.Map<User>(userToUnfollowModel));
+        _applicationContext.Users.Update(_mapper.Map<User>(userThatUnfollowsModel));
 
         await _applicationContext.SaveChangesAsync();
     }
@@ -85,13 +93,13 @@ public class UserService : BaseService
             throw new UserAlreadyExistsException("Email is already in use.");
         }
 
-        /*userEntity.Posts = new List<Post>();
-        userEntity.Followers = new List<User>();
-        userEntity.Following = new List<User>();
+        userEntity.Posts = new List<Post>();
+        userEntity.FollowersIds = new List<int>();
+        userEntity.FollowingIds = new List<int>();
         userEntity.Bio = "";
         userEntity.Location = "";
-        userEntity.BookmarkedPosts = new List<Post>();
-        userEntity.Reposts = new List<Post>();*/
+        userEntity.BookmarkedPostsIds = new List<int>();
+        userEntity.RepostsIds = new List<int>();
         
         userEntity.PasswordHash = BCrypt.Net.BCrypt.HashPassword(registerUserDto.Password);
         
@@ -115,7 +123,13 @@ public class UserService : BaseService
             userToUpdate.Email = user.Email;
         }
         
-        
+        if (userToUpdate.Username != user.Username && await _usernameValidatorService.IsUsernameAvailable(user.Username))
+        {
+            userToUpdate.Username = user.Username;
+        }
+
+        userToUpdate.Location = user.Location;
+        userToUpdate.Bio = user.Bio;
 
         if (user.Avatar != null || user.Avatar!.Url == "")
         {
@@ -132,9 +146,9 @@ public class UserService : BaseService
                 userToUpdate.Avatar.Url = user.Avatar.Url;
             }
         }
-        
-        
-        
+
+        _applicationContext.Users.Update(_mapper.Map<User>(userToUpdate));
+        await _applicationContext.SaveChangesAsync();
     }
 
     public async Task DeleteUser(int id)
@@ -144,7 +158,7 @@ public class UserService : BaseService
         {
             throw new UserNotFoundException("User with specified id does not exist");
         }
-        _applicationContext.Users.Remove(userModel);
+        _applicationContext.Users.Remove(_mapper.Map<User>(userModel));
         await _applicationContext.SaveChangesAsync();
     }
 }

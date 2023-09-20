@@ -1,4 +1,6 @@
-﻿using ApplicationDAL.Entities;
+﻿using ApplicationCommon.DTOs.Post;
+using ApplicationCommon.DTOs.User;
+using ApplicationDAL.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,14 +14,14 @@ namespace group_project_thread.Controllers
     public class SearchController : ControllerBase
     {
         [HttpGet("Users")]
-        public IEnumerable<User> GetUsers(string query)
+        public IEnumerable<UserDTO> GetUsers(string query)
         {
-            return new User[] { };
+            return new UserDTO[] { };
         }
         [HttpGet("Posts")]
-        public IEnumerable<Post> GetPosts(string query)
+        public IEnumerable<PostDTO> GetPosts(string query)
         {
-            return new Post[] { };
+            return new PostDTO[] { };
         }
     }
 }

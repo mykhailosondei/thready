@@ -1,4 +1,5 @@
 ﻿using ApplicationBLL.Services;
+using ApplicationCommon.DTOs.Comment;
 using ApplicationCommon.Interfaces;
 using ApplicationDAL.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -28,14 +29,14 @@ namespace group_project_thread.Controllers
         // GET api/<CommentController>/5
         [HttpGet("{id}")]
         [AllowAnonymous]
-        public async Task<Comment> GetCommentById(int id)
+        public async Task<CommentDTO> GetCommentById(int id)
         {
             return await _commentService.GetCommentById(id);
         }
 
         // POST api/<CommentController>
         [HttpPost]
-        public async Task PostComment([FromBody] Comment comment)
+        public async Task PostComment([FromBody] CommentCreateDTO comment)
         {
             await _commentService.PostComment(comment);
         }
@@ -48,7 +49,7 @@ namespace group_project_thread.Controllers
 
         // PUT api/<CommentController>/5
         [HttpPut("{id}")]
-        public async Task PutComment(int id, [FromBody] Comment comment)
+        public async Task PutComment(int id, [FromBody] CommentDTO comment)
         {
             await _commentService.PutComment(id, comment);
         }
