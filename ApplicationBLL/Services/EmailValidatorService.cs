@@ -21,7 +21,7 @@ public class EmailValidatorService : BaseService
     public virtual async Task<bool> IsEmailAvailable(string email)
     {
         if (!ValidEmail(email)) return false;
-        return await _applicationContext.Users.AnyAsync(u => u.Email == email); 
+        return !await _applicationContext.Users.AnyAsync(u => u.Email == email); 
     }
 
     private static bool ValidEmail(string email)
