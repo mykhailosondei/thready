@@ -42,7 +42,13 @@ namespace group_project_thread.Controllers
         {
             return await _postService.GetPostById(id);
         }
-
+        
+        [HttpGet("{userId}/posts")]
+        [AllowAnonymous]
+        public async Task<IEnumerable<PostDTO>> GetPostByUserId(int userId)
+        {
+            return await _postService.GetPostsByUserId(userId);
+        }
         // POST api/<PostController>
         [HttpPost]
         public async Task CreatePost([FromBody] PostCreateDTO post)

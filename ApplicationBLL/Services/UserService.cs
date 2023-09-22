@@ -19,6 +19,11 @@ public class UserService : BaseService
         _usernameValidatorService = usernameValidatorService;
     }
 
+    public UserService() : base(null, null)
+    {
+        
+    }
+
     public async Task<IEnumerable<UserDTO>> GetAllUsers()
     {
         return _applicationContext.Users.Select(u => _mapper.Map<UserDTO>(u));
