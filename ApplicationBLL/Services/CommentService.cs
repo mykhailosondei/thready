@@ -21,7 +21,7 @@ public class CommentService : BaseService
 
     public async Task<CommentDTO> GetCommentById(int id)
     {
-        var comment = await _applicationContext.Comments.FirstOrDefaultAsync(c => c.CommentId == id);
+        var comment = await _applicationContext.Comments.FirstOrDefaultAsync(c => c.Id == id);
 
         if (comment == null)
         {
