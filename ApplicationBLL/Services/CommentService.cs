@@ -121,9 +121,11 @@ public class CommentService : BaseService
 
     public async Task PutComment(int id, CommentDTO Comment)
     {
-        var commentEntity = await GetCommentById(Comment.Id);
+        var commentDTO = await GetCommentById(Comment.Id);
 
-        commentEntity.TextContext = Comment.TextContext;
+        var commentEntity = _mapper.Map<Comment>(commentDTO);
+
+        commentEntity.TextContent = Comment.TextContent;
         commentEntity.Images = Comment.Images;
         commentEntity.LikesIds = Comment.LikesIds;
         commentEntity.CommentsIds = Comment.CommentsIds;

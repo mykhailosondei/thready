@@ -27,7 +27,7 @@ namespace ApplicationCommon.DTOs.Comment
         public CommentDTO? ParentComment { get; set; }
         
         public DateTime Created { get; set; }
-        public string TextContext { get; set; }
+        public string TextContent { get; set; }
         public List<Image> Images { get; set; }
         public List<int> LikesIds { get; set; }
         public List<int> CommentsIds { get; set; }
