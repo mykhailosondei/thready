@@ -12,7 +12,11 @@ public class PostService : BaseService
     {
         
     }
-    
+
+    public PostService() : base(null, null)
+    {
+    }
+
     public async Task<IEnumerable<PostDTO>> GetAllPosts()
     {
         return default;
