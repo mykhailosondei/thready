@@ -19,6 +19,8 @@ namespace ApplicationDAL.Entities
         [ForeignKey("Comment")]
         public int? CommentId { get; set; }
         public Comment? ParentComment { get; set; }
+        
+        public DateTime CreatedAt { get; set; }
         public string TextContent { get; set; }
         public List<Image> Images { get; set; }
         public List<int> CommentsIds { get; set; }

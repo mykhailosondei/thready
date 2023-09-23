@@ -117,7 +117,7 @@ public class CommentService : BaseService
 
     private static void InitComment(ref CommentDTO commentDto)
     {
-        commentDto.Created = DateTime.Now;
+        commentDto.CreatedAt = DateTime.Now;
         commentDto.LikesIds = new List<int>();
         commentDto.CommentsIds = new List<int>();
         commentDto.ViewedBy = new List<int>();
