@@ -37,7 +37,7 @@ public class PostService : BaseService
             throw new PostNotFoundException();
         }
 
-        return _mapper.Map<PostDTO>(postModel);
+        return _mapper.Map<PostDTO>(postModel!);
     }
     
     public async Task<IEnumerable<PostDTO>> GetPostsByUserId(int id)
@@ -83,38 +83,37 @@ public class PostService : BaseService
     public async Task Repost(int postId, int userId)
     {
         var userModel = await _userService.GetUserById(userId);
-        if (await DoesPostExist(postId))
-        {
-            throw new PostNotFoundException();
-        }
+        var post = await GetPostById(postId);
 
         bool isReposted = userModel.RepostsIds.Contains(postId);
 
         if (isReposted)
             return;
-        userModel.BookmarkedPostsIds.Add(postId);
+        userModel.RepostsIds.Add(postId);
         await _userService.PutUser(userId, userModel);
     }
     
     public async Task UndoRepost(int postId, int userId)
     {
         var userModel = await _userService.GetUserById(userId);
-        if (await DoesPostExist(postId))
-        {
-            throw new PostNotFoundException();
-        }
+        var post = await GetPostById(postId);
 
         bool isReposted = userModel.RepostsIds.Contains(postId);
 
         if (!isReposted)
             return;
-        userModel.BookmarkedPostsIds.Remove(postId);
+        userModel.RepostsIds.Remove(postId);
         await _userService.PutUser(userId, userModel);
     }
 
     public async Task CreatePost(PostCreateDTO post)
     {
         var postEntity = _mapper.Map<Post>(post);
+
+        if (postEntity.TextContent == String.Empty && postEntity.Images.Count == 0)
+        {
+            throw new EmptyPostException();
+        }
 
         _applicationContext.Posts.Add(postEntity);
         await _applicationContext.SaveChangesAsync();
@@ -124,6 +123,10 @@ public class PostService : BaseService
     {
         var postToUpdate = await GetPostById(id);
 
+        if (post.TextContent == String.Empty && post.Images.Count == 0)
+        {
+            throw new EmptyPostException();
+        } 
         postToUpdate.Images = post.Images;
         postToUpdate.TextContent = post.TextContent;
         postToUpdate.CommentsIds = post.CommentsIds;

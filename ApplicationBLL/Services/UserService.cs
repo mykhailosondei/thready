@@ -29,7 +29,7 @@ public class UserService : BaseService
         return _applicationContext.Users.Select(u => _mapper.Map<UserDTO>(u));
     }
 
-    public async Task<UserDTO> GetUserById(int id)
+    public virtual async Task<UserDTO> GetUserById(int id)
     {
         var userModel = await _applicationContext.Users.FirstOrDefaultAsync(u => u.Id == id);
 
@@ -114,7 +114,7 @@ public class UserService : BaseService
         return _mapper.Map<UserDTO>(userEntity);
     }
 
-    public async Task PutUser(int userId, UserDTO user)
+    public virtual async Task PutUser(int userId, UserDTO user)
     {
         var userToUpdate = await GetUserById(userId);
         

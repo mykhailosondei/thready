@@ -20,13 +20,18 @@ public class EmailValidatorService : BaseService
 
     public virtual async Task<bool> IsEmailAvailable(string email)
     {
-        if (!ValidEmail(email)) return false;
+        if (!ValidEmail(email))
+        {
+            Console.WriteLine("temp");
+            return false;
+        }
+            
         return !await _applicationContext.Users.AnyAsync(u => u.Email == email); 
     }
 
     private static bool ValidEmail(string email)
     {
         var atSymbolPosition = email.LastIndexOf('@');
-        return !(atSymbolPosition < 0 || email.LastIndexOf('.') > atSymbolPosition || email.Length - atSymbolPosition < 4);
+        return !(atSymbolPosition < 0 || email.LastIndexOf('.') < atSymbolPosition || email.Length - atSymbolPosition < 4);
     }
 }
