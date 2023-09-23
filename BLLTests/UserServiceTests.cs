@@ -60,6 +60,14 @@ public class UserServiceTests
                 BookmarkedPostsIds = entity.BookmarkedPostsIds,
                 RepostsIds = entity.RepostsIds
             });
+        _mapperMock.Setup(m => m.Map<User>(It.IsAny<RegisterUserDTO>())).Returns((RegisterUserDTO entity) =>
+            new User()
+            {
+                Id = entity.UserId,
+                Username = entity.Username,
+                Email = entity.Email,
+                DateOfBirth = entity.DateOfBirth
+            });
     }
 
     [Fact]
@@ -91,10 +99,7 @@ public class UserServiceTests
                 // Simulate saving the user entity to the database
                 expectedUserEntity.Id = 1; // Set the user's ID as if it were saved in the DB
             });
-
-        _mapperMock.Setup(m => m.Map<User>(registerUserDto)).Returns(expectedUserEntity);
-        _mapperMock.Setup(m => m.Map<UserDTO>(It.IsAny<User>())).Returns((User entity) =>
-            new UserDTO() { Email = entity.Email, Password = entity.PasswordHash});
+        
 
         // Act
         var userDto = await _userService.CreateUser(registerUserDto);
@@ -372,8 +377,6 @@ public class UserServiceTests
             // Add any other users needed for the test
         };
         
-        _mapperMock.Setup(m => m.Map<User>(It.IsAny<UserDTO>())).Returns((UserDTO entity) =>
-            userToDelete);
         
         _applicationContextMock.Setup(c => c.Users).ReturnsDbSet(users);
 
@@ -381,7 +384,7 @@ public class UserServiceTests
             .Callback<User>((User userEntity) =>
             {
                 // Simulate the removal of the user from the database
-                users.Remove(userEntity);
+                users.RemoveAll(u => u.Id == userEntity.Id);
             });
 
         // Act

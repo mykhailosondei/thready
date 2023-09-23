@@ -124,6 +124,7 @@ public class CommentServiceTests
                 Bookmarks = entity.Bookmarks,
                 ViewedBy = entity.ViewedBy
             }));
+        
     }
     
     [Fact]
