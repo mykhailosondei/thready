@@ -19,7 +19,11 @@ public class CommentService : BaseService
         _userService = userService;
     }
 
-    public async Task<CommentDTO> GetCommentById(int id)
+    public CommentService() : base(null, null)
+    {
+    }
+
+    public virtual async Task<CommentDTO> GetCommentById(int id)
     {
         var comment = await _applicationContext.Comments.FirstOrDefaultAsync(c => c.Id == id);
 
@@ -43,7 +47,7 @@ public class CommentService : BaseService
         {
             try
             {
-                result.Add(_mapper.Map<CommentDTO>(await GetCommentById(id)));
+                result.Add(await GetCommentById(id));
             }
             catch (CommentNotFoundException e)
             {
@@ -90,7 +94,7 @@ public class CommentService : BaseService
         }
         else if (DoesCommentIdExist)
         {
-            var parentCommentDTO = await GetCommentById(Comment.PostId!.Value);
+            var parentCommentDTO = await GetCommentById(Comment.CommentId!.Value);
 
             commentDTO.ParentComment = parentCommentDTO;
             
