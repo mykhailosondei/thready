@@ -19,9 +19,13 @@ public class CommentService : BaseService
         _userService = userService;
     }
 
-    public async Task<CommentDTO> GetCommentById(int id)
+    public CommentService() : base(null, null)
     {
-        var comment = await _applicationContext.Comments.FirstOrDefaultAsync(c => c.CommentId == id);
+    }
+
+    public virtual async Task<CommentDTO> GetCommentById(int id)
+    {
+        var comment = await _applicationContext.Comments.FirstOrDefaultAsync(c => c.Id == id);
 
         if (comment == null)
         {
@@ -43,7 +47,7 @@ public class CommentService : BaseService
         {
             try
             {
-                result.Add(_mapper.Map<CommentDTO>(await GetCommentById(id)));
+                result.Add(await GetCommentById(id));
             }
             catch (CommentNotFoundException e)
             {
@@ -90,7 +94,7 @@ public class CommentService : BaseService
         }
         else if (DoesCommentIdExist)
         {
-            var parentCommentDTO = await GetCommentById(Comment.PostId!.Value);
+            var parentCommentDTO = await GetCommentById(Comment.CommentId!.Value);
 
             commentDTO.ParentComment = parentCommentDTO;
             
@@ -121,9 +125,11 @@ public class CommentService : BaseService
 
     public async Task PutComment(int id, CommentDTO Comment)
     {
-        var commentEntity = await GetCommentById(Comment.Id);
+        var commentDTO = await GetCommentById(Comment.Id);
 
-        commentEntity.TextContext = Comment.TextContext;
+        var commentEntity = _mapper.Map<Comment>(commentDTO);
+
+        commentEntity.TextContent = Comment.TextContent;
         commentEntity.Images = Comment.Images;
         commentEntity.LikesIds = Comment.LikesIds;
         commentEntity.CommentsIds = Comment.CommentsIds;

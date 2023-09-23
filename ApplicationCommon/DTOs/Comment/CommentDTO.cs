@@ -18,6 +18,9 @@ namespace ApplicationCommon.DTOs.Comment
         public int Id { get; set; }
         [JsonIgnore]
         public int UserId { get; set; }
+
+        public UserDTO Author { get; set; }
+
         [JsonIgnore]
         public int? PostId { get; set; }
         public PostDTO? Post { get; set; }
@@ -27,9 +30,10 @@ namespace ApplicationCommon.DTOs.Comment
         public CommentDTO? ParentComment { get; set; }
         
         public DateTime Created { get; set; }
-        public string TextContext { get; set; }
+        public string TextContent { get; set; }
         public List<Image> Images { get; set; }
         public List<int> LikesIds { get; set; }
+        public int Bookmarks { get; set; }
         public List<int> CommentsIds { get; set; }
         public List<int> ViewedBy { get; set; }
 

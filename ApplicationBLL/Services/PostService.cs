@@ -29,7 +29,7 @@ public class PostService : BaseService
         return _mapper.Map<IEnumerable<PostDTO>>(posts);
     }
 
-    public async Task<PostDTO> GetPostById(int id)
+    public virtual async Task<PostDTO> GetPostById(int id)
     {
         var postModel = await _applicationContext.Posts.FirstOrDefaultAsync(p => p.Id == id);
         if (postModel == null)
@@ -119,7 +119,7 @@ public class PostService : BaseService
         await _applicationContext.SaveChangesAsync();
     }
 
-    public async Task PutPost(int id, PostDTO post)
+    public virtual async Task PutPost(int id, PostDTO post)
     {
         var postToUpdate = await GetPostById(id);
 
