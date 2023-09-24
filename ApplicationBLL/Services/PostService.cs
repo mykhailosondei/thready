@@ -142,7 +142,7 @@ public class PostService : BaseService
 
         if (!validationResult.IsValid)
         {
-            throw new EmptyPostException();
+            throw new ValidationException(new EmptyPostException().Message);
         } 
         postToUpdate.Images = post.Images;
         postToUpdate.TextContent = post.TextContent;

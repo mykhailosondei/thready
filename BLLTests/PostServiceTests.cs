@@ -674,7 +674,7 @@ public class PostServiceTests
 
         int expectedPostsCount = 5;
         //Assert & act
-        var ex = await Assert.ThrowsAsync<EmptyPostException>(
+        var ex = await Assert.ThrowsAsync<ValidationException>(
             async () => await _postService.CreatePost(createdPost)
         );
         _outputHelper.WriteLine("" + ex);
@@ -748,7 +748,7 @@ public class PostServiceTests
         };
         string actualText = _mockPosts[0].TextContent;
         //Assert & act
-        var ex = await Assert.ThrowsAsync<EmptyPostException>(
+        var ex = await Assert.ThrowsAsync<ValidationException>(
             async () => await _postService.PutPost(postToUpdateID, updatedPost)
         );
         _outputHelper.WriteLine("" + ex);

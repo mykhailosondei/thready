@@ -1,9 +1,12 @@
 using ApplicationBLL.Exceptions;
 using ApplicationBLL.Services.Abstract;
 using ApplicationCommon.DTOs.Comment;
+using ApplicationCommon.DTOs.Post;
 using ApplicationDAL.Context;
 using ApplicationDAL.Entities;
 using AutoMapper;
+using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
 
 namespace ApplicationBLL.Services;
@@ -12,14 +15,16 @@ public class CommentService : BaseService
 {
     private readonly PostService _postService;
     private readonly UserService _userService;
+    private readonly IValidator<CommentDTO> _commentValidator;
     
-    public CommentService(ApplicationContext applicationContext, IMapper mapper, PostService postService, UserService userService) : base(applicationContext, mapper)
+    public CommentService(ApplicationContext applicationContext, IMapper mapper, PostService postService, UserService userService, IValidator<CommentDTO> commentValidator) : base(applicationContext, mapper)
     {
+        _commentValidator = commentValidator;
         _postService = postService;
         _userService = userService;
     }
 
-    public CommentService() : base(null, null)
+    protected CommentService() : base(null, null)
     {
     }
 
@@ -73,6 +78,13 @@ public class CommentService : BaseService
 
         
         var commentDTO = _mapper.Map<CommentDTO>(Comment);
+        ValidationResult validationResult = await _commentValidator.ValidateAsync(commentDTO);
+
+        if (!validationResult.IsValid)
+        {
+            throw new ValidationException(new EmptyCommentException().Message);
+        }
+        
         if (DoesPostIdExist)
         {
             var postDTO = await _postService.GetPostById(Comment.PostId!.Value);
@@ -98,7 +110,6 @@ public class CommentService : BaseService
 
             commentDTO.ParentComment = parentCommentDTO;
             
-            //TODO: Add mapper profile for commentCreateDto and commentDTO (authorId -> userId)
             
             InitComment(ref commentDTO);
 
@@ -126,6 +137,13 @@ public class CommentService : BaseService
     public async Task PutComment(int id, CommentDTO Comment)
     {
         var commentDTO = await GetCommentById(Comment.Id);
+        
+        ValidationResult validationResult = await _commentValidator.ValidateAsync(commentDTO);
+
+        if (!validationResult.IsValid)
+        {
+            throw new ValidationException(new EmptyCommentException().Message);
+        }
 
         var commentEntity = _mapper.Map<Comment>(commentDTO);
 

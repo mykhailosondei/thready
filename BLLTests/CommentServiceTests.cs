@@ -6,6 +6,8 @@ using ApplicationCommon.DTOs.User;
 using ApplicationDAL.Context;
 using ApplicationDAL.Entities;
 using AutoMapper;
+using FluentValidation;
+using FluentValidation.Results;
 using Moq;
 using Moq.EntityFrameworkCore;
 using Xunit.Abstractions;
@@ -19,6 +21,7 @@ public class CommentServiceTests
     private readonly Mock<UserService> _userServiceMock = new();
     private readonly Mock<ApplicationContext> _applicationContextMock = new();
     private readonly Mock<IMapper> _mapperMock = new(MockBehavior.Strict);
+    private readonly Mock<IValidator<CommentDTO>> _validatorMock = new();
     private readonly ITestOutputHelper _outputHelper;
     
     public CommentServiceTests(ITestOutputHelper outputHelper)
@@ -27,8 +30,8 @@ public class CommentServiceTests
         _applicationContextMock.Object,
         _mapperMock.Object,
         _postServiceMock.Object,
-        _userServiceMock.Object
-        );
+        _userServiceMock.Object,
+        _validatorMock.Object);
         _outputHelper = outputHelper;
 
         _mapperMock.Setup(m => m.Map<CommentDTO>(It.IsAny<Comment>())).Returns((Comment entity) =>
@@ -398,6 +401,11 @@ public class CommentServiceTests
         _userServiceMock.Setup(u => u.GetUserById(It.IsAny<int>())).ReturnsAsync((UserDTO)null);
         
         _applicationContextMock.Setup(c => c.Comments).ReturnsDbSet(comments);
+        _validatorMock.Setup(v => v.ValidateAsync(It.IsAny<CommentDTO>(), CancellationToken.None))
+            .ReturnsAsync(new ValidationResult()
+            {
+                Errors = new List<ValidationFailure>()
+            });
         _applicationContextMock.Setup(c => c.Comments.Add(It.IsAny<Comment>())).Callback((Comment entity) =>
         {
             comments.Add(entity);
@@ -447,6 +455,11 @@ public class CommentServiceTests
         _userServiceMock.Setup(u => u.GetUserById(It.IsAny<int>())).ReturnsAsync((UserDTO)null);
         
         _applicationContextMock.Setup(c => c.Comments).ReturnsDbSet(comments);
+        _validatorMock.Setup(v => v.ValidateAsync(It.IsAny<CommentDTO>(), CancellationToken.None))
+            .ReturnsAsync(new ValidationResult()
+            {
+                Errors = new List<ValidationFailure>()
+            });
         _applicationContextMock.Setup(c => c.Comments.Add(It.IsAny<Comment>())).Callback((Comment entity) =>
         {
             comments.Add(entity);
@@ -456,6 +469,40 @@ public class CommentServiceTests
         await _commentService.PostComment(comment);
         //Assert
         Assert.Equal(true, comments.Any(c => c.TextContent == "NEW"));
+    }
+    
+    [Fact]
+    public async Task PostComment_ShouldThrowException_OnInvalidCommentInput()
+    {
+        //Arrange
+        var comment = new CommentCreateDTO()
+        {
+            CommentId = 1,
+            TextContent = "NEW"
+        };
+        var comments = new List<Comment>()
+        {
+            new()
+            {
+                Id = 1,
+                TextContent = "bop"
+            },
+            new()
+            {
+                Id = 2,
+                TextContent = "bop"
+            }
+        };
+        _applicationContextMock.Setup(c => c.Comments).ReturnsDbSet(comments);
+        _validatorMock.Setup(v => v.ValidateAsync(It.IsAny<CommentDTO>(), CancellationToken.None))
+            .ReturnsAsync(new ValidationResult()
+            {
+                Errors = new List<ValidationFailure>() {new ValidationFailure()}
+            });
+        //Act
+        //Assert
+        var ex = Assert.ThrowsAsync<ValidationException>(async () => await _commentService.PostComment(comment));
+        _outputHelper.WriteLine("" + ex);
     }
 
     [Fact]
@@ -483,6 +530,40 @@ public class CommentServiceTests
         //Act
         //Assert
         var ex = Assert.ThrowsAsync<CommentNotFoundException>(async () => await _commentService.PutComment(3, comment));
+        _outputHelper.WriteLine("" + ex);
+    }
+    
+    [Fact]
+    public async Task PutComment_ShouldThrowException_OnInvalidCommentInput()
+    {
+        //Arrange
+        var comment = new CommentDTO()
+        {
+            TextContent = "",
+            Images = new List<Image>()
+        };
+        var comments = new List<Comment>()
+        {
+            new()
+            {
+                Id = 1,
+                TextContent = "bop"
+            },
+            new()
+            {
+                Id = 2,
+                TextContent = "bop"
+            }
+        };
+        _applicationContextMock.Setup(c => c.Comments).ReturnsDbSet(comments);
+        _validatorMock.Setup(v => v.ValidateAsync(It.IsAny<CommentDTO>(), CancellationToken.None))
+            .ReturnsAsync(new ValidationResult()
+            {
+                Errors = new List<ValidationFailure>() {new ValidationFailure()}
+            });
+        //Act
+        //Assert
+        var ex = Assert.ThrowsAsync<ValidationException>(async () => await _commentService.PutComment(3, comment));
         _outputHelper.WriteLine("" + ex);
     }
     
