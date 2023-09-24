@@ -53,6 +53,8 @@ namespace group_project_thread.Controllers
         [HttpPost]
         public async Task CreatePost([FromBody] PostCreateDTO post)
         {
+            int authorId = _userIdGetter.CurrentId;
+            post.AuthorId = authorId;
             await _postService.CreatePost(post);
         }
         

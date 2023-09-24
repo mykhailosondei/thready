@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using ApplicationBLL.Exceptions;
 using ApplicationBLL.Services.Abstract;
 using ApplicationCommon.DTOs.Post;
@@ -6,18 +7,25 @@ using ApplicationDAL.Context;
 using ApplicationDAL.Entities;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using FluentValidation;
+using FluentValidation.Results;
+
 
 namespace ApplicationBLL.Services;
 
 public class PostService : BaseService
 {
+    private readonly IValidator<PostDTO> _postValidator;
     private readonly UserService _userService;
-    public PostService(ApplicationContext applicationContext, IMapper mapper, UserService userService) : base(applicationContext, mapper)
+    
+    public PostService(ApplicationContext applicationContext, IMapper mapper, UserService userService, IValidator<PostDTO> postValidator) : base(applicationContext, mapper)
     {
         _userService = userService;
+        _postValidator = postValidator;
     }
 
-    public PostService() : base(null, null)
+    
+    protected PostService() : base(null, null)
     {
         
     }
@@ -109,8 +117,10 @@ public class PostService : BaseService
     public async Task CreatePost(PostCreateDTO post)
     {
         var postEntity = _mapper.Map<Post>(post);
+        var postDTO = _mapper.Map<PostDTO>(postEntity); 
+        ValidationResult validationResult = await _postValidator.ValidateAsync(postDTO);
 
-        if (postEntity.TextContent == String.Empty && postEntity.Images.Count == 0)
+        if (!validationResult.IsValid)
         {
             throw new EmptyPostException();
         }
@@ -122,8 +132,9 @@ public class PostService : BaseService
     public virtual async Task PutPost(int id, PostDTO post)
     {
         var postToUpdate = await GetPostById(id);
+        ValidationResult validationResult = await _postValidator.ValidateAsync(post);
 
-        if (post.TextContent == String.Empty && post.Images.Count == 0)
+        if (!validationResult.IsValid)
         {
             throw new EmptyPostException();
         } 

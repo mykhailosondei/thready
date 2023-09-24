@@ -57,6 +57,7 @@ app.UseRouting();
 app.UseCors("Frontend");
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseMiddleware<GlobalExceptionsHandlingMiddleware>();
 app.UseMiddleware<UserIdSaverMiddleware>();
 
 

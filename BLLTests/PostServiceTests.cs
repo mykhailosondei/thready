@@ -1,12 +1,12 @@
-﻿using System.Linq.Expressions;
-using ApplicationBLL.Exceptions;
+﻿using ApplicationBLL.Exceptions;
 using ApplicationBLL.Services;
 using ApplicationCommon.DTOs.Post;
 using ApplicationCommon.DTOs.User;
 using ApplicationDAL.Context;
 using ApplicationDAL.Entities;
 using AutoMapper;
-using Microsoft.EntityFrameworkCore;
+using FluentValidation;
+using FluentValidation.Results;
 using Moq;
 using Moq.EntityFrameworkCore;
 using Xunit.Abstractions;
@@ -19,12 +19,13 @@ public class PostServiceTests
     private readonly Mock<ApplicationContext> _applicationContextMock = new();
     private readonly Mock<IMapper> _mapperMock = new(MockBehavior.Strict);
     private readonly Mock<UserService> _userService = new();
+    private readonly Mock<IValidator<PostDTO>> _validatorMock = new();
     private readonly ITestOutputHelper _outputHelper;
     
 
     public PostServiceTests(ITestOutputHelper output)
     {
-        _postService = new PostService(_applicationContextMock.Object, _mapperMock.Object, _userService.Object);
+        _postService = new PostService(_applicationContextMock.Object, _mapperMock.Object, _userService.Object, _validatorMock.Object);
         _outputHelper = output;
 
         _mapperMock.Setup(m => m.Map<PostDTO>(It.IsAny<Post>())).Returns((Post entity) =>
@@ -611,6 +612,12 @@ public class PostServiceTests
     {
         //Arrange
         _applicationContextMock.Setup(c => c.Posts).ReturnsDbSet(_mockPosts);
+
+        _validatorMock.Setup(v => v.ValidateAsync(It.IsAny<PostDTO>(), CancellationToken.None))
+            .ReturnsAsync(new ValidationResult()
+            {
+                Errors = new List<ValidationFailure>()
+            });
         
         var createdPost = new PostCreateDTO
         {
@@ -645,7 +652,11 @@ public class PostServiceTests
     {
         //Arrange
         _applicationContextMock.Setup(c => c.Posts).ReturnsDbSet(_mockPosts);
-        
+        _validatorMock.Setup(v => v.ValidateAsync(It.IsAny<PostDTO>(), CancellationToken.None))
+            .ReturnsAsync(new ValidationResult()
+            {
+                Errors = new List<ValidationFailure>() {new ValidationFailure()}
+            });
         
         var createdPost = new PostCreateDTO
         {
@@ -676,6 +687,11 @@ public class PostServiceTests
     {
         //Arrange
         _applicationContextMock.Setup(c => c.Posts).ReturnsDbSet(_mockPosts);
+        _validatorMock.Setup(v => v.ValidateAsync(It.IsAny<PostDTO>(), CancellationToken.None))
+            .ReturnsAsync(new ValidationResult()
+            {
+                Errors = new List<ValidationFailure>()
+            });
         int postToUpdateID = 1;
         PostDTO updatedPost = new PostDTO
         {
@@ -715,6 +731,12 @@ public class PostServiceTests
     {
         //Arrange
         _applicationContextMock.Setup(c => c.Posts).ReturnsDbSet(_mockPosts);
+        _validatorMock.Setup(v => v.ValidateAsync(It.IsAny<PostDTO>(), CancellationToken.None))
+            .ReturnsAsync(new ValidationResult()
+            {
+                Errors = new List<ValidationFailure>() {new ValidationFailure()}
+            });
+        
         int postToUpdateID = 1;
         PostDTO updatedPost = new PostDTO
         {
