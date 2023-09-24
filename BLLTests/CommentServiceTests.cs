@@ -69,7 +69,7 @@ public class CommentServiceTests
         _mapperMock.Setup(m => m.Map<CommentDTO>(It.IsAny<CommentCreateDTO>())).Returns((CommentCreateDTO entity) =>
             new CommentDTO()
             {
-                UserId = entity.AuthorId,
+                UserId = entity.UserId,
                 PostId = entity.PostId,
                 CommentId = entity.CommentId,
                 TextContent = entity.TextContent,
@@ -81,7 +81,7 @@ public class CommentServiceTests
         {
             var postDto = new PostDTO
             {
-                PostId = entity.Id,
+                Id = entity.Id,
                 CreatedAt = entity.CreatedAt,
                 UserId = entity.UserId,
                 Author = null,
@@ -99,7 +99,7 @@ public class CommentServiceTests
         _mapperMock.Setup(m => m.Map<Post>(It.IsAny<PostDTO>())).Returns((PostDTO entity) =>
             new Post
             {
-                Id = entity.PostId,
+                Id = entity.Id,
                 CreatedAt = entity.CreatedAt,
                 UserId = entity.UserId,
                 Author = null,
@@ -115,7 +115,7 @@ public class CommentServiceTests
         _mapperMock.Setup(m => m.Map<IEnumerable<PostDTO>>(It.IsAny<IEnumerable<Post>>()))
             .Returns((IEnumerable<Post> posts) => posts.Select(entity => new PostDTO
             {
-                PostId = entity.Id,
+                Id = entity.Id,
                 CreatedAt = entity.CreatedAt,
                 UserId = entity.UserId,
                 Author = null,

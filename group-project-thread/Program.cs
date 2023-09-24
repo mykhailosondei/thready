@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json.Serialization;
 using ApplicationBLL.Extentions;
 using ApplicationBLL.ProfilesForAutoMapper;
 using ApplicationDAL.Context;
@@ -7,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 using AutoMapper;
 using group_project_thread.Middlewares;
+using Microsoft.AspNetCore.Http.Json;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,7 +17,10 @@ ConfigurationManager config = builder.Configuration;
 
 // Add services to the container.
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+});
 
 builder.Services.ConfigureCustomServices();
 builder.Services.AddAutoMapperProfiles();

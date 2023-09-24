@@ -10,6 +10,8 @@ public class CommentProfile : Profile
 {
     public CommentProfile()
     {
+        CreateMap<CommentCreateDTO, CommentDTO>();
+        CreateMap<CommentDTO, CommentCreateDTO>();
         CreateMap<CommentDTO, Comment>().AfterMap((src, dest, context) =>
         {
             dest.Author = context.Mapper.Map<UserDTO, User>(src.Author);

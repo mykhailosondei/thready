@@ -2,6 +2,7 @@ using System.Reflection;
 using ApplicationBLL.Logic;
 using ApplicationBLL.ProfilesForAutoMapper;
 using ApplicationBLL.Services;
+using ApplicationCommon.DTOs.Comment;
 using ApplicationCommon.DTOs.Post;
 using ApplicationCommon.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,6 +18,7 @@ public static class CustomServicesConfigurer
     {
         services.AddScoped<LikeService>();
         services.AddTransient<IValidator<PostDTO>, PostDTOValidator>();
+        services.AddTransient<IValidator<CommentDTO>, CommentDTOValidator>();
         services.AddScoped<UserService>();
         services.AddScoped<PostService>();
         services.AddScoped<CommentService>();

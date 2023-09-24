@@ -32,7 +32,7 @@ public class PostServiceTests
         {
             var postDto = new PostDTO
             {
-                PostId = entity.Id,
+                Id = entity.Id,
                 CreatedAt = entity.CreatedAt,
                 UserId = entity.UserId,
                 Author = null,
@@ -50,7 +50,7 @@ public class PostServiceTests
         _mapperMock.Setup(m => m.Map<Post>(It.IsAny<PostDTO>())).Returns((PostDTO entity) =>
             new Post
             {
-                Id = entity.PostId,
+                Id = entity.Id,
                 CreatedAt = entity.CreatedAt,
                 UserId = entity.UserId,
                 Author = null,
@@ -76,7 +76,7 @@ public class PostServiceTests
         _mapperMock.Setup(m => m.Map<IEnumerable<PostDTO>>(It.IsAny<IEnumerable<Post>>()))
             .Returns((IEnumerable<Post> posts) => posts.Select(entity => new PostDTO
             {
-                PostId = entity.Id,
+                Id = entity.Id,
                 CreatedAt = entity.CreatedAt,
                 UserId = entity.UserId,
                 Author = null,
@@ -198,13 +198,13 @@ public class PostServiceTests
                 {
                     new PostDTO()
                     {
-                        PostId = 1,
+                        Id = 1,
                         UserId = 10,
                         TextContent = "test post1"
                     },
                     new PostDTO()
                     {
-                        PostId = 2,
+                        Id = 2,
                         UserId = 10,
                         TextContent = "test post2"
                     }
@@ -219,7 +219,7 @@ public class PostServiceTests
                 {
                     new PostDTO()
                     {
-                        PostId = 3,
+                        Id = 3,
                         UserId = 11,
                         TextContent = "test post 3",
                         Bookmarks = 2,
@@ -237,7 +237,7 @@ public class PostServiceTests
                 {
                     new PostDTO()
                     {
-                        PostId = 4,
+                        Id = 4,
                         UserId = 12,
                         TextContent = "test post 4",
                         Bookmarks = 4,
@@ -245,7 +245,7 @@ public class PostServiceTests
                     }, 
                     new PostDTO()
                     {
-                        PostId = 5,
+                        Id = 5,
                         UserId = 12,
                         TextContent = "test post 5",
                         Bookmarks = 0,
@@ -299,17 +299,17 @@ public class PostServiceTests
         {
             new PostDTO()
             {
-                PostId = 1,
+                Id = 1,
                 TextContent = "test post1"
             },
             new PostDTO()
             {
-                PostId = 2,
+                Id = 2,
                 TextContent = "test post2"
             },
             new PostDTO()
             {
-                PostId = 3,
+                Id = 3,
                 UserId = 11,
                 TextContent = "test post 3",
                 Bookmarks = 2,
@@ -317,7 +317,7 @@ public class PostServiceTests
             },
             new PostDTO()
             {
-                PostId = 4,
+                Id = 4,
                 UserId = 12,
                 TextContent = "test post 4",
                 Bookmarks = 4,
@@ -325,7 +325,7 @@ public class PostServiceTests
             },
             new PostDTO()
             {
-                PostId = 5,
+                Id = 5,
                 UserId = 12,
                 TextContent = "test post 5",
                 Bookmarks = 0,
@@ -370,7 +370,7 @@ public class PostServiceTests
 
         List<PostDTO> result =  (await  _postService.GetAllPosts()).ToList();
         
-        Assert.Equal(result[0].PostId, mockPosts[0].Id);
+        Assert.Equal(result[0].Id, mockPosts[0].Id);
         Assert.Equal(result[0].TextContent, mockPosts[0].TextContent);
 
     }
@@ -413,12 +413,12 @@ public class PostServiceTests
             }
             
         };
-        var testPost = new PostDTO { PostId = 2, TextContent = "test post2" };
+        var testPost = new PostDTO { Id = 2, TextContent = "test post2" };
         _applicationContextMock.Setup(c => c.Posts).ReturnsDbSet(posts);
         //Act
         var post = await _postService.GetPostById(2);
         //Assert
-        Assert.Equal(testPost.PostId, post.PostId);
+        Assert.Equal(testPost.Id, post.Id);
         Assert.Equal(testPost.TextContent, post.TextContent);
     }
 

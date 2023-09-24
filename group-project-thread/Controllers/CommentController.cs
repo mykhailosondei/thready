@@ -38,6 +38,8 @@ namespace group_project_thread.Controllers
         [HttpPost]
         public async Task PostComment([FromBody] CommentCreateDTO comment)
         {
+            int authorId = _userIdGetter.CurrentId;
+            comment.UserId = authorId;
             await _commentService.PostComment(comment);
         }
         [HttpPost("{id}/likeComment")]

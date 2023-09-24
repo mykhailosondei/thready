@@ -12,7 +12,7 @@ namespace ApplicationCommon.DTOs.Comment
     public class CommentCreateDTO
     {
         [JsonIgnore]
-        public int AuthorId { get; set; }
+        public int UserId { get; set; }
         public int? PostId { get; set; }
         public int? CommentId { get; set; }
         public string TextContent { get; set; }

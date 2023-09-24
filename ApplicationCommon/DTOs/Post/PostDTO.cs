@@ -7,7 +7,7 @@ namespace ApplicationCommon.DTOs.Post
     public class PostDTO
     {
         [JsonIgnore]
-        public int PostId { get; set; }
+        public int Id { get; set; }
         public DateTime CreatedAt { get; set; }
         [JsonIgnore]
         public int UserId { get; set; }

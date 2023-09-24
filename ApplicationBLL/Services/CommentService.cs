@@ -66,7 +66,7 @@ public class CommentService : BaseService
 
     public async Task PostComment(CommentCreateDTO Comment)
     {
-        var AuthorEntity = await _userService.GetUserById(Comment.AuthorId);
+        var AuthorEntity = await _userService.GetUserById(Comment.UserId);
 
         bool DoesPostIdExist = Comment.PostId.HasValue;
         bool DoesCommentIdExist = Comment.CommentId.HasValue;
@@ -96,13 +96,14 @@ public class CommentService : BaseService
             var commentEntity = _mapper.Map<Comment>(commentDTO);
 
             _applicationContext.Comments.Add(commentEntity);
+            _applicationContext.Attach(commentEntity.Post);
             await _applicationContext.SaveChangesAsync();
 
             commentDTO.Id = commentEntity.Id;
             
             postDTO.CommentsIds.Add(commentDTO.Id);
             
-            await _postService.PutPost(postDTO.PostId, postDTO);
+            await _postService.PutPost(postDTO.Id, postDTO);
         }
         else if (DoesCommentIdExist)
         {
@@ -116,6 +117,7 @@ public class CommentService : BaseService
             var commentEntity = _mapper.Map<Comment>(commentDTO);
 
             _applicationContext.Comments.Add(commentEntity);
+            _applicationContext.Attach(commentEntity.ParentComment!);
             await _applicationContext.SaveChangesAsync();
 
             commentDTO.Id = commentEntity.Id;
@@ -128,7 +130,7 @@ public class CommentService : BaseService
 
     private static void InitComment(ref CommentDTO commentDto)
     {
-        commentDto.CreatedAt = DateTime.Now;
+        commentDto.CreatedAt = DateTime.UtcNow;
         commentDto.LikesIds = new List<int>();
         commentDto.CommentsIds = new List<int>();
         commentDto.ViewedBy = new List<int>();
