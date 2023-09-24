@@ -21,8 +21,8 @@ public static class CustomServicesConfigurer
         services.AddScoped<UsernameValidatorService>();
 
         services.AddScoped<CurrentUserIdProvider>();
-        services.AddTransient<IUserIdSetter>(provider => provider.GetService<CurrentUserIdProvider>());
-        services.AddTransient<IUserIdGetter>(provider => provider.GetService<CurrentUserIdProvider>());
+        services.AddScoped<IUserIdSetter>(provider => provider.GetService<CurrentUserIdProvider>());
+        services.AddScoped<IUserIdGetter>(provider => provider.GetService<CurrentUserIdProvider>());
     }
 
     public static void AddAutoMapperProfiles(this IServiceCollection services)
