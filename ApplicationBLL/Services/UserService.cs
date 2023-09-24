@@ -26,7 +26,7 @@ public class UserService : BaseService
 
     public async Task<IEnumerable<UserDTO>> GetAllUsers()
     {
-        return _applicationContext.Users.Select(u => _mapper.Map<UserDTO>(u));
+        return _applicationContext.Users.OrderBy(u => u.Id).Select(u => _mapper.Map<UserDTO>(u));
     }
 
     public virtual async Task<UserDTO> GetUserById(int id)
