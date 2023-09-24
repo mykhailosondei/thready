@@ -1,16 +1,6 @@
 ﻿using ApplicationDAL.Entities;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ApplicationCommon.DTOs.User;
-using ApplicationCommon.DTOs.Comment;
-using ApplicationCommon.Interfaces;
 using System.Text.Json.Serialization;
-using ApplicationCommon.DTOs.Like;
 
 namespace ApplicationCommon.DTOs.Post
 {

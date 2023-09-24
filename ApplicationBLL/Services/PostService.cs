@@ -122,10 +122,16 @@ public class PostService : BaseService
 
         if (!validationResult.IsValid)
         {
-            throw new EmptyPostException();
+            throw new ValidationException(new EmptyPostException().Message);
         }
 
+        postEntity.LikesIds = new List<int>();
+        postEntity.ViewedBy = new List<int>();
+        postEntity.CommentsIds = new List<int>();
+        postEntity.Bookmarks = 0;
+        postEntity.RepostersIds = new List<int>();
         _applicationContext.Posts.Add(postEntity);
+        _applicationContext.Attach(postEntity.Author);
         await _applicationContext.SaveChangesAsync();
     }
 

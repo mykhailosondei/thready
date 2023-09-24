@@ -30,5 +30,4 @@ public class ApplicationContext : DbContext
     public virtual DbSet<Post> Posts { get; set; }
     public virtual DbSet<Comment> Comments { get; set; }
     public virtual DbSet<Image> Images { get; set; }
-    public virtual DbSet<Like> Like { get; set; }
 }

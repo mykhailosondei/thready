@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 
 namespace ApplicationDAL.Entities
@@ -9,6 +10,7 @@ namespace ApplicationDAL.Entities
         
         [ForeignKey("User")]
         public int UserId { get; set; }
+        [Required]
         public User Author { get; set; }
         
         
@@ -21,6 +23,8 @@ namespace ApplicationDAL.Entities
         public Comment? ParentComment { get; set; }
         
         public DateTime CreatedAt { get; set; }
+        [Required]
+        [MaxLength(200)]
         public string TextContent { get; set; }
         public List<Image> Images { get; set; }
         public List<int> CommentsIds { get; set; }
