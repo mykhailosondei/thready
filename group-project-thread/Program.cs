@@ -35,6 +35,8 @@ builder.Services.AddSingleton<IConfiguration>(c => config);
 builder.Services.AddDbContext<ApplicationContext>(options =>
 {
     options.UseNpgsql(config.GetConnectionString("Default"));
+    options.EnableSensitiveDataLogging();
+    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 });
 builder.Services.AddCors(options => options.AddPolicy(name: "Frontend", policy =>
     {
