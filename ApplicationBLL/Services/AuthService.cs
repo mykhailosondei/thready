@@ -7,19 +7,25 @@ using ApplicationBLL.Services.Abstract;
 using ApplicationCommon.DTOs.User;
 using ApplicationDAL.Context;
 using AutoMapper;
+using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Configuration;
+using ValidationFailure = Microsoft.IdentityModel.Tokens.ValidationFailure;
 
 namespace ApplicationBLL.Services;
 
 public class AuthService : BaseService
 {
     private readonly IConfiguration _configuration;
+    private readonly IValidator<LoginUserDTO> _loginUserDTOValidator;
 
-    public AuthService(ApplicationContext applicationContext, IConfiguration configuration, IMapper mapper) : base(applicationContext, mapper)
+    public AuthService(ApplicationContext applicationContext, IConfiguration configuration, IMapper mapper,
+    IValidator<LoginUserDTO> loginUserDTOValidator) : base(applicationContext, mapper)
     {
         _configuration = configuration;
+        _loginUserDTOValidator = loginUserDTOValidator;
     }
 
 
@@ -54,6 +60,22 @@ public class AuthService : BaseService
 
     public async Task<AuthUser> Authorize(LoginUserDTO loginUserDto)
     {
+        ValidationResult validationResult = await _loginUserDTOValidator.ValidateAsync(loginUserDto);
+        StringBuilder errorMessageBuilder = new StringBuilder();
+
+        if (!validationResult.IsValid)
+        {
+            foreach (FluentValidation.Results.ValidationFailure failure in validationResult.Errors)
+            {
+                errorMessageBuilder.Append(failure.ErrorMessage);
+            }
+        }
+        
+        if (errorMessageBuilder.Length > 0)
+        {
+            throw new ValidationException(errorMessageBuilder.ToString());
+        }
+        
         var userEntity = await _applicationContext.Users
             .Include(u => u.Avatar)
             .FirstOrDefaultAsync(u => u.Email == loginUserDto.Email);

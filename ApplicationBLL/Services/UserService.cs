@@ -1,10 +1,15 @@
+using System.Text;
 using ApplicationBLL.Exceptions;
 using ApplicationBLL.Services.Abstract;
 using ApplicationDAL.Context;
 using ApplicationDAL.Entities;
 using ApplicationCommon.DTOs.User;
 using AutoMapper;
+using FluentValidation;
+using FluentValidation.Results;
+using group_project_thread.Validators;
 using Microsoft.EntityFrameworkCore;
+using ValidationResult = FluentValidation.Results.ValidationResult;
 
 namespace ApplicationBLL.Services;
 
@@ -12,11 +17,18 @@ public class UserService : BaseService
 {
     private readonly EmailValidatorService _emailValidatorService;
     private readonly UsernameValidatorService _usernameValidatorService;
+    private readonly IValidator<RegisterUserDTO> _registerUserDTOValidator;
+    private readonly IValidator<UserDTO> _userDTOValidator;
     
-    public UserService(ApplicationContext applicationContext, IMapper mapper, EmailValidatorService emailValidatorService, UsernameValidatorService usernameValidatorService) : base(applicationContext, mapper)
+    public UserService(ApplicationContext applicationContext, IMapper mapper, 
+        EmailValidatorService emailValidatorService, UsernameValidatorService usernameValidatorService,
+        IValidator<RegisterUserDTO> registerUserDtoValidator,
+        IValidator<UserDTO> userDTOValidator) : base(applicationContext, mapper)
     {
         _emailValidatorService = emailValidatorService;
         _usernameValidatorService = usernameValidatorService;
+        _registerUserDTOValidator = registerUserDtoValidator;
+        _userDTOValidator = userDTOValidator;
     }
 
     public UserService() : base(null, null)
@@ -67,6 +79,7 @@ public class UserService : BaseService
     public async Task Unfollow(int userId, int currentUserId)
     {
         var userToUnfollowModel = await GetUserById(userId);
+        
         var userThatUnfollowsModel = await GetUserById(currentUserId);
 
         if (userToUnfollowModel == null)
@@ -91,6 +104,22 @@ public class UserService : BaseService
 
     public async Task<UserDTO> CreateUser(RegisterUserDTO registerUserDto)
     {
+        ValidationResult validationResult = await _registerUserDTOValidator.ValidateAsync(registerUserDto);
+        StringBuilder errorMessageBuilder = new StringBuilder();
+
+        if (!validationResult.IsValid)
+        {
+            foreach (ValidationFailure failure in validationResult.Errors)
+            {
+                errorMessageBuilder.Append(failure.ErrorMessage);
+            }
+        }
+
+        if (errorMessageBuilder.Length > 0)
+        {
+            throw new ValidationException(errorMessageBuilder.ToString());
+        }
+        
         var userEntity = _mapper.Map<User>(registerUserDto);
 
         if (!await _emailValidatorService.IsEmailAvailable(registerUserDto.Email))
@@ -116,6 +145,22 @@ public class UserService : BaseService
 
     public virtual async Task PutUser(int userId, UserDTO user)
     {
+        ValidationResult validationResult = await _userDTOValidator.ValidateAsync(user);
+        StringBuilder errorMessageBuilder = new StringBuilder();
+
+        if (!validationResult.IsValid)
+        {
+            foreach (ValidationFailure failure in validationResult.Errors)
+            {
+                errorMessageBuilder.Append(failure.ErrorMessage);
+            }
+        }
+        
+        if (errorMessageBuilder.Length > 0)
+        {
+            throw new ValidationException(errorMessageBuilder.ToString());
+        }
+        
         var userToUpdate = await GetUserById(userId);
         
         if (userToUpdate == null)

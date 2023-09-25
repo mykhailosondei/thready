@@ -5,6 +5,8 @@ using ApplicationCommon.DTOs.User;
 using ApplicationDAL.Context;
 using ApplicationDAL.Entities;
 using AutoMapper;
+using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using Moq.EntityFrameworkCore;
@@ -19,6 +21,8 @@ public class UserServiceTests
     private readonly Mock<IMapper> _mapperMock = new();
     private readonly Mock<EmailValidatorService> _emailValidatorServiceMock = new();
     private readonly Mock<UsernameValidatorService> _usernameValidatorServiceMock = new();
+    private readonly Mock<IValidator<RegisterUserDTO>> _registerUserDTOValidatorMock = new();
+    private readonly Mock<IValidator<UserDTO>> _userDTOValidatorMock = new();
     private readonly ITestOutputHelper _outputHelper;
 
     public UserServiceTests(ITestOutputHelper output)
@@ -27,7 +31,9 @@ public class UserServiceTests
             _applicationContextMock.Object,
             _mapperMock.Object,
             _emailValidatorServiceMock.Object,
-            _usernameValidatorServiceMock.Object
+            _usernameValidatorServiceMock.Object,
+            _registerUserDTOValidatorMock.Object,
+            _userDTOValidatorMock.Object
         );
         _outputHelper = output;
         _mapperMock.Setup(m => m.Map<UserDTO>(It.IsAny<User>())).Returns((User entity) =>
@@ -92,6 +98,12 @@ public class UserServiceTests
         {
             Email = registerUserDto.Email
         };
+        
+        _registerUserDTOValidatorMock.Setup(v => v.ValidateAsync(It.IsAny<RegisterUserDTO>(), CancellationToken.None))
+            .ReturnsAsync(new ValidationResult()
+            {
+                Errors = new List<ValidationFailure>() {}
+            });
 
         _applicationContextMock.Setup(c => c.Users.Add(It.IsAny<User>()))
             .Callback<User>(userEntity =>
@@ -107,6 +119,31 @@ public class UserServiceTests
         // Assert
         Assert.NotNull(userDto);
         Assert.True(BCrypt.Net.BCrypt.Verify(registerUserDto.Password, userDto.Password));
+        // Add more assertions as needed to validate the userDto
+    }
+    
+    
+    [Fact]
+    public async Task CreateUser_ShouldThrowAnExceptionOnInvalidInput()
+    {
+        // Arrange
+        var registerUserDto = new RegisterUserDTO
+        {
+            Email = "newuser@example.com",
+            Password = "password",
+            // Set other properties as needed
+        };
+        _registerUserDTOValidatorMock.Setup(v => v.ValidateAsync(It.IsAny<RegisterUserDTO>(), CancellationToken.None))
+            .ReturnsAsync(new ValidationResult()
+            {
+                Errors = new List<ValidationFailure>() {new ValidationFailure() {ErrorMessage = "date is not provided"}}
+            });
+
+        // Act & Assert
+        var ex = await Assert.ThrowsAsync<ValidationException>(
+            async () => await _userService.CreateUser(registerUserDto)
+        );
+        _outputHelper.WriteLine("" + ex);
         // Add more assertions as needed to validate the userDto
     }
 
@@ -156,7 +193,11 @@ public class UserServiceTests
 
         // Mock GetUserById to return null, simulating a user not found scenario
         _applicationContextMock.Setup(c => c.Users).ReturnsDbSet(new List<User>());
-
+        _userDTOValidatorMock.Setup(v => v.ValidateAsync(It.IsAny<UserDTO>(), CancellationToken.None))
+            .ReturnsAsync(new ValidationResult()
+            {
+                Errors = new List<ValidationFailure>() {}
+            });
 
         // Act and Assert
         var ex = await Assert.ThrowsAsync<UserNotFoundException>(
@@ -196,6 +237,11 @@ public class UserServiceTests
         };
     
         _applicationContextMock.Setup(c => c.Users).ReturnsDbSet(dbSetMock);
+        _userDTOValidatorMock.Setup(v => v.ValidateAsync(It.IsAny<UserDTO>(), CancellationToken.None))
+            .ReturnsAsync(new ValidationResult()
+            {
+                Errors = new List<ValidationFailure>() {}
+            });
 
         _applicationContextMock.Setup(c => c.Users.Update(It.IsAny<User>())).Callback<User>((User entity) =>
         {

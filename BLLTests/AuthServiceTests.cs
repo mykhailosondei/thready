@@ -7,6 +7,8 @@ using ApplicationCommon.DTOs.User;
 using ApplicationDAL.Context;
 using ApplicationDAL.Entities;
 using AutoMapper;
+using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Query.Internal;
@@ -24,13 +26,13 @@ public class AuthServiceTests
     private readonly Mock<ApplicationContext> _applicationContextMock = new();
     private readonly Mock<IMapper> _mapperMock = new();
     private readonly Mock<IConfiguration> _configurationMock = new();
-    private readonly Mock<DbSet<User>> _dbSetMock = new();
+    private readonly Mock<IValidator<LoginUserDTO>> _loginUserDTOValidatorMock = new();
     private readonly ITestOutputHelper _outputHelper;
 
     public AuthServiceTests(ITestOutputHelper output)
     {
         _authService = new AuthService(_applicationContextMock.Object, _configurationMock.Object,
-            _mapperMock.Object);
+            _mapperMock.Object, _loginUserDTOValidatorMock.Object);
         _outputHelper = output;
     }
     
@@ -63,12 +65,39 @@ public class AuthServiceTests
         };
         
         _applicationContextMock.SetupGet(c => c.Users).ReturnsDbSet(new List<User>());
-        
+        _loginUserDTOValidatorMock.Setup(v => v.ValidateAsync(It.IsAny<LoginUserDTO>(), CancellationToken.None))
+            .ReturnsAsync(new ValidationResult()
+            {
+                Errors = new List<ValidationFailure>() {}
+            });
         //Act
         
         //Assert
         var ex = Assert.ThrowsAsync<UserNotFoundException>( async () => await _authService.Authorize(loginCreds)).Result;
         _outputHelper.WriteLine("" + ex);
+    }
+    
+    [Fact]
+    public void Authorize_ShouldThrowException_OnInvalidEmail1()
+    {
+        //Arrange
+        var loginCreds = new LoginUserDTO
+        {
+            Email = "wrong",
+            Password = "right"
+        };
+        
+        _applicationContextMock.SetupGet(c => c.Users).ReturnsDbSet(new List<User>());
+        _loginUserDTOValidatorMock.Setup(v => v.ValidateAsync(It.IsAny<LoginUserDTO>(), CancellationToken.None))
+            .ReturnsAsync(new ValidationResult()
+            {
+                Errors = new List<ValidationFailure>() {new ValidationFailure() {ErrorMessage = "invalid email"}}
+            });
+        //Act
+
+        //Assert
+        var ex = Assert.ThrowsAsync<ValidationException>( async () => await _authService.Authorize(loginCreds)).Result;
+        _outputHelper.WriteLine(""+ex);
     }
     
     [Fact]
@@ -86,10 +115,42 @@ public class AuthServiceTests
         };
         
         _applicationContextMock.SetupGet(c => c.Users).ReturnsDbSet(data);
+        _loginUserDTOValidatorMock.Setup(v => v.ValidateAsync(It.IsAny<LoginUserDTO>(), CancellationToken.None))
+            .ReturnsAsync(new ValidationResult()
+            {
+                Errors = new List<ValidationFailure>() {}
+            });
         //Act
 
         //Assert
         var ex = Assert.ThrowsAsync<InvalidPasswordException>( async () => await _authService.Authorize(loginCreds)).Result;
+        _outputHelper.WriteLine(""+ex);
+    }
+    
+    [Fact]
+    public void Authorize_ShouldThrowException_OnInvalidPassword1()
+    {
+        //Arrange
+        var loginCreds = new LoginUserDTO
+        {
+            Email = "right",
+            Password = "wrong"
+        };
+        var data = new List<User>
+        {
+            new() { Username = "Mike",Email = "right", PasswordHash = BCrypt.Net.BCrypt.HashPassword("wrong"), Avatar = new Image(){Id = 1,Url = "url"}}
+        };
+        
+        _applicationContextMock.SetupGet(c => c.Users).ReturnsDbSet(data);
+        _loginUserDTOValidatorMock.Setup(v => v.ValidateAsync(It.IsAny<LoginUserDTO>(), CancellationToken.None))
+            .ReturnsAsync(new ValidationResult()
+            {
+                Errors = new List<ValidationFailure>() {new ValidationFailure() {ErrorMessage = "invalid password"}}
+            });
+        //Act
+
+        //Assert
+        var ex = Assert.ThrowsAsync<ValidationException>( async () => await _authService.Authorize(loginCreds)).Result;
         _outputHelper.WriteLine(""+ex);
     }
 
@@ -112,6 +173,11 @@ public class AuthServiceTests
         };
         
         _applicationContextMock.SetupGet(c => c.Users).ReturnsDbSet(data);
+        _loginUserDTOValidatorMock.Setup(v => v.ValidateAsync(It.IsAny<LoginUserDTO>(), CancellationToken.None))
+            .ReturnsAsync(new ValidationResult()
+            {
+                Errors = new List<ValidationFailure>() {}
+            });
         _configurationMock.Setup(c => c["JwtKey"]).Returns("Super secret key that will never be stored here in the production environment");
         _mapperMock.Setup(m => m.Map<UserDTO>(It.IsAny<User>())).Returns((User entity) =>
             new UserDTO() { Email = entity.Email});
