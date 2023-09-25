@@ -9,6 +9,7 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using FluentValidation;
 using FluentValidation.Results;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 
 namespace ApplicationBLL.Services;
@@ -32,14 +33,14 @@ public class PostService : BaseService
 
     public async Task<IEnumerable<PostDTO>> GetAllPosts()
     {
-        var posts = await _applicationContext.Posts.Include(post => post.Author).ToListAsync();
+        var posts = await _applicationContext.Posts.AsNoTracking().Include(post => post.Author).ToListAsync();
         
         return _mapper.Map<IEnumerable<PostDTO>>(posts);
     }
 
     public virtual async Task<PostDTO> GetPostById(int id)
     {
-        var postModel = await _applicationContext.Posts.FirstOrDefaultAsync(p => p.Id == id);
+        var postModel = await _applicationContext.Posts.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
         if (postModel == null)
         {
             throw new PostNotFoundException();
@@ -148,6 +149,7 @@ public class PostService : BaseService
         postToUpdate.TextContent = post.TextContent;
         postToUpdate.CommentsIds = post.CommentsIds;
 
+        
         _applicationContext.Posts.Update(_mapper.Map<Post>(postToUpdate));
         await _applicationContext.SaveChangesAsync();
     }

@@ -1,4 +1,5 @@
 using ApplicationBLL.Exceptions;
+using ApplicationBLL.Extentions;
 using ApplicationBLL.Services.Abstract;
 using ApplicationCommon.DTOs.Comment;
 using ApplicationCommon.DTOs.Post;
@@ -8,6 +9,7 @@ using AutoMapper;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace ApplicationBLL.Services;
 
@@ -30,7 +32,20 @@ public class CommentService : BaseService
 
     public virtual async Task<CommentDTO> GetCommentById(int id)
     {
-        var comment = await _applicationContext.Comments.FirstOrDefaultAsync(c => c.Id == id);
+        int depth = 0;
+        int currentCheckingId = id;
+        var commentForDepthChecking = await _applicationContext.Comments.FirstOrDefaultAsync(c => c.Id == currentCheckingId);
+
+        while (commentForDepthChecking.CommentId != null)
+        {
+            depth++;
+            currentCheckingId = commentForDepthChecking.CommentId.Value;
+            commentForDepthChecking = await _applicationContext.Comments.FirstOrDefaultAsync(c => c.Id == currentCheckingId);
+        }
+
+        Console.WriteLine(depth);
+        
+        var comment = await _applicationContext.Comments.AsNoTracking().CustomInclude(depth).FirstOrDefaultAsync(c => c.Id == id);
 
         if (comment == null)
         {
@@ -87,6 +102,9 @@ public class CommentService : BaseService
         
         if (DoesPostIdExist)
         {
+
+            Console.WriteLine("bop");
+            
             var postDTO = await _postService.GetPostById(Comment.PostId!.Value);
 
             commentDTO.Post = postDTO;
@@ -95,9 +113,11 @@ public class CommentService : BaseService
 
             var commentEntity = _mapper.Map<Comment>(commentDTO);
 
+            _applicationContext.Attach(commentEntity.Post!);
             _applicationContext.Comments.Add(commentEntity);
-            _applicationContext.Attach(commentEntity.Post);
             await _applicationContext.SaveChangesAsync();
+
+            _applicationContext.Entry(commentEntity.Post!).State = EntityState.Detached;
 
             commentDTO.Id = commentEntity.Id;
             
@@ -111,15 +131,16 @@ public class CommentService : BaseService
 
             commentDTO.ParentComment = parentCommentDTO;
             
-            
             InitComment(ref commentDTO);
 
             var commentEntity = _mapper.Map<Comment>(commentDTO);
 
-            _applicationContext.Comments.Add(commentEntity);
             _applicationContext.Attach(commentEntity.ParentComment!);
+            _applicationContext.Comments.Add(commentEntity);
             await _applicationContext.SaveChangesAsync();
 
+            _applicationContext.ChangeTracker.Clear();
+            
             commentDTO.Id = commentEntity.Id;
             
             parentCommentDTO.CommentsIds.Add(commentDTO.Id);
@@ -155,6 +176,7 @@ public class CommentService : BaseService
         commentEntity.CommentsIds = Comment.CommentsIds;
         commentEntity.ViewedBy = Comment.ViewedBy;
 
+        _applicationContext.Update(commentEntity);
         await _applicationContext.SaveChangesAsync();
     }
 
