@@ -20,7 +20,7 @@ public class PostCreateDtoToUserResolver : IValueResolver<PostCreateDTO, Post, U
     {
         var authorId = source.AuthorId;
         var userModel = _userService.GetUserById(authorId).Result;
-        var user = context.Mapper.Map<User>(userModel);
+        var user = _mapper.Map<User>(userModel);
         return user;
     }
 }

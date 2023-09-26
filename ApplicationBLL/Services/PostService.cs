@@ -52,7 +52,10 @@ public class PostService : BaseService
     public async Task<IEnumerable<PostDTO>> GetPostsByUserId(int id)
     {
         var userModel = await _userService.GetUserById(id);
-        await _applicationContext.Entry(userModel).Collection(user => user.Posts).LoadAsync();
+        User user = _mapper.Map<User>(userModel);
+        _applicationContext.Attach(user);
+        await _applicationContext.Entry(user).Collection(u => u.Posts).LoadAsync();
+        userModel = _mapper.Map<UserDTO>(user);
         return userModel.Posts;
         
     }
