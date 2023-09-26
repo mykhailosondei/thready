@@ -66,7 +66,12 @@ public class UserService : BaseService
         {
             throw new InvalidOperationException("You are already following this user");
         }
-        
+
+        if (IsSameUser(userId, currentUserId))
+        {
+            throw new InvalidOperationException("You can not follow yourself");
+        }
+
         userToFollowModel.FollowersIds.Add(userThatFollowsModel.Id);
         userThatFollowsModel.FollowingIds.Add(userToFollowModel.Id);
 
@@ -91,6 +96,11 @@ public class UserService : BaseService
             !userToUnfollowModel.FollowersIds.Contains(userThatUnfollowsModel.Id))
         {
             throw new InvalidOperationException("You do not follow this user");
+        }
+        
+        if (IsSameUser(userId, currentUserId))
+        {
+            throw new InvalidOperationException("You can not unfollow yourself");
         }
 
         userToUnfollowModel.FollowersIds.Remove(userThatUnfollowsModel.Id);
@@ -213,4 +223,6 @@ public class UserService : BaseService
         _applicationContext.Users.Remove(_mapper.Map<User>(userModel));
         await _applicationContext.SaveChangesAsync();
     }
+
+    private bool IsSameUser(int userId, int currentUserId) => userId == currentUserId;
 }
