@@ -40,7 +40,7 @@ public class PostService : BaseService
 
     public virtual async Task<PostDTO> GetPostById(int id)
     {
-        var postModel = await _applicationContext.Posts.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
+        var postModel = await _applicationContext.Posts.Include(p => p.Author).AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
         if (postModel == null)
         {
             throw new PostNotFoundException();
@@ -151,6 +151,7 @@ public class PostService : BaseService
 
         
         _applicationContext.Posts.Update(_mapper.Map<Post>(postToUpdate));
+        _applicationContext.Attach(postToUpdate.Author);
         await _applicationContext.SaveChangesAsync();
     }
 

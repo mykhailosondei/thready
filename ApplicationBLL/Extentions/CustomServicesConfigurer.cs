@@ -4,6 +4,7 @@ using ApplicationBLL.ProfilesForAutoMapper;
 using ApplicationBLL.Services;
 using ApplicationCommon.DTOs.Comment;
 using ApplicationCommon.DTOs.Post;
+using ApplicationCommon.DTOs.User;
 using ApplicationCommon.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using AutoMapper;
@@ -19,6 +20,9 @@ public static class CustomServicesConfigurer
         services.AddScoped<LikeService>();
         services.AddTransient<IValidator<PostDTO>, PostDTOValidator>();
         services.AddTransient<IValidator<CommentDTO>, CommentDTOValidator>();
+        services.AddTransient<IValidator<UserDTO>, UserDTOValidator>();
+        services.AddTransient<IValidator<RegisterUserDTO>, RegisterUserDTOValidator>();
+        services.AddTransient<IValidator<LoginUserDTO>, LoginUserDTOValidator>();
         services.AddScoped<UserService>();
         services.AddScoped<PostService>();
         services.AddScoped<CommentService>();

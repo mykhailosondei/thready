@@ -81,7 +81,7 @@ public class CommentService : BaseService
 
     public async Task PostComment(CommentCreateDTO Comment)
     {
-        var AuthorEntity = await _userService.GetUserById(Comment.UserId);
+        var authorDTO = await _userService.GetUserById(Comment.UserId);
 
         bool DoesPostIdExist = Comment.PostId.HasValue;
         bool DoesCommentIdExist = Comment.CommentId.HasValue;
@@ -93,6 +93,7 @@ public class CommentService : BaseService
 
         
         var commentDTO = _mapper.Map<CommentDTO>(Comment);
+        commentDTO.Author = authorDTO;
         ValidationResult validationResult = await _commentValidator.ValidateAsync(commentDTO);
 
         if (!validationResult.IsValid)
