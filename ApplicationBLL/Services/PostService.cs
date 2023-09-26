@@ -154,7 +154,6 @@ public class PostService : BaseService
 
         
         _applicationContext.Posts.Update(_mapper.Map<Post>(postToUpdate));
-        _applicationContext.Attach(postToUpdate.Author);
         await _applicationContext.SaveChangesAsync();
     }
 
