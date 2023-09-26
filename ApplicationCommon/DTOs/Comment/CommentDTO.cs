@@ -9,7 +9,6 @@ namespace ApplicationCommon.DTOs.Comment
     {
         [JsonIgnore]
         public int Id { get; set; }
-        [JsonIgnore]
         public int UserId { get; set; }
 
         public UserDTO Author { get; set; }

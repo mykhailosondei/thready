@@ -9,7 +9,6 @@ namespace ApplicationCommon.DTOs.Post
         [JsonIgnore]
         public int Id { get; set; }
         public DateTime CreatedAt { get; set; }
-        [JsonIgnore]
         public int UserId { get; set; }
         public UserDTO Author { get; set; }
         public string TextContent { get; set; }

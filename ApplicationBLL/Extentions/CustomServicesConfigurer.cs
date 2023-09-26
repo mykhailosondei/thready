@@ -29,6 +29,7 @@ public static class CustomServicesConfigurer
         services.AddScoped<AuthService>();
         services.AddScoped<EmailValidatorService>();
         services.AddScoped<UsernameValidatorService>();
+        services.AddLogging();
         
 
         services.AddScoped<CurrentUserIdProvider>();

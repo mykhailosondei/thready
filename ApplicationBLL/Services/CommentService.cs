@@ -9,7 +9,9 @@ using AutoMapper;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.Extensions.Logging;
 
 namespace ApplicationBLL.Services;
 
@@ -18,16 +20,19 @@ public class CommentService : BaseService
     private readonly PostService _postService;
     private readonly UserService _userService;
     private readonly IValidator<CommentDTO> _commentValidator;
+    private readonly ILogger<CommentService> _logger;
     
-    public CommentService(ApplicationContext applicationContext, IMapper mapper, PostService postService, UserService userService, IValidator<CommentDTO> commentValidator) : base(applicationContext, mapper)
+    public CommentService(ApplicationContext applicationContext, IMapper mapper, PostService postService, UserService userService, IValidator<CommentDTO> commentValidator, ILogger<CommentService> logger) : base(applicationContext, mapper)
     {
         _commentValidator = commentValidator;
+        _logger = logger;
         _postService = postService;
         _userService = userService;
     }
 
     protected CommentService() : base(null, null)
     {
+        
     }
 
     public virtual async Task<CommentDTO> GetCommentById(int id)
@@ -35,6 +40,11 @@ public class CommentService : BaseService
         int depth = 0;
         int currentCheckingId = id;
         var commentForDepthChecking = await _applicationContext.Comments.FirstOrDefaultAsync(c => c.Id == currentCheckingId);
+        
+        if (commentForDepthChecking == null)
+        {
+            throw new CommentNotFoundException("Comment with specified id not found");
+        }
 
         while (commentForDepthChecking.CommentId != null)
         {
@@ -45,12 +55,8 @@ public class CommentService : BaseService
 
         Console.WriteLine(depth);
         
-        var comment = await _applicationContext.Comments.AsNoTracking().CustomInclude(depth).FirstOrDefaultAsync(c => c.Id == id);
+        var comment = await _applicationContext.Comments.AsNoTracking().Include(c => c.Author).CustomInclude(depth).FirstOrDefaultAsync(c => c.Id == id);
 
-        if (comment == null)
-        {
-            throw new CommentNotFoundException("Comment with specified id not found");
-        }
         
         return _mapper.Map<CommentDTO>(comment);
     }
@@ -90,7 +96,6 @@ public class CommentService : BaseService
         {
             throw new InvalidDataException("Comment is invalid");
         }
-
         
         var commentDTO = _mapper.Map<CommentDTO>(Comment);
         commentDTO.Author = authorDTO;
@@ -113,12 +118,23 @@ public class CommentService : BaseService
             InitComment(ref commentDTO);
 
             var commentEntity = _mapper.Map<Comment>(commentDTO);
+            
 
-            _applicationContext.Attach(commentEntity.Post!);
+            if (commentEntity.Author.Id == commentEntity.Post.Author.Id)
+            {
+                commentEntity.Post.Author = null;
+                commentEntity.Post.UserId = commentEntity.Author.Id;
+            }
+            
+            _applicationContext.Attach(commentEntity.Author);
+            
+            
             _applicationContext.Comments.Add(commentEntity);
+            _applicationContext.Attach(commentEntity.Post!);
             await _applicationContext.SaveChangesAsync();
 
             _applicationContext.Entry(commentEntity.Post!).State = EntityState.Detached;
+            _applicationContext.Entry(commentEntity.Post!.Author!).State = EntityState.Detached;
 
             commentDTO.Id = commentEntity.Id;
             
@@ -135,8 +151,15 @@ public class CommentService : BaseService
             InitComment(ref commentDTO);
 
             var commentEntity = _mapper.Map<Comment>(commentDTO);
+            
+            if (commentEntity.Author.Id == commentEntity.ParentComment!.Author.Id)
+            {
+                commentEntity.ParentComment.Author = null;
+                commentEntity.ParentComment.UserId = commentEntity.Author.Id;
+            }
 
             _applicationContext.Attach(commentEntity.ParentComment!);
+            _applicationContext.Attach(commentEntity.Author);
             _applicationContext.Comments.Add(commentEntity);
             await _applicationContext.SaveChangesAsync();
 
