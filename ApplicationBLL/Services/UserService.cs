@@ -180,6 +180,8 @@ public class UserService : BaseService
 
         userToUpdate.Location = user.Location;
         userToUpdate.Bio = user.Bio;
+        userToUpdate.RepostsIds = userToUpdate.RepostsIds;
+        userToUpdate.BookmarkedPostsIds = userToUpdate.BookmarkedPostsIds;
 
         if (user.Avatar != null && user.Avatar.Url != "")
         {
