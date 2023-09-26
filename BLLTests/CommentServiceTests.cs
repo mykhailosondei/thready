@@ -8,6 +8,10 @@ using ApplicationDAL.Entities;
 using AutoMapper;
 using FluentValidation;
 using FluentValidation.Results;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.EntityFrameworkCore;
 using Xunit.Abstractions;
@@ -23,6 +27,7 @@ public class CommentServiceTests
     private readonly Mock<IMapper> _mapperMock = new(MockBehavior.Strict);
     private readonly Mock<IValidator<CommentDTO>> _validatorMock = new();
     private readonly ITestOutputHelper _outputHelper;
+    private readonly Mock<ILogger<CommentService>> _logger = new();
     
     public CommentServiceTests(ITestOutputHelper outputHelper)
     {
@@ -31,7 +36,8 @@ public class CommentServiceTests
         _mapperMock.Object,
         _postServiceMock.Object,
         _userServiceMock.Object,
-        _validatorMock.Object);
+        _validatorMock.Object,
+        _logger.Object);
         _outputHelper = outputHelper;
 
         _mapperMock.Setup(m => m.Map<CommentDTO>(It.IsAny<Comment>())).Returns((Comment entity) =>

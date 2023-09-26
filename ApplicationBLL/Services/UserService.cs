@@ -181,7 +181,7 @@ public class UserService : BaseService
         userToUpdate.Location = user.Location;
         userToUpdate.Bio = user.Bio;
 
-        if (user.Avatar != null || user.Avatar!.Url == "")
+        if (user.Avatar != null && user.Avatar.Url != "")
         {
             if (userToUpdate.Avatar == null)
             {
