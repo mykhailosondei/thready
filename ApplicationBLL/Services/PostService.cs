@@ -40,7 +40,7 @@ public class PostService : BaseService
 
     public virtual async Task<PostDTO> GetPostById(int id)
     {
-        var postModel = await _applicationContext.Posts.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
+        var postModel = await _applicationContext.Posts.Include(p => p.Author).AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
         if (postModel == null)
         {
             throw new PostNotFoundException();
@@ -52,7 +52,10 @@ public class PostService : BaseService
     public async Task<IEnumerable<PostDTO>> GetPostsByUserId(int id)
     {
         var userModel = await _userService.GetUserById(id);
-        await _applicationContext.Entry(userModel).Collection(user => user.Posts).LoadAsync();
+        User user = _mapper.Map<User>(userModel);
+        _applicationContext.Attach(user);
+        await _applicationContext.Entry(user).Collection(u => u.Posts).LoadAsync();
+        userModel = _mapper.Map<UserDTO>(user);
         return userModel.Posts;
         
     }
