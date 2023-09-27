@@ -147,13 +147,16 @@ public class PostService : BaseService
         if (!validationResult.IsValid)
         {
             throw new ValidationException(new EmptyPostException().Message);
-        } 
-        postToUpdate.Images = post.Images;
-        postToUpdate.TextContent = post.TextContent;
-        postToUpdate.CommentsIds = post.CommentsIds;
+        }
+
+        var postEntity = _mapper.Map<Post>(postToUpdate);
+        
+        postEntity.Images = post.Images;
+        postEntity.TextContent = post.TextContent;
+        postEntity.CommentsIds = post.CommentsIds;
 
         
-        _applicationContext.Posts.Update(_mapper.Map<Post>(postToUpdate));
+        _applicationContext.Posts.Update(postEntity);
         await _applicationContext.SaveChangesAsync();
     }
 
