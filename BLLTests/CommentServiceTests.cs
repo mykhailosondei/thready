@@ -515,7 +515,7 @@ public class CommentServiceTests
     public async Task PutComment_ShouldThrowException_OnInvalidCommentId()
     {
         //Arrange
-        var comment = new CommentDTO()
+        var comment = new CommentUpdateDTO()
         {
             TextContent = "NEW"
         };
@@ -543,7 +543,7 @@ public class CommentServiceTests
     public async Task PutComment_ShouldThrowException_OnInvalidCommentInput()
     {
         //Arrange
-        var comment = new CommentDTO()
+        var comment = new CommentUpdateDTO()
         {
             TextContent = "",
             Images = new List<Image>()

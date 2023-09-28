@@ -13,7 +13,7 @@ import { LoginUserDTO } from '../models/auth/loginUserDTO';
   providedIn: 'root'
 })
 export class AuthService {
-  public routePrefix: string = '/api/Auth';
+  public routePrefix: string = '/api/auth';
   private user: UserDTO | null = null;
 
   constructor(private httpService : HttpInternalService, private userService : UserService,
@@ -39,7 +39,6 @@ export class AuthService {
     return this.handleAuthResponse(this.httpService.postFullRequest<AuthUserDTO>(`${this.routePrefix}/register`, user))
   }
   public login(user: LoginUserDTO){
-    this.httpService.setHeader('Content-Type', 'application/json');
     return this.handleAuthResponse(this.httpService.postFullRequest<AuthUserDTO>(`${this.routePrefix}/login`, user))
   }
   private handleAuthResponse(observable: Observable<HttpResponse<AuthUserDTO>>) {

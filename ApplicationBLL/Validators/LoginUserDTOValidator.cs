@@ -14,7 +14,7 @@ public class LoginUserDTOValidator: AbstractValidator<LoginUserDTO>
         
         RuleFor(u => u.Password).Cascade(CascadeMode.Stop)
             .NotEmpty().WithMessage("Password can not be empty")
-            .Length(8, 32).WithMessage("Length of your password is invalid");
+            .Length(8, 200).WithMessage("Length of your password is invalid");
     }
     
     protected bool BeValidEmail(string email)

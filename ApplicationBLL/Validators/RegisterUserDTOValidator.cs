@@ -18,7 +18,7 @@ public class RegisterUserDTOValidator: AbstractValidator<RegisterUserDTO>
         
         RuleFor(u => u.Password).Cascade(CascadeMode.Stop)
             .NotEmpty().WithMessage("Password can not be empty")
-            .Length(8, 32).WithMessage("Length of your password is invalid");
+            .Length(8, 200).WithMessage("Length of your password is invalid");
 
         RuleFor(u => u.DateOfBirth).Cascade(CascadeMode.Stop)
             .NotEmpty().WithMessage("Date of birth can not be empty")

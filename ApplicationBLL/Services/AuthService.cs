@@ -61,19 +61,10 @@ public class AuthService : BaseService
     public async Task<AuthUser> Authorize(LoginUserDTO loginUserDto)
     {
         ValidationResult validationResult = await _loginUserDTOValidator.ValidateAsync(loginUserDto);
-        StringBuilder errorMessageBuilder = new StringBuilder();
-
+        
         if (!validationResult.IsValid)
         {
-            foreach (FluentValidation.Results.ValidationFailure failure in validationResult.Errors)
-            {
-                errorMessageBuilder.Append(failure.ErrorMessage);
-            }
-        }
-        
-        if (errorMessageBuilder.Length > 0)
-        {
-            throw new ValidationException(errorMessageBuilder.ToString());
+            throw new ValidationException(validationResult.Errors[0].ErrorMessage);
         }
         
         var userEntity = await _applicationContext.Users

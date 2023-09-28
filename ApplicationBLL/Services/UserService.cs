@@ -66,7 +66,12 @@ public class UserService : BaseService
         {
             throw new InvalidOperationException("You are already following this user");
         }
-        
+
+        if (IsSameUser(userId, currentUserId))
+        {
+            throw new InvalidOperationException("You can not follow yourself");
+        }
+
         userToFollowModel.FollowersIds.Add(userThatFollowsModel.Id);
         userThatFollowsModel.FollowingIds.Add(userToFollowModel.Id);
 
@@ -92,6 +97,11 @@ public class UserService : BaseService
         {
             throw new InvalidOperationException("You do not follow this user");
         }
+        
+        if (IsSameUser(userId, currentUserId))
+        {
+            throw new InvalidOperationException("You can not unfollow yourself");
+        }
 
         userToUnfollowModel.FollowersIds.Remove(userThatUnfollowsModel.Id);
         userThatUnfollowsModel.FollowingIds.Remove(userToUnfollowModel.Id);
@@ -105,19 +115,10 @@ public class UserService : BaseService
     public async Task<UserDTO> CreateUser(RegisterUserDTO registerUserDto)
     {
         ValidationResult validationResult = await _registerUserDTOValidator.ValidateAsync(registerUserDto);
-        StringBuilder errorMessageBuilder = new StringBuilder();
 
         if (!validationResult.IsValid)
         {
-            foreach (ValidationFailure failure in validationResult.Errors)
-            {
-                errorMessageBuilder.Append(failure.ErrorMessage);
-            }
-        }
-
-        if (errorMessageBuilder.Length > 0)
-        {
-            throw new ValidationException(errorMessageBuilder.ToString());
+            throw new ValidationException(validationResult.Errors[0].ErrorMessage);
         }
         
         var userEntity = _mapper.Map<User>(registerUserDto);
@@ -146,19 +147,10 @@ public class UserService : BaseService
     public virtual async Task PutUser(int userId, UserDTO user)
     {
         ValidationResult validationResult = await _userDTOValidator.ValidateAsync(user);
-        StringBuilder errorMessageBuilder = new StringBuilder();
-
+        
         if (!validationResult.IsValid)
         {
-            foreach (ValidationFailure failure in validationResult.Errors)
-            {
-                errorMessageBuilder.Append(failure.ErrorMessage);
-            }
-        }
-        
-        if (errorMessageBuilder.Length > 0)
-        {
-            throw new ValidationException(errorMessageBuilder.ToString());
+            throw new ValidationException(validationResult.Errors[0].ErrorMessage);
         }
         
         var userToUpdate = await GetUserById(userId);
@@ -213,4 +205,6 @@ public class UserService : BaseService
         _applicationContext.Users.Remove(_mapper.Map<User>(userModel));
         await _applicationContext.SaveChangesAsync();
     }
+
+    private bool IsSameUser(int userId, int currentUserId) => userId == currentUserId;
 }
