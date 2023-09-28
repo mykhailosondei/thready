@@ -211,7 +211,7 @@ public class CommentService : BaseService
 
     public async Task PutComment(int id, CommentUpdateDTO commentUpdate)
     {
-        var commentDTO = await GetCommentById(commentUpdate.Id);
+        var commentDTO = await GetCommentById(id);
         
         ValidationResult validationResult = await _commentValidator.ValidateAsync(commentDTO);
 
@@ -224,6 +224,13 @@ public class CommentService : BaseService
 
         commentEntity.TextContent = commentUpdate.TextContent;
         commentEntity.Images = commentUpdate.Images;
+
+        foreach (var entity in commentEntity.Images)
+        {
+            _applicationContext.Entry(entity).State = EntityState.Added;
+        }
+        _applicationContext.Entry(commentEntity).Property(c => c.TextContent).IsModified = true;
+        _applicationContext.Entry(commentEntity).Collection(c => c.Images).IsModified = true;
         
         await _applicationContext.SaveChangesAsync();
     }
