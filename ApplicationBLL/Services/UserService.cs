@@ -115,19 +115,10 @@ public class UserService : BaseService
     public async Task<UserDTO> CreateUser(RegisterUserDTO registerUserDto)
     {
         ValidationResult validationResult = await _registerUserDTOValidator.ValidateAsync(registerUserDto);
-        StringBuilder errorMessageBuilder = new StringBuilder();
 
         if (!validationResult.IsValid)
         {
-            foreach (ValidationFailure failure in validationResult.Errors)
-            {
-                errorMessageBuilder.Append(failure.ErrorMessage);
-            }
-        }
-
-        if (errorMessageBuilder.Length > 0)
-        {
-            throw new ValidationException(errorMessageBuilder.ToString());
+            throw new ValidationException(validationResult.Errors[0].ErrorMessage);
         }
         
         var userEntity = _mapper.Map<User>(registerUserDto);
@@ -156,19 +147,10 @@ public class UserService : BaseService
     public virtual async Task PutUser(int userId, UserDTO user)
     {
         ValidationResult validationResult = await _userDTOValidator.ValidateAsync(user);
-        StringBuilder errorMessageBuilder = new StringBuilder();
-
+        
         if (!validationResult.IsValid)
         {
-            foreach (ValidationFailure failure in validationResult.Errors)
-            {
-                errorMessageBuilder.Append(failure.ErrorMessage);
-            }
-        }
-        
-        if (errorMessageBuilder.Length > 0)
-        {
-            throw new ValidationException(errorMessageBuilder.ToString());
+            throw new ValidationException(validationResult.Errors[0].ErrorMessage);
         }
         
         var userToUpdate = await GetUserById(userId);

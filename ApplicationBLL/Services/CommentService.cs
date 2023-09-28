@@ -103,7 +103,7 @@ public class CommentService : BaseService
 
         if (!validationResult.IsValid)
         {
-            throw new ValidationException(new EmptyCommentException().Message);
+            throw new ValidationException(validationResult.Errors[0].ErrorMessage);
         }
         
         if (DoesPostIdExist)
@@ -189,7 +189,7 @@ public class CommentService : BaseService
 
         if (!validationResult.IsValid)
         {
-            throw new ValidationException(new EmptyCommentException().Message);
+            throw new ValidationException(validationResult.Errors[0].ErrorMessage);
         }
 
         var commentEntity = _mapper.Map<Comment>(commentDTO);

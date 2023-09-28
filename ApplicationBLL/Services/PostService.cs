@@ -128,7 +128,7 @@ public class PostService : BaseService
         {
             throw new ValidationException(new EmptyPostException().Message);
         }
-
+        postEntity.CreatedAt = DateTime.UtcNow;
         postEntity.LikesIds = new List<int>();
         postEntity.ViewedBy = new List<int>();
         postEntity.CommentsIds = new List<int>();
@@ -146,7 +146,7 @@ public class PostService : BaseService
 
         if (!validationResult.IsValid)
         {
-            throw new ValidationException(new EmptyPostException().Message);
+            throw new ValidationException(validationResult.Errors[0].ErrorMessage);
         } 
         postToUpdate.Images = post.Images;
         postToUpdate.TextContent = post.TextContent;

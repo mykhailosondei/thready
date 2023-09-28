@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
+import {finalize, Subject, takeUntil} from 'rxjs';
 import { AuthService } from 'src/app/Services/auth.service';
 import ValidateForm from 'src/app/helpers/validateForm';
+import {SnackbarService} from "../../Services/snackbar.service";
 
 @Component({
   selector: 'app-login-page',
@@ -16,8 +17,10 @@ export class LoginPageComponent {
   eyeIcon: string = "fa-eye-slash"
   loginForm!: FormGroup;
   private unsubscribe$ = new Subject<void>();
-  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
-    
+  private submitted: boolean = false;
+  constructor(private fb: FormBuilder, private authService: AuthService,
+              private router: Router, private snackbarService: SnackbarService) {
+
   }
 
   ngOnInit() : void{
@@ -32,19 +35,21 @@ export class LoginPageComponent {
     this.isText ? this.passwordType = "text" : this.passwordType = "password";
   }
   onSubmit(){
-    if(this.loginForm.valid){
-      this.authService.login({email : "test@gmail.com", password: "das"}).pipe(takeUntil(this.unsubscribe$))
+
+    if(this.loginForm.valid && !this.submitted){
+      this.submitted = true;
+      this.authService.login({email : this.loginForm.get('email')!.value,
+        password: this.loginForm.get('password')!.value})
+        .pipe(takeUntil(this.unsubscribe$), finalize(() => this.submitted = false))
       .subscribe(
         (response) => {
-          console.log('Login successful:', response);
           this.router.navigate(['/signup']);
         },
         (error)=> {
-          console.log("Login error", error);
+          this.snackbarService.showErrorMessage(error.error.title)
         });
     }
     else{
-      //throw the error
       ValidateForm.validateAllFields(this.loginForm);
     }
   }

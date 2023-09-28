@@ -38,21 +38,21 @@
                             <div class="selector">
                               <div class="row-form">
                                 <div>
-                                  <select class="date-picker" formControlName="selectedMonth" (change)="updateDates()">
+                                  <select class="date-picker" formControlName="selectedMonth" [(ngModel)]="selectedMonth" (change)="updateDates()">
                                     <option hidden></option>
                                     <option value="" disabled selected>Select a month</option>
                                     <option *ngFor="let month of months" [value]="month.value">{{ month.name }}</option>
                                   </select>
                                 </div>
                                 <div>
-                                  <select class="date-picker" formControlName="selectedDay">
+                                  <select class="date-picker" formControlName="selectedDay" [(ngModel)]="selectedDay">
                                     <option hidden></option>
                                     <option value="" disabled selected>Select a day</option>
                                     <option *ngFor="let day of days" [value]="day">{{ day }}</option>
                                   </select>
                                 </div>
                                 <div>
-                                  <select class="date-picker" formControlName="selectedYear" (change)="updateDates()">
+                                  <select class="date-picker" formControlName="selectedYear" [(ngModel)]="selectedYear" (change)="updateDates()">
                                     <option hidden></option>
                                     <option value="" disabled selected>Select a year</option>
                                     <option *ngFor="let year of years" [value]="year">{{ year }}</option>

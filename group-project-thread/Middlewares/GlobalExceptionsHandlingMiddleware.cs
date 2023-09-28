@@ -34,7 +34,7 @@ public class GlobalExceptionsHandlingMiddleware
             {
                 Status = (int)HttpStatusCode.BadRequest,
                 Type = "Validation Error",
-                Title = "Validation Error",
+                Title = validationFailure.Message,
                 Detail = $"{validationFailure.Message}"
             };
 
