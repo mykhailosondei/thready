@@ -1,13 +1,14 @@
-import { HttpHeaders } from '@angular/common/http';
+import {HttpHeaders, HttpResponse} from '@angular/common/http';
 import {Component, Inject} from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import {finalize, Subject, takeUntil} from 'rxjs';
+import {finalize, map, Subject, takeUntil} from 'rxjs';
 import { AuthService } from 'src/app/Services/auth.service';
 import ValidateForm from 'src/app/helpers/validateForm';
 import { RegisterUserDTO } from 'src/app/models/auth/registerUserDTO';
 import { formatDate} from "@angular/common";
 import {SnackbarService} from "../../Services/snackbar.service";
+import {AvailabilityServiceService} from "../../Services/availability-service.service";
 
 @Component({
   selector: 'app-sign-up-page',
@@ -49,9 +50,11 @@ export class SignUpPageComponent {
   regisForm!: FormGroup;
   private unsubscribe$ = new Subject<void>();
   private submitted: boolean = false;
+  private timeout: any = null;
 
   constructor(private fb: FormBuilder, private authService : AuthService,
-              private router: Router, private snackBarService : SnackbarService) {
+              private router: Router, private snackBarService : SnackbarService,
+              private availabilityService : AvailabilityServiceService) {
     for (let i = 1; i <= 31; i++) {
       this.days.push(i);
     }
@@ -127,6 +130,59 @@ export class SignUpPageComponent {
     this.isTextRepeatedPass ? this.repeatedPasswordType = "text" : this.repeatedPasswordType = "password";
   }
 
+  /*private onKeySearch(event: KeyboardEvent) {
+    clearTimeout(this.timeout);
+    var $this = this;
+    this.timeout = setTimeout(function () {
+      if (event.keyCode != 13) {
+        const target = event.target as HTMLInputElement;
+        if (target) {
+          $this.availabilityService.isEmailAvailable(target.value)
+            .pipe(takeUntil($this.unsubscribe$)).subscribe(
+            (response : HttpResponse<string>) => {
+              const result = response.body;
+              if (result === true){
+
+              }
+            }
+          );
+        }
+      }
+    }, 700);
+  }*/
+
+   onKeySearch(event: KeyboardEvent) {
+    clearTimeout(this.timeout);
+    const $this = this;
+
+    this.timeout = setTimeout(() => {
+      if (event.keyCode !== 13) {
+        const target = event.target as HTMLInputElement;
+        if (target) {
+          $this.availabilityService.isEmailAvailable(target.value)
+            .pipe(
+              takeUntil(this.unsubscribe$)).subscribe(
+            (responce : HttpResponse<boolean>) => {
+              const result = responce.body;
+              if (result){
+                console.log("valid email")
+              }
+              else if (!result){
+                console.log("invalid emeil")
+              }
+              else {
+                console.log("error")
+              }
+            },
+            (error) =>{
+              console.log(error);
+            }
+          )
+
+        }
+      }
+    }, 700);
+  }
   passwordValidator(): Validators {
     return (control: AbstractControl): { [key: string]: any } | null => {
       const password = control.value;

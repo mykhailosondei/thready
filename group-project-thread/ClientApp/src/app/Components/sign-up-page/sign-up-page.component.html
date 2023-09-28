@@ -13,7 +13,7 @@
                         </div>
                         <div class="input-box" >
                             <span class="fa fa-envelope custom-icon" ></span>
-                            <input formControlName="email" type="text" placeholder="Email" required>
+                            <input formControlName="email" type="text" placeholder="Email" required (keyup)="onKeySearch($event)">
                         </div>
                         <div class="input-box" >
                             <span class="fa fa-lock custom-icon"></span>

@@ -35,7 +35,6 @@ export class AuthService {
   }
 
   public register(user: RegisterUserDTO){
-    console.log(this.httpService.headers);
     return this.handleAuthResponse(this.httpService.postFullRequest<AuthUserDTO>(`${this.routePrefix}/register`, user))
   }
   public login(user: LoginUserDTO){
@@ -54,7 +53,6 @@ export class AuthService {
             return user;
         }
         else{
-          console.log("something went wrong");
           return null;
         }
       })

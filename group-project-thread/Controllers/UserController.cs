@@ -50,7 +50,7 @@ namespace group_project_thread.Controllers
             return await _userService.GetUserById(_userIdGetter.CurrentId);
         }
 
-        //GET: api/User/isValidEmail?email={your email}
+        //GET: api/User/isEmailAvailable?email={your email}
         [HttpGet("isEmailAvailable")]
         [AllowAnonymous]
         public async Task<bool> IsEmailAvailable(string email)
