@@ -128,7 +128,7 @@ public class PostService : BaseService
         {
             throw new ValidationException(new EmptyPostException().Message);
         }
-        postEntity.CreatedAt = DateTime.UtcNow;
+
         postEntity.LikesIds = new List<int>();
         postEntity.ViewedBy = new List<int>();
         postEntity.CommentsIds = new List<int>();
@@ -146,14 +146,17 @@ public class PostService : BaseService
 
         if (!validationResult.IsValid)
         {
-            throw new ValidationException(validationResult.Errors[0].ErrorMessage);
-        } 
-        postToUpdate.Images = post.Images;
-        postToUpdate.TextContent = post.TextContent;
-        postToUpdate.CommentsIds = post.CommentsIds;
+            throw new ValidationException(new EmptyPostException().Message);
+        }
+
+        var postEntity = _mapper.Map<Post>(postToUpdate);
+        
+        postEntity.Images = post.Images;
+        postEntity.TextContent = post.TextContent;
+        postEntity.CommentsIds = post.CommentsIds;
 
         
-        _applicationContext.Posts.Update(_mapper.Map<Post>(postToUpdate));
+        _applicationContext.Posts.Update(postEntity);
         await _applicationContext.SaveChangesAsync();
     }
 

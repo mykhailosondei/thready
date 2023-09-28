@@ -1,24 +1,26 @@
 ﻿using ApplicationCommon.DTOs.Post;
 using ApplicationCommon.DTOs.User;
 using ApplicationDAL.Entities;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace ApplicationCommon.DTOs.Comment
 {
     public class CommentDTO
     {
-        [JsonIgnore]
+        [System.Text.Json.Serialization.JsonIgnore]
         public int Id { get; set; }
         public int UserId { get; set; }
 
         public UserDTO Author { get; set; }
 
-        [JsonIgnore]
+        [System.Text.Json.Serialization.JsonIgnore]
         public int? PostId { get; set; }
+        [JsonProperty(NullValueHandling=NullValueHandling.Ignore)]
         public PostDTO? Post { get; set; }
         
-        [JsonIgnore]
+        [System.Text.Json.Serialization.JsonIgnore]
         public int? CommentId { get; set; }
+        [JsonProperty(NullValueHandling=NullValueHandling.Ignore)]
         public CommentDTO? ParentComment { get; set; }
         
         public DateTime CreatedAt { get; set; }

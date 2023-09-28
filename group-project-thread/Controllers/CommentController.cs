@@ -51,7 +51,7 @@ namespace group_project_thread.Controllers
 
         // PUT api/<CommentController>/5
         [HttpPut("{id}")]
-        public async Task PutComment(int id, [FromBody] CommentDTO comment)
+        public async Task PutComment(int id, [FromBody] CommentUpdateDTO comment)
         {
             await _commentService.PutComment(id, comment);
         }

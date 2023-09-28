@@ -3,6 +3,7 @@ using ApplicationBLL.Extentions;
 using ApplicationBLL.Services.Abstract;
 using ApplicationCommon.DTOs.Comment;
 using ApplicationCommon.DTOs.Post;
+using ApplicationCommon.DTOs.User;
 using ApplicationDAL.Context;
 using ApplicationDAL.Entities;
 using AutoMapper;
@@ -39,7 +40,7 @@ public class CommentService : BaseService
     {
         int depth = 0;
         int currentCheckingId = id;
-        var commentForDepthChecking = await _applicationContext.Comments.FirstOrDefaultAsync(c => c.Id == currentCheckingId);
+        var commentForDepthChecking = await _applicationContext.Comments.AsNoTracking().FirstOrDefaultAsync(c => c.Id == currentCheckingId);
         
         if (commentForDepthChecking == null)
         {
@@ -50,12 +51,12 @@ public class CommentService : BaseService
         {
             depth++;
             currentCheckingId = commentForDepthChecking.CommentId.Value;
-            commentForDepthChecking = await _applicationContext.Comments.FirstOrDefaultAsync(c => c.Id == currentCheckingId);
+            commentForDepthChecking = await _applicationContext.Comments.AsNoTracking().FirstOrDefaultAsync(c => c.Id == currentCheckingId);
         }
 
         Console.WriteLine(depth);
         
-        var comment = await _applicationContext.Comments.AsNoTracking().Include(c => c.Author).CustomInclude(depth).FirstOrDefaultAsync(c => c.Id == id);
+        var comment = await _applicationContext.Comments.Include(c => c.Author).CustomInclude(depth).AsNoTracking().FirstOrDefaultAsync(c => c.Id == id);
 
         
         return _mapper.Map<CommentDTO>(comment);
@@ -85,19 +86,97 @@ public class CommentService : BaseService
         return result;
     }
 
-    public async Task PostComment(CommentCreateDTO Comment)
+    private async Task UpdateCommentsIdsInParentPost(CommentDTO comment)
     {
-        var authorDTO = await _userService.GetUserById(Comment.UserId);
-
-        bool DoesPostIdExist = Comment.PostId.HasValue;
-        bool DoesCommentIdExist = Comment.CommentId.HasValue;
-
-        if (!(DoesCommentIdExist ^ DoesPostIdExist))
+        if (comment.Id == 0)
         {
-            throw new InvalidDataException("Comment is invalid");
+            throw new InvalidOperationException("Id was not provided");
         }
+
+        if (comment.PostId == null)
+        {
+            throw new InvalidOperationException("PostId was not provided");
+        }
+
+        var postEntity = _mapper.Map<Post>(await _postService.GetPostById(comment.PostId.Value));
         
-        var commentDTO = _mapper.Map<CommentDTO>(Comment);
+        postEntity.CommentsIds.Add(comment.Id);
+
+        _applicationContext.Entry(postEntity.Author).State = EntityState.Unchanged;
+        _applicationContext.Attach(postEntity);
+        _applicationContext.Entry(postEntity).Property(c => c.CommentsIds).IsModified = true;
+        await _applicationContext.SaveChangesAsync();
+    }
+
+    private async Task UpdateCommentsIdsInParentComment(CommentDTO comment)
+    {
+        if (comment.Id == 0)
+        {
+            throw new InvalidOperationException("Id was not provided");
+        }
+
+        if (comment.CommentId == null)
+        {
+            throw new InvalidOperationException("CommentId was not provided");
+        }
+
+        var parentCommentEntity = _mapper.Map<Comment>(await GetCommentById(comment.CommentId.Value));
+        
+        parentCommentEntity.CommentsIds.Add(comment.Id);
+        
+        _applicationContext.Entry(parentCommentEntity.Author).State = EntityState.Unchanged;
+        _applicationContext.Attach(parentCommentEntity);
+        _applicationContext.Entry(parentCommentEntity).Property(c => c.CommentsIds).IsModified = true;
+        await _applicationContext.SaveChangesAsync();
+    }
+
+    private async Task HandleCommentCommenting(CommentDTO commentDTO)
+    {
+        InitComment(ref commentDTO);
+
+        var commentEntity = _mapper.Map<Comment>(commentDTO);
+            
+        _applicationContext.Attach(commentEntity.Author);
+        
+        _applicationContext.Entry(commentEntity.ParentComment!).State = EntityState.Unchanged;
+        
+        _applicationContext.Comments.Add(commentEntity);
+        await _applicationContext.SaveChangesAsync();
+
+        _applicationContext.ChangeTracker.Clear();
+            
+        commentDTO.Id = commentEntity.Id;
+
+        await UpdateCommentsIdsInParentComment(commentDTO);
+    }
+
+    private async Task HandlePostCommenting(CommentDTO commentDTO)
+    {
+        InitComment(ref commentDTO);
+
+        var commentEntity = _mapper.Map<Comment>(commentDTO);
+
+        LogEntries("2");
+        _applicationContext.Attach(commentEntity.Author);
+        _applicationContext.Entry(commentEntity.Post!).State = EntityState.Unchanged;
+        _applicationContext.Comments.Add(commentEntity);
+        await _applicationContext.SaveChangesAsync();
+
+        _applicationContext.ChangeTracker.Clear();
+
+        commentDTO.Id = commentEntity.Id;
+
+        await UpdateCommentsIdsInParentPost(commentDTO);
+    }
+
+    public async Task PostComment(CommentCreateDTO newComment)
+    {
+        var authorDTO = await _userService.GetUserById(newComment.UserId);
+
+        bool DoesPostIdExist = newComment.PostId.HasValue;
+        bool DoesCommentIdExist = newComment.CommentId.HasValue;
+        
+        var commentDTO = _mapper.Map<CommentDTO>(newComment);
         commentDTO.Author = authorDTO;
         ValidationResult validationResult = await _commentValidator.ValidateAsync(commentDTO);
 
@@ -108,68 +187,17 @@ public class CommentService : BaseService
         
         if (DoesPostIdExist)
         {
-
-            Console.WriteLine("bop");
+            var commentedPost = await _postService.GetPostById(commentDTO.PostId!.Value);
+            commentDTO.Post = commentedPost;
             
-            var postDTO = await _postService.GetPostById(Comment.PostId!.Value);
-
-            commentDTO.Post = postDTO;
-            
-            InitComment(ref commentDTO);
-
-            var commentEntity = _mapper.Map<Comment>(commentDTO);
-            
-
-            if (commentEntity.Author.Id == commentEntity.Post.Author.Id)
-            {
-                commentEntity.Post.Author = null;
-                commentEntity.Post.UserId = commentEntity.Author.Id;
-            }
-            
-            _applicationContext.Attach(commentEntity.Author);
-            
-            
-            _applicationContext.Comments.Add(commentEntity);
-            _applicationContext.Attach(commentEntity.Post!);
-            await _applicationContext.SaveChangesAsync();
-
-            _applicationContext.Entry(commentEntity.Post!).State = EntityState.Detached;
-            _applicationContext.Entry(commentEntity.Post!.Author!).State = EntityState.Detached;
-
-            commentDTO.Id = commentEntity.Id;
-            
-            postDTO.CommentsIds.Add(commentDTO.Id);
-            
-            await _postService.PutPost(postDTO.Id, postDTO);
+            await HandlePostCommenting(commentDTO);
         }
         else if (DoesCommentIdExist)
         {
-            var parentCommentDTO = await GetCommentById(Comment.CommentId!.Value);
-
+            var parentCommentDTO = await GetCommentById(commentDTO.CommentId!.Value);
             commentDTO.ParentComment = parentCommentDTO;
             
-            InitComment(ref commentDTO);
-
-            var commentEntity = _mapper.Map<Comment>(commentDTO);
-            
-            if (commentEntity.Author.Id == commentEntity.ParentComment!.Author.Id)
-            {
-                commentEntity.ParentComment.Author = null;
-                commentEntity.ParentComment.UserId = commentEntity.Author.Id;
-            }
-
-            _applicationContext.Attach(commentEntity.ParentComment!);
-            _applicationContext.Attach(commentEntity.Author);
-            _applicationContext.Comments.Add(commentEntity);
-            await _applicationContext.SaveChangesAsync();
-
-            _applicationContext.ChangeTracker.Clear();
-            
-            commentDTO.Id = commentEntity.Id;
-            
-            parentCommentDTO.CommentsIds.Add(commentDTO.Id);
-            
-            await PutComment(parentCommentDTO.Id, parentCommentDTO);
+            await HandleCommentCommenting(commentDTO);
         }
     }
 
@@ -181,9 +209,9 @@ public class CommentService : BaseService
         commentDto.ViewedBy = new List<int>();
     }
 
-    public async Task PutComment(int id, CommentDTO Comment)
+    public async Task PutComment(int id, CommentUpdateDTO commentUpdate)
     {
-        var commentDTO = await GetCommentById(Comment.Id);
+        var commentDTO = await GetCommentById(commentUpdate.Id);
         
         ValidationResult validationResult = await _commentValidator.ValidateAsync(commentDTO);
 
@@ -194,23 +222,66 @@ public class CommentService : BaseService
 
         var commentEntity = _mapper.Map<Comment>(commentDTO);
 
-        commentEntity.TextContent = Comment.TextContent;
-        commentEntity.Images = Comment.Images;
-        commentEntity.LikesIds = Comment.LikesIds;
-        commentEntity.CommentsIds = Comment.CommentsIds;
-        commentEntity.ViewedBy = Comment.ViewedBy;
-
-        _applicationContext.Update(commentEntity);
+        commentEntity.TextContent = commentUpdate.TextContent;
+        commentEntity.Images = commentUpdate.Images;
+        
         await _applicationContext.SaveChangesAsync();
+    }
+
+    public void LogEntries(string header = "")
+    {
+        _logger.LogInformation(header);
+        
+        foreach (var entry in _applicationContext.ChangeTracker.Entries())
+        {
+            _logger.LogInformation("Entry: {}", entry);
+        }
     }
 
     public async Task DeleteComment(int id)
     {
         var commentDTO = await GetCommentById(id);
+        
+        bool DoesPostIdExist = commentDTO.PostId.HasValue;
+        bool DoesCommentIdExist = commentDTO.CommentId.HasValue;
+        
+        ValidationResult validationResult = await _commentValidator.ValidateAsync(commentDTO);
+
+        if (!validationResult.IsValid)
+        {
+            throw new ValidationException(new EmptyCommentException().Message);
+        }
 
         var commentEntity = _mapper.Map<Comment>(commentDTO);
-
+        
         _applicationContext.Comments.Remove(commentEntity);
         await _applicationContext.SaveChangesAsync();
+        
+        _applicationContext.ChangeTracker.Clear();
+        
+        if (DoesPostIdExist)
+        {
+            var postEntity =_mapper.Map<Post>(await _postService.GetPostById(commentDTO.PostId!.Value));
+
+            postEntity.CommentsIds.Remove(id);
+            
+            _applicationContext.Entry(postEntity.Author).State = EntityState.Unchanged;
+            _applicationContext.Attach(postEntity);
+            _applicationContext.Entry(postEntity).Property(c => c.CommentsIds).IsModified = true;
+            await _applicationContext.SaveChangesAsync();
+        }
+        else if(DoesCommentIdExist)
+        {
+            var parentCommentEntity = _mapper.Map<Comment>(await GetCommentById(commentDTO.CommentId.Value));
+        
+            parentCommentEntity.CommentsIds.Remove(commentDTO.Id);
+        
+            _applicationContext.Entry(parentCommentEntity.Author).State = EntityState.Unchanged;
+            _applicationContext.Attach(parentCommentEntity);
+            _applicationContext.Entry(parentCommentEntity).Property(c => c.CommentsIds).IsModified = true;
+            await _applicationContext.SaveChangesAsync();
+        }
+        
+        
     }
 }
