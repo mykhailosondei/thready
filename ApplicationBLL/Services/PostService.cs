@@ -126,7 +126,7 @@ public class PostService : BaseService
 
         if (!validationResult.IsValid)
         {
-            throw new ValidationException(new EmptyPostException().Message);
+            throw new EmptyPostException();
         }
 
         postEntity.LikesIds = new List<int>();
@@ -146,7 +146,7 @@ public class PostService : BaseService
 
         if (!validationResult.IsValid)
         {
-            throw new ValidationException(new EmptyPostException().Message);
+            throw new EmptyPostException();
         }
 
         var postEntity = _mapper.Map<Post>(postToUpdate);

@@ -102,7 +102,7 @@ export class SignUpPageComponent {
   }
 
   onSubmit(){
-    if(this.regisForm.valid && !this.submitted){
+    if(this.regisForm.valid && !this.submitted && this.emailAvailabilityMessage == "" && this.usernameAvailabilityMessage == ""){
       this.submitted = true;
       this.authService.register( this.createUserFromForm())
         .pipe(takeUntil(this.unsubscribe$), finalize(() => this.submitted = false))
@@ -138,6 +138,7 @@ export class SignUpPageComponent {
       this.emailAvailabilityMessage = "Provide valid email";
       return;
     }
+    this.emailAvailabilityMessage = "";
     clearTimeout(this.timeout);
     this.timeout = setTimeout(() => {
 
@@ -166,6 +167,7 @@ export class SignUpPageComponent {
       this.usernameAvailabilityMessage = "Provide valid username";
       return;
     }
+    this.usernameAvailabilityMessage = "";
     clearTimeout(this.timeout);
     this.timeout = setTimeout(() => {
 

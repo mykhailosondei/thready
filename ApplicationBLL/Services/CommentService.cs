@@ -249,7 +249,7 @@ public class CommentService : BaseService
 
         if (!validationResult.IsValid)
         {
-            throw new ValidationException(new EmptyCommentException().Message);
+            throw new EmptyCommentException();
         }
 
         var commentEntity = _mapper.Map<Comment>(commentDTO);

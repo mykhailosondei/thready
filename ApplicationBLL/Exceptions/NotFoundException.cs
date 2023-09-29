@@ -6,6 +6,6 @@ public class NotFoundException : Exception
 
     public NotFoundException(string message) : base(message)
     {
-        EntityName = this.GetType().FullName.Replace("NotFoundException", "");
+        EntityName = this.GetType().Name.Replace("NotFoundException", "");
     }
 }
