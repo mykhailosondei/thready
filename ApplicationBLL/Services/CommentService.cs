@@ -57,7 +57,6 @@ public class CommentService : BaseService
         Console.WriteLine(depth);
         
         var comment = await _applicationContext.Comments.Include(c => c.Author).CustomInclude(depth).AsNoTracking().FirstOrDefaultAsync(c => c.Id == id);
-
         
         return _mapper.Map<CommentDTO>(comment);
     }
@@ -222,13 +221,30 @@ public class CommentService : BaseService
 
         var commentEntity = _mapper.Map<Comment>(commentDTO);
 
-        commentEntity.TextContent = commentUpdate.TextContent;
-        commentEntity.Images = commentUpdate.Images;
+        _applicationContext.Attach(commentEntity);
+        
+        await _applicationContext.Entry(commentEntity).Collection(c => c.Images).LoadAsync();
 
-        foreach (var entity in commentEntity.Images)
+        commentEntity.TextContent = commentUpdate.TextContent;
+        
+        
+        _logger.LogInformation("images: {}", commentEntity.Images.Select(i => i.Url));
+        _logger.LogInformation("images2: {}", commentUpdate.Images.Select(i => i.Url));
+        
+
+        var imagesToAdd = commentUpdate.Images.ExceptBy(commentEntity.Images.Select(i=>i.Url), i => i.Url).ToList();
+        _logger.LogInformation("imagesToAdd: {}", imagesToAdd.Select(i => i.Url));
+        var imagesToDelete = commentEntity.Images.ExceptBy(commentUpdate.Images.Select(i=>i.Url), i => i.Url).ToList();
+        _logger.LogInformation("imagesToDelete: {}", imagesToDelete.Select(i => i.Url));
+
+        commentEntity.Images.AddRange(imagesToAdd);
+
+        foreach (var image in imagesToDelete)
         {
-            _applicationContext.Entry(entity).State = EntityState.Added;
+            commentEntity.Images.Remove(image);
+            _applicationContext.Entry(image).State = EntityState.Deleted;
         }
+        
         _applicationContext.Entry(commentEntity).Property(c => c.TextContent).IsModified = true;
         _applicationContext.Entry(commentEntity).Collection(c => c.Images).IsModified = true;
         
