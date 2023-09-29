@@ -1,9 +1,8 @@
 namespace ApplicationBLL.Exceptions;
 
-public class UserNotFoundException : Exception
+public class UserNotFoundException : NotFoundException
 {
     public UserNotFoundException(string? message) : base(message)
     {
-        
     }
 }

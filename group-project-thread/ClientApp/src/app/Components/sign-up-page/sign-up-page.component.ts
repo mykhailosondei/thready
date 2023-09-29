@@ -8,7 +8,7 @@ import ValidateForm from 'src/app/helpers/validateForm';
 import { RegisterUserDTO } from 'src/app/models/auth/registerUserDTO';
 import { formatDate} from "@angular/common";
 import {SnackbarService} from "../../Services/snackbar.service";
-import {AvailabilityServiceService} from "../../Services/availability-service.service";
+import {ValidatorService} from "../../Services/validator.service";
 
 @Component({
   selector: 'app-sign-up-page',
@@ -51,10 +51,12 @@ export class SignUpPageComponent {
   private unsubscribe$ = new Subject<void>();
   private submitted: boolean = false;
   private timeout: any = null;
+  emailAvailabilityMessage : string = "";
+  usernameAvailabilityMessage : string = "";
 
   constructor(private fb: FormBuilder, private authService : AuthService,
               private router: Router, private snackBarService : SnackbarService,
-              private availabilityService : AvailabilityServiceService) {
+              private availabilityService : ValidatorService) {
     for (let i = 1; i <= 31; i++) {
       this.days.push(i);
     }
@@ -67,14 +69,14 @@ export class SignUpPageComponent {
     this.regisForm=this.fb.group({
       username: ['', Validators.required],
       email: ['', Validators.required],
-      password: ['', [Validators.required, this.passwordValidator()]],
+      password: ['', [Validators.required, this.availabilityService.passwordValidator()]],
       repeatedPassword: ['', [Validators.required]],
       selectedMonth: ['', Validators.required],
       selectedDay: ['', Validators.required],
       selectedYear: ['', Validators.required]
     },
     {
-      validators : this.matchPassword
+      validators : this.availabilityService.matchPassword
     })
   }
 
@@ -102,7 +104,6 @@ export class SignUpPageComponent {
   onSubmit(){
     if(this.regisForm.valid && !this.submitted){
       this.submitted = true;
-      console.log("aboba")
       this.authService.register( this.createUserFromForm())
         .pipe(takeUntil(this.unsubscribe$), finalize(() => this.submitted = false))
       .subscribe(
@@ -130,79 +131,62 @@ export class SignUpPageComponent {
     this.isTextRepeatedPass ? this.repeatedPasswordType = "text" : this.repeatedPasswordType = "password";
   }
 
-  /*private onKeySearch(event: KeyboardEvent) {
+
+   onEmailInput(event: KeyboardEvent) {
+    const target = event.target as HTMLInputElement;
+    if (!this.availabilityService.isValidEmail(target.value)){
+      this.emailAvailabilityMessage = "Provide valid email";
+      return;
+    }
     clearTimeout(this.timeout);
-    var $this = this;
-    this.timeout = setTimeout(function () {
-      if (event.keyCode != 13) {
-        const target = event.target as HTMLInputElement;
-        if (target) {
-          $this.availabilityService.isEmailAvailable(target.value)
-            .pipe(takeUntil($this.unsubscribe$)).subscribe(
-            (response : HttpResponse<string>) => {
-              const result = response.body;
-              if (result === true){
-
-              }
-            }
-          );
-        }
-      }
-    }, 700);
-  }*/
-
-   onKeySearch(event: KeyboardEvent) {
-    clearTimeout(this.timeout);
-    const $this = this;
-
     this.timeout = setTimeout(() => {
+
       if (event.keyCode !== 13) {
-        const target = event.target as HTMLInputElement;
         if (target) {
-          $this.availabilityService.isEmailAvailable(target.value)
+          this.availabilityService.isEmailAvailable(target.value)
             .pipe(
               takeUntil(this.unsubscribe$)).subscribe(
             (responce : HttpResponse<boolean>) => {
               const result = responce.body;
               if (result){
-                console.log("valid email")
-              }
-              else if (!result){
-                console.log("invalid emeil")
+                this.emailAvailabilityMessage = "";
               }
               else {
-                console.log("error")
+                this.emailAvailabilityMessage = "Email already in use"
               }
-            },
-            (error) =>{
-              console.log(error);
-            }
-          )
-
+            })
         }
       }
-    }, 700);
+    }, 1000);
   }
-  passwordValidator(): Validators {
-    return (control: AbstractControl): { [key: string]: any } | null => {
-      const password = control.value;
 
-      if (password.length < 8) {
-        return { 'passwordLength': true };
-      }
-
-      return null;
-    };
-  }
-  matchPassword : ValidatorFn = (control : AbstractControl) : ValidationErrors | null => {
-    let password  = control.get('password');
-    let repeatedPassword = control.get('repeatedPassword');
-    if (password && repeatedPassword && password?.value != repeatedPassword?.value){
-      return {passwordMatcherror : true}
+  onUsernameInput(event: KeyboardEvent) {
+    const target = event.target as HTMLInputElement;
+    if (!this.availabilityService.isValidUserName(target.value)){
+      this.usernameAvailabilityMessage = "Provide valid username";
+      return;
     }
-    return null;
-  }
+    clearTimeout(this.timeout);
+    this.timeout = setTimeout(() => {
 
+      if (event.keyCode !== 13) {
+        if (target) {
+          this.availabilityService.isUsernameAvailable(target.value)
+            .pipe(
+              takeUntil(this.unsubscribe$)).subscribe(
+            (responce : HttpResponse<boolean>) => {
+              const result = responce.body;
+              if (result){
+                this.usernameAvailabilityMessage = "";
+              }
+              else {
+                this.usernameAvailabilityMessage = "There is user with such username"
+              }
+            })
+        }
+      }
+    }, 1000);
+  }
   updateDates(){
     let daysInMonth: number = this.daysBasedOnDropDowns();
 

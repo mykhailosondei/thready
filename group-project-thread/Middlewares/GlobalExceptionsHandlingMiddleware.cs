@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Text.Json;
+using ApplicationBLL.Exceptions;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Protocol.Plugins;
@@ -36,6 +37,24 @@ public class GlobalExceptionsHandlingMiddleware
                 Type = "Validation Error",
                 Title = validationFailure.Message,
                 Detail = $"{validationFailure.Message}"
+            };
+
+            string json = JsonSerializer.Serialize(errorResponse);
+
+            await context.Response.WriteAsync(json);
+        }
+        catch (NotFoundException ex)
+        {
+            _logger.LogError($"Validation Error message: {ex}");
+            context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+            context.Response.ContentType = "application/json";
+
+            ProblemDetails errorResponse = new()
+            {
+                Status = (int)HttpStatusCode.NotFound,
+                Type = "Page not found",
+                Title = $"{ex.EntityName} not found",
+                Detail = ex.Message
             };
 
             string json = JsonSerializer.Serialize(errorResponse);

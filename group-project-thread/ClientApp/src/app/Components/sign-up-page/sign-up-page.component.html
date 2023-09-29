@@ -9,11 +9,17 @@
                     <form [formGroup] ="regisForm">
                         <div class="input-box" >
                             <span class="fa fa-user custom-icon" ></span>
-                            <input formControlName="username" type="text" placeholder="Username" required>
+                            <input formControlName="username" type="text" placeholder="Username" required (keyup)="onUsernameInput($event)">
+                        </div>
+                        <div class="required-messages">
+                          <small *ngIf="usernameAvailabilityMessage !== ''">{{usernameAvailabilityMessage}}</small>
                         </div>
                         <div class="input-box" >
                             <span class="fa fa-envelope custom-icon" ></span>
-                            <input formControlName="email" type="text" placeholder="Email" required (keyup)="onKeySearch($event)">
+                            <input formControlName="email" type="text" placeholder="Email" required (keyup)="onEmailInput($event)">
+                        </div>
+                        <div class="required-messages">
+                          <small *ngIf="emailAvailabilityMessage !== ''">{{emailAvailabilityMessage}}</small>
                         </div>
                         <div class="input-box" >
                             <span class="fa fa-lock custom-icon"></span>
@@ -30,7 +36,7 @@
                         </div>
                         <div class="required-messages">
                           <small *ngIf="regisForm.errors?.['passwordMatcherror'] && regisForm.controls['password'].dirty && regisForm.controls['repeatedPassword'].dirty">*Passwords don't match.</small>
-                      </div>
+                        </div>
                         <div class="date-of-birth">
                             <div class="date-of-birth-header" style="text-align: left;">
                               <label>Date of birth</label>

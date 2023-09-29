@@ -23,7 +23,6 @@ public class UsernameValidatorService : BaseService
         {
             return false;
         }
-
-        return await _applicationContext.Users.AnyAsync(u => u.Username == username);
+        return !await _applicationContext.Users.AnyAsync(u => u.Username == username);
     }
 }

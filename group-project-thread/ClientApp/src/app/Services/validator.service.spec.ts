@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { AvailabilityServiceService } from './availability-service.service';
+import { ValidatorService } from './validator.service';
 
 describe('AvailabilityServiceService', () => {
-  let service: AvailabilityServiceService;
+  let service: ValidatorService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(AvailabilityServiceService);
+    service = TestBed.inject(ValidatorService);
   });
 
   it('should be created', () => {
