@@ -69,7 +69,7 @@ namespace group_project_thread.Controllers
         {
             await _commentService.DeleteComment(id);
         }
-        [HttpDelete("{id}/unlikeComment")]
+        [HttpPost("{id}/unlikeComment")]
         public async Task UnlikeComment(int id)
         {
             int authorId = _userIdGetter.CurrentId;

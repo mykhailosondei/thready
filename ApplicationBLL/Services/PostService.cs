@@ -57,7 +57,6 @@ public class PostService : BaseService
         await _applicationContext.Entry(user).Collection(u => u.Posts).LoadAsync();
         userModel = _mapper.Map<UserDTO>(user);
         return userModel.Posts;
-        
     }
 
     public async Task BookmarkPost(int postId, int userId)
@@ -129,20 +128,30 @@ public class PostService : BaseService
             throw new ValidationException(new EmptyPostException().Message);
         }
 
-        postEntity.LikesIds = new List<int>();
-        postEntity.ViewedBy = new List<int>();
-        postEntity.CommentsIds = new List<int>();
-        postEntity.Bookmarks = 0;
-        postEntity.RepostersIds = new List<int>();
+        InitPost(ref postEntity);
+        
         _applicationContext.Posts.Add(postEntity);
         _applicationContext.Attach(postEntity.Author);
         await _applicationContext.SaveChangesAsync();
     }
 
-    public virtual async Task PutPost(int id, PostDTO post)
+    private void InitPost(ref Post postEntity)
+    {
+        postEntity.CreatedAt = DateTime.UtcNow;
+        postEntity.LikesIds = new List<int>();
+        postEntity.ViewedBy = new List<int>();
+        postEntity.CommentsIds = new List<int>();
+        postEntity.Bookmarks = 0;
+        postEntity.RepostersIds = new List<int>();
+    }
+
+    private Func<Image, string> imageSelector = image => image.Url;
+
+    public virtual async Task PutPost(int id, PostUpdateDTO post)
     {
         var postToUpdate = await GetPostById(id);
-        ValidationResult validationResult = await _postValidator.ValidateAsync(post);
+        
+        ValidationResult validationResult = await _postValidator.ValidateAsync(postToUpdate);
 
         if (!validationResult.IsValid)
         {
@@ -150,13 +159,26 @@ public class PostService : BaseService
         }
 
         var postEntity = _mapper.Map<Post>(postToUpdate);
-        
-        postEntity.Images = post.Images;
-        postEntity.TextContent = post.TextContent;
-        postEntity.CommentsIds = post.CommentsIds;
 
+        _applicationContext.Attach(postEntity);
+
+        await _applicationContext.Entry(postEntity).Collection(p => p.Images).LoadAsync();
+
+        var imagesToAdd = post.Images.ExceptBy(postEntity.Images.Select(imageSelector), imageSelector).ToList();
+        var imagesToDelete = postEntity.Images.ExceptBy(post.Images.Select(imageSelector), imageSelector).ToList();
         
-        _applicationContext.Posts.Update(postEntity);
+        postEntity.Images.AddRange(imagesToAdd.DistinctBy(imageSelector));
+
+        foreach (var image in imagesToDelete)
+        {
+            postEntity.Images.RemoveAll(i => i.Url == image.Url);
+            _applicationContext.Entry(image).State = EntityState.Deleted;
+        }
+        
+        postEntity.TextContent = post.TextContent;
+
+        _applicationContext.Entry(postEntity).Collection(p => p.Images).IsModified = true;
+        _applicationContext.Entry(postEntity).Property(p => p.TextContent).IsModified = true;
         await _applicationContext.SaveChangesAsync();
     }
 

@@ -207,6 +207,8 @@ public class CommentService : BaseService
         commentDto.CommentsIds = new List<int>();
         commentDto.ViewedBy = new List<int>();
     }
+    
+    private Func<Image, string> imageSelector = image => image.Url;
 
     public async Task PutComment(int id, CommentUpdateDTO commentUpdate)
     {
@@ -225,28 +227,22 @@ public class CommentService : BaseService
         
         await _applicationContext.Entry(commentEntity).Collection(c => c.Images).LoadAsync();
 
-        commentEntity.TextContent = commentUpdate.TextContent;
-        
-        
-        _logger.LogInformation("images: {}", commentEntity.Images.Select(i => i.Url));
-        _logger.LogInformation("images2: {}", commentUpdate.Images.Select(i => i.Url));
-        
 
-        var imagesToAdd = commentUpdate.Images.ExceptBy(commentEntity.Images.Select(i=>i.Url), i => i.Url).ToList();
-        _logger.LogInformation("imagesToAdd: {}", imagesToAdd.Select(i => i.Url));
-        var imagesToDelete = commentEntity.Images.ExceptBy(commentUpdate.Images.Select(i=>i.Url), i => i.Url).ToList();
-        _logger.LogInformation("imagesToDelete: {}", imagesToDelete.Select(i => i.Url));
+        var imagesToAdd = commentUpdate.Images.ExceptBy(commentEntity.Images.Select(imageSelector), imageSelector).ToList();
+        var imagesToDelete = commentEntity.Images.ExceptBy(commentUpdate.Images.Select(imageSelector), imageSelector).ToList();
 
-        commentEntity.Images.AddRange(imagesToAdd);
+        commentEntity.Images.AddRange(imagesToAdd.DistinctBy(imageSelector));
 
         foreach (var image in imagesToDelete)
         {
-            commentEntity.Images.Remove(image);
+            commentEntity.Images.RemoveAll(i => i.Url == image.Url);
             _applicationContext.Entry(image).State = EntityState.Deleted;
         }
         
-        _applicationContext.Entry(commentEntity).Property(c => c.TextContent).IsModified = true;
         _applicationContext.Entry(commentEntity).Collection(c => c.Images).IsModified = true;
+        
+        commentEntity.TextContent = commentUpdate.TextContent;
+        _applicationContext.Entry(commentEntity).Property(c => c.TextContent).IsModified = true;
         
         await _applicationContext.SaveChangesAsync();
     }
@@ -293,9 +289,9 @@ public class CommentService : BaseService
             _applicationContext.Entry(postEntity).Property(c => c.CommentsIds).IsModified = true;
             await _applicationContext.SaveChangesAsync();
         }
-        else if(DoesCommentIdExist)
+        else if (DoesCommentIdExist)
         {
-            var parentCommentEntity = _mapper.Map<Comment>(await GetCommentById(commentDTO.CommentId.Value));
+            var parentCommentEntity = _mapper.Map<Comment>(await GetCommentById(commentDTO.CommentId!.Value));
         
             parentCommentEntity.CommentsIds.Remove(commentDTO.Id);
         
@@ -304,7 +300,5 @@ public class CommentService : BaseService
             _applicationContext.Entry(parentCommentEntity).Property(c => c.CommentsIds).IsModified = true;
             await _applicationContext.SaveChangesAsync();
         }
-        
-        
     }
 }
