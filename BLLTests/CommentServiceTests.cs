@@ -418,7 +418,7 @@ public class CommentServiceTests
         });
         
         _postServiceMock.Setup(p => p.GetPostById(It.IsAny<int>())).ReturnsAsync((int id) => _mapperMock.Object.Map<PostDTO>(posts.FirstOrDefault(p => p.Id == id)));
-        _postServiceMock.Setup(p => p.PutPost(It.IsAny<int>(), It.IsAny<PostDTO>())).Callback((int id, PostDTO dto) =>
+        _postServiceMock.Setup(p => p.PutPost(It.IsAny<int>(), It.IsAny<PostUpdateDTO>())).Callback((int id, PostDTO dto) =>
         {
         });
         //Act
