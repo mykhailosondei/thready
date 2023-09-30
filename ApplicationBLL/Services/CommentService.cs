@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using ApplicationBLL.Exceptions;
 using ApplicationBLL.Extentions;
 using ApplicationBLL.Services.Abstract;
@@ -35,8 +36,24 @@ public class CommentService : BaseService
     {
         
     }
+    
+    public async Task<CommentDTO> GetCommentByIdPlain(int id, params Expression<Func<Comment, object>>[] includeExpressions)
+    {
+        var query = _applicationContext.Comments.AsNoTracking();
 
-    public virtual async Task<CommentDTO> GetCommentById(int id)
+        query = includeExpressions.Aggregate(query, (current, includeExpression) => current.Include(includeExpression));
+
+        var comment = await query.FirstOrDefaultAsync(c => c.Id == id);
+
+        if (comment == null)
+        {
+            throw new CommentNotFoundException("Comment with specified id not found");
+        }
+
+        return _mapper.Map<CommentDTO>(comment);
+    }
+
+    public virtual async Task<CommentDTO> GetCommentWithAllCommentTreeById(int id)
     {
         int depth = 0;
         int currentCheckingId = id;
@@ -73,7 +90,7 @@ public class CommentService : BaseService
         {
             try
             {
-                result.Add(await GetCommentById(id));
+                result.Add(await GetCommentByIdPlain(id));
             }
             catch (CommentNotFoundException e)
             {
@@ -119,11 +136,11 @@ public class CommentService : BaseService
             throw new InvalidOperationException("CommentId was not provided");
         }
 
-        var parentCommentEntity = _mapper.Map<Comment>(await GetCommentById(comment.CommentId.Value));
+        var parentCommentEntity = _mapper.Map<Comment>(await GetCommentByIdPlain(comment.CommentId.Value));
         
         parentCommentEntity.CommentsIds.Add(comment.Id);
         
-        _applicationContext.Entry(parentCommentEntity.Author).State = EntityState.Unchanged;
+        //_applicationContext.Entry(parentCommentEntity.Author).State = EntityState.Unchanged;
         _applicationContext.Attach(parentCommentEntity);
         _applicationContext.Entry(parentCommentEntity).Property(c => c.CommentsIds).IsModified = true;
         await _applicationContext.SaveChangesAsync();
@@ -193,7 +210,7 @@ public class CommentService : BaseService
         }
         else if (DoesCommentIdExist)
         {
-            var parentCommentDTO = await GetCommentById(commentDTO.CommentId!.Value);
+            var parentCommentDTO = await GetCommentByIdPlain(commentDTO.CommentId!.Value);
             commentDTO.ParentComment = parentCommentDTO;
             
             await HandleCommentCommenting(commentDTO);
@@ -212,7 +229,7 @@ public class CommentService : BaseService
 
     public async Task PutComment(int id, CommentUpdateDTO commentUpdate)
     {
-        var commentDTO = await GetCommentById(id);
+        var commentDTO = await GetCommentByIdPlain(id);
         
         ValidationResult validationResult = await _commentValidator.ValidateAsync(commentDTO);
 
@@ -259,7 +276,7 @@ public class CommentService : BaseService
 
     public async Task DeleteComment(int id)
     {
-        var commentDTO = await GetCommentById(id);
+        var commentDTO = await GetCommentByIdPlain(id);
         
         bool DoesPostIdExist = commentDTO.PostId.HasValue;
         bool DoesCommentIdExist = commentDTO.CommentId.HasValue;
@@ -291,7 +308,7 @@ public class CommentService : BaseService
         }
         else if (DoesCommentIdExist)
         {
-            var parentCommentEntity = _mapper.Map<Comment>(await GetCommentById(commentDTO.CommentId!.Value));
+            var parentCommentEntity = _mapper.Map<Comment>(await GetCommentByIdPlain(commentDTO.CommentId!.Value, c => c.Author));
         
             parentCommentEntity.CommentsIds.Remove(commentDTO.Id);
         
