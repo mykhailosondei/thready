@@ -45,6 +45,10 @@
     <ItemGroup>
       <Folder Include="ClientApp\src\app\Components\" />
     </ItemGroup>
+    
+    <ItemGroup>
+        <InternalsVisibleTo Include="BLLIntegrationTests"/>
+    </ItemGroup>
 
 
     <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
