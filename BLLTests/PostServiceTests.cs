@@ -674,7 +674,7 @@ public class PostServiceTests
 
         int expectedPostsCount = 5;
         //Assert & act
-        var ex = await Assert.ThrowsAsync<ValidationException>(
+        var ex = await Assert.ThrowsAsync<EmptyPostException>(
             async () => await _postService.CreatePost(createdPost)
         );
         _outputHelper.WriteLine("" + ex);
@@ -693,7 +693,7 @@ public class PostServiceTests
                 Errors = new List<ValidationFailure>()
             });
         int postToUpdateID = 1;
-        PostDTO updatedPost = new PostDTO
+        PostUpdateDTO updatedPost = new PostUpdateDTO
         {
             
             TextContent = "update text",
@@ -704,8 +704,7 @@ public class PostServiceTests
                     Id = 1,
                     Url = "updatedImage.jpg"
                 }
-            },
-            CommentsIds = new List<int>() { 1, 2 }
+            }
 
         };
 
@@ -722,7 +721,6 @@ public class PostServiceTests
         //Assert
         Assert.Equal(updatedPost.TextContent, _mockPosts[4].TextContent);
         Assert.Equal(updatedPost.Images.Count, _mockPosts[4].Images.Count);
-        Assert.Equal(updatedPost.CommentsIds.Count, _mockPosts[4].CommentsIds.Count);
 
     }
     
@@ -738,17 +736,16 @@ public class PostServiceTests
             });
         
         int postToUpdateID = 1;
-        PostDTO updatedPost = new PostDTO
+        PostUpdateDTO updatedPost = new PostUpdateDTO()
         {
             
             TextContent = "",
-            Images = new List<Image>(),
-            CommentsIds = new List<int>() { 1, 2 }
+            Images = new List<Image>()
 
         };
         string actualText = _mockPosts[0].TextContent;
         //Assert & act
-        var ex = await Assert.ThrowsAsync<ValidationException>(
+        var ex = await Assert.ThrowsAsync<EmptyPostException>(
             async () => await _postService.PutPost(postToUpdateID, updatedPost)
         );
         _outputHelper.WriteLine("" + ex);
