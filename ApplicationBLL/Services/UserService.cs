@@ -160,20 +160,8 @@ public class UserService : BaseService
             throw new UserNotFoundException("User with specified id does not exist");
         }
 
-        if (userToUpdate.Email != user.Email && await _emailValidatorService.IsEmailAvailable(user.Email))
-        {
-            userToUpdate.Email = user.Email;
-        }
-        
-        if (userToUpdate.Username != user.Username && await _usernameValidatorService.IsUsernameAvailable(user.Username))
-        {
-            userToUpdate.Username = user.Username;
-        }
-
         userToUpdate.Location = user.Location;
         userToUpdate.Bio = user.Bio;
-        userToUpdate.RepostsIds = userToUpdate.RepostsIds;
-        userToUpdate.BookmarkedPostsIds = userToUpdate.BookmarkedPostsIds;
 
         if (user.Avatar != null && user.Avatar.Url != "")
         {

@@ -31,7 +31,7 @@ namespace group_project_thread.Controllers
         [AllowAnonymous]
         public async Task<CommentDTO> GetCommentById(int id)
         {
-            return await _commentService.GetCommentById(id);
+            return await _commentService.GetCommentWithAllCommentTreeById(id);
         }
 
         [AllowAnonymous]

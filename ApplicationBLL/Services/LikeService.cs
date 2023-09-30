@@ -58,7 +58,7 @@ public class LikeService : BaseService
 
     public async Task LikeComment(int commentId, int authorId)
     {
-        var comment = await _commentService.GetCommentById(commentId);
+        var comment = await _commentService.GetCommentByIdPlain(commentId);
         var author = await _userService.GetUserById(authorId);
         if (comment.LikesIds.Contains(author.Id))
         {
@@ -77,7 +77,7 @@ public class LikeService : BaseService
     
     public async Task DislikeComment(int commentId, int authorId)
     {
-        var comment = await _commentService.GetCommentById(commentId);
+        var comment = await _commentService.GetCommentByIdPlain(commentId);
         var author = await _userService.GetUserById(authorId);
         if (!comment.LikesIds.Contains(author.Id))
         {
