@@ -1,0 +1,36 @@
+/* You can add global styles to this file, and also import other style files */
+
+/* Provide sufficient contrast against white background */
+a {
+  color: #0366d6;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+.errorSnackBar{
+  --mdc-snackbar-container-color: #ed98da;
+  text-align: center;
+  --mdc-snackbar-supporting-text-color: white;
+  .mat-mdc-snack-bar-container { .mdc-snackbar__surface { max-width: 100%; width: 10%; } }
+  .cdk-global-overlay-wrapper { display: block; }
+}
+
+code {
+  color: #e01a76;
+}
+
+.btn-primary {
+  color: #000;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

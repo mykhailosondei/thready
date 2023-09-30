@@ -30,8 +30,8 @@
               "src/assets"
             ],
             "styles": [
-              "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "src/styles.css"
+              "@angular/material/prebuilt-themes/pink-bluegrey.css",
+              "src/styles.scss"
             ],
             "scripts": []
           },
@@ -98,7 +98,8 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "@angular/material/prebuilt-themes/pink-bluegrey.css",
+              "src/styles.scss"
             ],
             "scripts": []
           }
@@ -133,6 +134,11 @@
     }
   },
   "defaultProject": "group_project_thread",
+  "schematics": {
+    "@schematics/angular:component": {
+      "style": "scss"
+    }
+  },
   "cli": {
     "analytics": false
   }
