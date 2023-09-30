@@ -25,7 +25,7 @@ public class EmailValidatorService : BaseService
             Console.WriteLine("temp");
             return false;
         }
-            
+        
         return !await _applicationContext.Users.AnyAsync(u => u.Email == email); 
     }
 

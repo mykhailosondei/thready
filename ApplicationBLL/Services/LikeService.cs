@@ -26,23 +26,32 @@ public class LikeService : BaseService
         {
             throw new InvalidOperationException("You already liked this post");
         }
-        post.LikesIds.Add(author.Id);
+        
+        var postEntity = _mapper.Map<Post>(post);
 
-        _applicationContext.Posts.Update(_mapper.Map<Post>(post));
+        postEntity.LikesIds.Add(author.Id);
 
+        _applicationContext.Attach(postEntity);
+        _applicationContext.Entry(postEntity).Property(p => p.LikesIds).IsModified = true;
+        
         await _applicationContext.SaveChangesAsync();
     }
 
     public async Task DislikePost(int postId, int authorId)
     {
         var post = await _postService.GetPostById(postId);
-        if (!post.LikesIds.Contains(authorId))
+        var author = await _userService.GetUserById(authorId);
+        if (!post.LikesIds.Contains(author.Id))
         {
             throw new InvalidOperationException("You already don't like this post");
         }
-        post.LikesIds.Remove(authorId);
 
-        _applicationContext.Posts.Update(_mapper.Map<Post>(post));
+        var postEntity = _mapper.Map<Post>(post);
+
+        postEntity.LikesIds.Remove(author.Id);
+
+        _applicationContext.Attach(postEntity);
+        _applicationContext.Entry(postEntity).Property(p => p.LikesIds).IsModified = true;
 
         await _applicationContext.SaveChangesAsync();
     }
@@ -50,13 +59,18 @@ public class LikeService : BaseService
     public async Task LikeComment(int commentId, int authorId)
     {
         var comment = await _commentService.GetCommentById(commentId);
-        if (comment.LikesIds.Contains(authorId))
+        var author = await _userService.GetUserById(authorId);
+        if (comment.LikesIds.Contains(author.Id))
         {
             throw new InvalidOperationException("You already liked this comment");
         }
-        comment.LikesIds.Add(authorId);
 
-        _applicationContext.Comments.Update(_mapper.Map<Comment>(comment));
+        var commentEntity = _mapper.Map<Comment>(comment);
+        
+        commentEntity.LikesIds.Add(author.Id);
+
+        _applicationContext.Attach(commentEntity);
+        _applicationContext.Entry(commentEntity).Property(c => c.LikesIds).IsModified = true;
 
         await _applicationContext.SaveChangesAsync();
     }
@@ -64,13 +78,18 @@ public class LikeService : BaseService
     public async Task DislikeComment(int commentId, int authorId)
     {
         var comment = await _commentService.GetCommentById(commentId);
-        if (!comment.LikesIds.Contains(authorId))
+        var author = await _userService.GetUserById(authorId);
+        if (!comment.LikesIds.Contains(author.Id))
         {
             throw new InvalidOperationException("You already don't like this comment");
         }
-        comment.LikesIds.Remove(authorId);
+        
+        var commentEntity = _mapper.Map<Comment>(comment);
+        
+        commentEntity.LikesIds.Remove(author.Id);
 
-        _applicationContext.Comments.Update(_mapper.Map<Comment>(comment));
+        _applicationContext.Attach(commentEntity);
+        _applicationContext.Entry(commentEntity).Property(c => c.LikesIds).IsModified = true;
 
         await _applicationContext.SaveChangesAsync();
     }

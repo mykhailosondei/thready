@@ -34,6 +34,13 @@ namespace group_project_thread.Controllers
             return await _commentService.GetCommentById(id);
         }
 
+        [AllowAnonymous]
+        [HttpGet("{postId}/comments")]
+        public async Task<IEnumerable<CommentDTO>> GetCommentsOfPostId(int postId)
+        {
+            return await _commentService.GetCommentsOfPostId(postId);
+        }
+
         // POST api/<CommentController>
         [HttpPost]
         public async Task PostComment([FromBody] CommentCreateDTO comment)
@@ -62,7 +69,7 @@ namespace group_project_thread.Controllers
         {
             await _commentService.DeleteComment(id);
         }
-        [HttpDelete("{id}/unlikeComment")]
+        [HttpPost("{id}/unlikeComment")]
         public async Task UnlikeComment(int id)
         {
             int authorId = _userIdGetter.CurrentId;

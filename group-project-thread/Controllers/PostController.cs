@@ -45,7 +45,7 @@ namespace group_project_thread.Controllers
         
         [HttpGet("{userId}/posts")]
         [AllowAnonymous]
-        public async Task<IEnumerable<PostDTO>> GetPostByUserId(int userId)
+        public async Task<IEnumerable<PostDTO>> GetPostsByUserId(int userId)
         {
             return await _postService.GetPostsByUserId(userId);
         }
@@ -74,7 +74,7 @@ namespace group_project_thread.Controllers
         
         // PUT api/<PostController>/5
         [HttpPut("{id}")]
-        public async Task PutPost(int id, [FromBody] PostDTO post)
+        public async Task PutPost(int id, [FromBody] PostUpdateDTO post)
         {
             await _postService.PutPost(id, post);
         }

@@ -1,4 +1,4 @@
-﻿using ApplicationDAL.Entities;
+using ApplicationDAL.Entities;
 using Newtonsoft.Json;
 
 namespace ApplicationCommon.DTOs.Post;
