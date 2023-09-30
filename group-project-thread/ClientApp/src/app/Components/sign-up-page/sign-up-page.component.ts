@@ -1,13 +1,14 @@
-import { HttpHeaders } from '@angular/common/http';
+import {HttpHeaders, HttpResponse} from '@angular/common/http';
 import {Component, Inject} from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import {finalize, Subject, takeUntil} from 'rxjs';
+import {finalize, map, Subject, takeUntil} from 'rxjs';
 import { AuthService } from 'src/app/Services/auth.service';
 import ValidateForm from 'src/app/helpers/validateForm';
 import { RegisterUserDTO } from 'src/app/models/auth/registerUserDTO';
 import { formatDate} from "@angular/common";
 import {SnackbarService} from "../../Services/snackbar.service";
+import {ValidatorService} from "../../Services/validator.service";
 
 @Component({
   selector: 'app-sign-up-page',
@@ -49,9 +50,13 @@ export class SignUpPageComponent {
   regisForm!: FormGroup;
   private unsubscribe$ = new Subject<void>();
   private submitted: boolean = false;
+  private timeout: any = null;
+  emailAvailabilityMessage : string = "";
+  usernameAvailabilityMessage : string = "";
 
   constructor(private fb: FormBuilder, private authService : AuthService,
-              private router: Router, private snackBarService : SnackbarService) {
+              private router: Router, private snackBarService : SnackbarService,
+              private availabilityService : ValidatorService) {
     for (let i = 1; i <= 31; i++) {
       this.days.push(i);
     }
@@ -64,14 +69,14 @@ export class SignUpPageComponent {
     this.regisForm=this.fb.group({
       username: ['', Validators.required],
       email: ['', Validators.required],
-      password: ['', [Validators.required, this.passwordValidator()]],
+      password: ['', [Validators.required, this.availabilityService.passwordValidator()]],
       repeatedPassword: ['', [Validators.required]],
       selectedMonth: ['', Validators.required],
       selectedDay: ['', Validators.required],
       selectedYear: ['', Validators.required]
     },
     {
-      validators : this.matchPassword
+      validators : this.availabilityService.matchPassword
     })
   }
 
@@ -97,9 +102,8 @@ export class SignUpPageComponent {
   }
 
   onSubmit(){
-    if(this.regisForm.valid && !this.submitted){
+    if(this.regisForm.valid && !this.submitted && this.emailAvailabilityMessage == "" && this.usernameAvailabilityMessage == ""){
       this.submitted = true;
-      console.log("aboba")
       this.authService.register( this.createUserFromForm())
         .pipe(takeUntil(this.unsubscribe$), finalize(() => this.submitted = false))
       .subscribe(
@@ -127,26 +131,64 @@ export class SignUpPageComponent {
     this.isTextRepeatedPass ? this.repeatedPasswordType = "text" : this.repeatedPasswordType = "password";
   }
 
-  passwordValidator(): Validators {
-    return (control: AbstractControl): { [key: string]: any } | null => {
-      const password = control.value;
 
-      if (password.length < 8) {
-        return { 'passwordLength': true };
-      }
-
-      return null;
-    };
-  }
-  matchPassword : ValidatorFn = (control : AbstractControl) : ValidationErrors | null => {
-    let password  = control.get('password');
-    let repeatedPassword = control.get('repeatedPassword');
-    if (password && repeatedPassword && password?.value != repeatedPassword?.value){
-      return {passwordMatcherror : true}
+   onEmailInput(event: KeyboardEvent) {
+    const target = event.target as HTMLInputElement;
+    if (!this.availabilityService.isValidEmail(target.value)){
+      this.emailAvailabilityMessage = "Provide valid email";
+      return;
     }
-    return null;
+    this.emailAvailabilityMessage = "";
+    clearTimeout(this.timeout);
+    this.timeout = setTimeout(() => {
+
+      if (event.keyCode !== 13) {
+        if (target) {
+          this.availabilityService.isEmailAvailable(target.value)
+            .pipe(
+              takeUntil(this.unsubscribe$)).subscribe(
+            (responce : HttpResponse<boolean>) => {
+              const result = responce.body;
+              if (result){
+                this.emailAvailabilityMessage = "";
+              }
+              else {
+                this.emailAvailabilityMessage = "Email already in use"
+              }
+            })
+        }
+      }
+    }, 1000);
   }
 
+  onUsernameInput(event: KeyboardEvent) {
+    const target = event.target as HTMLInputElement;
+    if (!this.availabilityService.isValidUserName(target.value)){
+      this.usernameAvailabilityMessage = "Provide valid username";
+      return;
+    }
+    this.usernameAvailabilityMessage = "";
+    clearTimeout(this.timeout);
+    this.timeout = setTimeout(() => {
+
+      if (event.keyCode !== 13) {
+        if (target) {
+          this.availabilityService.isUsernameAvailable(target.value)
+            .pipe(
+              takeUntil(this.unsubscribe$)).subscribe(
+            (responce : HttpResponse<boolean>) => {
+              const result = responce.body;
+              if (result){
+                this.usernameAvailabilityMessage = "";
+              }
+              else {
+                this.usernameAvailabilityMessage = "There is user with such username"
+              }
+            })
+        }
+      }
+    }, 1000);
+  }
   updateDates(){
     let daysInMonth: number = this.daysBasedOnDropDowns();
 

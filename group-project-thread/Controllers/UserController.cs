@@ -19,12 +19,14 @@ namespace group_project_thread.Controllers
         private readonly UserService _userService;
         private readonly IUserIdGetter _userIdGetter;
         private readonly EmailValidatorService _emailValidatorService;
-
-        public UserController(UserService userService, IUserIdGetter userIdGetter, EmailValidatorService emailValidatorService)
+        private readonly UsernameValidatorService _usernameValidatorService;
+        
+        public UserController(UserService userService, IUserIdGetter userIdGetter, EmailValidatorService emailValidatorService, UsernameValidatorService usernameValidatorService)
         {
             _userService = userService;
             _userIdGetter = userIdGetter;
             _emailValidatorService = emailValidatorService;
+            _usernameValidatorService = usernameValidatorService;
         }
 
         // GET: api/<UserController>
@@ -50,7 +52,7 @@ namespace group_project_thread.Controllers
             return await _userService.GetUserById(_userIdGetter.CurrentId);
         }
 
-        //GET: api/User/isValidEmail?email={your email}
+        //GET: api/User/isEmailAvailable?email={your email}
         [HttpGet("isEmailAvailable")]
         [AllowAnonymous]
         public async Task<bool> IsEmailAvailable(string email)
@@ -58,6 +60,13 @@ namespace group_project_thread.Controllers
             return await _emailValidatorService.IsEmailAvailable(email);
         }
         
+        //GET: api/User/isUsernameAvailable?username={your username}
+        [HttpGet("isUsernameAvailable")]
+        [AllowAnonymous]
+        public async Task<bool> IsUsernameAvailable(string username)
+        {
+            return await _usernameValidatorService.IsUsernameAvailable(username);
+        }
         
         [HttpPost("{id}/follow")]
         public async Task Follow(int id)
