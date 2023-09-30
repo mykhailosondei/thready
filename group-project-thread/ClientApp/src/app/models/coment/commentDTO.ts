@@ -1,14 +1,17 @@
 import { Image } from "../image";
 import { PostDTO } from "../post/postDTO";
+import {UserDTO} from "../user/userDTO";
+
 
 export interface Comment{
     id: number;
     userId: number;
+    author: UserDTO
     postId: number | null;
     post: PostDTO | null;
     commentId: number | null;
     parentComment: Comment | null;
-    createdAt: Date;
+    createdAt: string;
     images: Image[];
     textContent: string;
     likesIds: number[];

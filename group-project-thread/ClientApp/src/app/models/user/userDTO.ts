@@ -1,11 +1,11 @@
-import { Image } from "./image";
-import { PostDTO } from "./post/postDTO";
+import { Image } from "../image";
+import { PostDTO } from "../post/postDTO";
 
 export interface UserDTO{
     id : number;
     username : string;
     email : string;
-    dateOfBirth : Date;
+    dateOfBirth : string;
     password : string;
     imageID: number | null;
     avatar: Image | null;
@@ -16,6 +16,6 @@ export interface UserDTO{
     location: string;
     bookmarkedPostsIds: number[];
     repostsIds: number;
-    
+
 }
 

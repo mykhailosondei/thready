@@ -1,11 +1,11 @@
 import {Image } from "../image";
-import { UserDTO } from "../userDTO";
-
+import {UserDTO} from "../user/userDTO";
 export interface PostDTO {
 id : number;
-createdAt: Date;
+createdAt: string;
 userId: number;
 author: UserDTO;
+textContent: string;
 images: Image[];
 likesIds: number[];
 commentsIds: number[];
