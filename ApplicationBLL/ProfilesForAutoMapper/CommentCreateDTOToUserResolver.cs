@@ -9,7 +9,6 @@ public class CommentCreateDTOToUserResolver : IValueResolver<CommentCreateDTO, C
 {
     private readonly UserService _userService;
 
-
     public CommentCreateDTOToUserResolver(UserService userService)
     {
         _userService = userService;

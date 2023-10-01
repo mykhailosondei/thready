@@ -5,12 +5,13 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ApplicationDAL.Entities;
+using ApplicationCommon.DTOs.Image;
 using ApplicationCommon.DTOs.Post;
+using ApplicationCommon.Interfaces;
 
 namespace ApplicationCommon.DTOs.User
 {
-    public class UserDTO
+    public class UserDTO : IFollower, IFollowing
     {
         public int Id { get; set; }
         public string Email { get; set; }
@@ -21,7 +22,7 @@ namespace ApplicationCommon.DTOs.User
         public string Username { get; set; }
 
         public int? ImageId { get; set; }
-        public Image? Avatar { get; set; }
+        public ImageDTO? Avatar { get; set; }
 
         public List<PostDTO> Posts { get; set; }
 

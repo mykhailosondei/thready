@@ -49,7 +49,7 @@ public class AuthService : BaseService
 
         var jwtSecurityToken = new JwtSecurityToken(
             claims: claims,
-            expires: DateTime.Now.AddDays(1),
+            expires: DateTime.Now.AddDays(7),
             signingCredentials: creds
         );
 

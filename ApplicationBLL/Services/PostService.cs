@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using ApplicationBLL.Exceptions;
 using ApplicationBLL.Services.Abstract;
@@ -38,9 +39,17 @@ public class PostService : BaseService
         return _mapper.Map<IEnumerable<PostDTO>>(posts);
     }
 
-    public virtual async Task<PostDTO> GetPostById(int id)
+    public virtual async Task<PostDTO> GetPostById(int id, params Expression<Func<Post, object>>[] includeExpressions)
     {
-        var postModel = await _applicationContext.Posts.Include(p => p.Author).AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
+        var query = _applicationContext.Posts.AsNoTracking();
+
+        foreach (var includeExpression in includeExpressions)
+        {
+            query = query.Include(includeExpression);
+        }
+
+        var postModel = await query.FirstOrDefaultAsync(p => p.Id == id);
+
         if (postModel == null)
         {
             throw new PostNotFoundException();
@@ -48,20 +57,25 @@ public class PostService : BaseService
 
         return _mapper.Map<PostDTO>(postModel!);
     }
+
     
     public async Task<IEnumerable<PostDTO>> GetPostsByUserId(int id)
     {
         var userModel = await _userService.GetUserById(id);
-        User user = _mapper.Map<User>(userModel);
-        _applicationContext.Attach(user);
-        await _applicationContext.Entry(user).Collection(u => u.Posts).LoadAsync();
-        userModel = _mapper.Map<UserDTO>(user);
+        User userEntity = _mapper.Map<User>(userModel);
+        
+        
+        _applicationContext.Attach(userEntity);
+        await _applicationContext.Entry(userEntity).Collection(u => u.Posts).LoadAsync();
+        
+        userModel = _mapper.Map<UserDTO>(userEntity);
         return userModel.Posts;
     }
 
     public async Task BookmarkPost(int postId, int userId)
     {
         var userModel = await _userService.GetUserById(userId);
+        var post = await GetPostById(postId);
         if (await DoesPostExist(postId))
         {
             throw new PostNotFoundException();
@@ -70,14 +84,20 @@ public class PostService : BaseService
         bool isBookmarked = userModel.BookmarkedPostsIds.Contains(postId);
 
         if (isBookmarked)
-            return;
-        userModel.BookmarkedPostsIds.Add(postId);
-        await _userService.PutUser(userId, userModel);
+            throw new InvalidOperationException("Already bookmarked");
+        
+        var userEntity = _mapper.Map<User>(userModel);
+        var postEntity = _mapper.Map<Post>(post);
+
+        postEntity.Bookmarks++;
+        userEntity.BookmarkedPostsIds.Add(postId);
+        await BookmarkEntitiesSaveChanges(userEntity, postEntity);
     }
     
     public async Task RemoveFromBookmarksPost(int postId, int userId)
     {
         var userModel = await _userService.GetUserById(userId);
+        var post = await GetPostById(postId);
         if (await DoesPostExist(postId))
         {
             throw new PostNotFoundException();
@@ -86,9 +106,16 @@ public class PostService : BaseService
         bool isBookmarked = userModel.BookmarkedPostsIds.Contains(postId);
 
         if (!isBookmarked)
-            return;
-        userModel.BookmarkedPostsIds.Remove(postId);;
-        await _userService.PutUser(userId, userModel);
+        {
+            throw new InvalidOperationException("Not bookmarked");
+        }
+
+        var userEntity = _mapper.Map<User>(userModel);
+        var postEntity = _mapper.Map<Post>(post);
+
+        postEntity.Bookmarks--;
+        userEntity.BookmarkedPostsIds.Remove(postId);
+        await BookmarkEntitiesSaveChanges(userEntity, postEntity);
     }
 
     public async Task Repost(int postId, int userId)
@@ -99,9 +126,36 @@ public class PostService : BaseService
         bool isReposted = userModel.RepostsIds.Contains(postId);
 
         if (isReposted)
-            return;
-        userModel.RepostsIds.Add(postId);
-        await _userService.PutUser(userId, userModel);
+        {
+            throw new InvalidOperationException("Already reposted");
+        }
+
+        var userEntity = _mapper.Map<User>(userModel);
+        var postEntity = _mapper.Map<Post>(post);
+        
+        userEntity.RepostsIds.Add(postId);
+        postEntity.RepostersIds.Add(userId);
+
+        await RepostEntitiesSaveChanges(userEntity, postEntity);
+    }
+
+    private async Task BookmarkEntitiesSaveChanges(User userEntity, Post postEntity)
+    {
+        _applicationContext.Attach(userEntity);
+        _applicationContext.Attach(postEntity);
+        _applicationContext.Entry(userEntity).Property(u => u.BookmarkedPostsIds).IsModified = true;
+        _applicationContext.Entry(postEntity).Property(p => p.Bookmarks).IsModified = true;
+        await _applicationContext.SaveChangesAsync();
+    }
+
+    private async Task RepostEntitiesSaveChanges(User userEntity, Post postEntity)
+    {
+        _applicationContext.Attach(userEntity);
+        _applicationContext.Attach(postEntity);
+
+        _applicationContext.Entry(postEntity).Property(p => p.RepostersIds).IsModified = true;
+        _applicationContext.Entry(userEntity).Property(u => u.RepostsIds).IsModified = true;
+        await _applicationContext.SaveChangesAsync();
     }
     
     public async Task UndoRepost(int postId, int userId)
@@ -112,9 +166,17 @@ public class PostService : BaseService
         bool isReposted = userModel.RepostsIds.Contains(postId);
 
         if (!isReposted)
-            return;
-        userModel.RepostsIds.Remove(postId);
-        await _userService.PutUser(userId, userModel);
+        {
+            throw new InvalidOperationException("Not reposted");
+        }
+        
+        var userEntity = _mapper.Map<User>(userModel);
+        var postEntity = _mapper.Map<Post>(post);
+        
+        userEntity.RepostsIds.Remove(postId);
+        postEntity.RepostersIds.Remove(userId);
+
+        await RepostEntitiesSaveChanges(userEntity, postEntity);
     }
 
     public async Task CreatePost(PostCreateDTO post)
@@ -159,13 +221,14 @@ public class PostService : BaseService
         }
 
         var postEntity = _mapper.Map<Post>(postToUpdate);
+        var updatedImages = post.Images.Select(i => _mapper.Map<Image>(i)).ToList();
 
         _applicationContext.Attach(postEntity);
 
         await _applicationContext.Entry(postEntity).Collection(p => p.Images).LoadAsync();
 
-        var imagesToAdd = post.Images.ExceptBy(postEntity.Images.Select(imageSelector), imageSelector).ToList();
-        var imagesToDelete = postEntity.Images.ExceptBy(post.Images.Select(imageSelector), imageSelector).ToList();
+        var imagesToAdd = updatedImages.ExceptBy(postEntity.Images.Select(imageSelector), imageSelector).ToList();
+        var imagesToDelete = postEntity.Images.ExceptBy(updatedImages.Select(imageSelector), imageSelector).ToList();
         
         postEntity.Images.AddRange(imagesToAdd.DistinctBy(imageSelector));
 
@@ -182,10 +245,23 @@ public class PostService : BaseService
         await _applicationContext.SaveChangesAsync();
     }
 
-    public async Task DeletePost(int id)
+    public async Task DeletePost(int postId)
     {
-        var post = await GetPostById(id);
+        var post = await GetPostById(postId);
+        
         _applicationContext.Posts.Remove(_mapper.Map<Post>(post));
+        
+        await _applicationContext.SaveChangesAsync();
+        
+        var reposterUsers = post.RepostersIds.Select(async i => _mapper.Map<User>(await _userService.GetUserById(i)));
+        
+        foreach (var reposterUser in reposterUsers)
+        {
+            var awaitedUser = await reposterUser;
+            awaitedUser.RepostsIds.Remove(postId);
+            _applicationContext.Attach(awaitedUser);
+            _applicationContext.Entry(awaitedUser).Property(u => u.RepostsIds).IsModified = true;
+        }
         await _applicationContext.SaveChangesAsync();
     }
 
