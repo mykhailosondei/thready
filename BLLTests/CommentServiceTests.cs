@@ -152,7 +152,7 @@ public class CommentServiceTests
         _applicationContextMock.Setup(c => c.Comments).ReturnsDbSet(comments);
         //Act
         //Assert
-        var ex = await Assert.ThrowsAsync<CommentNotFoundException>(async () => await _commentService.GetCommentById(id));
+        var ex = await Assert.ThrowsAsync<CommentNotFoundException>(async () => await _commentService.GetCommentByIdPlain(id));
         _outputHelper.WriteLine("" + ex);
     }
     
@@ -171,7 +171,7 @@ public class CommentServiceTests
         };
         _applicationContextMock.Setup(c => c.Comments).ReturnsDbSet(comments);
         //Act
-        var comment = await _commentService.GetCommentById(id);
+        var comment = await _commentService.GetCommentByIdPlain(id);
         //Assert
         Assert.Equal(comment.TextContent, comments[0].TextContent);
     }
@@ -596,6 +596,12 @@ public class CommentServiceTests
         {
             comments.RemoveAll(c => c.Id == entity.Id);
         });
+        
+        _validatorMock.Setup(v => v.ValidateAsync(It.IsAny<CommentDTO>(), CancellationToken.None))
+            .ReturnsAsync(new ValidationResult()
+            {
+                Errors = new List<ValidationFailure>() {}
+            });
         
         //Act
         await _commentService.DeleteComment(idToDelete);
