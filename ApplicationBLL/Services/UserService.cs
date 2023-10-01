@@ -106,6 +106,7 @@ public class UserService : BaseService
         userToUnfollowModel.FollowersIds.Remove(userThatUnfollowsModel.Id);
         userThatUnfollowsModel.FollowingIds.Remove(userToUnfollowModel.Id);
         
+            //TODO: change this
         _applicationContext.Users.Update(_mapper.Map<User>(userToUnfollowModel));
         _applicationContext.Users.Update(_mapper.Map<User>(userThatUnfollowsModel));
 
@@ -115,7 +116,7 @@ public class UserService : BaseService
     public async Task<UserDTO> CreateUser(RegisterUserDTO registerUserDto)
     {
         ValidationResult validationResult = await _registerUserDTOValidator.ValidateAsync(registerUserDto);
-
+        
         if (!validationResult.IsValid)
         {
             throw new ValidationException(validationResult.Errors[0].ErrorMessage);
@@ -128,13 +129,7 @@ public class UserService : BaseService
             throw new UserAlreadyExistsException("Email is already in use.");
         }
 
-        userEntity.Posts = new List<Post>();
-        userEntity.FollowersIds = new List<int>();
-        userEntity.FollowingIds = new List<int>();
-        userEntity.Bio = "";
-        userEntity.Location = "";
-        userEntity.BookmarkedPostsIds = new List<int>();
-        userEntity.RepostsIds = new List<int>();
+        InitUser(ref userEntity);
         
         userEntity.PasswordHash = BCrypt.Net.BCrypt.HashPassword(registerUserDto.Password);
         
@@ -142,6 +137,18 @@ public class UserService : BaseService
         await _applicationContext.SaveChangesAsync();
 
         return _mapper.Map<UserDTO>(userEntity);
+    }
+
+    private void InitUser(ref User userEntity)
+    {
+        userEntity.Posts = new List<Post>();
+        userEntity.Avatar = new Image{Url = ""};
+        userEntity.FollowersIds = new List<int>();
+        userEntity.FollowingIds = new List<int>();
+        userEntity.Bio = "";
+        userEntity.Location = "";
+        userEntity.BookmarkedPostsIds = new List<int>();
+        userEntity.RepostsIds = new List<int>();
     }
 
     public virtual async Task PutUser(int userId, UserDTO user)
@@ -163,23 +170,19 @@ public class UserService : BaseService
         userToUpdate.Location = user.Location;
         userToUpdate.Bio = user.Bio;
 
-        if (user.Avatar != null && user.Avatar.Url != "")
+        if (!string.IsNullOrEmpty(user.Avatar?.Url))
         {
-            if (userToUpdate.Avatar == null)
-            {
-                userToUpdate.Avatar = new Image()
-                {
-                    Url = user.Avatar.Url,
-                    Id = userToUpdate.Id
-                };
-            }
-            else
-            {
-                userToUpdate.Avatar.Url = user.Avatar.Url;
-            }
+            userToUpdate.Avatar!.Url = user.Avatar.Url;
         }
+        
+        var userEntity = _mapper.Map<User>(userToUpdate);
 
-        _applicationContext.Users.Update(_mapper.Map<User>(userToUpdate));
+        _applicationContext.Attach(userEntity);
+        _applicationContext.Attach(userEntity.Avatar!);
+        _applicationContext.Entry(userEntity).Property(u => u.Location).IsModified = true;
+        _applicationContext.Entry(userEntity).Property(u => u.Bio).IsModified = true;
+
+        _applicationContext.Entry(userEntity.Avatar!).Property(img => img.Url).IsModified = true;
         await _applicationContext.SaveChangesAsync();
     }
 
