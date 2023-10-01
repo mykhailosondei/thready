@@ -16,17 +16,15 @@ namespace ApplicationBLL.Services;
 public class UserService : BaseService
 {
     private readonly EmailValidatorService _emailValidatorService;
-    private readonly UsernameValidatorService _usernameValidatorService;
     private readonly IValidator<RegisterUserDTO> _registerUserDTOValidator;
     private readonly IValidator<UserDTO> _userDTOValidator;
     
     public UserService(ApplicationContext applicationContext, IMapper mapper, 
-        EmailValidatorService emailValidatorService, UsernameValidatorService usernameValidatorService,
+        EmailValidatorService emailValidatorService,
         IValidator<RegisterUserDTO> registerUserDtoValidator,
         IValidator<UserDTO> userDTOValidator) : base(applicationContext, mapper)
     {
         _emailValidatorService = emailValidatorService;
-        _usernameValidatorService = usernameValidatorService;
         _registerUserDTOValidator = registerUserDtoValidator;
         _userDTOValidator = userDTOValidator;
     }
