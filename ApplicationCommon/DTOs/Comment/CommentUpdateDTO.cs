@@ -1,4 +1,5 @@
-using ApplicationDAL.Entities;
+using ApplicationCommon.DTOs.Image;
+
 using Newtonsoft.Json;
 
 namespace ApplicationCommon.DTOs.Comment;
@@ -10,5 +11,5 @@ public class CommentUpdateDTO
 
     public string TextContent { get; set; }
 
-    public List<Image> Images { get; set; }
+    public List<ImageDTO> Images { get; set; }
 }

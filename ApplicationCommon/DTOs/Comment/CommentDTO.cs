@@ -1,6 +1,6 @@
-﻿using ApplicationCommon.DTOs.Post;
+﻿using ApplicationCommon.DTOs.Image;
+using ApplicationCommon.DTOs.Post;
 using ApplicationCommon.DTOs.User;
-using ApplicationDAL.Entities;
 using Newtonsoft.Json;
 
 namespace ApplicationCommon.DTOs.Comment
@@ -25,7 +25,7 @@ namespace ApplicationCommon.DTOs.Comment
         
         public DateTime CreatedAt { get; set; }
         public string TextContent { get; set; }
-        public List<Image> Images { get; set; }
+        public List<ImageDTO> Images { get; set; }
         public List<int> LikesIds { get; set; }
         public int Bookmarks { get; set; }
         public List<int> CommentsIds { get; set; }

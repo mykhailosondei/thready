@@ -6,10 +6,11 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ApplicationCommon.Interfaces;
 
 namespace ApplicationDAL.Entities
 {
-    public class User
+    public class User : IFollower, IFollowing
     {
         public int Id { get; set; }
 

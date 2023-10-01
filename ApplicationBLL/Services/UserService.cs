@@ -1,9 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using ApplicationBLL.Exceptions;
 using ApplicationBLL.Services.Abstract;
 using ApplicationDAL.Context;
 using ApplicationDAL.Entities;
 using ApplicationCommon.DTOs.User;
+using ApplicationCommon.Interfaces;
 using AutoMapper;
 using FluentValidation;
 using FluentValidation.Results;
@@ -71,14 +73,14 @@ public class UserService : BaseService
         {
             throw new InvalidOperationException("You can not follow yourself");
         }
+        
+        IFollowing userToFollowModelEntity = _mapper.Map<User>(userToFollowModel);
+        IFollower userThatFollowsModelEntity = _mapper.Map<User>(userThatFollowsModel);
 
-        userToFollowModel.FollowersIds.Add(userThatFollowsModel.Id);
-        userThatFollowsModel.FollowingIds.Add(userToFollowModel.Id);
+        userToFollowModelEntity.FollowersIds.Add(userThatFollowsModel.Id);
+        userThatFollowsModelEntity.FollowingIds.Add(userToFollowModel.Id);
 
-        _applicationContext.Users.Update(_mapper.Map<User>(userToFollowModel));
-        _applicationContext.Users.Update(_mapper.Map<User>(userThatFollowsModel));
-
-        await _applicationContext.SaveChangesAsync();
+        await FollowSaveChanges(subject: userThatFollowsModelEntity, @object: userToFollowModelEntity);
     }
     
     public async Task Unfollow(int userId, int currentUserId)
@@ -103,12 +105,22 @@ public class UserService : BaseService
             throw new InvalidOperationException("You can not unfollow yourself");
         }
 
-        userToUnfollowModel.FollowersIds.Remove(userThatUnfollowsModel.Id);
-        userThatUnfollowsModel.FollowingIds.Remove(userToUnfollowModel.Id);
-        
-            //TODO: change this
-        _applicationContext.Users.Update(_mapper.Map<User>(userToUnfollowModel));
-        _applicationContext.Users.Update(_mapper.Map<User>(userThatUnfollowsModel));
+        IFollowing userToUnfollowModelEntity = _mapper.Map<User>(userToUnfollowModel);
+        IFollower userThatUnfollowsModelEntity = _mapper.Map<User>(userThatUnfollowsModel);
+
+        userThatUnfollowsModelEntity.FollowingIds.Remove(userToUnfollowModel.Id);
+        userToUnfollowModelEntity.FollowersIds.Remove(userThatUnfollowsModel.Id);
+
+        await FollowSaveChanges(subject: userThatUnfollowsModelEntity, @object: userToUnfollowModelEntity);
+    }
+
+    private async Task FollowSaveChanges(IFollower subject, IFollowing @object)
+    {
+        _applicationContext.Attach(subject);
+        _applicationContext.Attach(@object);
+
+        _applicationContext.Entry(subject).Property(s => s.FollowingIds).IsModified = true;
+        _applicationContext.Entry(@object).Property(o => o.FollowersIds).IsModified = true;
 
         await _applicationContext.SaveChangesAsync();
     }
@@ -188,12 +200,70 @@ public class UserService : BaseService
 
     public async Task DeleteUser(int id)
     {
-        var userModel = await GetUserById(id);
+        var userModel = await GetUserById(id); 
+        var followers = userModel.FollowersIds.Select(async i => await GetUserById(i));
+        var followings = userModel.FollowingIds.Select(async i => await GetUserById(i));
+        var bookmarkedPosts = userModel.BookmarkedPostsIds.Select(async i => await _applicationContext.Posts.FirstOrDefaultAsync(p => p.Id == i));
+        var repostedPosts = userModel.RepostsIds.Select(async i => await _applicationContext.Posts.FirstOrDefaultAsync(p => p.Id == i));
+        
         if (userModel == null)
         {
             throw new UserNotFoundException("User with specified id does not exist");
         }
         _applicationContext.Users.Remove(_mapper.Map<User>(userModel));
+        
+        
+        foreach (var follower in followers)
+        {
+            IFollower awaitedFollowerEntity = _mapper.Map<User>(await follower);
+            awaitedFollowerEntity.FollowingIds.Remove(id);
+            _applicationContext.Attach(awaitedFollowerEntity);
+            _applicationContext.Entry(awaitedFollowerEntity).Property(u => u.FollowingIds).IsModified = true;
+        }
+        
+        foreach (var following in followings)
+        {
+            IFollowing awaitedFollowingEntity = _mapper.Map<User>(await following);
+            awaitedFollowingEntity.FollowersIds.Remove(id);
+            _applicationContext.Attach(awaitedFollowingEntity);
+            _applicationContext.Entry(awaitedFollowingEntity).Property(u => u.FollowersIds).IsModified = true;
+        }
+        
+        foreach (var bookmarkedPost in bookmarkedPosts)
+        {
+            var awaitedBookmarkedPost = await bookmarkedPost;
+
+            if (awaitedBookmarkedPost == null)
+            {
+                throw new PostNotFoundException("No such post with specified id");
+            }
+
+            awaitedBookmarkedPost.Bookmarks--;
+
+            _applicationContext.Attach(awaitedBookmarkedPost);
+            _applicationContext.Entry(awaitedBookmarkedPost).Property(p => p.Bookmarks).IsModified = true;
+            await _applicationContext.SaveChangesAsync();
+            _applicationContext.ChangeTracker.Clear();
+        }
+        
+        foreach (var repostedPost in repostedPosts)
+        {
+            var awaitedRepostedPost = await repostedPost;
+
+            if (awaitedRepostedPost == null)
+            {
+                throw new PostNotFoundException("No such post with specified id");
+            }
+
+            awaitedRepostedPost.RepostersIds.Remove(id);
+
+            _applicationContext.Attach(awaitedRepostedPost);
+            _applicationContext.Entry(awaitedRepostedPost).Property(p => p.RepostersIds).IsModified = true;
+            
+            await _applicationContext.SaveChangesAsync();
+            _applicationContext.ChangeTracker.Clear();
+        }
+        
         await _applicationContext.SaveChangesAsync();
     }
 

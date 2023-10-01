@@ -221,13 +221,14 @@ public class PostService : BaseService
         }
 
         var postEntity = _mapper.Map<Post>(postToUpdate);
+        var updatedImages = post.Images.Select(i => _mapper.Map<Image>(i)).ToList();
 
         _applicationContext.Attach(postEntity);
 
         await _applicationContext.Entry(postEntity).Collection(p => p.Images).LoadAsync();
 
-        var imagesToAdd = post.Images.ExceptBy(postEntity.Images.Select(imageSelector), imageSelector).ToList();
-        var imagesToDelete = postEntity.Images.ExceptBy(post.Images.Select(imageSelector), imageSelector).ToList();
+        var imagesToAdd = updatedImages.ExceptBy(postEntity.Images.Select(imageSelector), imageSelector).ToList();
+        var imagesToDelete = postEntity.Images.ExceptBy(updatedImages.Select(imageSelector), imageSelector).ToList();
         
         postEntity.Images.AddRange(imagesToAdd.DistinctBy(imageSelector));
 

@@ -239,14 +239,15 @@ public class CommentService : BaseService
         }
 
         var commentEntity = _mapper.Map<Comment>(commentDTO);
+        var updatedImages = commentUpdate.Images.Select(i => _mapper.Map<Image>(i)).ToList();
 
         _applicationContext.Attach(commentEntity);
         
         await _applicationContext.Entry(commentEntity).Collection(c => c.Images).LoadAsync();
 
 
-        var imagesToAdd = commentUpdate.Images.ExceptBy(commentEntity.Images.Select(imageSelector), imageSelector).ToList();
-        var imagesToDelete = commentEntity.Images.ExceptBy(commentUpdate.Images.Select(imageSelector), imageSelector).ToList();
+        var imagesToAdd = updatedImages.ExceptBy(commentEntity.Images.Select(imageSelector), imageSelector).ToList();
+        var imagesToDelete = commentEntity.Images.ExceptBy(updatedImages.Select(imageSelector), imageSelector).ToList();
 
         commentEntity.Images.AddRange(imagesToAdd.DistinctBy(imageSelector));
 
