@@ -1,4 +1,5 @@
-﻿using ApplicationBLL.Services;
+﻿using ApplicationBLL.QueryRepositories;
+using ApplicationBLL.Services;
 using ApplicationCommon.DTOs.Post;
 using ApplicationCommon.Interfaces;
 using ApplicationDAL.Entities;
@@ -15,16 +16,17 @@ namespace group_project_thread.Controllers
     [Authorize]
     public class PostController : ControllerBase
     {
-
+        private readonly PostQueryRepository _postQueryRepository;
         private readonly PostService _postService;
         private readonly LikeService _likeService;
         private readonly IUserIdGetter _userIdGetter;
 
-        public PostController(PostService postService, LikeService likeService, IUserIdGetter userIdGetter)
+        public PostController(PostService postService, LikeService likeService, IUserIdGetter userIdGetter, PostQueryRepository postQueryRepository)
         {
             _postService = postService;
             _likeService = likeService;
             _userIdGetter = userIdGetter;
+            _postQueryRepository = postQueryRepository;
         }
 
         // GET: api/<PostController>
@@ -32,7 +34,7 @@ namespace group_project_thread.Controllers
         [AllowAnonymous]
         public async Task<IEnumerable<PostDTO>> GetAllPosts()
         {
-            return await _postService.GetAllPosts();
+            return await _postQueryRepository.GetAllPosts();
         }
 
         // GET api/<PostController>/5
@@ -40,7 +42,7 @@ namespace group_project_thread.Controllers
         [AllowAnonymous]
         public async Task<PostDTO> GetPostById(int id)
         {
-            return await _postService.GetPostById(id);
+            return await _postQueryRepository.GetPostById(id);
         }
         
         [HttpGet("{userId}/posts")]

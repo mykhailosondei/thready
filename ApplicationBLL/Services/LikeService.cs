@@ -1,3 +1,4 @@
+using ApplicationBLL.QueryRepositories;
 using ApplicationBLL.Services.Abstract;
 using ApplicationDAL.Context;
 using ApplicationDAL.Entities;
@@ -7,21 +8,21 @@ namespace ApplicationBLL.Services;
 
 public class LikeService : BaseService
 {
-    private readonly PostService _postService;
-    private readonly CommentService _commentService;
-    private readonly UserService _userService;
+    private readonly PostQueryRepository _postQueryRepository;
+    private readonly UserQueryRepository _userQueryRepository;
+    private readonly CommentQueryRepository _commentQueryRepository;
     
-    public LikeService(ApplicationContext applicationContext, IMapper mapper, PostService postService, CommentService commentService, UserService userService) : base(applicationContext, mapper)
+    public LikeService(ApplicationContext applicationContext, IMapper mapper, PostQueryRepository postQueryRepository, UserQueryRepository userQueryRepository, CommentQueryRepository commentQueryRepository) : base(applicationContext, mapper)
     {
-        _postService = postService;
-        _commentService = commentService;
-        _userService = userService;
+        _postQueryRepository = postQueryRepository;
+        _userQueryRepository = userQueryRepository;
+        _commentQueryRepository = commentQueryRepository;
     }
     
     public async Task LikePost(int postId, int authorId)
     {
-        var post = await _postService.GetPostById(postId);
-        var author = await _userService.GetUserById(authorId);
+        var post = await _postQueryRepository.GetPostById(postId);
+        var author = await _userQueryRepository.GetUserById(authorId);
         if (post.LikesIds.Contains(author.Id))
         {
             throw new InvalidOperationException("You already liked this post");
@@ -39,8 +40,8 @@ public class LikeService : BaseService
 
     public async Task DislikePost(int postId, int authorId)
     {
-        var post = await _postService.GetPostById(postId);
-        var author = await _userService.GetUserById(authorId);
+        var post = await _postQueryRepository.GetPostById(postId);
+        var author = await _userQueryRepository.GetUserById(authorId);
         if (!post.LikesIds.Contains(author.Id))
         {
             throw new InvalidOperationException("You already don't like this post");
@@ -58,8 +59,8 @@ public class LikeService : BaseService
 
     public async Task LikeComment(int commentId, int authorId)
     {
-        var comment = await _commentService.GetCommentByIdPlain(commentId);
-        var author = await _userService.GetUserById(authorId);
+        var comment = await _commentQueryRepository.GetCommentByIdPlain(commentId);
+        var author = await _userQueryRepository.GetUserById(authorId);
         if (comment.LikesIds.Contains(author.Id))
         {
             throw new InvalidOperationException("You already liked this comment");
@@ -77,8 +78,8 @@ public class LikeService : BaseService
     
     public async Task DislikeComment(int commentId, int authorId)
     {
-        var comment = await _commentService.GetCommentByIdPlain(commentId);
-        var author = await _userService.GetUserById(authorId);
+        var comment = await _commentQueryRepository.GetCommentByIdPlain(commentId);
+        var author = await _userQueryRepository.GetUserById(authorId);
         if (!comment.LikesIds.Contains(author.Id))
         {
             throw new InvalidOperationException("You already don't like this comment");

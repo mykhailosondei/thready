@@ -1,6 +1,7 @@
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using ApplicationBLL.Exceptions;
+using ApplicationBLL.QueryRepositories;
 using ApplicationBLL.Services.Abstract;
 using ApplicationCommon.DTOs.Post;
 using ApplicationCommon.DTOs.User;
@@ -17,13 +18,15 @@ namespace ApplicationBLL.Services;
 
 public class PostService : BaseService
 {
+    private readonly PostQueryRepository _postQueryRepository;
+    private readonly UserQueryRepository _userQueryRepository;
     private readonly IValidator<PostDTO> _postValidator;
-    private readonly UserService _userService;
     
-    public PostService(ApplicationContext applicationContext, IMapper mapper, UserService userService, IValidator<PostDTO> postValidator) : base(applicationContext, mapper)
+    public PostService(ApplicationContext applicationContext, IMapper mapper, IValidator<PostDTO> postValidator, PostQueryRepository postQueryRepository, UserQueryRepository userQueryRepository) : base(applicationContext, mapper)
     {
-        _userService = userService;
         _postValidator = postValidator;
+        _postQueryRepository = postQueryRepository;
+        _userQueryRepository = userQueryRepository;
     }
 
     
@@ -32,36 +35,10 @@ public class PostService : BaseService
         
     }
 
-    public async Task<IEnumerable<PostDTO>> GetAllPosts()
-    {
-        var posts = await _applicationContext.Posts.AsNoTracking().Include(post => post.Author).ToListAsync();
-        
-        return _mapper.Map<IEnumerable<PostDTO>>(posts);
-    }
-
-    public virtual async Task<PostDTO> GetPostById(int id, params Expression<Func<Post, object>>[] includeExpressions)
-    {
-        var query = _applicationContext.Posts.AsNoTracking();
-
-        foreach (var includeExpression in includeExpressions)
-        {
-            query = query.Include(includeExpression);
-        }
-
-        var postModel = await query.FirstOrDefaultAsync(p => p.Id == id);
-
-        if (postModel == null)
-        {
-            throw new PostNotFoundException();
-        }
-
-        return _mapper.Map<PostDTO>(postModel!);
-    }
-
     
     public async Task<IEnumerable<PostDTO>> GetPostsByUserId(int id)
     {
-        var userModel = await _userService.GetUserById(id);
+        var userModel = await _userQueryRepository.GetUserById(id);
         User userEntity = _mapper.Map<User>(userModel);
         
         
@@ -74,8 +51,8 @@ public class PostService : BaseService
 
     public async Task BookmarkPost(int postId, int userId)
     {
-        var userModel = await _userService.GetUserById(userId);
-        var post = await GetPostById(postId);
+        var userModel = await _userQueryRepository.GetUserById(userId);
+        var post = await _postQueryRepository.GetPostById(postId);
         if (await DoesPostExist(postId))
         {
             throw new PostNotFoundException();
@@ -96,8 +73,8 @@ public class PostService : BaseService
     
     public async Task RemoveFromBookmarksPost(int postId, int userId)
     {
-        var userModel = await _userService.GetUserById(userId);
-        var post = await GetPostById(postId);
+        var userModel = await _userQueryRepository.GetUserById(userId);
+        var post = await _postQueryRepository.GetPostById(postId);
         if (await DoesPostExist(postId))
         {
             throw new PostNotFoundException();
@@ -120,8 +97,8 @@ public class PostService : BaseService
 
     public async Task Repost(int postId, int userId)
     {
-        var userModel = await _userService.GetUserById(userId);
-        var post = await GetPostById(postId);
+        var userModel = await _userQueryRepository.GetUserById(userId);
+        var post = await _postQueryRepository.GetPostById(postId);
 
         bool isReposted = userModel.RepostsIds.Contains(postId);
 
@@ -160,8 +137,8 @@ public class PostService : BaseService
     
     public async Task UndoRepost(int postId, int userId)
     {
-        var userModel = await _userService.GetUserById(userId);
-        var post = await GetPostById(postId);
+        var userModel = await _userQueryRepository.GetUserById(userId);
+        var post = await _postQueryRepository.GetPostById(postId);
 
         bool isReposted = userModel.RepostsIds.Contains(postId);
 
@@ -211,7 +188,7 @@ public class PostService : BaseService
 
     public virtual async Task PutPost(int id, PostUpdateDTO post)
     {
-        var postToUpdate = await GetPostById(id);
+        var postToUpdate = await _postQueryRepository.GetPostById(id);
         
         ValidationResult validationResult = await _postValidator.ValidateAsync(postToUpdate);
 
@@ -247,13 +224,13 @@ public class PostService : BaseService
 
     public async Task DeletePost(int postId)
     {
-        var post = await GetPostById(postId);
+        var post = await _postQueryRepository.GetPostById(postId);
         
         _applicationContext.Posts.Remove(_mapper.Map<Post>(post));
         
         await _applicationContext.SaveChangesAsync();
         
-        var reposterUsers = post.RepostersIds.Select(async i => _mapper.Map<User>(await _userService.GetUserById(i)));
+        var reposterUsers = post.RepostersIds.Select(async i => _mapper.Map<User>(await _userQueryRepository.GetUserById(i)));
         
         foreach (var reposterUser in reposterUsers)
         {

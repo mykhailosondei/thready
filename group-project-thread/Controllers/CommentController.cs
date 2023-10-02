@@ -1,4 +1,5 @@
-﻿using ApplicationBLL.Services;
+﻿using ApplicationBLL.QueryRepositories;
+using ApplicationBLL.Services;
 using ApplicationCommon.DTOs.Comment;
 using ApplicationCommon.Interfaces;
 using ApplicationDAL.Entities;
@@ -14,16 +15,17 @@ namespace group_project_thread.Controllers
     [Authorize]
     public class CommentController : ControllerBase
     {
-
+        private readonly CommentQueryRepository _commentQueryRepository;
         private readonly CommentService _commentService;
         private readonly LikeService _likeService;
         private readonly IUserIdGetter _userIdGetter;
 
-        public CommentController(CommentService commentService, LikeService likeService, IUserIdGetter userIdGetter)
+        public CommentController(CommentService commentService, LikeService likeService, IUserIdGetter userIdGetter, CommentQueryRepository commentQueryRepository)
         {
             _commentService = commentService;
             _likeService = likeService;
             _userIdGetter = userIdGetter;
+            _commentQueryRepository = commentQueryRepository;
         }
 
         // GET api/<CommentController>/5
@@ -31,7 +33,7 @@ namespace group_project_thread.Controllers
         [AllowAnonymous]
         public async Task<CommentDTO> GetCommentById(int id)
         {
-            return await _commentService.GetCommentWithAllCommentTreeById(id);
+            return await _commentQueryRepository.GetCommentWithAllCommentTreeById(id);
         }
 
         [AllowAnonymous]

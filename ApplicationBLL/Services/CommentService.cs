@@ -1,6 +1,7 @@
 using System.Linq.Expressions;
 using ApplicationBLL.Exceptions;
 using ApplicationBLL.Extentions;
+using ApplicationBLL.QueryRepositories;
 using ApplicationBLL.Services.Abstract;
 using ApplicationCommon.DTOs.Comment;
 using ApplicationCommon.DTOs.Post;
@@ -19,68 +20,31 @@ namespace ApplicationBLL.Services;
 
 public class CommentService : BaseService
 {
-    private readonly PostService _postService;
-    private readonly UserService _userService;
+    private readonly PostQueryRepository _postQueryRepository;
+    private readonly UserQueryRepository _userQueryRepository;
+    private readonly CommentQueryRepository _commentQueryRepository;
     private readonly IValidator<CommentDTO> _commentValidator;
     private readonly ILogger<CommentService> _logger;
     
-    public CommentService(ApplicationContext applicationContext, IMapper mapper, PostService postService, UserService userService, IValidator<CommentDTO> commentValidator, ILogger<CommentService> logger) : base(applicationContext, mapper)
+    public CommentService(ApplicationContext applicationContext, IMapper mapper, UserService userService, IValidator<CommentDTO> commentValidator, ILogger<CommentService> logger, PostQueryRepository postQueryRepository, UserQueryRepository userQueryRepository, CommentQueryRepository commentQueryRepository) : base(applicationContext, mapper)
     {
         _commentValidator = commentValidator;
         _logger = logger;
-        _postService = postService;
-        _userService = userService;
+        _postQueryRepository = postQueryRepository;
+        _userQueryRepository = userQueryRepository;
+        _commentQueryRepository = commentQueryRepository;
     }
 
-    protected CommentService() : base(null, null)
+    protected CommentService(PostQueryRepository postQueryRepository, UserQueryRepository userQueryRepository, CommentQueryRepository commentQueryRepository) : base(null, null)
     {
-        
-    }
-    
-    public async Task<CommentDTO> GetCommentByIdPlain(int id, params Expression<Func<Comment, object>>[] includeExpressions)
-    {
-        var query = _applicationContext.Comments.AsNoTracking();
-
-        query = includeExpressions.Aggregate(query, (current, includeExpression) => current.Include(includeExpression));
-
-        var comment = await query.FirstOrDefaultAsync(c => c.Id == id);
-
-        if (comment == null)
-        {
-            throw new CommentNotFoundException("Comment with specified id not found");
-        }
-
-        return _mapper.Map<CommentDTO>(comment);
-    }
-
-    public virtual async Task<CommentDTO> GetCommentWithAllCommentTreeById(int id)
-    {
-        int depth = 0;
-        int currentCheckingId = id;
-        var commentForDepthChecking = await _applicationContext.Comments.AsNoTracking().FirstOrDefaultAsync(c => c.Id == currentCheckingId);
-        
-        if (commentForDepthChecking == null)
-        {
-            throw new CommentNotFoundException("Comment with specified id not found");
-        }
-
-        while (commentForDepthChecking.CommentId != null)
-        {
-            depth++;
-            currentCheckingId = commentForDepthChecking.CommentId.Value;
-            commentForDepthChecking = await _applicationContext.Comments.AsNoTracking().FirstOrDefaultAsync(c => c.Id == currentCheckingId);
-        }
-
-        Console.WriteLine(depth);
-        
-        var comment = await _applicationContext.Comments.Include(c => c.Author).CustomInclude(depth).AsNoTracking().FirstOrDefaultAsync(c => c.Id == id);
-        
-        return _mapper.Map<CommentDTO>(comment);
+        _postQueryRepository = postQueryRepository;
+        _userQueryRepository = userQueryRepository;
+        _commentQueryRepository = commentQueryRepository;
     }
     
     public async Task<IEnumerable<CommentDTO>> GetCommentsOfPostId(int postId)
     {
-        var postEntity = await _postService.GetPostById(postId);
+        var postEntity = await _postQueryRepository.GetPostById(postId);
 
         var commentsIdsOfPost = postEntity!.CommentsIds;
 
@@ -90,7 +54,7 @@ public class CommentService : BaseService
         {
             try
             {
-                result.Add(await GetCommentByIdPlain(id));
+                result.Add(await _commentQueryRepository.GetCommentByIdPlain(id));
             }
             catch (CommentNotFoundException e)
             {
@@ -114,7 +78,7 @@ public class CommentService : BaseService
             throw new InvalidOperationException("PostId was not provided");
         }
 
-        var postEntity = _mapper.Map<Post>(await _postService.GetPostById(comment.PostId.Value));
+        var postEntity = _mapper.Map<Post>(await _postQueryRepository.GetPostById(comment.PostId.Value));
         
         postEntity.CommentsIds.Add(comment.Id);
 
@@ -136,7 +100,7 @@ public class CommentService : BaseService
             throw new InvalidOperationException("CommentId was not provided");
         }
 
-        var parentCommentEntity = _mapper.Map<Comment>(await GetCommentByIdPlain(comment.CommentId.Value));
+        var parentCommentEntity = _mapper.Map<Comment>(await _commentQueryRepository.GetCommentByIdPlain(comment.CommentId.Value));
         
         parentCommentEntity.CommentsIds.Add(comment.Id);
         
@@ -187,7 +151,7 @@ public class CommentService : BaseService
 
     public async Task PostComment(CommentCreateDTO newComment)
     {
-        var authorDTO = await _userService.GetUserById(newComment.UserId);
+        var authorDTO = await _userQueryRepository.GetUserById(newComment.UserId);
 
         bool DoesPostIdExist = newComment.PostId.HasValue;
         bool DoesCommentIdExist = newComment.CommentId.HasValue;
@@ -203,14 +167,14 @@ public class CommentService : BaseService
         
         if (DoesPostIdExist)
         {
-            var commentedPost = await _postService.GetPostById(commentDTO.PostId!.Value);
+            var commentedPost = await _postQueryRepository.GetPostById(commentDTO.PostId!.Value);
             commentDTO.Post = commentedPost;
             
             await HandlePostCommenting(commentDTO);
         }
         else if (DoesCommentIdExist)
         {
-            var parentCommentDTO = await GetCommentByIdPlain(commentDTO.CommentId!.Value);
+            var parentCommentDTO = await _commentQueryRepository.GetCommentByIdPlain(commentDTO.CommentId!.Value);
             commentDTO.ParentComment = parentCommentDTO;
             
             await HandleCommentCommenting(commentDTO);
@@ -229,7 +193,7 @@ public class CommentService : BaseService
 
     public async Task PutComment(int id, CommentUpdateDTO commentUpdate)
     {
-        var commentDTO = await GetCommentByIdPlain(id);
+        var commentDTO = await _commentQueryRepository.GetCommentByIdPlain(id);
         
         ValidationResult validationResult = await _commentValidator.ValidateAsync(commentDTO);
 
@@ -277,7 +241,7 @@ public class CommentService : BaseService
 
     public async Task DeleteComment(int id)
     {
-        var commentDTO = await GetCommentByIdPlain(id);
+        var commentDTO = await _commentQueryRepository.GetCommentByIdPlain(id);
         
         bool DoesPostIdExist = commentDTO.PostId.HasValue;
         bool DoesCommentIdExist = commentDTO.CommentId.HasValue;
@@ -298,7 +262,7 @@ public class CommentService : BaseService
         
         if (DoesPostIdExist)
         {
-            var postEntity =_mapper.Map<Post>(await _postService.GetPostById(commentDTO.PostId!.Value));
+            var postEntity =_mapper.Map<Post>(await _postQueryRepository.GetPostById(commentDTO.PostId!.Value));
 
             postEntity.CommentsIds.Remove(id);
             
@@ -309,7 +273,7 @@ public class CommentService : BaseService
         }
         else if (DoesCommentIdExist)
         {
-            var parentCommentEntity = _mapper.Map<Comment>(await GetCommentByIdPlain(commentDTO.CommentId!.Value, c => c.Author));
+            var parentCommentEntity = _mapper.Map<Comment>(await _commentQueryRepository.GetCommentByIdPlain(commentDTO.CommentId!.Value, c => c.Author));
         
             parentCommentEntity.CommentsIds.Remove(commentDTO.Id);
         

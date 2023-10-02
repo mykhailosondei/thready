@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using ApplicationBLL.Exceptions;
+using ApplicationBLL.QueryRepositories;
 using ApplicationBLL.Services.Abstract;
 using ApplicationDAL.Context;
 using ApplicationDAL.Entities;
@@ -18,45 +19,34 @@ namespace ApplicationBLL.Services;
 public class UserService : BaseService
 {
     private readonly EmailValidatorService _emailValidatorService;
+    private readonly UserQueryRepository _userQueryRepository;
+    private readonly PostQueryRepository _postQueryRepository;
     private readonly IValidator<RegisterUserDTO> _registerUserDTOValidator;
     private readonly IValidator<UserDTO> _userDTOValidator;
     
     public UserService(ApplicationContext applicationContext, IMapper mapper, 
         EmailValidatorService emailValidatorService,
         IValidator<RegisterUserDTO> registerUserDtoValidator,
-        IValidator<UserDTO> userDTOValidator) : base(applicationContext, mapper)
+        IValidator<UserDTO> userDTOValidator, UserQueryRepository userQueryRepository, PostQueryRepository postQueryRepository) : base(applicationContext, mapper)
     {
         _emailValidatorService = emailValidatorService;
         _registerUserDTOValidator = registerUserDtoValidator;
         _userDTOValidator = userDTOValidator;
+        _userQueryRepository = userQueryRepository;
+        _postQueryRepository = postQueryRepository;
     }
 
-    public UserService() : base(null, null)
+    public UserService(UserQueryRepository userQueryRepository, PostQueryRepository postQueryRepository) : base(null, null)
     {
-        
+        _userQueryRepository = userQueryRepository;
+        _postQueryRepository = postQueryRepository;
     }
-
-    public async Task<IEnumerable<UserDTO>> GetAllUsers()
-    {
-        return _applicationContext.Users.OrderBy(u => u.Id).Select(u => _mapper.Map<UserDTO>(u));
-    }
-
-    public virtual async Task<UserDTO> GetUserById(int id)
-    {
-        var userModel = await _applicationContext.Users.FirstOrDefaultAsync(u => u.Id == id);
-
-        if (userModel == null)
-        {
-            throw new UserNotFoundException("User with specified id does not exist");
-        }
-
-        return _mapper.Map<UserDTO>(userModel);
-    }
+    
     
     public async Task Follow(int userId, int currentUserId)
     {
-        var userToFollowModel = await GetUserById(userId);
-        var userThatFollowsModel = await GetUserById(currentUserId);
+        var userToFollowModel = await _userQueryRepository.GetUserById(userId);
+        var userThatFollowsModel = await _userQueryRepository.GetUserById(currentUserId);
         if (userToFollowModel == null)
         {
             throw new UserNotFoundException("User with specified id does not exist");
@@ -83,9 +73,9 @@ public class UserService : BaseService
     
     public async Task Unfollow(int userId, int currentUserId)
     {
-        var userToUnfollowModel = await GetUserById(userId);
+        var userToUnfollowModel = await _userQueryRepository.GetUserById(userId);
         
-        var userThatUnfollowsModel = await GetUserById(currentUserId);
+        var userThatUnfollowsModel = await _userQueryRepository.GetUserById(currentUserId);
 
         if (userToUnfollowModel == null)
         {
@@ -170,7 +160,7 @@ public class UserService : BaseService
             throw new ValidationException(validationResult.Errors[0].ErrorMessage);
         }
         
-        var userToUpdate = await GetUserById(userId);
+        var userToUpdate = await _userQueryRepository.GetUserById(userId);
         
         if (userToUpdate == null)
         {
@@ -198,11 +188,11 @@ public class UserService : BaseService
 
     public async Task DeleteUser(int id)
     {
-        var userModel = await GetUserById(id); 
-        var followers = userModel.FollowersIds.Select(async i => await GetUserById(i));
-        var followings = userModel.FollowingIds.Select(async i => await GetUserById(i));
-        var bookmarkedPosts = userModel.BookmarkedPostsIds.Select(async i => await _applicationContext.Posts.FirstOrDefaultAsync(p => p.Id == i));
-        var repostedPosts = userModel.RepostsIds.Select(async i => await _applicationContext.Posts.FirstOrDefaultAsync(p => p.Id == i));
+        var userModel = await _userQueryRepository.GetUserById(id); 
+        var followers = userModel.FollowersIds.Select(async i => await _userQueryRepository.GetUserById(i));
+        var followings = userModel.FollowingIds.Select(async i => await _userQueryRepository.GetUserById(i));
+        var bookmarkedPosts = userModel.BookmarkedPostsIds.Select(async i => await _postQueryRepository.GetPostById(i));
+        var repostedPosts = userModel.RepostsIds.Select(async i => await _postQueryRepository.GetPostById(i));
         
         if (userModel == null)
         {
@@ -231,11 +221,6 @@ public class UserService : BaseService
         {
             var awaitedBookmarkedPost = await bookmarkedPost;
 
-            if (awaitedBookmarkedPost == null)
-            {
-                throw new PostNotFoundException("No such post with specified id");
-            }
-
             awaitedBookmarkedPost.Bookmarks--;
 
             _applicationContext.Attach(awaitedBookmarkedPost);
@@ -247,11 +232,6 @@ public class UserService : BaseService
         foreach (var repostedPost in repostedPosts)
         {
             var awaitedRepostedPost = await repostedPost;
-
-            if (awaitedRepostedPost == null)
-            {
-                throw new PostNotFoundException("No such post with specified id");
-            }
 
             awaitedRepostedPost.RepostersIds.Remove(id);
 
