@@ -20,7 +20,6 @@ public class UserServiceTests
     private readonly Mock<ApplicationContext> _applicationContextMock = new();
     private readonly Mock<IMapper> _mapperMock = new();
     private readonly Mock<EmailValidatorService> _emailValidatorServiceMock = new();
-    private readonly Mock<UsernameValidatorService> _usernameValidatorServiceMock = new();
     private readonly Mock<IValidator<RegisterUserDTO>> _registerUserDTOValidatorMock = new();
     private readonly Mock<IValidator<UserDTO>> _userDTOValidatorMock = new();
     private readonly ITestOutputHelper _outputHelper;
@@ -31,7 +30,6 @@ public class UserServiceTests
             _applicationContextMock.Object,
             _mapperMock.Object,
             _emailValidatorServiceMock.Object,
-            _usernameValidatorServiceMock.Object,
             _registerUserDTOValidatorMock.Object,
             _userDTOValidatorMock.Object
         );
@@ -89,9 +87,6 @@ public class UserServiceTests
 
         // Mock the required services
         _emailValidatorServiceMock.Setup(e => e.IsEmailAvailable(registerUserDto.Email))
-            .ReturnsAsync(true);
-
-        _usernameValidatorServiceMock.Setup(u => u.IsUsernameAvailable(It.IsAny<string>()))
             .ReturnsAsync(true);
 
         var expectedUserEntity = new User
@@ -253,8 +248,7 @@ public class UserServiceTests
         _emailValidatorServiceMock.Setup(e => e.IsEmailAvailable(userDto.Email))
             .ReturnsAsync(true);
     
-        _usernameValidatorServiceMock.Setup(u => u.IsUsernameAvailable(userDto.Username))
-            .ReturnsAsync(true);
+       
     
         // Act
         await _userService.PutUser(userIdToUpdate, userDto);

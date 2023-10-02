@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpInternalService } from './http-internal.service';
 import { Observable } from 'rxjs';
-import { User } from 'oidc-client';
-import { UserDTO } from '../models/userDTO';
 import { HttpResponse } from '@angular/common/http';
+import {UserDTO} from "../models/user/userDTO";
 
 @Injectable({
   providedIn: 'root'
@@ -41,7 +40,7 @@ export class UserService {
     return this.httpService.deleteFullRequest<void>(`${this.routePrefix}/${id}`);
   }
 
-  public copyUser({id, username, email, dateOfBirth, password, imageID, avatar, posts, followersIds, 
+  public copyUser({id, username, email, dateOfBirth, password, imageID, avatar, posts, followersIds,
     followingIds, bio, location, bookmarkedPostsIds, repostsIds}: UserDTO){
     return {
       id,
@@ -53,7 +52,7 @@ export class UserService {
       avatar,
       posts,
       followersIds,
-      followingIds, 
+      followingIds,
       bio,
       location,
       bookmarkedPostsIds,
@@ -61,5 +60,5 @@ export class UserService {
     }
   }
 }
- 
+
 

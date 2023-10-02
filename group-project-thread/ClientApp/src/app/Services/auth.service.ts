@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http'
-import { UserDTO } from '../models/userDTO';
 import { Observable, map, of } from 'rxjs';
 import { HttpInternalService } from './http-internal.service';
 import { UserService } from './user.service';
@@ -8,6 +7,7 @@ import { EventService } from './event.service';
 import { AuthUserDTO } from '../models/auth/authUserDTO';
 import { RegisterUserDTO } from '../models/auth/registerUserDTO';
 import { LoginUserDTO } from '../models/auth/loginUserDTO';
+import {UserDTO} from "../models/user/userDTO";
 
 @Injectable({
   providedIn: 'root'
