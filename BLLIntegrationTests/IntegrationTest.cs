@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Xunit.Abstractions;
+using Xunit.Sdk;
 
 namespace BLLIntegrationTests;
 
@@ -16,19 +18,22 @@ public class IntegrationTest
 {
     protected readonly HttpClient TestClient;
     protected readonly AuthController _authController;
+    protected readonly ITestOutputHelper _outputHelper = new TestOutputHelper();
     
     public IntegrationTest()
     {
         var appFactory = new WebApplicationFactory<Program>()
-            .WithWebHostBuilder(builed =>
+            .WithWebHostBuilder(builder =>
             {
-                builed.ConfigureServices(services =>
+                builder.ConfigureServices(services =>
                 {
                     services.RemoveAll(typeof(ApplicationContext));
-                    services.ConfigureCustomServices();
+                    services.RemoveAll(typeof(DbContextOptions<ApplicationContext>));
                     services.AddDbContext<ApplicationContext>(options =>
                     {
-                        options.UseInMemoryDatabase("appDb");
+                        options.UseNpgsql("Host=35.226.61.207; Database=testDb; Username=postgres; Password=mgdI-Fot$4]+Fl:P; IncludeErrorDetail=true");
+                        options.EnableSensitiveDataLogging();
+                        options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
                     });
                 });
             });
@@ -37,19 +42,16 @@ public class IntegrationTest
 
     protected async Task AuthenticateAsync()
     {
-        TestClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", await GetJwtAsync());
+        TestClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetJwtAsync());
     }
 
     private async Task<string> GetJwtAsync()
     {
-        var response = await TestClient.PostAsJsonAsync("https://localhost:7153/api/auth/register", new RegisterUserDTO()
+        var response = await TestClient.PostAsJsonAsync("/api/auth/login", new LoginUserDTO()
         {
-            Username = "bobusbalibobus24",
             Email = "littlebobus2005@gmail.com",
             Password = "testpassword",
-            DateOfBirth = DateOnly.FromDateTime(DateTime.UtcNow)
-            
-        });
+            });
         var registrationResponse = await response.Content.ReadAsAsync<AuthUser>();
         return registrationResponse.Token;
     }
