@@ -4,24 +4,25 @@ using ApplicationBLL.Extentions;
 using ApplicationCommon.DTOs.User;
 using ApplicationDAL.Context;
 using ApplicationDAL.Entities;
+using AutoMapper;
 using group_project_thread.Controllers;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Xunit;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
 namespace BLLIntegrationTests;
 
-public class IntegrationTest
+public class IntegrationTest 
 {
     protected readonly HttpClient TestClient;
-    protected readonly AuthController _authController;
-    protected readonly ITestOutputHelper _outputHelper = new TestOutputHelper();
     
     public IntegrationTest()
     {
+
         var appFactory = new WebApplicationFactory<Program>()
             .WithWebHostBuilder(builder =>
             {
@@ -40,12 +41,14 @@ public class IntegrationTest
         TestClient = appFactory.CreateClient();
     }
 
-    protected async Task AuthenticateAsync()
+    protected async Task<UserDTO> AuthenticateAsync()
     {
-        TestClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetJwtAsync());
+        var authUser = await GetUserAsync();
+        TestClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authUser.Token);
+        return authUser.User;
     }
 
-    private async Task<string> GetJwtAsync()
+    private async Task<AuthUser> GetUserAsync()
     {
         var response = await TestClient.PostAsJsonAsync("/api/auth/login", new LoginUserDTO()
         {
@@ -53,6 +56,6 @@ public class IntegrationTest
             Password = "testpassword",
             });
         var registrationResponse = await response.Content.ReadAsAsync<AuthUser>();
-        return registrationResponse.Token;
+        return registrationResponse;
     }
 }

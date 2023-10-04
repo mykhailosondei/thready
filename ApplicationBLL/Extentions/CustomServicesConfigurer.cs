@@ -1,6 +1,7 @@
 using System.Reflection;
 using ApplicationBLL.Logic;
 using ApplicationBLL.ProfilesForAutoMapper;
+using ApplicationBLL.QueryRepositories;
 using ApplicationBLL.Services;
 using ApplicationCommon.DTOs.Comment;
 using ApplicationCommon.DTOs.Post;
@@ -23,6 +24,9 @@ public static class CustomServicesConfigurer
         services.AddTransient<IValidator<UserDTO>, UserDTOValidator>();
         services.AddTransient<IValidator<RegisterUserDTO>, RegisterUserDTOValidator>();
         services.AddTransient<IValidator<LoginUserDTO>, LoginUserDTOValidator>();
+        services.AddScoped<UserQueryRepository>();
+        services.AddScoped<PostQueryRepository>();
+        services.AddScoped<CommentQueryRepository>();
         services.AddScoped<UserService>();
         services.AddScoped<PostService>();
         services.AddScoped<CommentService>();
