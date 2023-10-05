@@ -81,8 +81,7 @@ public class CommentService : BaseService
         var postEntity = _mapper.Map<Post>(await _postQueryRepository.GetPostById(comment.PostId.Value));
         
         postEntity.CommentsIds.Add(comment.Id);
-
-        _applicationContext.Entry(postEntity.Author).State = EntityState.Unchanged;
+        
         _applicationContext.Attach(postEntity);
         _applicationContext.Entry(postEntity).Property(c => c.CommentsIds).IsModified = true;
         await _applicationContext.SaveChangesAsync();
@@ -104,7 +103,6 @@ public class CommentService : BaseService
         
         parentCommentEntity.CommentsIds.Add(comment.Id);
         
-        //_applicationContext.Entry(parentCommentEntity.Author).State = EntityState.Unchanged;
         _applicationContext.Attach(parentCommentEntity);
         _applicationContext.Entry(parentCommentEntity).Property(c => c.CommentsIds).IsModified = true;
         await _applicationContext.SaveChangesAsync();
@@ -266,7 +264,6 @@ public class CommentService : BaseService
 
             postEntity.CommentsIds.Remove(id);
             
-            _applicationContext.Entry(postEntity.Author).State = EntityState.Unchanged;
             _applicationContext.Attach(postEntity);
             _applicationContext.Entry(postEntity).Property(c => c.CommentsIds).IsModified = true;
             await _applicationContext.SaveChangesAsync();
@@ -276,8 +273,7 @@ public class CommentService : BaseService
             var parentCommentEntity = _mapper.Map<Comment>(await _commentQueryRepository.GetCommentByIdPlain(commentDTO.CommentId!.Value, c => c.Author));
         
             parentCommentEntity.CommentsIds.Remove(commentDTO.Id);
-        
-            _applicationContext.Entry(parentCommentEntity.Author).State = EntityState.Unchanged;
+            
             _applicationContext.Attach(parentCommentEntity);
             _applicationContext.Entry(parentCommentEntity).Property(c => c.CommentsIds).IsModified = true;
             await _applicationContext.SaveChangesAsync();
