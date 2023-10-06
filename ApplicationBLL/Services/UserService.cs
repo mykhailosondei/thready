@@ -3,6 +3,7 @@ using System.Text;
 using ApplicationBLL.Exceptions;
 using ApplicationBLL.QueryRepositories;
 using ApplicationBLL.Services.Abstract;
+using ApplicationCommon.DTOs.Image;
 using ApplicationDAL.Context;
 using ApplicationDAL.Entities;
 using ApplicationCommon.DTOs.User;
@@ -23,17 +24,20 @@ public class UserService : BaseService
     private readonly PostQueryRepository _postQueryRepository;
     private readonly IValidator<RegisterUserDTO> _registerUserDTOValidator;
     private readonly IValidator<UserDTO> _userDTOValidator;
+    private readonly IValidator<UserUpdateDTO> _updateUserValidator;
     
     public UserService(ApplicationContext applicationContext, IMapper mapper, 
         EmailValidatorService emailValidatorService,
         IValidator<RegisterUserDTO> registerUserDtoValidator,
-        IValidator<UserDTO> userDTOValidator, UserQueryRepository userQueryRepository, PostQueryRepository postQueryRepository) : base(applicationContext, mapper)
+        IValidator<UserDTO> userDTOValidator, UserQueryRepository userQueryRepository, PostQueryRepository postQueryRepository,
+        IValidator<UserUpdateDTO> updateUserValidator) : base(applicationContext, mapper)
     {
         _emailValidatorService = emailValidatorService;
         _registerUserDTOValidator = registerUserDtoValidator;
         _userDTOValidator = userDTOValidator;
         _userQueryRepository = userQueryRepository;
         _postQueryRepository = postQueryRepository;
+        _updateUserValidator = updateUserValidator;
     }
 
     public UserService(UserQueryRepository userQueryRepository, PostQueryRepository postQueryRepository) : base(null, null)
@@ -151,9 +155,9 @@ public class UserService : BaseService
         userEntity.RepostsIds = new List<int>();
     }
 
-    public virtual async Task PutUser(int userId, UserDTO user)
+    public virtual async Task PutUser(int userId, UserUpdateDTO user)
     {
-        ValidationResult validationResult = await _userDTOValidator.ValidateAsync(user);
+        ValidationResult validationResult = await _updateUserValidator.ValidateAsync(user);
         
         if (!validationResult.IsValid)
         {
@@ -169,20 +173,33 @@ public class UserService : BaseService
 
         userToUpdate.Location = user.Location;
         userToUpdate.Bio = user.Bio;
+        bool isImageCreated = false;
 
         if (!string.IsNullOrEmpty(user.Avatar?.Url))
         {
-            userToUpdate.Avatar!.Url = user.Avatar.Url;
+            if (userToUpdate.Avatar == null)
+            {
+                userToUpdate.Avatar = new ImageDTO();
+                isImageCreated = true;
+            }
+            userToUpdate.Avatar.Url = user.Avatar.Url;
         }
         
         var userEntity = _mapper.Map<User>(userToUpdate);
 
         _applicationContext.Attach(userEntity);
-        _applicationContext.Attach(userEntity.Avatar!);
         _applicationContext.Entry(userEntity).Property(u => u.Location).IsModified = true;
         _applicationContext.Entry(userEntity).Property(u => u.Bio).IsModified = true;
+        if (isImageCreated)
+        {
+            _applicationContext.Entry(userEntity.Avatar!).State = EntityState.Added;
+        }
+        else
+        {
+            _applicationContext.Attach(userEntity.Avatar!);
+            _applicationContext.Entry(userEntity.Avatar!).Property(img => img.Url).IsModified = true;
+        }
 
-        _applicationContext.Entry(userEntity.Avatar!).Property(img => img.Url).IsModified = true;
         await _applicationContext.SaveChangesAsync();
     }
 

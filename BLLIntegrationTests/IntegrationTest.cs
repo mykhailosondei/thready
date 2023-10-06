@@ -55,6 +55,19 @@ public class IntegrationTest
             Email = "littlebobus2005@gmail.com",
             Password = "testpassword",
             });
+        var loginResponse = await response.Content.ReadAsAsync<AuthUser>();
+        return loginResponse;
+    }
+
+    public async Task<AuthUser> RegisterNewUser(string email, string password, string username)
+    {
+        var response = await TestClient.PostAsJsonAsync("/api/auth/register", new RegisterUserDTO()
+        {
+            Username = username,
+            Email = email,
+            Password = password,
+            DateOfBirth = new DateOnly(1997, 02, 24)
+        });
         var registrationResponse = await response.Content.ReadAsAsync<AuthUser>();
         return registrationResponse;
     }
