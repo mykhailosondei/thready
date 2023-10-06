@@ -56,32 +56,61 @@ public class PostControllerTests : IntegrationTest
         //Arrange
         var userDTO = await AuthenticateAsync();
         var expectedBookmarksCount = userDTO.BookmarkedPostsIds.Count;
-        var response = await TestClient.GetAsync($"/api/Post/1");
+        var response = await TestClient.GetAsync($"/api/Post/2");
         var postDTO = await response.Content.ReadAsAsync<PostDTO>();
         var postBookmarksExpected = postDTO.Bookmarks;
         //Act
         HttpResponseMessage? responseMessage;
-        if (userDTO.BookmarkedPostsIds.Contains(1))
+        if (userDTO.BookmarkedPostsIds.Contains(2))
         {
             expectedBookmarksCount--;
             postBookmarksExpected--;
-            responseMessage = await TestClient.PostAsJsonAsync("/api/Post/1/removeFromBookmarks", 1);
+            responseMessage = await TestClient.PostAsJsonAsync("/api/Post/2/removeFromBookmarks", 2);
         }
         else
         {
             expectedBookmarksCount++;
             postBookmarksExpected++;
-            responseMessage = await TestClient.PostAsJsonAsync($"/api/Post/1/bookmarkPost", 1);
-
+            responseMessage = await TestClient.PostAsJsonAsync($"/api/Post/2/bookmarkPost", 2);
         }
 
         var actualBookmarksCount = (await (await TestClient.GetAsync($"/api/User/{userDTO.Id}/")).Content.ReadAsAsync<UserDTO>()).BookmarkedPostsIds.Count;
-        var postBookmarksActual = (await (await TestClient.GetAsync($"/api/Post/1/")).Content.ReadAsAsync<PostDTO>()).Bookmarks;
+        var postBookmarksActual = (await (await TestClient.GetAsync($"/api/Post/2/")).Content.ReadAsAsync<PostDTO>()).Bookmarks;
         
         //Assert
         responseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
         Assert.Equal(expectedBookmarksCount, actualBookmarksCount);
         Assert.Equal(postBookmarksExpected, postBookmarksActual);
+    }
+
+    [Fact]
+    public async Task UpdatePost_ReturnsPostWithUpdatedText()
+    {
+        // Arrange
+        await AuthenticateAsync();
+
+        int postId = 2;
+        
+        string textContent = "updated Post";
+
+        var post = new PostUpdateDTO()
+        {
+            TextContent = textContent,
+            Images = new List<ImageDTO>()
+        }; 
+        var requestUri = $"/api/Post/{postId}";
+
+        // Act
+        var response = await TestClient.PutAsJsonAsync(requestUri, post);
+        
+
+        var postResponse = await TestClient.GetAsync($"/api/Post/{postId}");
+        postResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        
+        var postDTO = await postResponse.Content.ReadAsAsync<PostDTO>();
+        
+        // Assert
+        Assert.Equal(postDTO.TextContent, post.TextContent);
     }
     
     [Fact]
@@ -90,27 +119,27 @@ public class PostControllerTests : IntegrationTest
         //Arrange
         var userDTO = await AuthenticateAsync();
         var expectedRepostsCount = userDTO.RepostsIds.Count;
-        var response = await TestClient.GetAsync($"/api/Post/1");
+        var response = await TestClient.GetAsync($"/api/Post/2");
         var postDTO = await response.Content.ReadAsAsync<PostDTO>();
         var postRepostersExpectedCount = postDTO.RepostersIds.Count;
         //Act
         HttpResponseMessage? responseMessage;
-        if (userDTO.RepostsIds.Contains(1) && postDTO.RepostersIds.Contains(1))
+        if (userDTO.RepostsIds.Contains(2) && postDTO.RepostersIds.Contains(1))
         {
             expectedRepostsCount--;
             postRepostersExpectedCount--;
-            responseMessage = await TestClient.PostAsJsonAsync("/api/Post/1/undoRepost", 1);
+            responseMessage = await TestClient.PostAsJsonAsync("/api/Post/2/undoRepost", 2);
         }
         else
         {
             expectedRepostsCount++;
             postRepostersExpectedCount++;
-            responseMessage = await TestClient.PostAsJsonAsync($"/api/Post/1/repost", 1);
+            responseMessage = await TestClient.PostAsJsonAsync($"/api/Post/2/repost", 2);
 
         }
 
         var actualRepostsCount = (await (await TestClient.GetAsync($"/api/User/{userDTO.Id}/")).Content.ReadAsAsync<UserDTO>()).RepostsIds.Count;
-        var postRepostsActual = (await (await TestClient.GetAsync($"/api/Post/1/")).Content.ReadAsAsync<PostDTO>()).RepostersIds.Count;
+        var postRepostsActual = (await (await TestClient.GetAsync($"/api/Post/2/")).Content.ReadAsAsync<PostDTO>()).RepostersIds.Count;
         
         //Assert
         responseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -123,7 +152,7 @@ public class PostControllerTests : IntegrationTest
     {
         //Arrange
         await AuthenticateAsync();
-        var response = await TestClient.GetAsync($"/api/Post/1");
+        var response = await TestClient.GetAsync($"/api/Post/2");
         var postDTO = await response.Content.ReadAsAsync<PostDTO>();
         var postLikesExpectedCount = postDTO.LikesIds.Count;
         //Act
@@ -131,16 +160,16 @@ public class PostControllerTests : IntegrationTest
         if (postDTO.LikesIds.Contains(1))
         {
             postLikesExpectedCount--;
-            responseMessage = await TestClient.PostAsJsonAsync("/api/Post/1/unlikePost", 1);
+            responseMessage = await TestClient.PostAsJsonAsync("/api/Post/2/unlikePost", 2);
         }
         else
         {
             postLikesExpectedCount++;
-            responseMessage = await TestClient.PostAsJsonAsync($"/api/Post/1/likePost", 1);
+            responseMessage = await TestClient.PostAsJsonAsync($"/api/Post/2/likePost", 2);
 
         }
 
-        var postLikesActual = (await (await TestClient.GetAsync($"/api/Post/1/")).Content.ReadAsAsync<PostDTO>()).LikesIds.Count;
+        var postLikesActual = (await (await TestClient.GetAsync($"/api/Post/2/")).Content.ReadAsAsync<PostDTO>()).LikesIds.Count;
         
         //Assert
         responseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -148,35 +177,29 @@ public class PostControllerTests : IntegrationTest
     }
 
     [Fact]
-    public async Task PutPostAndDelete_ShouldUpdateInfoAboutPost()
+    public async Task DeletePost_ShouldDeletePost()
     {
-        //Arrange
-        var userDTO = await AuthenticateAsync();
-        var posts = await (await TestClient.GetAsync($"/api/Post/{userDTO.Id}/posts")).Content.ReadAsAsync<List<PostDTO>>();
-        var postResponse = await TestClient.PostAsJsonAsync("/api/post/", new PostCreateDTO()
+        // Arrange
+        await AuthenticateAsync();
+        
+        var userPosts = TestClient.GetAsync($"/api/Post/1/posts").Result.Content.ReadAsAsync<List<PostDTO>>().Result;
+        
+        int createdPostId = userPosts[^1].Id+1;
+        var requestUri = $"/api/Post/{createdPostId}";
+
+        // Act
+        await TestClient.PostAsJsonAsync("/api/Post/", new PostCreateDTO()
         {
-            AuthorId = userDTO.Id,
-            TextContent = "new post",
+            TextContent = "test",
             Images = new List<ImageDTO>()
         });
-        var postId = posts[posts.Count - 1].Id;
-        string expectedText = "updated post";
-        //Act && assert
-        var responce = await TestClient.PutAsJsonAsync($"/api/Post/{postId}", new PostCreateDTO()
-        {
-            TextContent = "updated post",
-        });
-        if (responce.StatusCode == HttpStatusCode.OK)
-        {
-            var response = await TestClient.GetAsync($"/api/Post/{postId}");
-            var actualPostText = (await response.Content.ReadAsAsync<PostDTO>()).TextContent;
-            Assert.Equal(expectedText, actualPostText);
-            var deleteResponce = await TestClient.DeleteAsync($"/api/Post/{postId}");
-            deleteResponce.StatusCode.Should().Be(HttpStatusCode.OK);
-            response = await TestClient.GetAsync($"/api/Post/{postId}");
-            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
-        }
-
+        
+        var response = await TestClient.DeleteAsync(requestUri);
+        
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        response = await TestClient.GetAsync($"/api/Post/{createdPostId}");
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
     
     

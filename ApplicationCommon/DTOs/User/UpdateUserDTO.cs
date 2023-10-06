@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using ApplicationCommon.DTOs.Image;
+using Newtonsoft.Json;
 
 namespace ApplicationCommon.DTOs.User;
 
@@ -8,5 +9,5 @@ public class UpdateUserDTO
     public int Id { get; set; }
     public string Bio { get; set; }
     public string Location { get; set; }
-    public DateOnly DateOfBirth { get; set; }
+    public ImageDTO? Avatar { get; set;  }
 }

@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace group_project_thread.Validators;
 
-public class PostDTOValidator : AbstractValidator<PostDTO>
+public class UpdatePostDTOValidator : AbstractValidator<PostUpdateDTO>
 {
-    public PostDTOValidator()
+    public UpdatePostDTOValidator()
     {
         RuleFor(p => p.TextContent).Cascade(CascadeMode.Stop).NotEmpty().When(p => p.Images.Count == 0)
             .WithMessage("You can not create post with no content")

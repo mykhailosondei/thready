@@ -21,12 +21,15 @@ public class PostService : BaseService
     private readonly PostQueryRepository _postQueryRepository;
     private readonly UserQueryRepository _userQueryRepository;
     private readonly IValidator<PostDTO> _postValidator;
+    private readonly IValidator<PostUpdateDTO> _postUpdateValidator;
     
-    public PostService(ApplicationContext applicationContext, IMapper mapper, IValidator<PostDTO> postValidator, PostQueryRepository postQueryRepository, UserQueryRepository userQueryRepository) : base(applicationContext, mapper)
+    public PostService(ApplicationContext applicationContext, IMapper mapper, IValidator<PostDTO> postValidator, 
+        PostQueryRepository postQueryRepository, UserQueryRepository userQueryRepository, IValidator<PostUpdateDTO> postUpdateValidator) : base(applicationContext, mapper)
     {
         _postValidator = postValidator;
         _postQueryRepository = postQueryRepository;
         _userQueryRepository = userQueryRepository;
+        _postUpdateValidator = postUpdateValidator;
     }
 
     
@@ -190,7 +193,7 @@ public class PostService : BaseService
     {
         var postToUpdate = await _postQueryRepository.GetPostById(id);
         
-        ValidationResult validationResult = await _postValidator.ValidateAsync(postToUpdate);
+        ValidationResult validationResult = await _postUpdateValidator.ValidateAsync(post);
 
         if (!validationResult.IsValid)
         {
