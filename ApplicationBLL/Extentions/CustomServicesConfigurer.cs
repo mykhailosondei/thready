@@ -24,8 +24,9 @@ public static class CustomServicesConfigurer
         services.AddTransient<IValidator<UserDTO>, UserDTOValidator>();
         services.AddTransient<IValidator<RegisterUserDTO>, RegisterUserDTOValidator>();
         services.AddTransient<IValidator<LoginUserDTO>, LoginUserDTOValidator>();
-        services.AddTransient<IValidator<UpdateUserDTO>, UpdateUserDTOValidator>();
-        services.AddTransient<IValidator<PostUpdateDTO>, UpdatePostDTOValidator>();
+        services.AddTransient<IValidator<UserUpdateDTO>, UserUpdateDTOValidator>();
+        services.AddTransient<IValidator<PostUpdateDTO>, PostUpdateDTOValidator>();
+        services.AddTransient<IValidator<CommentUpdateDTO>, CommentUpdateValidator>();
         services.AddScoped<UserQueryRepository>();
         services.AddScoped<PostQueryRepository>();
         services.AddScoped<CommentQueryRepository>();

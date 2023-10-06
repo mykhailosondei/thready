@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace group_project_thread.Validators;
 
-public class UpdateUserDTOValidator : AbstractValidator<UpdateUserDTO>
+public class UserUpdateDTOValidator : AbstractValidator<UserUpdateDTO>
 {
-    public UpdateUserDTOValidator()
+    public UserUpdateDTOValidator()
     {
         {
             RuleFor(u => u.Bio).Cascade(CascadeMode.Stop)

@@ -24,13 +24,13 @@ public class UserService : BaseService
     private readonly PostQueryRepository _postQueryRepository;
     private readonly IValidator<RegisterUserDTO> _registerUserDTOValidator;
     private readonly IValidator<UserDTO> _userDTOValidator;
-    private readonly IValidator<UpdateUserDTO> _updateUserValidator;
+    private readonly IValidator<UserUpdateDTO> _updateUserValidator;
     
     public UserService(ApplicationContext applicationContext, IMapper mapper, 
         EmailValidatorService emailValidatorService,
         IValidator<RegisterUserDTO> registerUserDtoValidator,
         IValidator<UserDTO> userDTOValidator, UserQueryRepository userQueryRepository, PostQueryRepository postQueryRepository,
-        IValidator<UpdateUserDTO> updateUserValidator) : base(applicationContext, mapper)
+        IValidator<UserUpdateDTO> updateUserValidator) : base(applicationContext, mapper)
     {
         _emailValidatorService = emailValidatorService;
         _registerUserDTOValidator = registerUserDtoValidator;
@@ -155,7 +155,7 @@ public class UserService : BaseService
         userEntity.RepostsIds = new List<int>();
     }
 
-    public virtual async Task PutUser(int userId, UpdateUserDTO user)
+    public virtual async Task PutUser(int userId, UserUpdateDTO user)
     {
         ValidationResult validationResult = await _updateUserValidator.ValidateAsync(user);
         

@@ -25,14 +25,18 @@ public class CommentService : BaseService
     private readonly CommentQueryRepository _commentQueryRepository;
     private readonly IValidator<CommentDTO> _commentValidator;
     private readonly ILogger<CommentService> _logger;
+    private readonly IValidator<CommentUpdateDTO> _commentUpdateValidator;
     
-    public CommentService(ApplicationContext applicationContext, IMapper mapper, UserService userService, IValidator<CommentDTO> commentValidator, ILogger<CommentService> logger, PostQueryRepository postQueryRepository, UserQueryRepository userQueryRepository, CommentQueryRepository commentQueryRepository) : base(applicationContext, mapper)
+    public CommentService(ApplicationContext applicationContext, IMapper mapper, IValidator<CommentDTO> commentValidator,
+        ILogger<CommentService> logger, PostQueryRepository postQueryRepository, UserQueryRepository userQueryRepository, 
+        CommentQueryRepository commentQueryRepository, IValidator<CommentUpdateDTO> commentUpdateValidator) : base(applicationContext, mapper)
     {
         _commentValidator = commentValidator;
         _logger = logger;
         _postQueryRepository = postQueryRepository;
         _userQueryRepository = userQueryRepository;
         _commentQueryRepository = commentQueryRepository;
+        _commentUpdateValidator = commentUpdateValidator;
     }
 
     protected CommentService(PostQueryRepository postQueryRepository, UserQueryRepository userQueryRepository, CommentQueryRepository commentQueryRepository) : base(null, null)
@@ -193,7 +197,7 @@ public class CommentService : BaseService
     {
         var commentDTO = await _commentQueryRepository.GetCommentByIdPlain(id);
         
-        ValidationResult validationResult = await _commentValidator.ValidateAsync(commentDTO);
+        ValidationResult validationResult = await _commentUpdateValidator.ValidateAsync(commentUpdate);
 
         if (!validationResult.IsValid)
         {

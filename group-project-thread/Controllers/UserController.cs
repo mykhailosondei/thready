@@ -80,7 +80,7 @@ namespace group_project_thread.Controllers
 
         // PUT api/<UserController>/5
         [HttpPut("{id}")]
-        public async Task PutUser(int id, [FromBody] UpdateUserDTO value)
+        public async Task PutUser(int id, [FromBody] UserUpdateDTO value)
         {
             await _userService.PutUser(id, value);
         }

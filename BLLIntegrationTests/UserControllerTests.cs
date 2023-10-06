@@ -98,7 +98,7 @@ public class UserControllerTests : IntegrationTest
         var userId = users[users.Count - 1].Id;
         string expectedText = "updated bio";
         //Act && assert
-        var updateRequest = await TestClient.PutAsJsonAsync($"/api/User/{userId}", new UpdateUserDTO()
+        var updateRequest = await TestClient.PutAsJsonAsync($"/api/User/{userId}", new UserUpdateDTO()
         {
             Location = "New Location",
             Bio = "updated bio",

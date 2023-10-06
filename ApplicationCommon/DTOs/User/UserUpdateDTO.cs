@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace ApplicationCommon.DTOs.User;
 
-public class UpdateUserDTO
+public class UserUpdateDTO
 {
     [JsonIgnore]
     public int Id { get; set; }
