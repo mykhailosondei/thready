@@ -32,7 +32,7 @@ public class IntegrationTest
                     services.RemoveAll(typeof(DbContextOptions<ApplicationContext>));
                     services.AddDbContext<ApplicationContext>(options =>
                     {
-                        options.UseNpgsql("Host=35.226.61.207; Database=testDb; Username=postgres; Password=mgdI-Fot$4]+Fl:P; IncludeErrorDetail=true");
+                        options.UseNpgsql("Host=35.226.61.207; Database=testDb; Username=postgres; Password=mgdI-Fot$4]+Fl:P; IncludeErrorDetail=true", x=>x.MigrationsAssembly("ApplicationDAL"));
                         options.EnableSensitiveDataLogging();
                         options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
                     });

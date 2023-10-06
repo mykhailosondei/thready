@@ -246,4 +246,27 @@ public class PostService : BaseService
     {
         return await _applicationContext.Posts.FirstOrDefaultAsync(p => p.Id == postId) == null;
     }
+
+    
+    // implement post viewing
+    
+    public async Task ViewPost(int id, int authorId)
+    {
+        var post = await _postQueryRepository.GetPostById(id);
+
+        bool isViewed = post.ViewedBy.Contains(authorId);
+
+        if (isViewed) return;
+        
+        var postEntity = _mapper.Map<Post>(post);
+        postEntity.ViewedBy.Add(authorId);
+        await ViewEntitiesSaveChanges(postEntity);
+    }
+    
+    private async Task ViewEntitiesSaveChanges(Post postEntity)
+    {
+        _applicationContext.Attach(postEntity);
+        _applicationContext.Entry(postEntity).Property(p => p.ViewedBy).IsModified = true;
+        await _applicationContext.SaveChangesAsync();    
+    }
 }

@@ -74,6 +74,13 @@ namespace group_project_thread.Controllers
             await _postService.BookmarkPost(id, authorId);
         }
         
+        [HttpPost("{id}/viewPost")]
+        public async Task ViewPost(int id)
+        {
+            int authorId = _userIdGetter.CurrentId;
+            await _postService.ViewPost(id, authorId);
+        } 
+        
         // PUT api/<PostController>/5
         [HttpPut("{id}")]
         public async Task PutPost(int id, [FromBody] PostUpdateDTO post)

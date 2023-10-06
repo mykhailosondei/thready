@@ -7,10 +7,13 @@ using ApplicationCommon.DTOs.Comment;
 using ApplicationCommon.DTOs.Post;
 using ApplicationCommon.DTOs.User;
 using ApplicationCommon.Interfaces;
+using ApplicationDAL.Context;
 using Microsoft.Extensions.DependencyInjection;
 using AutoMapper;
 using FluentValidation;
 using group_project_thread.Validators;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 
 namespace ApplicationBLL.Extentions;
 
