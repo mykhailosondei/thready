@@ -46,7 +46,7 @@ public class CommentControllerTests : IntegrationTest
         // Arrange
         await AuthenticateAsync();
 
-        int postId = 1;
+        int postId = 2;
         var requestUri = $"/api/Comment/{postId}/comments";
 
         // Act
