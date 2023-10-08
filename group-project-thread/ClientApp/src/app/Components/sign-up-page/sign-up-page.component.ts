@@ -9,6 +9,7 @@ import { RegisterUserDTO } from 'src/app/models/auth/registerUserDTO';
 import { formatDate} from "@angular/common";
 import {SnackbarService} from "../../Services/snackbar.service";
 import {ValidatorService} from "../../Services/validator.service";
+import {months} from "../../../assets/months";
 
 @Component({
   selector: 'app-sign-up-page',
@@ -33,20 +34,8 @@ export class SignUpPageComponent {
   selectedYear: number | null = null;
   years: number[] = [];
   selectedMonth: number | null = null;
-  months: { value: number; name: string }[] = [
-    { value: 1, name: 'January' },
-    { value: 2, name: 'February' },
-    { value: 3, name: 'March' },
-    { value: 4, name: 'April' },
-    { value: 5, name: 'May' },
-    { value: 6, name: 'June' },
-    { value: 7, name: 'July' },
-    { value: 8, name: 'August' },
-    { value: 9, name: 'September' },
-    { value: 10, name: 'October' },
-    { value: 11, name: 'November' },
-    { value: 12, name: 'December' }
-  ];
+  months: { value: number; name: string }[] = months;
+
   regisForm!: FormGroup;
   private unsubscribe$ = new Subject<void>();
   private submitted: boolean = false;

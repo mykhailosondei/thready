@@ -11,5 +11,5 @@ likesIds: number[];
 commentsIds: number[];
 repostersIds: number[];
 bookmarks: number;
-viwedBy: number[];
+viewedBy: number[];
 }

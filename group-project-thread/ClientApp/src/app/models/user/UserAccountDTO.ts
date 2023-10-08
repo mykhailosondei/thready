@@ -3,7 +3,7 @@
 export interface UserAccountDTO{
   id: number;
   username: string;
-  avatar: Image;
+  avatar: Image | null;
   bio: string;
   location: string;
   followers: number;

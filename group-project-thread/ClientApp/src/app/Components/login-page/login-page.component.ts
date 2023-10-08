@@ -43,7 +43,7 @@ export class LoginPageComponent {
         .pipe(takeUntil(this.unsubscribe$), finalize(() => this.submitted = false))
       .subscribe(
         (response) => {
-          this.router.navigate(['/signup']);
+          this.router.navigate(['/mainPage']);
         },
         (error)=> {
           this.snackbarService.showErrorMessage(error.error.title)

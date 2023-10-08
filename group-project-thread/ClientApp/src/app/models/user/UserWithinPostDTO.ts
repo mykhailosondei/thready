@@ -3,7 +3,7 @@
 export interface UserWithPostDTO{
   id: number;
   username: string;
-  avatar: Image;
+  avatar: Image | null;
   bio: string;
   followers: number;
   following: number;

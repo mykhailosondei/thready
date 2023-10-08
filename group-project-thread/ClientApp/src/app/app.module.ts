@@ -15,6 +15,9 @@ import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSnackBarModule} from "@angular/material/snack-bar";
 import {NotifierComponent} from "./Components/notifier/notifier.component";
+import {MainPageComponent} from "./Components/main-page/main-page.component";
+import {PagePostComponent} from "./Components/page-post/page-post.component";
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [
@@ -26,6 +29,8 @@ import {NotifierComponent} from "./Components/notifier/notifier.component";
     LoginPageComponent,
     SignUpPageComponent,
     NotifierComponent,
+    MainPageComponent,
+    PagePostComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -40,7 +45,8 @@ import {NotifierComponent} from "./Components/notifier/notifier.component";
     AppRoutingModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    FontAwesomeModule
   ],
   providers: [],
   bootstrap: [AppComponent]

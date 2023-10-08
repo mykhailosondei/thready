@@ -1,0 +1,138 @@
+$grey-color: #808080;
+
+.user-collar-and-post-holder{
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  width: 600px;
+  border: solid 0;
+  border-left-width: 1px;
+  border-right-width: 1px;
+  border-color: $grey-color;
+  flex-basis: auto;
+}
+
+.color-grey{
+  color: $grey-color;
+}
+
+.post-holder{
+  flex-basis: 100%;
+}
+
+.user-avatar-collar{
+  display: flex;
+  flex-basis: 40px;
+  margin-right: 12px;
+  flex-direction: column;
+}
+
+.user-info-and-dots{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  flex-basis: auto;
+  flex-grow: 1;
+}
+
+.blue-circle, .red-circle,.green-circle{
+  border-radius: 50%;
+  width: 24px;
+  translate: -4.5px -4px;
+  height: 24px;
+  position: absolute;
+}
+
+.blue-circle{
+  background-color: deepskyblue;
+  opacity: 0;
+}
+
+.red-circle{
+  background-color: deeppink;
+  opacity: 0;
+
+}
+
+.green-circle{
+  background-color: limegreen;
+  opacity: 0;
+
+}
+
+.post-top-margin {
+  margin-top: 12px;
+  align-items: center;
+  justify-content: space-between;
+  display: flex;
+  flex-direction: row;
+  flex-basis: auto;
+  flex-grow: 1;
+}
+
+.comment-info, .repost-info, .likes-info, .view-stats {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-basis: auto;
+  flex-grow: 1;
+}
+
+.comment-info:hover *, .view-stats:hover * {
+  cursor: pointer;
+  color: deepskyblue;
+}
+
+.comment-info:hover > :first-child > :first-child, .view-stats:hover > :first-child> :first-child, .repost-info:hover > :first-child> :first-child, .likes-info:hover > :first-child> :first-child {
+  opacity: 25% !important;
+}
+
+.repost-info:hover *{
+  cursor: pointer;
+  color: limegreen;
+}
+
+.likes-info:hover *{
+  cursor: pointer;
+  color: deeppink;
+}
+
+
+
+.initial {
+  color: #fff;
+  font-size: 20px;
+  line-height: 19px;
+  letter-spacing: 0.2625px;
+}
+
+.user-avatar {
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.comment-amount, .repost-amount, .likes-amount, .view-amount {
+  padding-left: 5px;
+}
+
+.user-date {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+}
+
+.user-date-divider {
+  border-radius: 50%;
+  background-color: $grey-color;
+  width: 3px;
+  height: 3px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+
