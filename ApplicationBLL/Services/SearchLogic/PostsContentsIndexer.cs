@@ -32,8 +32,7 @@ public class PostsContentsIndexer
             var existingWord = words.FirstOrDefault(word => word.Word == wordFrequency.Key);
             if (existingWord != null)
             {
-                int indexToInsert = BinarySearch(existingWord.WordCountInPostId, wordFrequency.Value);
-                existingWord.WordCountInPostId.Insert(indexToInsert, new WordCountInPostId()
+                existingWord.WordCountInPostId.Add(new WordCountInPostId()
                 {
                     PostId =postDTO.Id,
                     WordCount = wordFrequency.Value
@@ -57,8 +56,6 @@ public class PostsContentsIndexer
                 _indexerContext.IndexedWords.Add(newWord);
             }
         }
-        
-
         await _indexerContext.SaveChangesAsync();
     }
     
@@ -81,27 +78,5 @@ public class PostsContentsIndexer
         string pattern = @"[^a-zA-Z']+";
 
         return Regex.Split(textContent, pattern);
-    }
-
-    private int BinarySearch(List<WordCountInPostId> wordCountByPostIds, int wordCount )
-    {
-        
-        int leftBound = 0;
-        int rightBound = wordCountByPostIds.Count - 1;
-        int midlleIndex = 0;
-        while (leftBound <= rightBound)
-        {
-            midlleIndex = leftBound + (rightBound - leftBound) / 2;
-            if (wordCount > wordCountByPostIds[midlleIndex].WordCount)
-            {
-                rightBound = midlleIndex - 1;
-            }
-            else
-            {
-                leftBound = midlleIndex + 1;
-            }
-        }
-
-        return leftBound;
     }
 }
