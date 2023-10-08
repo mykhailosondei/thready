@@ -3,6 +3,7 @@ using ApplicationBLL.Logic;
 using ApplicationBLL.ProfilesForAutoMapper;
 using ApplicationBLL.QueryRepositories;
 using ApplicationBLL.Services;
+using ApplicationBLL.Services.SearchLogic;
 using ApplicationCommon.DTOs.Comment;
 using ApplicationCommon.DTOs.Post;
 using ApplicationCommon.DTOs.User;
@@ -39,6 +40,7 @@ public static class CustomServicesConfigurer
         services.AddScoped<AuthService>();
         services.AddScoped<EmailValidatorService>();
         services.AddScoped<UsernameValidatorService>();
+        services.AddScoped<PostsContentsIndexer>();
         services.AddLogging();
         
 

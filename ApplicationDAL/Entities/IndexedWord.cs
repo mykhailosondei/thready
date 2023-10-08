@@ -10,6 +10,6 @@ public class IndexedWord
     [MaxLength(45)]
     public string Word { get; set; }
     [Required]
-    public List<(int, int)> WordCountInPostId { get; set; }
+    public List<WordCountInPostId> WordCountInPostId { get; set; }
     
 }
