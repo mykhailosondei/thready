@@ -21,30 +21,6 @@ namespace ApplicationDAL.IndexerMigrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("ApplicationDAL.Entities.IndexedUsername", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasMaxLength(15)
-                        .HasColumnType("character varying(15)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Username")
-                        .IsUnique();
-
-                    b.ToTable("IndexedUsernames");
-                });
-
             modelBuilder.Entity("ApplicationDAL.Entities.IndexedWord", b =>
                 {
                     b.Property<int>("Id")
@@ -63,7 +39,7 @@ namespace ApplicationDAL.IndexerMigrations
                     b.HasIndex("Word")
                         .IsUnique();
 
-                    b.ToTable("IndexedWords");
+                    b.ToTable("IndexedWords", (string)null);
                 });
 
             modelBuilder.Entity("ApplicationDAL.Entities.WordCountInPostId", b =>
@@ -87,7 +63,7 @@ namespace ApplicationDAL.IndexerMigrations
 
                     b.HasIndex("IndexedWordId");
 
-                    b.ToTable("WordCountInPostIds");
+                    b.ToTable("WordCountInPostIds", (string)null);
                 });
 
             modelBuilder.Entity("ApplicationDAL.Entities.WordCountInPostId", b =>

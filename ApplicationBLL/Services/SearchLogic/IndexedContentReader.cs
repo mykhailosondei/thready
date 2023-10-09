@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using ApplicationBLL.QueryRepositories;
+using ApplicationCommon.DTOs.IndexedEntities;
 using ApplicationCommon.DTOs.Post;
 using ApplicationCommon.DTOs.User;
 using ApplicationDAL.Context;
@@ -11,13 +12,15 @@ namespace ApplicationBLL.Services.SearchLogic;
 public class IndexedContentReader
 {
     private readonly IndexerContext _indexerContext;
+    private readonly ApplicationContext _applicationContext;
     private readonly PostQueryRepository _postQueryRepository;
     private readonly UserQueryRepository _userQueryRepository;
-    public IndexedContentReader(IndexerContext indexerContext, PostQueryRepository postQueryRepository, UserQueryRepository userQueryRepository)
+    public IndexedContentReader(IndexerContext indexerContext, PostQueryRepository postQueryRepository, UserQueryRepository userQueryRepository, ApplicationContext applicationContext)
     {
         _indexerContext = indexerContext;
         _postQueryRepository = postQueryRepository;
         _userQueryRepository = userQueryRepository;
+        _applicationContext = applicationContext;
     }
 
     public async Task<IEnumerable<PostDTO>> GetPosts(string query, int lowerCount, int upperCount )
@@ -132,14 +135,18 @@ public class IndexedContentReader
         return matchingUsers;
     }
     
-    async Task<List<IndexedUsername>> FindUsersIds(string query, int lowCount, int highCount)
+    async Task<List<IndexedUsernameDTO>> FindUsersIds(string query, int lowCount, int highCount)
     {
         if (lowCount > highCount)
-            return new List<IndexedUsername>();
-        var usernames = await _indexerContext.IndexedUsernames.ToListAsync();
+            return new List<IndexedUsernameDTO>();
+        var usernames = await _applicationContext.Users.Select(u => new IndexedUsernameDTO()
+        {
+            UserId = u.Id,
+            Username = u.Username
+        }).ToListAsync();
         string pattern = @"[^a-zA-Z\d-]+";
         string[] queryWords = Regex.Split(query, pattern);
-        List<IndexedUsername> result = new List<IndexedUsername>();
+        List<IndexedUsernameDTO> result = new List<IndexedUsernameDTO>();
         int usersToTake = highCount - lowCount;
         foreach (var word in queryWords)
         {
@@ -150,7 +157,7 @@ public class IndexedContentReader
                 result.Add(possibleUsername);
             }
 
-            var similarUsernames = usernames.Where(u => IsSimilar(u.Username, word))
+            var similarUsernames = usernames.Where(u => u.Username != word && IsSimilar(u.Username, word))
                 .Skip(lowCount)
                 .Take(usersToTake - result.Count)
                 .ToList();

@@ -25,26 +25,23 @@ public class UserService : BaseService
     private readonly PostQueryRepository _postQueryRepository;
     private readonly IValidator<RegisterUserDTO> _registerUserDTOValidator;
     private readonly IValidator<UserUpdateDTO> _updateUserValidator;
-    private readonly UsernamesIndexer _usernamesIndexer;
     
     public UserService(ApplicationContext applicationContext, IMapper mapper, 
         EmailValidatorService emailValidatorService, IValidator<RegisterUserDTO> registerUserDtoValidator, 
         UserQueryRepository userQueryRepository, PostQueryRepository postQueryRepository, 
-        IValidator<UserUpdateDTO> updateUserValidator, UsernamesIndexer usernamesIndexer) : base(applicationContext, mapper)
+        IValidator<UserUpdateDTO> updateUserValidator) : base(applicationContext, mapper)
     {
         _emailValidatorService = emailValidatorService;
         _registerUserDTOValidator = registerUserDtoValidator;
         _userQueryRepository = userQueryRepository;
         _postQueryRepository = postQueryRepository;
         _updateUserValidator = updateUserValidator;
-        _usernamesIndexer = usernamesIndexer;
     }
 
-    public UserService(UserQueryRepository userQueryRepository, PostQueryRepository postQueryRepository, UsernamesIndexer usernamesIndexer) : base(null, null)
+    public UserService(UserQueryRepository userQueryRepository, PostQueryRepository postQueryRepository) : base(null, null)
     {
         _userQueryRepository = userQueryRepository;
         _postQueryRepository = postQueryRepository;
-        _usernamesIndexer = usernamesIndexer;
     }
     
     
@@ -140,7 +137,6 @@ public class UserService : BaseService
         
         _applicationContext.Users.Add(userEntity);
         await _applicationContext.SaveChangesAsync();
-        await _usernamesIndexer.AddIndexedUsername(userEntity.Id, userEntity.Username);
 
         return _mapper.Map<UserDTO>(userEntity);
     }
