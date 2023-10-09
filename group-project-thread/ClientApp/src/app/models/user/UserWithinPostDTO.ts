@@ -1,6 +1,6 @@
 ﻿import {Image} from "../image";
 
-export interface UserWithPostDTO{
+export interface UserWithPostDTO {
   id: number;
   username: string;
   avatar: Image | null;

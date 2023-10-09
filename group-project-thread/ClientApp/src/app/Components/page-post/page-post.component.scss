@@ -1,33 +1,43 @@
 $grey-color: #808080;
 
-.user-collar-and-post-holder{
+.user-collar-and-post-holder {
   display: flex;
   flex-direction: row;
   align-items: stretch;
-  width: 600px;
-  border: solid 0;
-  border-left-width: 1px;
-  border-right-width: 1px;
-  border-color: $grey-color;
   flex-basis: auto;
+
 }
 
-.color-grey{
+.page-post {
+  border: 0 solid $grey-color;
+  border-top-width: 1px;
+  padding: 5px 10px 0 10px;
+  transition: background-color 0.3s ease;
+  * {
+    user-select: none;
+  }
+  &:hover {
+    background-color: #e6e6e6;
+    cursor: pointer;
+  }
+}
+
+.color-grey {
   color: $grey-color;
 }
 
-.post-holder{
+.post-holder {
   flex-basis: 100%;
 }
 
-.user-avatar-collar{
+.user-avatar-collar {
   display: flex;
   flex-basis: 40px;
   margin-right: 12px;
   flex-direction: column;
 }
 
-.user-info-and-dots{
+.user-info-and-dots {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -36,7 +46,7 @@ $grey-color: #808080;
   flex-grow: 1;
 }
 
-.blue-circle, .red-circle,.green-circle{
+.blue-circle, .red-circle, .green-circle {
   border-radius: 50%;
   width: 24px;
   translate: -4.5px -4px;
@@ -44,18 +54,18 @@ $grey-color: #808080;
   position: absolute;
 }
 
-.blue-circle{
+.blue-circle {
   background-color: deepskyblue;
   opacity: 0;
 }
 
-.red-circle{
+.red-circle {
   background-color: deeppink;
   opacity: 0;
 
 }
 
-.green-circle{
+.green-circle {
   background-color: limegreen;
   opacity: 0;
 
@@ -74,6 +84,7 @@ $grey-color: #808080;
 .comment-info, .repost-info, .likes-info, .view-stats {
   display: flex;
   flex-direction: row;
+  user-select: none;
   align-items: center;
   flex-basis: auto;
   flex-grow: 1;
@@ -84,20 +95,19 @@ $grey-color: #808080;
   color: deepskyblue;
 }
 
-.comment-info:hover > :first-child > :first-child, .view-stats:hover > :first-child> :first-child, .repost-info:hover > :first-child> :first-child, .likes-info:hover > :first-child> :first-child {
+.comment-info:hover > :first-child > :first-child, .view-stats:hover > :first-child > :first-child, .repost-info:hover > :first-child > :first-child, .likes-info:hover > :first-child > :first-child {
   opacity: 25% !important;
 }
 
-.repost-info:hover *{
+.repost-info:hover * {
   cursor: pointer;
   color: limegreen;
 }
 
-.likes-info:hover *{
+.likes-info:hover * {
   cursor: pointer;
   color: deeppink;
 }
-
 
 
 .initial {
@@ -109,7 +119,13 @@ $grey-color: #808080;
 
 .user-avatar {
   border-radius: 50%;
-  width: 40px;
+  &:hover {
+    cursor: pointer;
+    filter: brightness(0.8);
+  }
+  transition: filter 0.3s ease;
+  filter: brightness(1);
+  width: 40px;;
   height: 40px;
   display: flex;
   justify-content: center;
@@ -136,3 +152,10 @@ $grey-color: #808080;
 }
 
 
+.user-info {
+  &:hover {
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+  }
+}

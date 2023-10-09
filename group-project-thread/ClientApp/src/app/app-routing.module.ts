@@ -1,8 +1,8 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule, Routes } from '@angular/router';
-import { LoginPageComponent } from './Components/login-page/login-page.component';
-import { SignUpPageComponent } from './Components/sign-up-page/sign-up-page.component';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {RouterModule, Routes} from '@angular/router';
+import {LoginPageComponent} from './Components/login-page/login-page.component';
+import {SignUpPageComponent} from './Components/sign-up-page/sign-up-page.component';
 import {MainPageComponent} from "./Components/main-page/main-page.component";
 
 const routes: Routes = [

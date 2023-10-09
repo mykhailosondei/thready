@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import {Component} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Router} from '@angular/router';
 import {finalize, Subject, takeUntil} from 'rxjs';
-import { AuthService } from 'src/app/Services/auth.service';
+import {AuthService} from 'src/app/Services/auth.service';
 import ValidateForm from 'src/app/helpers/validateForm';
 import {SnackbarService} from "../../Services/snackbar.service";
 

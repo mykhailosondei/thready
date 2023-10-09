@@ -1,0 +1,13 @@
+$grey-color: #808080;
+
+.wrap {
+  display: flex;
+  justify-content: center;
+}
+
+.main-page{
+  width: 600px;
+  border: 0 solid $grey-color;
+  border-right-width: 1px;
+  border-left-width: 1px;
+}

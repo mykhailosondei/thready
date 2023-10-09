@@ -1,5 +1,5 @@
-import { Image } from "../image";
-import { PostDTO } from "../post/postDTO";
+import {Image} from "../image";
+import {PostDTO} from "../post/postDTO";
 import {UserDTO} from "../user/userDTO";
 
 

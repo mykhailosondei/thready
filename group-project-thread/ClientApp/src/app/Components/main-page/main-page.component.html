@@ -1,4 +1,10 @@
-<app-page-post [post]="posts[0]" [user]="posts[0].user"></app-page-post>
+<div class="wrap">
+  <div class="main-page">
+    <app-page-post *ngFor="let post of posts" [post]="post" [user]="post.user"></app-page-post>
+  </div>
+</div>
 
-<button (click)="getPostView(23)">Add Post</button>
+<input type="text" #box>
+
+<button (click)="getPostView(Number.parseInt(box.value))">Add Post</button>
 <button (click)="logPost()">log post</button>

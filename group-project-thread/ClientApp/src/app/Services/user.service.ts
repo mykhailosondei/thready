@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { HttpInternalService } from './http-internal.service';
-import { Observable } from 'rxjs';
-import { HttpResponse } from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {HttpInternalService} from './http-internal.service';
+import {Observable} from 'rxjs';
+import {HttpResponse} from '@angular/common/http';
 import {UserDTO} from "../models/user/userDTO";
 
 @Injectable({

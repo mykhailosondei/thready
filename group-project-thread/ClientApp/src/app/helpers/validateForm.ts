@@ -1,4 +1,4 @@
-import { FormControl, FormGroup } from "@angular/forms";
+import {FormControl, FormGroup} from "@angular/forms";
 
 export default class ValidateForm{
     static validateAllFields(formGroup: FormGroup){
