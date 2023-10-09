@@ -1,7 +1,6 @@
 ﻿using ApplicationBLL.Services.SearchLogic;
 using ApplicationCommon.DTOs.Post;
 using ApplicationCommon.DTOs.User;
-using ApplicationDAL.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,7 +21,7 @@ namespace group_project_thread.Controllers
         }
 
         [HttpGet("Users")]
-        public async Task<IEnumerable<UserDTO>> GetUsers(string query, string lowerCount, string upperCount)
+        public async Task<IEnumerable<UserShortAccountDTO>> GetUsers(string query, string lowerCount, string upperCount)
         {
             return await _indexedContentReader.GetUsers(query, int.Parse(lowerCount), int.Parse(upperCount));
         }

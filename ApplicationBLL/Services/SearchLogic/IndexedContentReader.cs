@@ -5,6 +5,7 @@ using ApplicationCommon.DTOs.Post;
 using ApplicationCommon.DTOs.User;
 using ApplicationDAL.Context;
 using ApplicationDAL.Entities;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
 namespace ApplicationBLL.Services.SearchLogic;
@@ -15,12 +16,14 @@ public class IndexedContentReader
     private readonly ApplicationContext _applicationContext;
     private readonly PostQueryRepository _postQueryRepository;
     private readonly UserQueryRepository _userQueryRepository;
-    public IndexedContentReader(IndexerContext indexerContext, PostQueryRepository postQueryRepository, UserQueryRepository userQueryRepository, ApplicationContext applicationContext)
+    private protected readonly IMapper _mapper;
+    public IndexedContentReader(IndexerContext indexerContext, PostQueryRepository postQueryRepository, UserQueryRepository userQueryRepository, ApplicationContext applicationContext, IMapper mapper)
     {
         _indexerContext = indexerContext;
         _postQueryRepository = postQueryRepository;
         _userQueryRepository = userQueryRepository;
         _applicationContext = applicationContext;
+        _mapper = mapper;
     }
 
     public async Task<IEnumerable<PostDTO>> GetPosts(string query, int lowerCount, int upperCount )
@@ -111,7 +114,7 @@ public class IndexedContentReader
 
     
     
-    public async Task<IEnumerable<UserDTO>> GetUsers(string query, int lowerCount, int upperCount)
+    public async Task<IEnumerable<UserShortAccountDTO>> GetUsers(string query, int lowerCount, int upperCount)
     {
         var usersToLoad = await FindUsersIds(query, lowerCount, upperCount);
         if (usersToLoad.Count == 0)
@@ -119,13 +122,14 @@ public class IndexedContentReader
             throw new Exception("No users found");
         }
 
-        List<UserDTO> matchingUsers = new List<UserDTO>();
+        List<UserShortAccountDTO> matchingUsers = new List<UserShortAccountDTO>();
         foreach (var wordCountInPostId in usersToLoad)
         {
             try
             {
                 var potentialUser = await _userQueryRepository.GetUserById(wordCountInPostId.UserId);
-                matchingUsers.Add(potentialUser);
+                UserShortAccountDTO userShortInfo = _mapper.Map<UserShortAccountDTO>(potentialUser); 
+                matchingUsers.Add(userShortInfo);
             }
             catch (Exception e)
             {
