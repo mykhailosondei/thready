@@ -17,6 +17,7 @@ public class IndexerContext : DbContext
 
     public virtual DbSet<IndexedWord> IndexedWords { get; set; }
     public virtual DbSet<WordCountInPostId> WordCountInPostIds { get; set; }
+    public virtual DbSet<IndexedUsername> IndexedUsernames { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -26,5 +27,8 @@ public class IndexerContext : DbContext
         modelBuilder.Entity<IndexedWord>()
             .HasMany(i => i.WordCountInPostId)
             .WithOne(wp => wp.IndexedWord);
+        modelBuilder.Entity<IndexedUsername>()
+            .HasIndex(iu => iu.Username)
+            .IsUnique();
     }
 }

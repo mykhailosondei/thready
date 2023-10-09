@@ -3,6 +3,7 @@ using System.Text;
 using ApplicationBLL.Exceptions;
 using ApplicationBLL.QueryRepositories;
 using ApplicationBLL.Services.Abstract;
+using ApplicationBLL.Services.SearchLogic;
 using ApplicationCommon.DTOs.Image;
 using ApplicationDAL.Context;
 using ApplicationDAL.Entities;
@@ -23,27 +24,27 @@ public class UserService : BaseService
     private readonly UserQueryRepository _userQueryRepository;
     private readonly PostQueryRepository _postQueryRepository;
     private readonly IValidator<RegisterUserDTO> _registerUserDTOValidator;
-    private readonly IValidator<UserDTO> _userDTOValidator;
     private readonly IValidator<UserUpdateDTO> _updateUserValidator;
+    private readonly UsernamesIndexer _usernamesIndexer;
     
     public UserService(ApplicationContext applicationContext, IMapper mapper, 
-        EmailValidatorService emailValidatorService,
-        IValidator<RegisterUserDTO> registerUserDtoValidator,
-        IValidator<UserDTO> userDTOValidator, UserQueryRepository userQueryRepository, PostQueryRepository postQueryRepository,
-        IValidator<UserUpdateDTO> updateUserValidator) : base(applicationContext, mapper)
+        EmailValidatorService emailValidatorService, IValidator<RegisterUserDTO> registerUserDtoValidator, 
+        UserQueryRepository userQueryRepository, PostQueryRepository postQueryRepository, 
+        IValidator<UserUpdateDTO> updateUserValidator, UsernamesIndexer usernamesIndexer) : base(applicationContext, mapper)
     {
         _emailValidatorService = emailValidatorService;
         _registerUserDTOValidator = registerUserDtoValidator;
-        _userDTOValidator = userDTOValidator;
         _userQueryRepository = userQueryRepository;
         _postQueryRepository = postQueryRepository;
         _updateUserValidator = updateUserValidator;
+        _usernamesIndexer = usernamesIndexer;
     }
 
-    public UserService(UserQueryRepository userQueryRepository, PostQueryRepository postQueryRepository) : base(null, null)
+    public UserService(UserQueryRepository userQueryRepository, PostQueryRepository postQueryRepository, UsernamesIndexer usernamesIndexer) : base(null, null)
     {
         _userQueryRepository = userQueryRepository;
         _postQueryRepository = postQueryRepository;
+        _usernamesIndexer = usernamesIndexer;
     }
     
     
@@ -139,6 +140,7 @@ public class UserService : BaseService
         
         _applicationContext.Users.Add(userEntity);
         await _applicationContext.SaveChangesAsync();
+        await _usernamesIndexer.AddIndexedUsername(userEntity.Id, userEntity.Username);
 
         return _mapper.Map<UserDTO>(userEntity);
     }

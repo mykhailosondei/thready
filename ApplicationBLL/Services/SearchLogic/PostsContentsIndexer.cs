@@ -56,6 +56,7 @@ public class PostsContentsIndexer
                 _indexerContext.IndexedWords.Add(newWord);
             }
         }
+        
         await _indexerContext.SaveChangesAsync();
     }
     

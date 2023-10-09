@@ -8,36 +8,36 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ApplicationBLL.Services.SearchLogic;
 
-public class PostsFromIndexReader
+public class IndexedContentReader
 {
     private readonly IndexerContext _indexerContext;
     private readonly PostQueryRepository _postQueryRepository;
-    public PostsFromIndexReader(IndexerContext indexerContext, PostQueryRepository postQueryRepository)
+    private readonly UserQueryRepository _userQueryRepository;
+    public IndexedContentReader(IndexerContext indexerContext, PostQueryRepository postQueryRepository, UserQueryRepository userQueryRepository)
     {
         _indexerContext = indexerContext;
         _postQueryRepository = postQueryRepository;
+        _userQueryRepository = userQueryRepository;
     }
 
     public async Task<IEnumerable<PostDTO>> GetPosts(string query)
     {
-        var PostsToLoad = await FindPostsIds(query);
-        if (PostsToLoad.Count == 0)
+        var postsToLoad = await FindPostsIds(query);
+        if (postsToLoad.Count == 0)
         {
             throw new Exception("No posts found");
         }
 
         List<PostDTO> matchingPosts = new List<PostDTO>();
-        foreach (var wordCountInPostId in PostsToLoad)
+        foreach (var wordCountInPostId in postsToLoad)
         {
-            PostDTO potentialPost;
             try
             {
-                 potentialPost = await _postQueryRepository.GetPostById(wordCountInPostId.PostId);
+                 var potentialPost = await _postQueryRepository.GetPostById(wordCountInPostId.PostId);
                  matchingPosts.Add(potentialPost);
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
             }
         }
 
@@ -46,7 +46,7 @@ public class PostsFromIndexReader
 
     private async Task<List<WordCountInPostId>> FindPostsIds(string query)
     {
-        string pattern = @"[^a-zA-Z']+";
+        string pattern = @"[^a-zA-Z'-]+";
         var words = await _indexerContext.IndexedWords.ToListAsync();
         string[] queryWords = Regex.Split(query, pattern);
         List<WordCountInPostId> matchingWordCountInPostIds = new List<WordCountInPostId>();
@@ -78,6 +78,58 @@ public class PostsFromIndexReader
         }
 
         return new List<WordCountInPostId>();
+    }
+
+    
+    
+    public async Task<IEnumerable<UserDTO>> GetUsers(string query)
+    {
+        var usersToLoad = await FindUsersIds(query);
+        if (usersToLoad.Count == 0)
+        {
+            throw new Exception("No users found");
+        }
+
+        List<UserDTO> matchingUsers = new List<UserDTO>();
+        foreach (var wordCountInPostId in usersToLoad)
+        {
+            try
+            {
+                var potentialUser = await _userQueryRepository.GetUserById(wordCountInPostId.UserId);
+                matchingUsers.Add(potentialUser);
+            }
+            catch (Exception e)
+            {
+            }
+        }
+
+        return matchingUsers;
+    }
+    
+    async Task<List<IndexedUsername>> FindUsersIds(string query)
+    {
+        var usernames = await _indexerContext.IndexedUsernames.ToListAsync();
+        string pattern = @"[^a-zA-Z\d-]+";
+        string[] queryWords = Regex.Split(query, pattern);
+        List<IndexedUsername> result = new List<IndexedUsername>();
+        foreach (var word in queryWords)
+        {
+            var possibleUsername = usernames.FirstOrDefault(u => u.Username  == word);
+            
+            if (possibleUsername != null)
+            {
+                result.Add(possibleUsername);
+            }
+
+            var similarUsernames = usernames.Where(u => IsSimilar(u.Username, word)).ToList();
+            result.AddRange(similarUsernames);
+            var partialUsernames = usernames.Where(u => u.Username.Contains(word));
+            result.AddRange(partialUsernames);
+            if (result.Count != 0)
+                return result;
+        }
+
+        return result;
     }
 
     bool IsSimilar(string word, string query)

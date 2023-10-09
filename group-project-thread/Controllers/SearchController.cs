@@ -14,24 +14,24 @@ namespace group_project_thread.Controllers
     [AllowAnonymous]
     public class SearchController : ControllerBase
     {
-        private readonly PostsFromIndexReader _postsFromIndexReader;
+        private readonly IndexedContentReader _indexedContentReader;
 
-        public SearchController(PostsFromIndexReader postsFromIndexReader)
+        public SearchController(IndexedContentReader indexedContentReader)
         {
-            _postsFromIndexReader = postsFromIndexReader;
+            _indexedContentReader = indexedContentReader;
         }
 
         [HttpGet("Users")]
-        public IEnumerable<UserDTO> GetUsers(string query)
+        public async Task<IEnumerable<UserDTO>> GetUsers(string query)
         {
-            return new UserDTO[] { };
+            return await _indexedContentReader.GetUsers(query);
         }
         
         //GET: api/search/posts?query={your query}
         [HttpGet("Posts")]
-        public async Task <IEnumerable<PostDTO>> GetPosts(string query)
+        public async Task<IEnumerable<PostDTO>> GetPosts(string query)
         {
-            return await _postsFromIndexReader.GetPosts(query);
+            return await _indexedContentReader.GetPosts(query);
         }
     }
 }

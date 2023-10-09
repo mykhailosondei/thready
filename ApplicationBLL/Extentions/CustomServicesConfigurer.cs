@@ -25,7 +25,6 @@ public static class CustomServicesConfigurer
         services.AddScoped<LikeService>();
         services.AddTransient<IValidator<PostDTO>, PostDTOValidator>();
         services.AddTransient<IValidator<CommentDTO>, CommentDTOValidator>();
-        services.AddTransient<IValidator<UserDTO>, UserDTOValidator>();
         services.AddTransient<IValidator<RegisterUserDTO>, RegisterUserDTOValidator>();
         services.AddTransient<IValidator<LoginUserDTO>, LoginUserDTOValidator>();
         services.AddTransient<IValidator<UserUpdateDTO>, UserUpdateDTOValidator>();
@@ -41,7 +40,8 @@ public static class CustomServicesConfigurer
         services.AddScoped<EmailValidatorService>();
         services.AddScoped<UsernameValidatorService>();
         services.AddScoped<PostsContentsIndexer>();
-        services.AddScoped<PostsFromIndexReader>();
+        services.AddScoped<IndexedContentReader>();
+        services.AddScoped<UsernamesIndexer>();
         services.AddLogging();
         
 
