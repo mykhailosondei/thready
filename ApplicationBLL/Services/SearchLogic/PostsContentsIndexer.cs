@@ -1,5 +1,4 @@
 ﻿using System.Text.RegularExpressions;
-using ApplicationBLL.QueryRepositories;
 using ApplicationDAL.Context;
 using ApplicationDAL.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -9,24 +8,21 @@ namespace ApplicationBLL.Services.SearchLogic;
 public class PostsContentsIndexer
 {
     private readonly IndexerContext _indexerContext;
-    private readonly PostQueryRepository _postQueryRepository;
     
-    public PostsContentsIndexer(IndexerContext indexerContext, PostQueryRepository postQueryRepository)
+    public PostsContentsIndexer(IndexerContext indexerContext)
     {
         _indexerContext = indexerContext;
-        _postQueryRepository = postQueryRepository;
     }
 
-    public async Task AddIndexedWordsToTableByPostId(int id)
+    public async Task AddIndexedWordsToTableByPostId(int id, string textContent)
     {
-        var postDTO = await _postQueryRepository.GetPostById(id);
         var words = await _indexerContext.IndexedWords.ToListAsync();
         foreach (var word in words)
         {
             _indexerContext.Attach(word);
             await _indexerContext.Entry(word).Collection(w => w.WordCountInPostId).LoadAsync();
         }
-        var wordsFrequencyInPost = GetFrequencyOfWords(postDTO.TextContent);
+        var wordsFrequencyInPost = GetFrequencyOfWords(textContent);
         foreach (var wordFrequency in wordsFrequencyInPost)
         {
             var existingWord = words.FirstOrDefault(word => word.Word == wordFrequency.Key);
@@ -34,7 +30,7 @@ public class PostsContentsIndexer
             {
                 existingWord.WordCountInPostId.Add(new WordCountInPostId()
                 {
-                    PostId =postDTO.Id,
+                    PostId = id,
                     WordCount = wordFrequency.Value
                 });
                 _indexerContext.Entry(existingWord).Collection(e => e.WordCountInPostId).IsModified = true;
@@ -44,7 +40,7 @@ public class PostsContentsIndexer
                 var wordFrequencyByPosts = new List<WordCountInPostId>();
                 wordFrequencyByPosts.Add(new WordCountInPostId()
                 {
-                    PostId =postDTO.Id,
+                    PostId = id,
                     WordCount = wordFrequency.Value
                 });
                 var newWord = new IndexedWord()

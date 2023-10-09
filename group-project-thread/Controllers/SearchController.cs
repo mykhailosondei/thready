@@ -22,16 +22,16 @@ namespace group_project_thread.Controllers
         }
 
         [HttpGet("Users")]
-        public async Task<IEnumerable<UserDTO>> GetUsers(string query)
+        public async Task<IEnumerable<UserDTO>> GetUsers(string query, string lowerCount, string upperCount)
         {
-            return await _indexedContentReader.GetUsers(query);
+            return await _indexedContentReader.GetUsers(query, int.Parse(lowerCount), int.Parse(upperCount));
         }
         
         //GET: api/search/posts?query={your query}
         [HttpGet("Posts")]
-        public async Task<IEnumerable<PostDTO>> GetPosts(string query)
+        public async Task<IEnumerable<PostDTO>> GetPosts(string query, string lowerCount, string upperCount)
         {
-            return await _indexedContentReader.GetPosts(query);
+            return await _indexedContentReader.GetPosts(query, int.Parse(lowerCount), int.Parse(upperCount));
         }
     }
 }

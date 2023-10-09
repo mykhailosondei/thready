@@ -178,7 +178,7 @@ public class PostService : BaseService
         _applicationContext.Posts.Add(postEntity);
         _applicationContext.Attach(postEntity.Author);
         await _applicationContext.SaveChangesAsync();
-        await _postsContentsIndexer.AddIndexedWordsToTableByPostId(postEntity.Id);
+        await _postsContentsIndexer.AddIndexedWordsToTableByPostId(postEntity.Id, postEntity.TextContent);
     }
 
     private void InitPost(ref Post postEntity)

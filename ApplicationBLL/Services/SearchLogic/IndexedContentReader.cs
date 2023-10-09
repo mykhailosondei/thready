@@ -20,9 +20,9 @@ public class IndexedContentReader
         _userQueryRepository = userQueryRepository;
     }
 
-    public async Task<IEnumerable<PostDTO>> GetPosts(string query)
+    public async Task<IEnumerable<PostDTO>> GetPosts(string query, int lowerCount, int upperCount )
     {
-        var postsToLoad = await FindPostsIds(query);
+        var postsToLoad = await FindPostsIds(query, lowerCount, upperCount);
         if (postsToLoad.Count == 0)
         {
             throw new Exception("No posts found");
@@ -44,11 +44,14 @@ public class IndexedContentReader
         return matchingPosts;
     }
 
-    private async Task<List<WordCountInPostId>> FindPostsIds(string query)
+    private async Task<List<WordCountInPostId>> FindPostsIds(string query, int lowerCount, int upperCount)
     {
+        if (lowerCount > upperCount)
+            return new List<WordCountInPostId>();
         string pattern = @"[^a-zA-Z'-]+";
-        var words = await _indexerContext.IndexedWords.ToListAsync();
+        var words = await _indexerContext.IndexedWords.ToListAsync(); 
         string[] queryWords = Regex.Split(query, pattern);
+        int postAmountToLoad = upperCount - lowerCount;
         List<WordCountInPostId> matchingWordCountInPostIds = new List<WordCountInPostId>();
         foreach (var word in queryWords)
         {
@@ -57,18 +60,41 @@ public class IndexedContentReader
             if (possibleWord != null)
             {
                 _indexerContext.Attach(possibleWord);
-                await _indexerContext.Entry(possibleWord).Collection(w => w.WordCountInPostId).LoadAsync();
-                var sorted = possibleWord.WordCountInPostId.OrderByDescending(w => w.WordCount);
-                return sorted.ToList();
+
+                await _indexerContext.Entry(possibleWord)
+                    .Collection(w => w.WordCountInPostId)
+                    .LoadAsync();
+
+                var sorted = possibleWord.WordCountInPostId
+                    .OrderByDescending(w => w.WordCount);
+
+                var result = sorted.Skip(lowerCount)
+                    .Take(postAmountToLoad);
+
+                return result.ToList();
             }
             
             var similarWords = words.Where(w => IsSimilar(w.Word, query)).ToList();
             foreach (var similarWord in similarWords)
             {
                 _indexerContext.Attach(similarWord);
-                await _indexerContext.Entry(similarWord).Collection(w => w.WordCountInPostId).LoadAsync();
-                var sorted = similarWord.WordCountInPostId.OrderByDescending(w => w.WordCount);
+
+                await _indexerContext.Entry(similarWord)
+                    .Collection(w => w.WordCountInPostId)
+                    .LoadAsync();
+
+                var sorted = similarWord.WordCountInPostId
+                    .OrderByDescending(w => w.WordCount)
+                    .Skip(lowerCount)
+                    .Take(postAmountToLoad)
+                    .ToList();
+
                 matchingWordCountInPostIds.AddRange(sorted);
+
+                if (matchingWordCountInPostIds.Count >= postAmountToLoad)
+                {
+                    return matchingWordCountInPostIds;
+                }
             }
 
             if (matchingWordCountInPostIds.Count > 0)
@@ -82,9 +108,9 @@ public class IndexedContentReader
 
     
     
-    public async Task<IEnumerable<UserDTO>> GetUsers(string query)
+    public async Task<IEnumerable<UserDTO>> GetUsers(string query, int lowerCount, int upperCount)
     {
-        var usersToLoad = await FindUsersIds(query);
+        var usersToLoad = await FindUsersIds(query, lowerCount, upperCount);
         if (usersToLoad.Count == 0)
         {
             throw new Exception("No users found");
@@ -106,12 +132,15 @@ public class IndexedContentReader
         return matchingUsers;
     }
     
-    async Task<List<IndexedUsername>> FindUsersIds(string query)
+    async Task<List<IndexedUsername>> FindUsersIds(string query, int lowCount, int highCount)
     {
+        if (lowCount > highCount)
+            return new List<IndexedUsername>();
         var usernames = await _indexerContext.IndexedUsernames.ToListAsync();
         string pattern = @"[^a-zA-Z\d-]+";
         string[] queryWords = Regex.Split(query, pattern);
         List<IndexedUsername> result = new List<IndexedUsername>();
+        int usersToTake = highCount - lowCount;
         foreach (var word in queryWords)
         {
             var possibleUsername = usernames.FirstOrDefault(u => u.Username  == word);
@@ -121,9 +150,19 @@ public class IndexedContentReader
                 result.Add(possibleUsername);
             }
 
-            var similarUsernames = usernames.Where(u => IsSimilar(u.Username, word)).ToList();
+            var similarUsernames = usernames.Where(u => IsSimilar(u.Username, word))
+                .Skip(lowCount)
+                .Take(usersToTake - result.Count)
+                .ToList();
             result.AddRange(similarUsernames);
-            var partialUsernames = usernames.Where(u => u.Username.Contains(word));
+            if (result.Count == usersToTake)
+                return result;
+            
+            var partialUsernames = usernames.Where(u => u.Username.Contains(word) && 
+                                                        result.All(user => user.Username != u.Username))
+                .Skip(lowCount)
+                .Take(usersToTake - result.Count)
+                .ToList();
             result.AddRange(partialUsernames);
             if (result.Count != 0)
                 return result;
