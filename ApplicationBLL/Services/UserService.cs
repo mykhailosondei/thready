@@ -3,6 +3,7 @@ using System.Text;
 using ApplicationBLL.Exceptions;
 using ApplicationBLL.QueryRepositories;
 using ApplicationBLL.Services.Abstract;
+using ApplicationBLL.Services.SearchLogic;
 using ApplicationCommon.DTOs.Image;
 using ApplicationDAL.Context;
 using ApplicationDAL.Entities;
@@ -23,18 +24,15 @@ public class UserService : BaseService
     private readonly UserQueryRepository _userQueryRepository;
     private readonly PostQueryRepository _postQueryRepository;
     private readonly IValidator<RegisterUserDTO> _registerUserDTOValidator;
-    private readonly IValidator<UserDTO> _userDTOValidator;
     private readonly IValidator<UserUpdateDTO> _updateUserValidator;
     
     public UserService(ApplicationContext applicationContext, IMapper mapper, 
-        EmailValidatorService emailValidatorService,
-        IValidator<RegisterUserDTO> registerUserDtoValidator,
-        IValidator<UserDTO> userDTOValidator, UserQueryRepository userQueryRepository, PostQueryRepository postQueryRepository,
+        EmailValidatorService emailValidatorService, IValidator<RegisterUserDTO> registerUserDtoValidator, 
+        UserQueryRepository userQueryRepository, PostQueryRepository postQueryRepository, 
         IValidator<UserUpdateDTO> updateUserValidator) : base(applicationContext, mapper)
     {
         _emailValidatorService = emailValidatorService;
         _registerUserDTOValidator = registerUserDtoValidator;
-        _userDTOValidator = userDTOValidator;
         _userQueryRepository = userQueryRepository;
         _postQueryRepository = postQueryRepository;
         _updateUserValidator = updateUserValidator;

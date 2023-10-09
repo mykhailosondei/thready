@@ -19,5 +19,8 @@ public class UserProfile : Profile
         });
         CreateMap<RegisterUserDTO, User>().ForMember(dest => dest.Avatar, src => src.MapFrom(s => new Image { Url = string.IsNullOrEmpty(s.Avatar) ? "" : s.Avatar }));
         CreateMap<UserUpdateDTO, UserDTO>().ReverseMap();
+        CreateMap<UserDTO, UserShortAccountDTO>()
+            .ForMember(dest => dest.Followers, src => src.MapFrom(s => s.FollowersIds.Count))
+            .AfterMap((src, dest) => dest.Following = src.FollowingIds.Count);
     }
 }

@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using ApplicationBLL.Exceptions;
 using ApplicationBLL.QueryRepositories;
 using ApplicationBLL.Services.Abstract;
+using ApplicationBLL.Services.SearchLogic;
 using ApplicationCommon.DTOs.Post;
 using ApplicationCommon.DTOs.User;
 using ApplicationDAL.Context;
@@ -22,20 +23,22 @@ public class PostService : BaseService
     private readonly UserQueryRepository _userQueryRepository;
     private readonly IValidator<PostDTO> _postValidator;
     private readonly IValidator<PostUpdateDTO> _postUpdateValidator;
+    private readonly PostsContentsIndexer _postsContentsIndexer;
     
     public PostService(ApplicationContext applicationContext, IMapper mapper, IValidator<PostDTO> postValidator, 
-        PostQueryRepository postQueryRepository, UserQueryRepository userQueryRepository, IValidator<PostUpdateDTO> postUpdateValidator) : base(applicationContext, mapper)
+        PostQueryRepository postQueryRepository, UserQueryRepository userQueryRepository, IValidator<PostUpdateDTO> postUpdateValidator, PostsContentsIndexer postsContentsIndexer) : base(applicationContext, mapper)
     {
         _postValidator = postValidator;
         _postQueryRepository = postQueryRepository;
         _userQueryRepository = userQueryRepository;
         _postUpdateValidator = postUpdateValidator;
+        _postsContentsIndexer = postsContentsIndexer;
     }
 
     
-    protected PostService() : base(null, null)
+    protected PostService(PostsContentsIndexer postsContentsIndexer) : base(null, null)
     {
-        
+        _postsContentsIndexer = postsContentsIndexer;
     }
 
     
@@ -175,6 +178,7 @@ public class PostService : BaseService
         _applicationContext.Posts.Add(postEntity);
         _applicationContext.Attach(postEntity.Author);
         await _applicationContext.SaveChangesAsync();
+        await _postsContentsIndexer.AddIndexedWordsToTableByPostId(postEntity.Id, postEntity.TextContent);
     }
 
     private void InitPost(ref Post postEntity)

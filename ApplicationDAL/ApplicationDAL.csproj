@@ -22,4 +22,13 @@
       <ProjectReference Include="..\ApplicationCommon\ApplicationCommon.csproj" />
     </ItemGroup>
 
+
+
+
+    <ItemGroup>
+      <Folder Include="IndexerMigrations\" />
+    </ItemGroup>
+
+
+
 </Project>

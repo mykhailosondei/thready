@@ -28,6 +28,8 @@
       <Reference Include="Microsoft.Extensions.Configuration">
         <HintPath>..\..\.dotnet\packs\Microsoft.AspNetCore.App.Ref\7.0.10\ref\net7.0\Microsoft.Extensions.Configuration.dll</HintPath>
       </Reference>
+
+
     </ItemGroup>
 
 
