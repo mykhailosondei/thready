@@ -1,7 +1,7 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {HttpClientModule} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {RouterModule} from '@angular/router';
 
 import {AppComponent} from './app.component';
@@ -18,6 +18,8 @@ import {NotifierComponent} from "./Components/notifier/notifier.component";
 import {MainPageComponent} from "./Components/main-page/main-page.component";
 import {PagePostComponent} from "./Components/page-post/page-post.component";
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
+import {ProfilePageComponent} from "./Components/profile-page/profile-page.component";
+import {JwtInterceptor} from "./helpers/jwt.interceptor";
 
 @NgModule({
   declarations: [
@@ -30,7 +32,8 @@ import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
     SignUpPageComponent,
     NotifierComponent,
     MainPageComponent,
-    PagePostComponent
+    PagePostComponent,
+    ProfilePageComponent
   ],
   imports: [
     BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),
@@ -48,7 +51,9 @@ import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
     MatSnackBarModule,
     FontAwesomeModule
   ],
-  providers: [],
+  providers: [
+    {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi:true}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

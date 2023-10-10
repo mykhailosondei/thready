@@ -8,7 +8,7 @@ import {UserDTO} from "../models/user/userDTO";
   providedIn: 'root'
 })
 export class UserService {
-  public routePrefix: string = 'api/user';
+  public routePrefix: string = '/api/user';
 
   constructor(private httpService : HttpInternalService) { }
 
@@ -16,12 +16,12 @@ export class UserService {
     return this.httpService.getFullRequest<UserDTO[]>(`${this.routePrefix}`);
   }
 
-  public getUserByID(id: number) : Observable<HttpResponse<UserDTO>>{
+  public getUserById(id: number) : Observable<HttpResponse<UserDTO>>{
     return this.httpService.getFullRequest<UserDTO>(`${this.routePrefix}/${id}`);
   }
 
   public getCurrentUser() : Observable<HttpResponse<UserDTO>>{
-    return this.httpService.getFullRequest<UserDTO>(`${this.routePrefix}/currentUser}`);
+    return this.httpService.getFullRequest<UserDTO>(`${this.routePrefix}/currentUser`);
   }
 
   public followUser(id: number): Observable<HttpResponse<void>>{

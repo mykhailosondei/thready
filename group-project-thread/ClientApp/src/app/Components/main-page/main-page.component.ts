@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {PagePostDTO} from "../../models/post/pagePostDTO";
 import {HttpInternalService} from "../../Services/http-internal.service";
 import {PostDTO} from "../../models/post/postDTO";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-main-page',
@@ -13,7 +14,7 @@ export class MainPageComponent {
   posts: PagePostDTO[] = [];
   id: string | null = null;
 
-  constructor(private httpService: HttpInternalService) {
+  constructor(private httpService: HttpInternalService, private router : Router) {
   }
 
   ngOnInit(): void {
@@ -49,6 +50,10 @@ export class MainPageComponent {
 
   public logPost() {
     console.log(this.posts);
+  }
+
+  public navigateToProfile(){
+    this.router.navigate(['/profile']);
   }
 
   protected readonly Number = Number;
