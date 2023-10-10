@@ -18,6 +18,7 @@ import {NotifierComponent} from "./Components/notifier/notifier.component";
 import {MainPageComponent} from "./Components/main-page/main-page.component";
 import {PagePostComponent} from "./Components/page-post/page-post.component";
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
+import {NgOptimizedImage} from "@angular/common";
 
 @NgModule({
   declarations: [
@@ -32,22 +33,23 @@ import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
     MainPageComponent,
     PagePostComponent
   ],
-  imports: [
-    BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),
-    HttpClientModule,
-    FormsModule,
-    ReactiveFormsModule,
-    RouterModule.forRoot([
-      {path: '', component: HomeComponent, pathMatch: 'full'},
-      {path: 'counter', component: CounterComponent},
-      {path: 'fetch-data', component: FetchDataComponent},
-    ]),
-    AppRoutingModule,
-    HttpClientModule,
-    BrowserAnimationsModule,
-    MatSnackBarModule,
-    FontAwesomeModule
-  ],
+    imports: [
+        BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),
+        HttpClientModule,
+        FormsModule,
+        ReactiveFormsModule,
+        RouterModule.forRoot([
+            {path: '', component: HomeComponent, pathMatch: 'full'},
+            {path: 'counter', component: CounterComponent},
+            {path: 'fetch-data', component: FetchDataComponent},
+        ]),
+        AppRoutingModule,
+        HttpClientModule,
+        BrowserAnimationsModule,
+        MatSnackBarModule,
+        FontAwesomeModule,
+        NgOptimizedImage
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })

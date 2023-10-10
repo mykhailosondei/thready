@@ -23,7 +23,50 @@
         <p>{{ post.textContent }}</p>
       </div>
       <div class="post-image-content">
-        <img src="{{ post.imagesUrls[0] }}" alt="{{ post.textContent }}">
+        <div class="image-radius-wrap">
+          <div *ngIf="post.imagesUrls.length === 4" class="four-image-container full-width">
+              <div class="two-image-container full-width">
+                <div class="left-upper-image-container full-width">
+                  <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[0] + ')'"></div>
+                </div>
+                <div class="right-upper-image-container full-width">
+                  <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[0] + ')'"></div>
+                </div>
+            </div>
+            <div class="two-image-container full-width">
+              <div class="left-bottom-image-container full-width">
+                <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[0] + ')'"></div>
+              </div>
+              <div class="right-bottom-image-container full-width">
+                <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[0] + ')'"></div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="post.imagesUrls.length === 3" class="three-image-container full-width">
+            <div class="left-big-image full-width">
+              <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[0] + ')'"></div>
+            </div>
+            <div class="two-right-images full-width">
+              <div class="right-upper-image-container full-width">
+                <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[0] + ')'"></div>
+              </div>
+              <div class="right-bottom-image-container full-width">
+                <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[0] + ')'"></div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="post.imagesUrls.length == 2" class="two-image-container full-width">
+            <div class="left-big-image full-width">
+              <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[0] + ')'"></div>
+            </div>
+            <div class="right-big-image full-width">
+              <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[0] + ')'"></div>
+            </div>
+          </div>
+          <div *ngIf="post.imagesUrls.length == 1" class="solo-image-container full-width" [style.padding-top]="singleImageHeight/singleImageWidth">
+            <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[0] + ')'"></div>
+          </div>
+          </div>
       </div>
       <div class="post-footer">
         <div class="post-top-margin">

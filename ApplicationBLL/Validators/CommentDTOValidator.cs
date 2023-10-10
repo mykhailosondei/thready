@@ -15,8 +15,8 @@ public class CommentDTOValidator : AbstractValidator<CommentDTO>
         RuleFor(p => p.Images).NotEmpty()
             .When(p => p.TextContent == String.Empty).WithMessage("You can not create comment with no content");
 
-        RuleFor(p => p.Images.Count).InclusiveBetween(0, 5)
-            .WithMessage("You can not add more than 10 pictures to your comment");
+        RuleFor(p => p.Images.Count).InclusiveBetween(0, 4)
+            .WithMessage("You can not add more than 4 pictures to your comment");
 
         RuleFor(p => new { p.CommentId, p.PostId }).Must(x => x.CommentId.HasValue ^ x.PostId.HasValue)
             .WithMessage("You cannot comment post and comment at the same time");

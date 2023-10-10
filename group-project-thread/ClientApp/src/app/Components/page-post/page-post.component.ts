@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {PagePostDTO} from "../../models/post/pagePostDTO";
 import {UserWithPostDTO} from "../../models/user/UserWithinPostDTO";
 import {months} from "../../../assets/months";
@@ -11,7 +11,7 @@ import seedrandom from "seedrandom";
   templateUrl: './page-post.component.html',
   styleUrls: ['./page-post.component.scss']
 })
-export class PagePostComponent {
+export class PagePostComponent implements OnInit {
   faComment = faComment;
   faHeart = faHeart;
   faRetweet = faRetweet;
@@ -19,6 +19,15 @@ export class PagePostComponent {
   @Input() public post!: PagePostDTO;
   @Input() public user!: UserWithPostDTO;
 
+  ngOnInit(): void {
+    this.getImageDimensions(this.post.imagesUrls[0]);
+    console.log("b"+this.singleImageHeight)
+    console.log("bo"+this.singleImageWidth)
+
+  }
+  singleImageRatio: number = 0;
+  singleImageWidth: number = 0;
+  singleImageHeight: number = 0;
   getFirstInitial(): string {
     return this.user.username[0].toUpperCase();
   }
@@ -67,4 +76,12 @@ export class PagePostComponent {
     return colorArray[Math.floor(seedrandom(this.user.username).double() * colorArray.length)];
   }
 
+  private getImageDimensions(url: string) {
+    const img = new Image();
+    img.onload = () => {
+      this.singleImageHeight = img.height;
+      this.singleImageWidth = img.width;
+    }
+    img.src = url;
+  }
 }
