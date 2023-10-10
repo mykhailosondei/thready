@@ -45,6 +45,12 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
     options.EnableSensitiveDataLogging();
     options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 });
+builder.Services.AddDbContext<IndexerContext>(options =>
+{
+    options.UseNpgsql(config.GetConnectionString("Default"));
+    options.EnableSensitiveDataLogging();
+    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+});
 builder.Services.AddCors(options => options.AddPolicy(name: "Frontend", policy =>
     {
         policy.WithOrigins("https://localhost:44498").AllowAnyHeader().AllowAnyMethod();

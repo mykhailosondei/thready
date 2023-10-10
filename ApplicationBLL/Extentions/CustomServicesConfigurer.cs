@@ -3,6 +3,7 @@ using ApplicationBLL.Logic;
 using ApplicationBLL.ProfilesForAutoMapper;
 using ApplicationBLL.QueryRepositories;
 using ApplicationBLL.Services;
+using ApplicationBLL.Services.SearchLogic;
 using ApplicationCommon.DTOs.Comment;
 using ApplicationCommon.DTOs.Post;
 using ApplicationCommon.DTOs.User;
@@ -24,7 +25,6 @@ public static class CustomServicesConfigurer
         services.AddScoped<LikeService>();
         services.AddTransient<IValidator<PostDTO>, PostDTOValidator>();
         services.AddTransient<IValidator<CommentDTO>, CommentDTOValidator>();
-        services.AddTransient<IValidator<UserDTO>, UserDTOValidator>();
         services.AddTransient<IValidator<RegisterUserDTO>, RegisterUserDTOValidator>();
         services.AddTransient<IValidator<LoginUserDTO>, LoginUserDTOValidator>();
         services.AddTransient<IValidator<UserUpdateDTO>, UserUpdateDTOValidator>();
@@ -39,6 +39,8 @@ public static class CustomServicesConfigurer
         services.AddScoped<AuthService>();
         services.AddScoped<EmailValidatorService>();
         services.AddScoped<UsernameValidatorService>();
+        services.AddScoped<PostsContentsIndexer>();
+        services.AddScoped<IndexedContentReader>();
         services.AddLogging();
         
 

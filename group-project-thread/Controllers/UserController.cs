@@ -1,5 +1,6 @@
 ﻿using ApplicationBLL.QueryRepositories;
 using ApplicationBLL.Services;
+using ApplicationBLL.Services.SearchLogic;
 using ApplicationCommon.DTOs.User;
 using ApplicationCommon.Interfaces;
 using ApplicationDAL.Entities;
@@ -22,6 +23,7 @@ namespace group_project_thread.Controllers
         private readonly IUserIdGetter _userIdGetter;
         private readonly EmailValidatorService _emailValidatorService;
         private readonly UsernameValidatorService _usernameValidatorService;
+        
         
         public UserController(UserService userService, IUserIdGetter userIdGetter, EmailValidatorService emailValidatorService, UsernameValidatorService usernameValidatorService, UserQueryRepository userQueryRepository)
         {

@@ -8,6 +8,6 @@ public class UserShortAccountDTO
     public int Id { get; set; }
     public string Username { get; set; }
     public string Bio { get; set; }
-    public List<int> FollowersIds { get; set; }
-    public List<int> FollowingIds { get; set; }
+    public int Followers { get; set; }
+    public int Following { get; set; }
 }
