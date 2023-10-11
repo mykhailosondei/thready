@@ -32,8 +32,8 @@ export class UserService {
     return this.httpService.postFullRequest<void>(`${this.routePrefix}/${id}/unfollow`, {});
   }
 
-  public putUser(id: number, value : UserDTO): Observable<HttpResponse<UserDTO>>{
-    return this.httpService.putFullRequest<UserDTO>(`${this.routePrefix}/${id}`, value);
+  public putUser(id: number, user : UserDTO): Observable<HttpResponse<UserDTO>>{
+    return this.httpService.putFullRequest<UserDTO>(`${this.routePrefix}/${id}`, user);
   }
 
   public deleteUser(id: number,): Observable<HttpResponse<void>>{
@@ -60,5 +60,4 @@ export class UserService {
     }
   }
 }
-
 
