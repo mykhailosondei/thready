@@ -34,6 +34,7 @@ $border-color: #dcdcdc;
 
 .user-avatar-collar {
   display: flex;
+  align-items: center;
   flex-basis: 40px;
   margin-right: 12px;
   flex-direction: column;
@@ -124,8 +125,8 @@ $border-color: #dcdcdc;
   }
   transition: filter 0.3s ease;
   filter: brightness(1);
-  width: 40px;;
-  height: 40px;
+  width: 40px;
+  min-height: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
