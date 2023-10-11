@@ -19,6 +19,10 @@ import {MainPageComponent} from "./Components/main-page/main-page.component";
 import {PagePostComponent} from "./Components/page-post/page-post.component";
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {NgOptimizedImage} from "@angular/common";
+import {CommentCreationDialogComponent} from "./Components/comment-creation-dialog/comment-creation-dialog.component";
+import {MAT_DIALOG_DEFAULT_OPTIONS, MatDialog, MatDialogModule} from "@angular/material/dialog";
+import {MatButtonModule} from "@angular/material/button";
+import {MatInputModule} from "@angular/material/input";
 
 @NgModule({
   declarations: [
@@ -31,27 +35,34 @@ import {NgOptimizedImage} from "@angular/common";
     SignUpPageComponent,
     NotifierComponent,
     MainPageComponent,
-    PagePostComponent
+    PagePostComponent,
+    CommentCreationDialogComponent
   ],
-    imports: [
-        BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),
-        HttpClientModule,
-        FormsModule,
-        ReactiveFormsModule,
-        RouterModule.forRoot([
-            {path: '', component: HomeComponent, pathMatch: 'full'},
-            {path: 'counter', component: CounterComponent},
-            {path: 'fetch-data', component: FetchDataComponent},
-        ]),
-        AppRoutingModule,
-        HttpClientModule,
-        BrowserAnimationsModule,
-        MatSnackBarModule,
-        FontAwesomeModule,
-        NgOptimizedImage
-    ],
-  providers: [],
-  bootstrap: [AppComponent]
+  imports: [
+    BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),
+    HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule,
+    RouterModule.forRoot([
+      {path: '', component: HomeComponent, pathMatch: 'full'},
+      {path: 'counter', component: CounterComponent},
+      {path: 'fetch-data', component: FetchDataComponent},
+    ]),
+    AppRoutingModule,
+    HttpClientModule,
+    BrowserAnimationsModule,
+    MatSnackBarModule,
+    FontAwesomeModule,
+    NgOptimizedImage,
+    MatDialogModule,
+    MatButtonModule,
+    MatInputModule
+  ],
+  providers: [
+    {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}}
+  ],
+  bootstrap: [AppComponent],
+  entryComponents: [CommentCreationDialogComponent]
 })
 export class AppModule {
 }

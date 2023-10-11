@@ -1,0 +1,17 @@
+.dialog {
+  background-color: white;
+  border-radius: 16px;
+  width: 500px;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+}
+
+.post-container {
+  width: 400px;
+}
+
+.centered-post {
+  display: flex;
+  justify-content: center;
+}

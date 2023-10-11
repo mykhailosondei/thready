@@ -22,6 +22,15 @@ body {
   .cdk-global-overlay-wrapper { display: block; }
 }
 
+.mat-mdc-dialog-surface{
+  background-color: white;
+  border-radius: 16px !important;
+  width: 500px;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+}
+
 code {
   color: #e01a76;
 }

@@ -26,7 +26,7 @@ export class MainPageComponent {
         this.posts.push({
             id: Response.id,
             textContent: Response.textContent,
-            imagesUrls: ["https://picsum.photos/200"],
+            imagesUrls: ["https://picsum.photos/1920/1920"],
             user: {
               id: Response.author.id,
               username: Response.author.username,

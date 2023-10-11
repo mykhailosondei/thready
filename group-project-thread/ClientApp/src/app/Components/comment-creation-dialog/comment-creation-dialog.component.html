@@ -1,0 +1,19 @@
+<div class="dialog">
+  <div class="centered-post">
+    <div class="post-container">
+      <app-page-post [post]="data.post" [user]="data.post.user" [excludeFooter]="true" [excludeImages]="true"></app-page-post>
+    </div>
+  </div>
+  <div mat-dialog-content>
+    <mat-form-field>
+      <input matInput [(ngModel)]="data.textContent">
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput [(ngModel)]="data.images">
+    </mat-form-field>
+    <div class="mat-dialog-actions">
+      <button mat-button (click)="onNoClick()">Close</button>
+      <button mat-button [mat-dialog-close]="data">Reply</button>
+    </div>
+  </div>
+</div>

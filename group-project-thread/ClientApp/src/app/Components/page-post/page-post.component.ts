@@ -5,29 +5,26 @@ import {months} from "../../../assets/months";
 import {faComment, faHeart} from "@fortawesome/free-regular-svg-icons";
 import {faRetweet, faSquarePollVertical} from "@fortawesome/free-solid-svg-icons";
 import seedrandom from "seedrandom";
+import {MatDialog} from "@angular/material/dialog";
+import {CommentCreationDialogComponent} from "../comment-creation-dialog/comment-creation-dialog.component";
 
 @Component({
   selector: 'app-page-post',
   templateUrl: './page-post.component.html',
   styleUrls: ['./page-post.component.scss']
 })
-export class PagePostComponent implements OnInit {
+export class PagePostComponent{
   faComment = faComment;
   faHeart = faHeart;
   faRetweet = faRetweet;
   faSquarePollVertical = faSquarePollVertical;
   @Input() public post!: PagePostDTO;
   @Input() public user!: UserWithPostDTO;
+  @Input() public excludeFooter: boolean = false;
+  @Input() public excludeImages: boolean = false;
 
-  ngOnInit(): void {
-    this.getImageDimensions(this.post.imagesUrls[0]);
-    console.log("b"+this.singleImageHeight)
-    console.log("bo"+this.singleImageWidth)
+  constructor(public dialog: MatDialog) { }
 
-  }
-  singleImageRatio: number = 0;
-  singleImageWidth: number = 0;
-  singleImageHeight: number = 0;
   getFirstInitial(): string {
     return this.user.username[0].toUpperCase();
   }
@@ -60,7 +57,19 @@ export class PagePostComponent implements OnInit {
   }
 
   handleCommentClick() {
-    console.log("Comment clicked");
+    this.openCommentDialog();
+  }
+
+  openCommentDialog() {
+    const dialogRef = this.dialog.open(CommentCreationDialogComponent, {
+      width: '500px',
+      data: { post: this.post}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      console.log(result);
+    });
   }
 
   handleRepostClick() {
@@ -76,12 +85,5 @@ export class PagePostComponent implements OnInit {
     return colorArray[Math.floor(seedrandom(this.user.username).double() * colorArray.length)];
   }
 
-  private getImageDimensions(url: string) {
-    const img = new Image();
-    img.onload = () => {
-      this.singleImageHeight = img.height;
-      this.singleImageWidth = img.width;
-    }
-    img.src = url;
-  }
+
 }
