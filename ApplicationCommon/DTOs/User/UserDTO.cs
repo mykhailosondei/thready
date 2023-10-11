@@ -25,6 +25,7 @@ namespace ApplicationCommon.DTOs.User
         public ImageDTO? Avatar { get; set; }
 
         public List<PostDTO> Posts { get; set; }
+        public int PostCount { get; set; }
 
         public List<int> FollowersIds { get; set; }
         public List<int> FollowingIds { get; set; }

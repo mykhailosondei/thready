@@ -177,6 +177,7 @@ public class PostService : BaseService
         
         _applicationContext.Posts.Add(postEntity);
         _applicationContext.Attach(postEntity.Author);
+        postEntity.Author.PostsCount++;
         await _applicationContext.SaveChangesAsync();
         await _postsContentsIndexer.AddIndexedWordsToTableByPostId(postEntity.Id, postEntity.TextContent);
     }
@@ -231,11 +232,14 @@ public class PostService : BaseService
 
     public async Task DeletePost(int postId)
     {
-        var post = await _postQueryRepository.GetPostById(postId);
-        
-        _applicationContext.Posts.Remove(_mapper.Map<Post>(post));
+        var post = await _postQueryRepository.GetPostById(postId, (p) => p.Author);
+        var postEntity = _mapper.Map<Post>(post);
+        _applicationContext.Posts.Remove(postEntity);
         
         await _applicationContext.SaveChangesAsync();
+        _applicationContext.Attach(postEntity.Author);
+        postEntity.Author.PostsCount--;
+        _applicationContext.Entry(postEntity.Author).Property(u => u.PostsCount).IsModified = true;
         
         var reposterUsers = post.RepostersIds.Select(async i => _mapper.Map<User>(await _userQueryRepository.GetUserById(i)));
         

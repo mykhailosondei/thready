@@ -10,8 +10,7 @@ public class ApplicationContextDesignFactory : IDesignTimeDbContextFactory<Appli
     public ApplicationContext CreateDbContext(string[] args)
     {
         var optionsBuilder = new DbContextOptionsBuilder<ApplicationContext>();
-        Console.WriteLine(args[1]);
-        optionsBuilder.UseNpgsql(args[1]);
+        optionsBuilder.UseNpgsql("Host=35.226.61.207; Database=appDb; Username=postgres; Password=mgdI-Fot$4]+Fl:P; IncludeErrorDetail=true");
         return new ApplicationContext(optionsBuilder.Options);
     }
 }

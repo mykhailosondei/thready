@@ -29,6 +29,7 @@ namespace ApplicationDAL.Entities
         public Image? Avatar { get; set; }
 
         public List<Post> Posts { get; set; }
+        public int PostsCount { get; set; }
 
         public List<int> FollowersIds { get; set; }
         public List<int> FollowingIds { get; set; }
