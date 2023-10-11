@@ -20,6 +20,11 @@ import {PagePostComponent} from "./Components/page-post/page-post.component";
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {ProfilePageComponent} from "./Components/profile-page/profile-page.component";
 import {JwtInterceptor} from "./helpers/jwt.interceptor";
+import {NgOptimizedImage} from "@angular/common";
+import {CommentCreationDialogComponent} from "./Components/comment-creation-dialog/comment-creation-dialog.component";
+import {MAT_DIALOG_DEFAULT_OPTIONS, MatDialog, MatDialogModule} from "@angular/material/dialog";
+import {MatButtonModule} from "@angular/material/button";
+import {MatInputModule} from "@angular/material/input";
 
 @NgModule({
   declarations: [
@@ -34,6 +39,7 @@ import {JwtInterceptor} from "./helpers/jwt.interceptor";
     MainPageComponent,
     PagePostComponent,
     ProfilePageComponent
+    CommentCreationDialogComponent
   ],
   imports: [
     BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),
@@ -49,12 +55,18 @@ import {JwtInterceptor} from "./helpers/jwt.interceptor";
     HttpClientModule,
     BrowserAnimationsModule,
     MatSnackBarModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    NgOptimizedImage,
+    MatDialogModule,
+    MatButtonModule,
+    MatInputModule
   ],
   providers: [
-    {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi:true}
+    {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi:true},
+    {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}}
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [CommentCreationDialogComponent]
 })
 export class AppModule {
 }

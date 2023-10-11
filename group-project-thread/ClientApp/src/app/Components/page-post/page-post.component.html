@@ -22,41 +22,90 @@
       <div class="post-text-content">
         <p>{{ post.textContent }}</p>
       </div>
-      <div class="post-image-content">
-        <img src="{{ post.imagesUrls[0] }}" alt="{{ post.textContent }}">
-      </div>
-      <div class="post-footer">
-        <div class="post-top-margin">
-          <div class="comment-info" (click)="handleCommentClick()">
-            <div class="comment-icon color-grey">
-              <div class="blue-circle"></div>
-              <fa-icon [icon]="faComment"></fa-icon>
+      <div *ngIf="!excludeImages" class="post-image-content">
+        <div class="image-radius-wrap" [style.width]="post.imagesUrls.length === 1 ? 'fit-content' : '100%'">
+          <div *ngIf="post.imagesUrls.length === 4" class="four-image-container full-width">
+              <div class="two-image-container full-width">
+                <div class="left-upper-image-container full-width">
+                  <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[0] + ')'"></div>
+                </div>
+                <div class="right-upper-image-container full-width">
+                  <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[0] + ')'"></div>
+                </div>
             </div>
-            <div class="comment-amount color-grey">
-              {{post.commentsAmount}}
+            <div class="two-image-container full-width">
+              <div class="left-bottom-image-container full-width">
+                <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[0] + ')'"></div>
+              </div>
+              <div class="right-bottom-image-container full-width">
+                <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[0] + ')'"></div>
+              </div>
             </div>
           </div>
+          <div *ngIf="post.imagesUrls.length === 3" class="three-image-container full-width">
+            <div class="left-big-image full-width">
+              <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[0] + ')'"></div>
+            </div>
+            <div class="two-right-images full-width">
+              <div class="right-upper-image-container full-width">
+                <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[0] + ')'"></div>
+              </div>
+              <div class="right-bottom-image-container full-width">
+                <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[0] + ')'"></div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="post.imagesUrls.length === 2" class="two-image-container full-width">
+            <div class="left-big-image full-width">
+              <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[0] + ')'"></div>
+            </div>
+            <div class="right-big-image full-width">
+              <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[0] + ')'"></div>
+            </div>
+          </div>
+          <div *ngIf="post.imagesUrls.length === 1" class="solo-image-container">
+            <img class="solo-image full-width" src="{{post.imagesUrls[0]}}" alt="image">
+          </div>
+          </div>
+      </div>
+      <div *ngIf="!excludeFooter" class="post-footer">
+        <div class="post-top-margin">
+          <div class="comment-info" (click)="handleCommentClick()">
+                <div class="comment-icon color-grey">
+                  <div class="blue-circle"></div>
+                  <fa-icon [icon]="faComment"></fa-icon>
+                </div>
+                <div class="comment-amount color-grey">
+                  {{post.commentsAmount}}
+                </div>
+          </div>
           <div class="repost-info" (click)="handleRepostClick()">
-            <div class="repost-icon color-grey">
-              <div class="green-circle"></div>
+            <div class="repost-icon color-grey" style=" position: relative;">
+              <div class="green-circle">
+              </div>
               <fa-icon [icon]="faRetweet" style="scale: calc(16/18)"></fa-icon>
             </div>
             <div class="repost-amount color-grey">{{post.repostsAmount}}</div>
           </div>
           <div class="likes-info" (click)="handleLikeClick()">
-            <div class="likes-icon color-grey">
-              <div class="red-circle"></div>
+            <div class="likes-icon color-grey" style=" position: relative;">
+              <div class="red-circle">
+              </div>
               <fa-icon [icon]="faHeart"></fa-icon>
             </div>
             <div class="likes-amount color-grey">{{post.likesAmount}}</div>
+            <div></div>
           </div>
           <div class="view-stats">
-            <div class="view-icon color-grey">
-              <div class="blue-circle"></div>
+            <div class="view-icon color-grey" style=" position: relative;">
+              <div class="blue-circle">
+              </div>
               <fa-icon [icon]="faSquarePollVertical"></fa-icon>
+
             </div>
             <div class="view-amount color-grey">{{post.viewsAmount}}</div>
           </div>
+          <div></div>
         </div>
       </div>
     </div>

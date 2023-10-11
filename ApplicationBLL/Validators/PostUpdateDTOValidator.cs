@@ -14,7 +14,7 @@ public class PostUpdateDTOValidator : AbstractValidator<PostUpdateDTO>
         RuleFor(p => p.Images).Cascade(CascadeMode.Stop).NotEmpty()
             .When(p => p.TextContent == String.Empty).WithMessage("You can not update post with no content");
 
-        RuleFor(p => p.Images.Count).InclusiveBetween(0, 10)
-            .WithMessage("You can not add more than 10 pictures to your post");
+        RuleFor(p => p.Images.Count).InclusiveBetween(0, 4)
+            .WithMessage("You can not add more than 4 pictures to your post");
     }
 }
