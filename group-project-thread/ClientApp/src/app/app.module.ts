@@ -1,7 +1,7 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {HttpClientModule} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {RouterModule} from '@angular/router';
 
 import {AppComponent} from './app.component';
@@ -18,6 +18,8 @@ import {NotifierComponent} from "./Components/notifier/notifier.component";
 import {MainPageComponent} from "./Components/main-page/main-page.component";
 import {PagePostComponent} from "./Components/page-post/page-post.component";
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
+import {ProfilePageComponent} from "./Components/profile-page/profile-page.component";
+import {JwtInterceptor} from "./helpers/jwt.interceptor";
 import {NgOptimizedImage} from "@angular/common";
 import {CommentCreationDialogComponent} from "./Components/comment-creation-dialog/comment-creation-dialog.component";
 import {MAT_DIALOG_DEFAULT_OPTIONS, MatDialog, MatDialogModule} from "@angular/material/dialog";
@@ -36,6 +38,7 @@ import {MatInputModule} from "@angular/material/input";
     NotifierComponent,
     MainPageComponent,
     PagePostComponent,
+    ProfilePageComponent
     CommentCreationDialogComponent
   ],
   imports: [
@@ -59,6 +62,7 @@ import {MatInputModule} from "@angular/material/input";
     MatInputModule
   ],
   providers: [
+    {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi:true},
     {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}}
   ],
   bootstrap: [AppComponent],

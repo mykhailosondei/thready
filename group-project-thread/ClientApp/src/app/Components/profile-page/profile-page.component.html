@@ -1,0 +1,22 @@
+<div class="wrap">
+  <div class="main-page">
+    <div class="profile-header">
+      <div class="header-content">
+          <div  class="back-button" >
+            <div class="svg-pic" aria-label="back" role="button" (click)="backToMainPaige()" >
+              <fa-icon [icon]="faArrowLeftLong" class="arrowIcon"></fa-icon>
+            </div>
+          </div>
+        <div class="user-info">
+          <div class="username">
+            <span>{{user?.username}}</span>
+          </div>
+          <div class="posts-count">
+            <span>{{ postCount }} posts</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button (click)="test()" >profile</button>
+</div>

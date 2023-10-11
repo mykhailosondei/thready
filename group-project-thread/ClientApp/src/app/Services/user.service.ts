@@ -8,7 +8,7 @@ import {UserDTO} from "../models/user/userDTO";
   providedIn: 'root'
 })
 export class UserService {
-  public routePrefix: string = 'api/user';
+  public routePrefix: string = '/api/user';
 
   constructor(private httpService : HttpInternalService) { }
 
@@ -16,12 +16,12 @@ export class UserService {
     return this.httpService.getFullRequest<UserDTO[]>(`${this.routePrefix}`);
   }
 
-  public getUserByID(id: number) : Observable<HttpResponse<UserDTO>>{
+  public getUserById(id: number) : Observable<HttpResponse<UserDTO>>{
     return this.httpService.getFullRequest<UserDTO>(`${this.routePrefix}/${id}`);
   }
 
   public getCurrentUser() : Observable<HttpResponse<UserDTO>>{
-    return this.httpService.getFullRequest<UserDTO>(`${this.routePrefix}/currentUser}`);
+    return this.httpService.getFullRequest<UserDTO>(`${this.routePrefix}/currentUser`);
   }
 
   public followUser(id: number): Observable<HttpResponse<void>>{
@@ -32,8 +32,8 @@ export class UserService {
     return this.httpService.postFullRequest<void>(`${this.routePrefix}/${id}/unfollow`, {});
   }
 
-  public putUser(id: number, value : UserDTO): Observable<HttpResponse<UserDTO>>{
-    return this.httpService.putFullRequest<UserDTO>(`${this.routePrefix}/${id}`, value);
+  public putUser(id: number, user : UserDTO): Observable<HttpResponse<UserDTO>>{
+    return this.httpService.putFullRequest<UserDTO>(`${this.routePrefix}/${id}`, user);
   }
 
   public deleteUser(id: number,): Observable<HttpResponse<void>>{
@@ -60,5 +60,4 @@ export class UserService {
     }
   }
 }
-
 

@@ -8,6 +8,7 @@ import {AuthUserDTO} from '../models/auth/authUserDTO';
 import {RegisterUserDTO} from '../models/auth/registerUserDTO';
 import {LoginUserDTO} from '../models/auth/loginUserDTO';
 import {UserDTO} from "../models/user/userDTO";
+import {A} from "@angular/cdk/keycodes";
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +20,7 @@ export class AuthService {
   constructor(private httpService : HttpInternalService, private userService : UserService,
     private eventService: EventService) { }
 
-  public getUser() {
+  public getUser() : Observable<UserDTO | null> {
     return this.user ? of(this.user) : this.userService.getCurrentUser().pipe(
       map((response) => {
         this.user = response.body;
@@ -43,9 +44,8 @@ export class AuthService {
   private handleAuthResponse(observable: Observable<HttpResponse<AuthUserDTO>>) {
     return observable.pipe(
       map((resp) => {
-        const authToken = resp.body?.authToken;
+        const authToken = resp.body?.token;
         const user = resp.body?.user;
-
         if (authToken && user) {
             this.setToken(authToken);
             this.user = user;
@@ -61,7 +61,8 @@ export class AuthService {
 
   private setToken(token: string){
     if (token){
-      localStorage.setItem('authToken', JSON.stringify(token));
+
+      localStorage.setItem('token', JSON.stringify(token));
     }
   }
 }
