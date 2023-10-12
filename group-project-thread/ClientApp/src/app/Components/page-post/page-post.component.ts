@@ -3,7 +3,7 @@ import {PagePostDTO} from "../../models/post/pagePostDTO";
 import {UserWithPostDTO} from "../../models/user/UserWithinPostDTO";
 import PostFormatter from 'src/app/helpers/postFormatter';
 import {faComment, faHeart as faHeartUnactivated} from "@fortawesome/free-regular-svg-icons";
-import {faRetweet, faSquarePollVertical} from "@fortawesome/free-solid-svg-icons";
+import {faEllipsisH, faRetweet, faSquarePollVertical} from "@fortawesome/free-solid-svg-icons";
 import {faHeart as faHeartActivated} from "@fortawesome/free-solid-svg-icons";
 import seedrandom from "seedrandom";
 import {MatDialog} from "@angular/material/dialog";
@@ -14,6 +14,7 @@ import {PostService} from "../../Services/post.service";
 import {PostDTO} from "../../models/post/postDTO";
 import {UserDTO} from "../../models/user/userDTO";
 import {Image} from "../../models/image";
+import {faPen} from "@fortawesome/free-solid-svg-icons/faPen";
 
 @Component({
   selector: 'app-page-post',
@@ -21,6 +22,7 @@ import {Image} from "../../models/image";
   styleUrls: ['./page-post.component.scss']
 })
 export class PagePostComponent implements OnInit {
+  faPen = faPen;
   faComment = faComment;
   faRetweet = faRetweet;
   faSquarePollVertical = faSquarePollVertical;
@@ -96,6 +98,9 @@ export class PagePostComponent implements OnInit {
       }).subscribe(response => console.log(response));
     });
   }
+  openEditDialog() {
+
+  }
 
   handleRepostClick() {
     console.log("Repost clicked");
@@ -131,6 +136,5 @@ export class PagePostComponent implements OnInit {
   getCircleColor() {
     return PostFormatter.getCircleColor(this.post.user.username);
   }
-
 
 }

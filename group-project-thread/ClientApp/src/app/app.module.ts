@@ -25,6 +25,8 @@ import {CommentCreationDialogComponent} from "./Components/comment-creation-dial
 import {MAT_DIALOG_DEFAULT_OPTIONS, MatDialog, MatDialogModule} from "@angular/material/dialog";
 import {MatButtonModule} from "@angular/material/button";
 import {MatInputModule} from "@angular/material/input";
+import {PostCreatorComponent} from "./Components/post-creator/post-creator.component";
+import {AutoResizeInputComponent} from "./Components/auto-resize-input/auto-resize-input.component";
 
 @NgModule({
   declarations: [
@@ -39,7 +41,9 @@ import {MatInputModule} from "@angular/material/input";
     MainPageComponent,
     PagePostComponent,
     ProfilePageComponent,
-    CommentCreationDialogComponent
+    CommentCreationDialogComponent,
+    PostCreatorComponent,
+    AutoResizeInputComponent
   ],
   imports: [
     BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),

@@ -17,7 +17,11 @@
             {{ getCreatedDate() }}
           </div>
         </div>
-        <div class="dots"></div>
+        <div class="edit">
+          <button class="edit-button" (click)="openEditDialog()">
+            <fa-icon [icon]="faPen"></fa-icon>
+          </button>
+        </div>
       </div>
       <div class="post-text-content">
         <p>{{ post.textContent }}</p>

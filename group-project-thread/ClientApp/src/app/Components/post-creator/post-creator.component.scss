@@ -1,0 +1,22 @@
+.post-creator {
+  padding-left: 10px;
+  margin-top: 10px;
+  padding-right: 10px;
+}
+
+.post-button {
+  background-color: cornflowerblue;
+  height: 36px;
+  width: 60px;
+  color:white;
+  border-radius: 18px;
+  border: none;
+  &:disabled {
+    opacity: 0.5;
+  }
+}
+
+.button-holder {
+  display: flex;
+  justify-content: flex-end;
+}

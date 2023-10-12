@@ -1,5 +1,6 @@
 <div class="wrap">
   <div class="main-page">
+    <app-post-creator></app-post-creator>
     <app-page-post *ngFor="let post of posts" [postInput]="post" [userInput]="post.author"></app-page-post>
   </div>
 </div>

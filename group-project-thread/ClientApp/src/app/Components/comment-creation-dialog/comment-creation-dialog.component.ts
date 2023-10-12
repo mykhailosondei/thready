@@ -37,6 +37,6 @@ export class CommentCreationDialogComponent {
   }
 
   isButtonDisabled() : boolean {
-    return this.data.textContent === "" || this.data.textContent.length > 500;
+    return PostFormatter.isInputLengthInvalid(this.data.textContent);
   }
 }

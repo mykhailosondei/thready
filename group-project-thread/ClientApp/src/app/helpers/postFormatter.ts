@@ -2,6 +2,10 @@ import {months} from "../../assets/months";
 import seedrandom from "seedrandom";
 export default class PostFormatter{
 
+  public static isInputLengthInvalid(input: string): boolean {
+    return input.length > 500 || input.length === 0;
+  }
+
   public static getCircleColor(username:string): string {
     const colorArray = ["red", "green", "yellow", "purple", "pink", "orange", "blue"];
     return colorArray[Math.floor(seedrandom(username).double() * colorArray.length)];

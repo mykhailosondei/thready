@@ -246,3 +246,24 @@ $border-color: #dcdcdc;
   justify-content: center;
 }
 
+.edit{
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &:hover > :first-child {
+    cursor: pointer;
+    background-color: rgba(128, 128, 128, 0.5);
+  }
+}
+
+.edit-button {
+  border: none;
+  background-color: transparent;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+}
