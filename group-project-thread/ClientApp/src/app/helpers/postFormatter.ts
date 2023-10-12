@@ -11,7 +11,6 @@ export default class PostFormatter{
     return colorArray[Math.floor(seedrandom(username).double() * colorArray.length)];
   }
   public static getDateFormattedString(date: Date): string {
-    console.log(date.getHours());
     if(Date.now()-date.getTime() < 3600000){
       return this.minutesToReadable(date);
     }

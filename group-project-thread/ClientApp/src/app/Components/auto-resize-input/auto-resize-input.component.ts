@@ -7,10 +7,16 @@ import {AfterViewInit, Component, ElementRef, Input, ViewChild} from '@angular/c
 })
 export class AutoResizeInputComponent {
   inputValue: string = ''; // Property to bind to the input
-
   @ViewChild('textArea') textArea: ElementRef<HTMLTextAreaElement>; // Reference to the textarea element
 
   @Input("placeholder") placeholder: string = "What's on your mind?"; // Placeholder text for the input
+  @Input() public startingText: string = ''; // Starting text for the input
+
+  ngOnInit(): void {
+    this.resizeTextArea();
+    this.inputValue = this.startingText;
+  }
+
   resizeTextArea() {
     if(this.textArea){
     const element = this.textArea.nativeElement;

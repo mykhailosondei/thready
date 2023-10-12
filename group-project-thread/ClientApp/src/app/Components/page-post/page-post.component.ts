@@ -6,7 +6,7 @@ import {faComment, faHeart as faHeartUnactivated} from "@fortawesome/free-regula
 import {faEllipsisH, faRetweet, faSquarePollVertical} from "@fortawesome/free-solid-svg-icons";
 import {faHeart as faHeartActivated} from "@fortawesome/free-solid-svg-icons";
 import seedrandom from "seedrandom";
-import {MatDialog} from "@angular/material/dialog";
+import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {CommentCreationDialogComponent} from "../comment-creation-dialog/comment-creation-dialog.component";
 import {CommentService} from "../../Services/comment.service";
 import {CommentCreateDTO} from "../../models/coment/commentCreateDTO";
@@ -15,6 +15,9 @@ import {PostDTO} from "../../models/post/postDTO";
 import {UserDTO} from "../../models/user/userDTO";
 import {Image} from "../../models/image";
 import {faPen} from "@fortawesome/free-solid-svg-icons/faPen";
+import {C} from "@angular/cdk/keycodes";
+import {PostEditorDialogComponent} from "../post-editor-dialog/post-editor-dialog.component";
+import {CommentCreateDialogData} from "../../models/coment/CommentCreateDialogData";
 
 @Component({
   selector: 'app-page-post',
@@ -37,8 +40,9 @@ export class PagePostComponent implements OnInit {
   faHeartActivated = faHeartActivated;
   faHeartUnactivated = faHeartUnactivated;
 
-  constructor(public dialog: MatDialog, private readonly commentService : CommentService, private readonly postService : PostService) {
-
+  constructor(public dialog: MatDialog,
+              private readonly commentService : CommentService,
+              private readonly postService : PostService) {
   }
 
   ngOnInit(): void {
@@ -83,23 +87,43 @@ export class PagePostComponent implements OnInit {
   }
 
   openCommentDialog() {
-    const dialogRef = this.dialog.open(CommentCreationDialogComponent, {
+    const dialogRef : MatDialogRef<CommentCreationDialogComponent, CommentCreateDialogData> = this.dialog.open(CommentCreationDialogComponent, {
       width: '500px',
       data: { post: this.post, currentUser: this.post.user, textContent: "", images: []}
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      if(result === undefined) return;
       console.log('The dialog was closed');
       console.log(result);
       this.commentService.postComment({
         postId: this.post.id,
         textContent: result.textContent,
         images: result.images
-      }).subscribe(response => console.log(response));
+      }).subscribe(response => {
+        console.log(response)
+        if(!response.ok) return;
+        this.post.commentsAmount++;
+      });
     });
   }
   openEditDialog() {
+    const dialogRef: MatDialogRef<PostEditorDialogComponent, {post: PagePostDTO, textContentOutput: string}> = this.dialog.open(PostEditorDialogComponent, {
+      width: '500px',
+      data: { post: this.post},
+      disableClose: true
+    });
 
+    dialogRef.afterClosed().subscribe(result => {
+      if(result === undefined) return;
+      this.postService.putPost(this.post.id, {textContent: result.textContentOutput, images: []}).subscribe(response =>
+      {
+        console.log(response);
+        if(!response.ok) return;
+        this.post.textContent = result.textContentOutput;
+      }
+      );
+    });
   }
 
   handleRepostClick() {
