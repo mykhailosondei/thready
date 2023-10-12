@@ -1,6 +1,6 @@
 <div class="wrap">
   <div class="main-page">
-    <app-page-post *ngFor="let post of posts" [post]="post" [user]="post.user"></app-page-post>
+    <app-page-post *ngFor="let post of posts" [postInput]="post" [userInput]="post.author"></app-page-post>
   </div>
 </div>
 

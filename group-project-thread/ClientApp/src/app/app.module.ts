@@ -38,7 +38,7 @@ import {MatInputModule} from "@angular/material/input";
     NotifierComponent,
     MainPageComponent,
     PagePostComponent,
-    ProfilePageComponent
+    ProfilePageComponent,
     CommentCreationDialogComponent
   ],
   imports: [

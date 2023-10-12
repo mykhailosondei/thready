@@ -3,14 +3,14 @@ import {PostDTO} from "../post/postDTO";
 import {UserDTO} from "../user/userDTO";
 
 
-export interface Comment{
+export interface CommentDTO {
     id: number;
     userId: number;
     author: UserDTO
     postId: number | null;
     post: PostDTO | null;
     commentId: number | null;
-    parentComment: Comment | null;
+    parentComment: CommentDTO | null;
     createdAt: string;
     images: Image[];
     textContent: string;

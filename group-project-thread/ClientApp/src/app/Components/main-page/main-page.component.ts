@@ -11,7 +11,7 @@ import {Router} from "@angular/router";
 })
 export class MainPageComponent {
 
-  posts: PagePostDTO[] = [];
+  posts: PostDTO[] = [];
   id: string | null = null;
 
   constructor(private httpService: HttpInternalService, private router : Router) {
@@ -24,25 +24,9 @@ export class MainPageComponent {
     this.httpService.getRequest<PostDTO>(`/api/post/${id}`).subscribe(
       Response => {
         console.log(Response);
-        this.posts.push({
-            id: Response.id,
-            textContent: Response.textContent,
-            imagesUrls: ["https://picsum.photos/1920/1920"],
-            user: {
-              id: Response.author.id,
-              username: Response.author.username,
-              avatar: Response.author.avatar,
-              bio: Response.author.bio,
-              followers: Response.author.followersIds.length,
-              following: Response.author.followingIds.length
-            },
-            commentsAmount: Response.commentsIds.length,
-            repostsAmount: Response.repostersIds.length,
-            likesAmount: Response.likesIds.length,
-            viewsAmount: Response.viewedBy.length,
-            dateCreated: Response.createdAt
-          }
-        );
+        Response.images = [{id:0, url: "https://picsum.photos/1080"}]
+        this.posts.push(Response);
+        console.log(this.posts[this.posts.length - 1]);
         this.id = Response.textContent;
       }
     );

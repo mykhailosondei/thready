@@ -65,7 +65,6 @@ $border-color: #dcdcdc;
 .red-circle {
   background-color: deeppink;
   opacity: 0;
-
 }
 
 .green-circle {
@@ -100,12 +99,14 @@ $border-color: #dcdcdc;
   opacity: 25% !important;
 }
 
-.repost-info:hover * {
+
+
+.repost-info:hover *, .repost-activated * {
   cursor: pointer;
   color: limegreen;
 }
 
-.likes-info:hover * {
+.likes-info:hover *, .likes-activated * {
   cursor: pointer;
   color: deeppink;
 }
