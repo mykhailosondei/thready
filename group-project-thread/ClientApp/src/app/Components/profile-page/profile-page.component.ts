@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {HttpInternalService} from "../../Services/http-internal.service";
 import {AuthService} from "../../Services/auth.service";
-import {BehaviorSubject, Subject, switchMap, takeUntil} from "rxjs";
+import {BehaviorSubject, Observable, Subject, switchMap, takeUntil} from "rxjs";
 import {UserDTO} from "../../models/user/userDTO";
 import {Image} from "../../models/image";
 import {SnackbarService} from "../../Services/snackbar.service";
@@ -14,11 +14,12 @@ import {PostDTO} from "../../models/post/postDTO";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {UserUpdateDialogComponent} from "../user-update-dialog/user-update-dialog.component";
 import {UpdateUserDialogData} from "../../models/user/updateUserDialogData";
+import {HttpResponse} from "@angular/common/http";
 
 @Component({
   selector: 'app-profile-page',
   templateUrl: './profile-page.component.html',
-  styleUrls: ['./profile-page.component.scss']
+  styleUrls: ['./profile-page.component.scss', '../../../assets/ContentFrame.scss']
 })
 export class ProfilePageComponent implements OnInit, OnDestroy{
 
@@ -48,7 +49,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy{
     this.authService.getUser()
       .pipe(
         takeUntil(this.unsubscribe$),
-        switchMap((user) => {
+        switchMap((user : UserDTO | null) => {
           if (user) {
             this.user = this.userService.copyUser(user);
             return this.postService.getPostsByUserId(this.user.id);
@@ -57,7 +58,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy{
         })
       )
       .subscribe(
-        (posts) => {
+        (posts : HttpResponse<PostDTO[]>) => {
           this.user.posts = posts.body || [];
           this.followersCount = this.user.followersIds.length;
           this.followingCount = this.user.followingIds.length;
@@ -73,6 +74,10 @@ export class ProfilePageComponent implements OnInit, OnDestroy{
   }
   public backToMainPaige(){
     this.router.navigate(['/mainPage']);
+  }
+  public navigateToFollowing(){
+    console.log(this.user)
+    this.router.navigate([this.user.username, "following"]);
   }
 
   public openEditDialog(){

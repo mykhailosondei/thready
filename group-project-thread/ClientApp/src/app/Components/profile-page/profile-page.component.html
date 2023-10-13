@@ -1,6 +1,6 @@
 <div class="wrap">
   <div class="main-page">
-    <div class="profile-header">
+    <div class="header">
       <div class="header-content">
         <div  class="back-button" >
           <div class="svg-pic" aria-label="back" role="button" (click)="backToMainPaige()" >
@@ -11,8 +11,8 @@
           <div class="username">
             <span>{{user.username}}</span>
           </div>
-          <div class="posts-count-box">
-            <span class="posts-count">{{ user.postsCount}} posts</span>
+          <div class="subtitle-box">
+            <span class="subtitle-text">{{ user.postsCount}} posts</span>
           </div>
         </div>
       </div>
@@ -49,7 +49,7 @@
           </div>
         </div>
         <div class="following-followers">
-          <a class="following-link" href="/mainPage">
+          <a class="following-link" (click)="navigateToFollowing()" >
             <span class="following-count">{{user.followingIds.length}} </span>
             <span class="following">Following</span>
           </a>

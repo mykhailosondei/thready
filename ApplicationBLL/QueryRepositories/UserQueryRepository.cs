@@ -39,4 +39,16 @@ public class UserQueryRepository : BaseQueryRepository
 
         return _mapper.Map<UserDTO>(userModel);
     }
+    
+    public virtual async Task<UserDTO> GetUserByUsername(string username)
+    {
+        var userModel = await _applicationContext.Users.FirstOrDefaultAsync(u => u.Username == username);
+
+        if (userModel == null)
+        {
+            throw new UserNotFoundException("User with specified username does not exist");
+        }
+
+        return _mapper.Map<UserDTO>(userModel);
+    }
 }

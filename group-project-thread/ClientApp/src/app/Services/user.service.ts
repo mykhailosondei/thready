@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpInternalService} from './http-internal.service';
-import {Observable} from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 import {HttpResponse} from '@angular/common/http';
 import {UserDTO} from "../models/user/userDTO";
 import {UserUpdateDTO} from "../models/user/userUpdateDTO";
@@ -10,7 +10,6 @@ import {UserUpdateDTO} from "../models/user/userUpdateDTO";
 })
 export class UserService {
   public routePrefix: string = '/api/user';
-
   constructor(private httpService : HttpInternalService) { }
 
   public getAllUsers() : Observable<HttpResponse<UserDTO[]>>{
@@ -19,6 +18,10 @@ export class UserService {
 
   public getUserById(id: number) : Observable<HttpResponse<UserDTO>>{
     return this.httpService.getFullRequest<UserDTO>(`${this.routePrefix}/${id}`);
+  }
+
+  public getUserByUsername(username: string) : Observable<HttpResponse<UserDTO>>{
+    return this.httpService.getFullRequest<UserDTO>(`${this.routePrefix}/username/${username}`);
   }
 
   public getCurrentUser() : Observable<HttpResponse<UserDTO>>{
