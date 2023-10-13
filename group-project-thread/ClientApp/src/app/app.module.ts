@@ -28,6 +28,7 @@ import {MatInputModule} from "@angular/material/input";
 import {PostCreatorComponent} from "./Components/post-creator/post-creator.component";
 import {AutoResizeInputComponent} from "./Components/auto-resize-input/auto-resize-input.component";
 import {PostEditorDialogComponent} from "./Components/post-editor-dialog/post-editor-dialog.component";
+import {UserHoverCardComponent} from "./Components/user-hover-card/user-hover-card.component";
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import {PostEditorDialogComponent} from "./Components/post-editor-dialog/post-ed
     CommentCreationDialogComponent,
     PostCreatorComponent,
     AutoResizeInputComponent,
-    PostEditorDialogComponent
+    PostEditorDialogComponent,
+    UserHoverCardComponent
   ],
   imports: [
     BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),

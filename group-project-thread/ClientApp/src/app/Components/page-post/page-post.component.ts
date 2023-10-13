@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {PagePostDTO} from "../../models/post/pagePostDTO";
 import {UserWithPostDTO} from "../../models/user/UserWithinPostDTO";
 import PostFormatter from 'src/app/helpers/postFormatter';
@@ -11,6 +11,7 @@ import {CommentCreationDialogComponent} from "../comment-creation-dialog/comment
 import {CommentService} from "../../Services/comment.service";
 import {CommentCreateDTO} from "../../models/coment/commentCreateDTO";
 import {PostService} from "../../Services/post.service";
+import {UserService} from "../../Services/user.service";
 import {PostDTO} from "../../models/post/postDTO";
 import {UserDTO} from "../../models/user/userDTO";
 import {Image} from "../../models/image";
@@ -18,6 +19,9 @@ import {faPen} from "@fortawesome/free-solid-svg-icons/faPen";
 import {C} from "@angular/cdk/keycodes";
 import {PostEditorDialogComponent} from "../post-editor-dialog/post-editor-dialog.component";
 import {CommentCreateDialogData} from "../../models/coment/CommentCreateDialogData";
+import {UserHoverCardTriggerService} from "../../Services/user-hover-card-trigger.service";
+import {waitForAsync} from "@angular/core/testing";
+
 
 @Component({
   selector: 'app-page-post',
@@ -35,6 +39,10 @@ export class PagePostComponent implements OnInit {
   @Input() public excludeFooter: boolean = false;
   @Input() public excludeImages: boolean = false;
 
+  @ViewChild('userInfo') userInfo: ElementRef<HTMLDivElement>;
+
+  editable: boolean = false;
+
   liked: boolean = false;
   reposted: boolean = false;
   faHeartActivated = faHeartActivated;
@@ -42,10 +50,15 @@ export class PagePostComponent implements OnInit {
 
   constructor(public dialog: MatDialog,
               private readonly commentService : CommentService,
-              private readonly postService : PostService) {
+              private readonly postService : PostService,
+              private readonly userService : UserService,
+              private readonly hoverCardTriggerService: UserHoverCardTriggerService) {
   }
 
   ngOnInit(): void {
+    this.userService.getCurrentUser().subscribe(response => {
+      if(response.ok) this.editable = response.body!.id === this.postInput.author.id;
+    });
     this.liked = this.postInput.likesIds.includes(this.userInput.id);
     this.reposted = this.postInput.repostersIds.includes(this.userInput.id);
     this.post = {
@@ -72,6 +85,8 @@ export class PagePostComponent implements OnInit {
   getFirstInitial(): string {
     return this.post.user.username[0].toUpperCase();
   }
+
+
 
   public getCreatedDate(): string {
     const date = new Date(this.post.dateCreated);
@@ -161,4 +176,14 @@ export class PagePostComponent implements OnInit {
     return PostFormatter.getCircleColor(this.post.user.username);
   }
 
+  onUserInfoMouseLeave() {
+    /*if(!this.hoverCardTriggerService.isInsideHoverCard){
+      this.hoverCardTriggerService.disableHoverCardVisibility();
+    }*/
+  }
+
+  onUserInfoMouseEnter() {
+    this.hoverCardTriggerService.enableHoverCardVisibility();
+    this.hoverCardTriggerService.coordiantes = {x: this.userInfo.nativeElement.offsetLeft - 60, y: this.userInfo.nativeElement.offsetTop + 20};
+  }
 }

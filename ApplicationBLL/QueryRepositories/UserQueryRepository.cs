@@ -1,6 +1,7 @@
 using ApplicationBLL.Exceptions;
 using ApplicationBLL.QueryRepositories.Abstract;
 using ApplicationCommon.DTOs.User;
+using ApplicationCommon.Interfaces;
 using ApplicationDAL.Context;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
@@ -9,15 +10,22 @@ namespace ApplicationBLL.QueryRepositories;
 
 public class UserQueryRepository : BaseQueryRepository
 {
+
+    private readonly IUserIdGetter _userIdGetter;
     
-    public UserQueryRepository(ApplicationContext applicationContext, IMapper mapper) : base(applicationContext, mapper)
+    public UserQueryRepository(ApplicationContext applicationContext, IMapper mapper, IUserIdGetter userIdGetter) : base(applicationContext, mapper)
     {
-        
+        _userIdGetter = userIdGetter;
     }
 
     public async Task<IEnumerable<UserDTO>> GetAllUsers()
     {
         return _applicationContext.Users.OrderBy(u => u.Id).Select(u => _mapper.Map<UserDTO>(u));
+    }
+    
+    public int GetCurrentUserId()
+    {
+        return _userIdGetter.CurrentId;
     }
 
     public virtual async Task<UserDTO> GetUserById(int id)

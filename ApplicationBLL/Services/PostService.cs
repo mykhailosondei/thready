@@ -196,7 +196,14 @@ public class PostService : BaseService
 
     public virtual async Task PutPost(int id, PostUpdateDTO post)
     {
-        var postToUpdate = await _postQueryRepository.GetPostById(id);
+        var postToUpdate = await _postQueryRepository.GetPostById(id, p => p.Author);
+        
+        var currentUserId = _userQueryRepository.GetCurrentUserId();
+        
+        if (postToUpdate.Author.Id != currentUserId)
+        {
+            throw new InvalidOperationException("You are not the author of this post");
+        }
         
         ValidationResult validationResult = await _postUpdateValidator.ValidateAsync(post);
 

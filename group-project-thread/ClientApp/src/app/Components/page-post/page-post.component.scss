@@ -43,7 +43,7 @@ $border-color: #dcdcdc;
 .user-info-and-dots {
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   flex-basis: auto;
   flex-grow: 1;

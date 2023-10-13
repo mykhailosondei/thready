@@ -9,7 +9,7 @@
     <div class="post-holder">
       <div class="user-info-and-dots">
         <div class="user-date">
-          <div class="user-info">
+          <div class="user-info" #userInfo (mouseenter)="onUserInfoMouseEnter()" (mouseleave)="onUserInfoMouseLeave()">
             <b>{{post.user.username}}</b>
           </div>
           <div class="user-date-divider"></div>
@@ -17,7 +17,7 @@
             {{ getCreatedDate() }}
           </div>
         </div>
-        <div class="edit">
+        <div *ngIf="editable" class="edit">
           <button class="edit-button" (click)="openEditDialog()">
             <fa-icon [icon]="faPen"></fa-icon>
           </button>
