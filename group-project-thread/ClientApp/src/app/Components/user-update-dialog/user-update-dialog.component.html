@@ -1,0 +1,31 @@
+<div class="dialog-component">
+  <div class="header-content">
+    <div class="close-button" (click)="onNoClick()">
+      <fa-icon class="xMark" [icon]="faXmark"></fa-icon>
+    </div>
+    <div class="title">
+      <span class="title-text">Edit profile</span>
+    </div>
+    <div class="save-button" (click)="save()">
+      <span class="Save-text">Save</span>
+    </div>
+  </div>
+  <div class="edit-content">
+    <div class="user-avatar-edit">
+      <img class="avatar" src="https://picsum.photos/1080">
+      <div class="change-image" (click)="changeImage()">
+        <fa-icon class="faCamera" [icon]="faCamere"></fa-icon>
+      </div>
+    </div>
+    <div class="input-fields">
+      <div class="bio-edit">
+        <span class="edit-labels">Bio</span>
+        <input class="input" [(ngModel)]="data.bio" type="text">
+      </div>
+      <div class="location-edit">
+        <span class="edit-labels">Location</span>
+        <input class="input" [(ngModel)]="data.location" type="text">
+      </div>
+    </div>
+  </div>
+</div>

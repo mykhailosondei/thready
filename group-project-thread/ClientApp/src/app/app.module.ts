@@ -25,6 +25,7 @@ import {CommentCreationDialogComponent} from "./Components/comment-creation-dial
 import {MAT_DIALOG_DEFAULT_OPTIONS, MatDialog, MatDialogModule} from "@angular/material/dialog";
 import {MatButtonModule} from "@angular/material/button";
 import {MatInputModule} from "@angular/material/input";
+import {UserUpdateDialogComponent} from "./Components/user-update-dialog/user-update-dialog.component";
 import {PostCreatorComponent} from "./Components/post-creator/post-creator.component";
 import {AutoResizeInputComponent} from "./Components/auto-resize-input/auto-resize-input.component";
 import {PostEditorDialogComponent} from "./Components/post-editor-dialog/post-editor-dialog.component";
@@ -43,6 +44,7 @@ import {PostEditorDialogComponent} from "./Components/post-editor-dialog/post-ed
     PagePostComponent,
     ProfilePageComponent,
     CommentCreationDialogComponent,
+    UserUpdateDialogComponent,
     PostCreatorComponent,
     AutoResizeInputComponent,
     PostEditorDialogComponent
@@ -72,7 +74,7 @@ import {PostEditorDialogComponent} from "./Components/post-editor-dialog/post-ed
     {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}}
   ],
   bootstrap: [AppComponent],
-  entryComponents: [CommentCreationDialogComponent, PostEditorDialogComponent]
+  entryComponents: [CommentCreationDialogComponent]
 })
 export class AppModule {
 }
