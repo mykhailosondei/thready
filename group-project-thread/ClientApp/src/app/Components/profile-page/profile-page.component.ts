@@ -1,16 +1,19 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {HttpInternalService} from "../../Services/http-internal.service";
 import {AuthService} from "../../Services/auth.service";
-import {BehaviorSubject, Observable, Subject, switchMap, takeUntil} from "rxjs";
+import {BehaviorSubject, Subject, switchMap, takeUntil} from "rxjs";
 import {UserDTO} from "../../models/user/userDTO";
 import {Image} from "../../models/image";
 import {SnackbarService} from "../../Services/snackbar.service";
 import {UserService} from "../../Services/user.service";
 import {Router} from "@angular/router";
-import {faArrowLeftLong} from "@fortawesome/free-solid-svg-icons";
+import {faArrowLeftLong, faLocationDot} from "@fortawesome/free-solid-svg-icons";
+import {faCalendar} from "@fortawesome/free-regular-svg-icons"
 import {PostService} from "../../Services/post.service";
 import {PostDTO} from "../../models/post/postDTO";
-import {HttpResponse} from "@angular/common/http";
+import {MatDialog, MatDialogRef} from "@angular/material/dialog";
+import {UserUpdateDialogComponent} from "../user-update-dialog/user-update-dialog.component";
+import {UpdateUserDialogData} from "../../models/user/updateUserDialogData";
 
 @Component({
   selector: 'app-profile-page',
@@ -23,17 +26,22 @@ export class ProfilePageComponent implements OnInit, OnDestroy{
   public loading = false;
   public image: Image | null = null;
   faArrowLeftLong = faArrowLeftLong;
+  faCalendar = faCalendar;
+  faLocationDot = faLocationDot;
   public userPosts$ = new BehaviorSubject<PostDTO[]>([]);
-  public postCount! : number;
+  public followersCount! : number;
+  public followingCount! : number;
 
 
   private unsubscribe$ = new Subject<void>;
+
   constructor(httpServise: HttpInternalService,
               private authService : AuthService,
               private snackBarService: SnackbarService,
               private userService : UserService,
               private postService : PostService,
-              private router: Router) {
+              private router: Router,
+              public dialog: MatDialog,) {
 
   }
   ngOnInit(): void {
@@ -51,32 +59,43 @@ export class ProfilePageComponent implements OnInit, OnDestroy{
       .subscribe(
         (posts) => {
           this.user.posts = posts.body || [];
-          this.postCount = 3;
-
+          this.followersCount = this.user.followersIds.length;
+          this.followingCount = this.user.followingIds.length;
+          this.userPosts$.next(posts.body || []);
         },
         (error) => this.snackBarService.showErrorMessage(error.error.title)
       );
-
   }
 
   ngOnDestroy(): void {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }
-
-
-  test() : void {
-    this.authService.getUser()
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe((user) => {
-        if (user){
-          this.user = this.userService.copyUser(user);
-        }
-      }, (error) => this.snackBarService.showErrorMessage(error.error.title))
-  }
-
   public backToMainPaige(){
     this.router.navigate(['/mainPage']);
   }
 
+  public openEditDialog(){
+    const dialog : MatDialogRef<UserUpdateDialogComponent, UpdateUserDialogData> = this.dialog.open(UserUpdateDialogComponent, {
+      maxWidth: "550px", minHeight: "360px",
+      data: {currentUser: this.user, bio: this.user.bio, location: this.user.location, avatar: this.user.avatar }
+    })
+    dialog.afterClosed().subscribe(result => {
+      if (result === undefined) return;
+      console.log(result);
+      this.userService.putUser(this.user.id, {
+        id : this.user.id,
+        bio : result.bio,
+        location : result.location,
+        avatar : null
+      }).subscribe(response => {
+        if (response.body != null){
+          const user : UserDTO = response.body;
+          this.user.bio = user.bio;
+          this.user.avatar = user.avatar;
+          this.user.location = user.location;
+        }
+      })
+    })
+  }
 }

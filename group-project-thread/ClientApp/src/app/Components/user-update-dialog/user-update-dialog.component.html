@@ -6,7 +6,7 @@
     <div class="title">
       <span class="title-text">Edit profile</span>
     </div>
-    <div class="save-button" (click)="save()">
+    <div class="save-button" [mat-dialog-close]="data">
       <span class="Save-text">Save</span>
     </div>
   </div>
@@ -19,12 +19,14 @@
     </div>
     <div class="input-fields">
       <div class="bio-edit">
-        <span class="edit-labels">Bio</span>
-        <input class="input" [(ngModel)]="data.bio" type="text">
+        <label for="input-bio" class="bio-label" [class.active]="inputBioFocused" >Bio</label>
+        <textarea id="input-bio" class="input-bio" [(ngModel)]="data.bio" [maxLength]="maxCharCountBio" (input)="updateBioCharacterCount()" (focus)="onInputBioFocus()" (blur)="onInputBioBlur()"></textarea>
+        <span *ngIf="inputBioFocused" class="char-count-bio">{{ charCountBio }} / {{ maxCharCountBio }}</span>
       </div>
       <div class="location-edit">
-        <span class="edit-labels">Location</span>
-        <input class="input" [(ngModel)]="data.location" type="text">
+        <label for="input-location" class="location-label" [class.active]="inputLocationFocused">Location:</label>
+          <input id="input-location" class="input-location" [(ngModel)]="data.location" [maxlength]="maxCharCountLocation" (input)="updateLocationCharacterCount()" (focus)="onInputLocationFocus()" (blur)="onInputLocationBlur()">
+          <span *ngIf="inputLocationFocused" class="char-count-location">{{ charCountLocation }} / {{ maxCharCountLocation }}</span>
       </div>
     </div>
   </div>
