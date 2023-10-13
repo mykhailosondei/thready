@@ -10,6 +10,7 @@ export interface UserDTO {
   imageID: number | null;
   avatar: Image | null;
   posts: PostDTO[];
+  postsCount: number;
   followersIds: number[];
   followingIds: number[];
   bio: string;

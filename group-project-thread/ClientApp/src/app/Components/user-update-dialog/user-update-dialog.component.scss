@@ -1,0 +1,196 @@
+$grey-color: #dcdcdc;
+$font : -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+
+.dialog-component{
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  padding-top: 10px;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.header-content{
+  display: flex;
+  height: 36px;
+  flex-direction: row;
+  align-content: center;
+  justify-content: space-between;
+}
+
+.close-button{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  min-width: 36px;
+  &:hover{
+    background-color: $grey-color ;
+    border-radius: 50%;
+  }
+}
+
+.xMark{
+  font: $font;
+  font-weight: 700;
+  font-size: 15px;
+}
+.title{
+  display: flex;
+  align-items: center;
+}
+.title-text{
+  font: $font;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.save-button{
+  height: 26px;
+  display: flex;
+  margin-top: 6px;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  background-color: black;
+  border-radius: 25px;
+  &:hover{
+    background-color: rgb(39,44,48);
+    cursor: pointer;
+  }
+}
+.Save-text{
+  color: white;
+  font: $font;
+  padding-right: 16px;
+  padding-left: 16px;
+  font-weight: 600;
+  font-size: 14px;
+}
+.user-avatar-edit{
+  position: relative;
+  min-width: 48px;
+  width: 25%;
+  margin-bottom: 12px;
+  user-select: none;
+}
+
+.edit-content{
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  margin-top: 16px;
+  position: relative;
+}
+
+.user-avatar-edit {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.avatar{
+  height: calc(100% - 12px);
+  width: calc(100% - 12px);
+  border-radius: 50%;
+  border: 4px solid $grey-color;
+}
+.faCamera{
+  font: $font;
+  font-weight: 700;
+  font-size: 15px;
+  color: $grey-color;
+}
+.change-image{
+  backdrop-filter: blur(4px);
+  background-color: rgba(15, 20, 25, 0.75);
+  min-width: 44px;
+  min-height: 44px;
+  cursor: pointer;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  &:hover{
+    background-color: rgba(39, 44, 48, 0.75);
+  }
+}
+.input-fields{
+  display: flex;
+  flex-direction: column;
+}
+.bio-edit{
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+  position: relative;
+}
+.input-bio{
+  resize: none;
+  font: $font !important;
+  border-radius: 4px;
+}
+.location-edit{
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.input-location{
+  font: $font !important;
+  font-size: 15px;
+  border: 1px solid $grey-color;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 4px;
+  outline-color: rgb(29,155,240);
+  border-radius: 4px;
+}
+.input-bio{
+  resize: none;
+  font: $font !important;
+  font-size: 15px;
+  border: 1px solid $grey-color;
+  padding-top: 4px;
+  padding-left: 4px;
+  height: 60px;
+  outline-color: rgb(29,155,240);
+  border-radius: 4px;
+}
+.bio-label{
+  margin-bottom: 5px;
+  font-size: 11px;
+  font: $font;
+  color: #999;
+  &.active{
+    color: rgb(29,155,240);;
+  }
+}
+.location-label{
+  margin-bottom: 5px;
+  font-size: 11px;
+  font: $font;
+  color: #999;
+  transition: 0.2s;
+  &.active{
+    color: rgb(29,155,240);;
+  }
+}
+.char-count-location{
+    position: absolute;
+    bottom: 2px;
+    right: 5px;
+    color: #999;
+    font-size: 12px;
+}
+.char-count-bio{
+  position: absolute;
+  bottom: 2px;
+  right: 5px;
+  color: #999;
+  font-size: 12px;
+}
+
