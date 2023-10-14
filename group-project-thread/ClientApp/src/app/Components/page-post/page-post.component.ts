@@ -220,6 +220,7 @@ export class PagePostComponent implements OnInit {
   }
 
   onUserInfoMouseEnter() {
+    console.log("Mouse enter");
     this.hoverCardTriggerService.user = this.post.user;
     this.hoverCardTriggerService.enableHoverCardVisibility();
     this.hoverCardTriggerService.isHoveredOnTriggeringElement = true;
