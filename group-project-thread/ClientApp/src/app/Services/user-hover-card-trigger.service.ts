@@ -7,7 +7,9 @@ import {UserWithPostDTO} from "../models/user/UserWithinPostDTO";
 export class UserHoverCardTriggerService {
 
   isHoverCardVisible: boolean = false;
-  coordiantes: {x: number, y: number} = {x: 10, y: 10};
+  isHoveredOnTriggeringElement: boolean = false;
+  triggeringElementOnLeaveTimeStamp : number = 0;
+  coordinates: {x: number, y: number} = {x: 10, y: 10};
   user: UserWithPostDTO = {} as UserWithPostDTO;
   isInsideHoverCard: boolean = false;
 

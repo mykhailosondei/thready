@@ -1,1 +1,35 @@
-<div class="bob" *ngIf="isHoverCardVisible" [@fadeInOut] [style.transform]="'translate('+coordinates.x+'px, ' + coordinates.y+'px)'" (mouseleave)="onMouseLeave()"></div>
+<div class="hover-card"
+     *ngIf="isHoverCardVisible"
+     [@fadeInOut]
+     [style.transform]="'translate('+coordinates.x+'px, ' + coordinates.y+'px)'"
+     (mouseleave)="onMouseLeave()"
+     (mouseenter)="onMouseEnter()"
+>
+  <div class="user-content">
+    <div class="avatar-and-follow-btn">
+      <div class="avatar-holder" [ngStyle]="{'background-color': getCircleColor()}">
+        <img *ngIf="!isAvatarNull()" src="{{user.avatar!.url}}" alt="{{user.username}}}">
+        <div *ngIf="isAvatarNull()" class="initial">{{getFirstInitial()}}</div>
+      </div>
+      <div class="follow-btn-holder">
+        <button class="follow-btn">
+          <b style="padding-left: 6px; padding-right: 6px; font-size: 14px;">Follow</b>
+        </button>
+      </div>
+    </div>
+    <div class="username-holder">
+      <b>{{user.username}}</b>
+    </div>
+    <div class="bio-holder">
+      {{user.bio}}
+    </div>
+    <div class="user-connections-info">
+      <div class="following-holder">
+        <b>{{following}}</b> <span style="color:grey; padding-left: 2px">Following</span>
+      </div>
+      <div class="followers-holder">
+        <b>{{followers}}</b> <span style="color:grey;  padding-left: 2px">Followers</span>
+      </div>
+    </div>
+  </div>
+</div>

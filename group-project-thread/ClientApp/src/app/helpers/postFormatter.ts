@@ -6,6 +6,13 @@ export default class PostFormatter{
     return input.length > 500 || input.length === 0;
   }
 
+  public static numberToReadable(number: number): string {
+    if(number < 1000) return number.toString();
+    if(number < 1000000) return Math.floor(number/100)/10 + "K";
+    if(number < 1000000000) return Math.floor(number/100000)/10 + "M";
+    return Math.floor(number/100000000)/10 + "B";
+  }
+
   public static getCircleColor(username:string): string {
     const colorArray = ["red", "green", "yellow", "purple", "pink", "orange", "blue"];
     return colorArray[Math.floor(seedrandom(username).double() * colorArray.length)];

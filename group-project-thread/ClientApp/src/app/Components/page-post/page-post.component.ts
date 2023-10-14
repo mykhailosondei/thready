@@ -21,6 +21,7 @@ import {PostEditorDialogComponent} from "../post-editor-dialog/post-editor-dialo
 import {CommentCreateDialogData} from "../../models/coment/CommentCreateDialogData";
 import {UserHoverCardTriggerService} from "../../Services/user-hover-card-trigger.service";
 import {waitForAsync} from "@angular/core/testing";
+import {delay} from "rxjs";
 
 
 @Component({
@@ -176,14 +177,24 @@ export class PagePostComponent implements OnInit {
     return PostFormatter.getCircleColor(this.post.user.username);
   }
 
-  onUserInfoMouseLeave() {
-    /*if(!this.hoverCardTriggerService.isInsideHoverCard){
-      this.hoverCardTriggerService.disableHoverCardVisibility();
-    }*/
+  async onUserInfoMouseLeave() {
+    this.hoverCardTriggerService.triggeringElementOnLeaveTimeStamp = Date.now();
+    this.hoverCardTriggerService.isHoveredOnTriggeringElement = false;
+    await this.delay(300).then(() => {
+      if(!this.hoverCardTriggerService.isInsideHoverCard && !this.hoverCardTriggerService.isHoveredOnTriggeringElement) {
+        this.hoverCardTriggerService.disableHoverCardVisibility();
+      }
+    });
+  }
+
+  private delay(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
   onUserInfoMouseEnter() {
+    this.hoverCardTriggerService.user = this.post.user;
     this.hoverCardTriggerService.enableHoverCardVisibility();
-    this.hoverCardTriggerService.coordiantes = {x: this.userInfo.nativeElement.offsetLeft - 60, y: this.userInfo.nativeElement.offsetTop + 20};
+    this.hoverCardTriggerService.isHoveredOnTriggeringElement = true;
+    this.hoverCardTriggerService.coordinates = {x: this.userInfo.nativeElement.offsetLeft - 60, y: this.userInfo.nativeElement.offsetTop + 20};
   }
 }
