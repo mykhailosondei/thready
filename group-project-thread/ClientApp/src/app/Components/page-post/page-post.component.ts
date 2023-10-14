@@ -34,6 +34,9 @@ export class PagePostComponent implements OnInit {
   faComment = faComment;
   faRetweet = faRetweet;
   faSquarePollVertical = faSquarePollVertical;
+  faHeartActivated = faHeartActivated;
+  faHeartUnactivated = faHeartUnactivated;
+
   @Input() public postInput!: PostDTO;
   post:PagePostDTO = {} as PagePostDTO;
   @Input() public userInput!: UserDTO;
@@ -41,13 +44,15 @@ export class PagePostComponent implements OnInit {
   @Input() public excludeImages: boolean = false;
 
   @ViewChild('userInfo') userInfo: ElementRef<HTMLDivElement>;
+  @ViewChild('wholePost') wholePost: ElementRef<HTMLDivElement>;
 
+  private observer: IntersectionObserver;
+
+
+  viewed: boolean = false;
   editable: boolean = false;
-
   liked: boolean = false;
   reposted: boolean = false;
-  faHeartActivated = faHeartActivated;
-  faHeartUnactivated = faHeartUnactivated;
 
   constructor(public dialog: MatDialog,
               private readonly commentService : CommentService,
@@ -58,10 +63,12 @@ export class PagePostComponent implements OnInit {
 
   ngOnInit(): void {
     this.userService.getCurrentUser().subscribe(response => {
-      if(response.ok) this.editable = response.body!.id === this.postInput.author.id;
+      if(response.ok) {
+        this.editable = response.body!.id === this.postInput.author.id;
+      this.liked = this.postInput.likesIds.includes(response.body!.id);
+      this.reposted = this.postInput.repostersIds.includes(response.body!.id);
+      }
     });
-    this.liked = this.postInput.likesIds.includes(this.userInput.id);
-    this.reposted = this.postInput.repostersIds.includes(this.userInput.id);
     this.post = {
       id: this.postInput.id,
       user: {
@@ -80,7 +87,28 @@ export class PagePostComponent implements OnInit {
       repostsAmount: this.postInput.repostersIds.length,
       viewsAmount: this.postInput.viewedBy.length
     }
-    this.postService.viewPost(this.post.id).subscribe();
+    // Set up IntersectionObserver to watch for 50% visibility
+    this.observer = new IntersectionObserver(this.handleIntersection.bind(this), {
+      root: null, // Use the viewport as the root
+      rootMargin: '0px', // No margin
+      threshold: 0.5, // 50% visibility
+    });
+
+  }
+  startObserve() {
+    this.observer.observe(this.wholePost.nativeElement);
+  }
+
+  handleIntersection(entries: any) {
+    entries.forEach((entry: any) => {
+      if (entry.isIntersecting && !this.viewed) {
+        // The component is at least 50% visible in the viewport
+        this.postService.viewPost(this.post.id).subscribe(Response => {
+          console.log(Response);
+          if(Response.ok) this.viewed = true;
+        });
+      }
+    });
   }
 
   getFirstInitial(): string {
@@ -180,7 +208,7 @@ export class PagePostComponent implements OnInit {
   async onUserInfoMouseLeave() {
     this.hoverCardTriggerService.triggeringElementOnLeaveTimeStamp = Date.now();
     this.hoverCardTriggerService.isHoveredOnTriggeringElement = false;
-    await this.delay(300).then(() => {
+    await this.delay(100).then(() => {
       if(!this.hoverCardTriggerService.isInsideHoverCard && !this.hoverCardTriggerService.isHoveredOnTriggeringElement) {
         this.hoverCardTriggerService.disableHoverCardVisibility();
       }

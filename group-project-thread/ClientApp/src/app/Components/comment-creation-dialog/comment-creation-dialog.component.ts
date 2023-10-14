@@ -5,11 +5,23 @@ import PostFormatter from "../../helpers/postFormatter";
 import {D} from "@angular/cdk/keycodes";
 import {UserWithPostDTO} from "../../models/user/UserWithinPostDTO";
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import {animate, state, style, transition, trigger} from "@angular/animations";
 
 @Component({
   selector: 'app-comment-creation-dialog',
   templateUrl: './comment-creation-dialog.component.html',
-  styleUrls: ['./comment-creation-dialog.component.scss', '../page-post/page-post.component.scss']
+  styleUrls: ['./comment-creation-dialog.component.scss', '../page-post/page-post.component.scss'],
+  animations: [
+    trigger('fadeInOut', [
+      state('void', style({
+        opacity: 0,
+      })),
+      state('*', style({
+        opacity: 1,
+      })),
+      transition('void <=> *', animate('300ms ease-in-out')),
+    ]),
+  ]
 })
 export class CommentCreationDialogComponent {
   faTimes = faTimes;

@@ -5,11 +5,23 @@ import {PostEditDialogData} from "../../models/post/PostEditDialogData";
 import {UserWithPostDTO} from "../../models/user/UserWithinPostDTO";
 import PostFormatter from "../../helpers/postFormatter";
 import {faTimes} from "@fortawesome/free-solid-svg-icons";
+import {animate, state, style, transition, trigger} from "@angular/animations";
 
 @Component({
   selector: 'app-post-editor-dialog',
   templateUrl: './post-editor-dialog.component.html',
-  styleUrls: ['./post-editor-dialog.component.scss', '../page-post/page-post.component.scss', '../comment-creation-dialog/comment-creation-dialog.component.scss']
+  styleUrls: ['./post-editor-dialog.component.scss', '../page-post/page-post.component.scss', '../comment-creation-dialog/comment-creation-dialog.component.scss'],
+  animations: [
+    trigger('fadeInOut', [
+      state('void', style({
+        opacity: 0,
+      })),
+      state('*', style({
+        opacity: 1,
+      })),
+      transition('void <=> *', animate('100ms ease-in-out')),
+    ]),
+  ]
 })
 export class PostEditorDialogComponent {
 

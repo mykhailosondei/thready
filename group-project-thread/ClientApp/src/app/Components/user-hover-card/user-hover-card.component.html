@@ -1,10 +1,13 @@
 <div class="hover-card"
+     appOnDomEnter
+     (domEnter)="elementEntered()"
      *ngIf="isHoverCardVisible"
      [@fadeInOut]
      [style.transform]="'translate('+coordinates.x+'px, ' + coordinates.y+'px)'"
      (mouseleave)="onMouseLeave()"
      (mouseenter)="onMouseEnter()"
 >
+  <div *ngIf="isFollowResponseSuccess">
   <div class="user-content">
     <div class="avatar-and-follow-btn">
       <div class="avatar-holder" [ngStyle]="{'background-color': getCircleColor()}">
@@ -12,8 +15,11 @@
         <div *ngIf="isAvatarNull()" class="initial">{{getFirstInitial()}}</div>
       </div>
       <div class="follow-btn-holder">
-        <button class="follow-btn">
+        <button *ngIf="showFollowButton" class="follow-btn" (click)="followUser()">
           <b style="padding-left: 6px; padding-right: 6px; font-size: 14px;">Follow</b>
+        </button>
+        <button *ngIf="isUserFollowed" class="follow-btn" (click)="unfollowUser()">
+          <b style="padding-left: 6px; padding-right: 6px; font-size: 14px;">Followed</b>
         </button>
       </div>
     </div>
@@ -31,5 +37,7 @@
         <b>{{followers}}</b> <span style="color:grey;  padding-left: 2px">Followers</span>
       </div>
     </div>
+  </div>
+
   </div>
 </div>
