@@ -6,6 +6,7 @@ import {SignUpPageComponent} from './Components/sign-up-page/sign-up-page.compon
 import {MainPageComponent} from "./Components/main-page/main-page.component";
 import {ProfilePageComponent} from "./Components/profile-page/profile-page.component";
 import {FollowingPageComponent} from "./Components/following-page/following-page.component";
+import {FollowersPageComponent} from "./Components/followers-page/followers-page.component";
 
 const routes: Routes = [
   {path:'', redirectTo: '/login', pathMatch: 'full'},
@@ -13,7 +14,8 @@ const routes: Routes = [
   {path:'signup', component: SignUpPageComponent},
   {path:'mainPage', component: MainPageComponent},
   {path: 'profile', component: ProfilePageComponent},
-  {path: ':username/following', component: FollowingPageComponent}
+  {path: ':username/following', component: FollowingPageComponent},
+  {path: ':username/followers', component: FollowersPageComponent}
 ];
 
 @NgModule({

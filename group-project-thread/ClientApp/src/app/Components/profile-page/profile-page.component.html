@@ -53,7 +53,7 @@
             <span class="following-count">{{user.followingIds.length}} </span>
             <span class="following">Following</span>
           </a>
-          <a class="followers-link" href="/mainPage">
+          <a class="followers-link" (click)="navigateToFollowers()">
             <span class="followers-count">{{user.followersIds.length}} </span>
             <span class="followers">Followers</span>
           </a>

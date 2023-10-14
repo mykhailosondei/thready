@@ -1,21 +1,8 @@
 <div class="wrap">
   <div class="main-page">
-    <div class="header">
-      <div class="header-content">
-        <div  class="back-button" >
-          <div class="svg-pic" aria-label="back" role="button" (click)="backToMainPaige()" >
-            <fa-icon [icon]="faArrowLeftLong" class="arrowIcon"></fa-icon>
-          </div>
-        </div>
-        <div class="profile-info-area">
-          <div class="username">
-            <span>{{user.username}}</span>
-          </div>
-          <div class="subtitle-box">
-            <span class="subtitle-text">@{{user.username}} connections</span>
-          </div>
-        </div>
-      </div>
+    <app-connection-page [username]="username" [isFollowing] = "true" [isFollowers] = "false" (emittedUser)="handleUser($event)"></app-connection-page>
+    <div>
+      <span>Label</span>
     </div>
   </div>
 </div>

@@ -30,7 +30,9 @@ import {PostCreatorComponent} from "./Components/post-creator/post-creator.compo
 import {AutoResizeInputComponent} from "./Components/auto-resize-input/auto-resize-input.component";
 import {PostEditorDialogComponent} from "./Components/post-editor-dialog/post-editor-dialog.component";
 import {UserHoverCardComponent} from "./Components/user-hover-card/user-hover-card.component";
+import {ConnectionPageComponent} from "./Components/connections-page/connection-page.component";
 import {FollowingPageComponent} from "./Components/following-page/following-page.component";
+import {FollowersPageComponent} from "./Components/followers-page/followers-page.component";
 
 @NgModule({
   declarations: [
@@ -51,7 +53,9 @@ import {FollowingPageComponent} from "./Components/following-page/following-page
     AutoResizeInputComponent,
     PostEditorDialogComponent,
     UserHoverCardComponent,
-    FollowingPageComponent
+    ConnectionPageComponent,
+    FollowingPageComponent,
+    FollowersPageComponent
   ],
   imports: [
     BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),

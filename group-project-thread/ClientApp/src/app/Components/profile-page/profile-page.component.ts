@@ -76,8 +76,11 @@ export class ProfilePageComponent implements OnInit, OnDestroy{
     this.router.navigate(['/mainPage']);
   }
   public navigateToFollowing(){
-    console.log(this.user)
-    this.router.navigate([this.user.username, "following"]);
+    this.router.navigate([this.user.username, "following"])
+  }
+
+  public navigateToFollowers(){
+    this.router.navigate([this.user.username, "followers"])
   }
 
   public openEditDialog(){

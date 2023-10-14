@@ -139,6 +139,7 @@ $font : -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-
   line-height: 20px;
   text-decoration: none;
   color: black;
+  cursor: pointer;
   &:hover{
     text-decoration-line: underline;
   }
