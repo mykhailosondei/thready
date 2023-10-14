@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.Extensions.Logging;
 
 
 namespace ApplicationBLL.Services;
@@ -26,7 +27,8 @@ public class PostService : BaseService
     private readonly PostsContentsIndexer _postsContentsIndexer;
     
     public PostService(ApplicationContext applicationContext, IMapper mapper, IValidator<PostDTO> postValidator, 
-        PostQueryRepository postQueryRepository, UserQueryRepository userQueryRepository, IValidator<PostUpdateDTO> postUpdateValidator, PostsContentsIndexer postsContentsIndexer) : base(applicationContext, mapper)
+        PostQueryRepository postQueryRepository, UserQueryRepository userQueryRepository, IValidator<PostUpdateDTO> postUpdateValidator, 
+        PostsContentsIndexer postsContentsIndexer) : base(applicationContext, mapper)
     {
         _postValidator = postValidator;
         _postQueryRepository = postQueryRepository;
@@ -183,6 +185,8 @@ public class PostService : BaseService
         _applicationContext.Posts.Add(postEntity);
         _applicationContext.Attach(postEntity.Author);
         postEntity.Author.PostsCount++;
+        Console.WriteLine(postEntity.Author.PostsCount);
+        
         await _applicationContext.SaveChangesAsync();
         await _postsContentsIndexer.AddIndexedWordsToTableByPostId(postEntity.Id, postEntity.TextContent);
     }

@@ -1,0 +1,42 @@
+<div class="wrap">
+  <div class="main-page">
+    <app-connection-page [username]="username" [isFollowing] = "true" [isFollowers] = "false"></app-connection-page>
+    <div style="position: relative; min-height: 750.6px;">
+      <div *ngIf="following.length != 0" class="user-absolute">
+        <div style="display: block">
+          <div class="user-box">
+            <div class="user-profile-button" (click)="navigateToUserProfile()">
+              <div class="content">
+                <div class="small-image-container">
+                  <div class="image-box">
+                    <img class="user-image" src="https://picsum.photos/1080">
+                  </div>
+                </div>
+                <div class="user-info-box">
+                  <div class="small-info">
+                    <div class="username-box" (click)="navigateToUserProfile()">
+                      <span class="username-span">{{following[0].username}}</span>
+                    </div>
+                    <div *ngIf="!unfollowed" class="follow-button-box">
+                      <div class="follow-button-border" (mouseenter)="changeSpan()" (mouseleave)="changeSpan()" (click)="unfollow(following[0].id)">
+                        <span class="follow">{{followingText}}</span>
+                      </div>
+                    </div>
+                    <div *ngIf="unfollowed" class="unfollow-button-box" (click)="follow()">
+                      <div class="unfollow-button-border">
+                        <span class="unfollow">Follow</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div >
+                    <span class="bio">{{following[0].bio}}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

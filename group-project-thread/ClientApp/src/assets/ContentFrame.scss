@@ -1,0 +1,108 @@
+﻿$grey-color: #dcdcdc;
+$font : -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+
+.wrap {
+  display: flex;
+  justify-content: center;
+
+}
+
+.main-page{
+  width: 600px;
+  border: 0 solid $grey-color;
+  border-right-width: 1px;
+  border-left-width: 1px;
+}
+.sticky-wrap{
+  backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0px;
+  z-index: 3;
+}
+
+.header{
+  height: 53px;
+  background-color:  rgba(255, 255, 255, 0.85);
+  border-bottom: 1px solid $grey-color;
+}
+.header-content{
+  display: flex;
+  max-width: 600px;
+  width: 100%;
+  flex-direction: row;
+  align-content: center;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.back-button{
+  min-height: 32px;
+  min-width: 56px;
+  align-self: stretch;
+  display: flex;
+  align-items: start;
+  justify-content: center;
+  flex-basis: auto;
+  flex-direction: column;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.svg-pic{
+  text-align: center;
+  width: 32px;
+  height: 32px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  line-height: 20px;
+  border: 0px solid white;
+  border-radius: 50px;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.3s;
+  user-select: none;
+  cursor: pointer;
+  &:hover{
+    content: "";
+    width: 32px;
+    height: 32px;
+    background-color: #e6e6e6;
+    border-radius: 50%;
+  }
+}
+
+.arrowIcon{
+  padding: 0px;
+  user-select: none;
+}
+
+.profile-info-area{
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  flex-basis: auto;
+}
+.username{
+  font-family: $font;
+  font-weight: 500;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  font-size: 18px;
+  color: rgb(15,20,25);
+}
+
+.subtitle-box{
+  display: flex;
+  height: fit-content;
+  padding: 0px;
+}
+.subtitle-text{
+  padding: 0px;
+  color: rgb(83, 100, 113);
+  font-size: 11px;
+  font-family: inherit;
+  font-weight: 400;
+}

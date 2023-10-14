@@ -50,6 +50,14 @@ namespace group_project_thread.Controllers
             return await _userQueryRepository.GetUserById(id);
         }
         
+        // GET api/<UserController>/dmytrosemeniuk
+        [HttpGet("username/{username}")]
+        [AllowAnonymous]
+        public async Task<UserDTO> GetUserByUsername(string username)
+        {
+            return await _userQueryRepository.GetUserByUsername(username);
+        }
+        
         [HttpGet("currentUser")]
         [Authorize]
         public async Task<UserDTO> GetCurrentUser()

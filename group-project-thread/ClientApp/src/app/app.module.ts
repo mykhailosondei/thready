@@ -32,6 +32,9 @@ import {PostEditorDialogComponent} from "./Components/post-editor-dialog/post-ed
 import {UserHoverCardComponent} from "./Components/user-hover-card/user-hover-card.component";
 import {OnDomEnterDirective} from "./Directives/on-dom-enter.directive";
 import {SingularPostViewComponent} from "./Components/singular-post-view/singular-post-view.component";
+import {ConnectionPageComponent} from "./Components/connections-page/connection-page.component";
+import {FollowingPageComponent} from "./Components/following-page/following-page.component";
+import {FollowersPageComponent} from "./Components/followers-page/followers-page.component";
 
 @NgModule({
   declarations: [
@@ -51,6 +54,10 @@ import {SingularPostViewComponent} from "./Components/singular-post-view/singula
     PostCreatorComponent,
     AutoResizeInputComponent,
     PostEditorDialogComponent,
+    UserHoverCardComponent,
+    ConnectionPageComponent,
+    FollowingPageComponent,
+    FollowersPageComponent,
     UserHoverCardComponent,
     OnDomEnterDirective,
     SingularPostViewComponent
@@ -82,5 +89,6 @@ import {SingularPostViewComponent} from "./Components/singular-post-view/singula
   bootstrap: [AppComponent],
   entryComponents: [CommentCreationDialogComponent]
 })
+
 export class AppModule {
 }
