@@ -2,6 +2,7 @@
   <div class="user-collar-and-post-holder">
     <div class="user-avatar-collar">
       <div class="user-avatar" [ngStyle]="{'background-color': getCircleColor()}">
+        <a href="/profile" class="user-link"></a>
         <img *ngIf="!isAvatarNull()" src="{{post.user.avatar!.url}}" alt="{{post.user.username}}}">
         <div *ngIf="isAvatarNull()" class="initial">{{getFirstInitial()}}</div>
       </div>
@@ -10,6 +11,7 @@
       <div class="user-info-and-dots">
         <div class="user-date">
           <div class="user-info" #userInfo (mouseenter)="onUserInfoMouseEnter()" (mouseleave)="onUserInfoMouseLeave()">
+            <a href="/profile" class="user-link"></a>
             <b>{{post.user.username}}</b>
           </div>
           <div class="user-date-divider"></div>

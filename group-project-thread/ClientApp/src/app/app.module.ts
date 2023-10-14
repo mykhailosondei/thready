@@ -31,6 +31,7 @@ import {AutoResizeInputComponent} from "./Components/auto-resize-input/auto-resi
 import {PostEditorDialogComponent} from "./Components/post-editor-dialog/post-editor-dialog.component";
 import {UserHoverCardComponent} from "./Components/user-hover-card/user-hover-card.component";
 import {OnDomEnterDirective} from "./Directives/on-dom-enter.directive";
+import {SingularPostViewComponent} from "./Components/singular-post-view/singular-post-view.component";
 
 @NgModule({
   declarations: [
@@ -51,7 +52,8 @@ import {OnDomEnterDirective} from "./Directives/on-dom-enter.directive";
     AutoResizeInputComponent,
     PostEditorDialogComponent,
     UserHoverCardComponent,
-    OnDomEnterDirective
+    OnDomEnterDirective,
+    SingularPostViewComponent
   ],
   imports: [
     BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),
