@@ -1,13 +1,11 @@
-import { Component } from '@angular/core';
+import {Component, NgZone} from '@angular/core';
 import {UserService} from "../../Services/user.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import {AuthService} from "../../Services/auth.service";
 import {SnackbarService} from "../../Services/snackbar.service";
 import {UserDTO} from "../../models/user/userDTO";
 import {UserWithPostDTO} from "../../models/user/UserWithinPostDTO";
 import {finalize, Subject, takeUntil} from "rxjs";
-import {C, F} from "@angular/cdk/keycodes";
-
+import {F} from "@angular/cdk/keycodes";
 @Component({
   selector: 'app-followers-page',
   templateUrl: './followers-page.component.html',
@@ -18,13 +16,13 @@ export class FollowersPageComponent {
   protected user! : UserDTO;
   protected followers : UserWithPostDTO[];
   protected isMyFollowing : boolean;
-  public followingText: string = "Unfollow";
+  public followingText : string = "Following";
   private submittedUnfollow: boolean = false;
   private submittedFollow : boolean = false;
   private unsubscribe$ = new Subject<void>();
   protected followed = false;
   constructor(private userService: UserService, private route: ActivatedRoute,
-              private  snackBarService : SnackbarService ) {
+              private  snackBarService : SnackbarService, private ngZone: NgZone ) {
     this.route.paramMap.subscribe(params => {
       this.username = params.get('username') || "DefaultUsername";
     })
@@ -68,44 +66,53 @@ export class FollowersPageComponent {
   amIFollowing(id : number): boolean{
     if (this.user.followingIds.includes(id)){
       this.followed = true;
-      this.followingText = "Following";
       return true;
     }
+    console.log()
+    this.followed = false;
     return false;
   }
 
   changeSpan() {
-    if (this.followingText === "Unfollow"){
-      this.followingText = "Following";
+
+    if (this.followingText == "Following"){
+      this.followingText = "Unfollow"
     }
     else {
-      this.followingText = "Unfollow";
+      this.followingText = "Following";
     }
   }
   unfollow(id : number) {
-    this.submittedUnfollow = true;
-    this.userService.unfollowUser(id).
-    pipe(takeUntil(this.unsubscribe$), finalize(() => {
+    if (!this.submittedUnfollow){
       this.submittedUnfollow = true;
-    })).subscribe((responce) => {
-      if (responce.ok){
-        this.followed = false;
-      }
-    }, (error)=> {
-      this.snackBarService.showErrorMessage(error.error.title);});
+      this.userService.unfollowUser(id).
+      pipe(takeUntil(this.unsubscribe$), finalize(() => {
+        this.submittedUnfollow = false;
+      })).subscribe((responce) => {
+        if (responce.ok){
+          this.followed = false;
+          const index = this.user.followingIds.indexOf(id);
+          this.user.followingIds.splice(index, 1);
+
+        }
+      }, (error)=> {
+        this.snackBarService.showErrorMessage(error);});
+    }
   }
+
 
   follow(id : number) {
-    this.submittedFollow = true;
-    this.userService.followUser(id).
-    pipe(takeUntil(this.unsubscribe$), finalize(() => {
+    if (!this.submittedFollow){
       this.submittedFollow = true;
-    })).subscribe((responce) => {
-      if (responce.ok){
-        this.followed = true;
-      }
-    }, (error)=> {
-      this.snackBarService.showErrorMessage(error.error.title);});
+      this.userService.followUser(id).
+      pipe(takeUntil(this.unsubscribe$), finalize(() => this.submittedFollow = false ))
+        .subscribe((responce) => {
+          if (responce.ok){
+            this.followed = true;
+            this.user.followingIds.push(id);
+          }
+        }, (error)=> {
+          this.snackBarService.showErrorMessage(error.error.title);});
+    }
   }
-
 }

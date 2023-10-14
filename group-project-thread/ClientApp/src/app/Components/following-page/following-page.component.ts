@@ -1,11 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {UserService} from "../../Services/user.service";
-import {ActivatedRoute, Router} from "@angular/router";
-import {AuthService} from "../../Services/auth.service";
+import {ActivatedRoute} from "@angular/router";
 import {SnackbarService} from "../../Services/snackbar.service";
 import {UserDTO} from "../../models/user/userDTO";
 import {UserWithPostDTO} from "../../models/user/UserWithinPostDTO";
-import {User} from "oidc-client";
 import {finalize, Subject, takeUntil} from "rxjs";
 
 @Component({
@@ -70,15 +68,18 @@ export class FollowingPageComponent implements OnInit{
   }
 
   unfollow(id : number) {
-    this.submitted = true;
-    this.userService.unfollowUser(id).
-    pipe(takeUntil(this.unsubscribe$), finalize(() => {
+    if (!this.submitted){
       this.submitted = true;
-      this.unfollowed = true;
-    })).subscribe(() => {
+      this.userService.unfollowUser(id).
+      pipe(takeUntil(this.unsubscribe$), finalize(() => {
+        this.submitted = true;
+        this.unfollowed = true;
+      })).subscribe(() => {
 
-    }, (error)=> {
-      this.snackBarService.showErrorMessage(error.error.title);});
+      }, (error)=> {
+        this.snackBarService.showErrorMessage(error.error.title);});
+    }
+
   }
 
   follow() {

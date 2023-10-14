@@ -50,12 +50,14 @@
 }
 
 .small-info{
+  height: 40px;
   display: flex;
   justify-content: space-between;
   flex-direction: row;
   align-items: center;
 }
-.username-box{
+.username-followersCount-box{
+  height: 100%;
   cursor: pointer;
   :hover{
     text-decoration: underline;

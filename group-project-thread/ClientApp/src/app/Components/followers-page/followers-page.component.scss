@@ -50,21 +50,28 @@
 }
 
 .small-info{
+  height: 40px;
   display: flex;
   justify-content: space-between;
   flex-direction: row;
   align-items: center;
 }
-.username-box{
+.username-followersCount-box{
+  height: 100%;
   cursor: pointer;
-  :hover{
-    text-decoration: underline;
-  }
+  display: flex;
+  flex-direction: column;
 }
+
 .username-span{
   color: rgba(15,20,25,1.00);
   font-size: 15px;
   font-weight: 700;
+}
+.connections-span{
+  color: rgb(83, 100, 113);
+  font-weight: 400;
+  font-size: 13px;
 }
 
 .follow-button-box{

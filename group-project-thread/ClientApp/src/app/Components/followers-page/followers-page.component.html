@@ -14,8 +14,13 @@
                 </div>
                 <div class="user-info-box">
                   <div class="small-info">
-                    <div class="username-box" (click)="navigateToUserProfile()">
-                      <span class="username-span">{{followers[0].username}}</span>
+                    <div class="username-followersCount-box" (click)="navigateToUserProfile()">
+                      <div class="username-box">
+                        <span class="username-span">{{followers[0].username}}</span>
+                      </div>
+                      <div>
+                        <span class="connections-span">{{followers[0].followers}} followers</span>
+                      </div>
                     </div>
                     <div *ngIf="amIFollowing(followers[0].id) || followed" class="follow-button-box">
                       <div class="follow-button-border" (mouseenter)="changeSpan()" (mouseleave)="changeSpan()" (click)="unfollow(followers[0].id)">
