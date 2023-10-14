@@ -48,12 +48,32 @@ $font : -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-
   height: 100%;
 
 }
-.tab-text{
-  color: rgb(83, 100, 113);
+.navigation-bar-content .following-tab-text-selected{
+  color: black;
   font-weight: 700;
   font-size: 15px;
   font: $font;
 }
+.following-tab-text{
+  color: rgb(83, 100, 113);
+  font-weight: 500;
+  font-size: 15px;
+  font: $font;
+}
+.navigation-bar-content .followers-tab-text-selected{
+  color: black;
+  font-weight: 700;
+  font-size: 15px;
+  font: $font;
+}
+.followers-tab-text{
+  color: rgb(83, 100, 113);
+  font-weight: 500;
+  font-size: 15px;
+  font: $font;
+}
+
+
 .selected-tab{
   background-color: rgb(29,155,240);
   height: 4px;

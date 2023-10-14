@@ -1,0 +1,46 @@
+<div class="header">
+  <div class="header-content">
+    <div  class="back-button" >
+      <div class="svg-pic" aria-label="back" role="button" (click)="backToMainPaige()" >
+        <fa-icon [icon]="faArrowLeftLong" class="arrowIcon"></fa-icon>
+      </div>
+    </div>
+    <div class="profile-info-area">
+      <div class="username">
+        <span>{{username}}</span>
+      </div>
+      <div class="subtitle-box">
+        <span class="subtitle-text">connections</span>
+      </div>
+    </div>
+  </div>
+</div>
+<div >
+  <nav class="navigation-bar">
+    <div role="tablist" class="navigation-bar-content">
+      <div class="tab-box" (click)="navigateToFollowing()">
+        <div class="tab">
+          <div class="tab-text-box">
+            <span class="following-tab-text" [ngClass]="{'following-tab-text-selected': isFollowing}">
+              Following
+            </span>
+            <div *ngIf="isFollowing" class="selected-tab">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-box" (click)="navigateToFollowers()">
+        <div class="tab">
+          <div class="tab-text-box">
+            <span class="followers-tab-text" [ngClass]="{'followers-tab-text-selected': isFollowers}">
+              Followers
+            </span>
+            <div *ngIf="isFollowers" class="selected-tab">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+</div>
