@@ -80,7 +80,7 @@ export class PagePostComponent implements OnInit {
       repostsAmount: this.postInput.repostersIds.length,
       viewsAmount: this.postInput.viewedBy.length
     }
-    this.postService.viewPost(this.post.id).subscribe(response => console.log(response));
+    this.postService.viewPost(this.post.id).subscribe();
   }
 
   getFirstInitial(): string {
@@ -148,12 +148,12 @@ export class PagePostComponent implements OnInit {
       case true:
         this.post.repostsAmount--;
         this.reposted = false;
-        this.postService.undoRepost(this.post.id).subscribe(response => console.log(response));
+        this.postService.undoRepost(this.post.id).subscribe();
         break;
       case false:
         this.post.repostsAmount++;
         this.reposted = true;
-        this.postService.repost(this.post.id).subscribe(response => console.log(response));
+        this.postService.repost(this.post.id).subscribe();
     }
   }
 

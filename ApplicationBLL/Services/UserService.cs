@@ -153,7 +153,7 @@ public class UserService : BaseService
         userEntity.RepostsIds = new List<int>();
     }
 
-    public virtual async Task PutUser(int userId, UserUpdateDTO user)
+    public virtual async Task<UserDTO> PutUser(int userId, UserUpdateDTO user)
     {
         ValidationResult validationResult = await _updateUserValidator.ValidateAsync(user);
         
@@ -192,13 +192,14 @@ public class UserService : BaseService
         {
             _applicationContext.Entry(userEntity.Avatar!).State = EntityState.Added;
         }
-        else
+        else if (userEntity.Avatar != null)
         {
             _applicationContext.Attach(userEntity.Avatar!);
             _applicationContext.Entry(userEntity.Avatar!).Property(img => img.Url).IsModified = true;
         }
 
         await _applicationContext.SaveChangesAsync();
+        return _mapper.Map<UserDTO>(userEntity);
     }
 
     public async Task DeleteUser(int id)

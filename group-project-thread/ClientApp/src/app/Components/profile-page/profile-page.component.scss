@@ -4,6 +4,7 @@ $font : -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-
 .wrap {
   display: flex;
   justify-content: center;
+
 }
 
 .main-page{
@@ -17,11 +18,7 @@ $font : -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-
   height: 53px;
   background-color:  rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px);
-  font-size: 15px;
-  display: flex;
-  flex-direction: column;
-  flex-basis: auto;
-  align-items: stretch;
+  border-bottom: 1px solid $grey-color ;
   position: relative;
 }
 .header-content{
@@ -34,8 +31,6 @@ $font : -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-
   margin-right: auto;
   padding-left: 16px;
   padding-right: 16px;
-  border: 0px solid black;
-  box-sizing: border-box;
 }
 
 .back-button{
@@ -43,12 +38,12 @@ $font : -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-
   min-width: 56px;
   align-self: stretch;
   display: flex;
+  align-items: start;
+  justify-content: center;
   flex-basis: auto;
   flex-direction: column;
   flex-shrink: 0;
   position: relative;
-  justify-content: center;
-
 }
 
 .svg-pic{
@@ -62,10 +57,10 @@ $font : -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-
   border: 0px solid white;
   border-radius: 50px;
   justify-content: center;
+  align-items: center;
   transition: background-color 0.3s;
   user-select: none;
   cursor: pointer;
-  align-items: center;
   &:hover{
     content: "";
     width: 32px;
@@ -76,10 +71,10 @@ $font : -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-
 }
 
 .arrowIcon{
-  margin-top: 3px;
+  padding: 0px;
   user-select: none;
 }
-.user-info{
+.profile-info-area{
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -87,17 +82,188 @@ $font : -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-
 }
 .username{
   font-family: $font;
+  font-weight: 500;
   padding-top: 3px;
   padding-bottom: 3px;
   font-size: 18px;
-  font-weight: 700;
   color: rgb(15,20,25);
 }
+.posts-count-box{
+  display: flex;
+  height: fit-content;
+  padding: 0px;
+}
 .posts-count{
+  padding: 0px;
   color: rgb(83, 100, 113);
   font-size: 11px;
-  font-family: $font;
+  font-family: inherit;
   font-weight: 400;
+}
+
+.profile-info{
 
 }
 
+.empty-area{
+  background-color: rgb(207, 217, 222);
+  padding-bottom: 33.3333%;
+  overflow: hidden;
+  display: flex;
+  width: 100%;
+  position: relative;
+}
+
+.user-info{
+  margin-bottom: 16px;
+  padding-top: 12px;
+  padding-left: 16px;
+  padding-right: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-photo-edit-profile{
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-direction: row;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.image-box{
+  position: relative;
+  min-width: 48px;
+  width: 25%;
+  margin-top: -15%;
+  margin-bottom: 12px;
+  overflow: visible;
+  user-select: none;
+}
+
+.profile-image{
+  height: calc(100% - 12px);
+  width: calc(100% - 12px);
+  top: 50%;
+  right: 50%;
+  border-radius: 50%;
+  border: 4px solid white;
+}
+
+.edit-box{
+  border: 1px solid $grey-color;
+  border-radius: 25px;
+  transition-property: background-color;
+  transition-duration: 0.2s;
+  user-select: none;
+  &:hover{
+    background-color: $grey-color;
+    cursor: pointer;
+  }
+}
+.edit-profile{
+  font: 14px $font;
+  font-weight: 700 !important;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  color: black;
+  padding-right: 16px;
+  padding-left: 16px;
+  text-decoration: none;
+}
+
+.username-box{
+  margin-top: 4px;
+  margin-bottom: 12px;
+}
+
+.bio-box{
+  margin-bottom: 6px;
+}
+.bio{
+  font: $font;
+  font-size: 13px;
+}
+.user-tag{
+  font: $font;
+  font-weight: 800;
+}
+.dob-location{
+  display: flex;
+  flex-direction: row;
+}
+
+.location-item{
+  margin-right: 10px;
+}
+.small-item{
+  padding-right: 4px;
+  color: rgb(83, 100, 113);
+  font-size: 13px;
+}
+.small-info{
+  font: $font;
+  color: rgb(83, 100, 113);
+  font-size: 13px;
+}
+
+.following-followers{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.following-link{
+  margin-right: 20px;
+  font: $font;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 20px;
+  text-decoration: none;
+  color: black;
+  word-wrap: break-word;
+  &:hover{
+    text-decoration-line: underline;
+  }
+}
+
+.followers-link{
+  margin-right: 20px;
+  font: $font;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 20px;
+  text-decoration: none;
+  color: black;
+  &:hover{
+    text-decoration-line: underline;
+  }
+}
+
+.following-count{
+  font-weight: 500;
+}
+.following{
+  color: rgb(83, 100, 113);;
+}
+
+.followers-count{
+  font-weight: 500;
+}
+.followers{
+  color: rgb(83, 100, 113);;
+}
+
+.posts-title-box{
+  border-bottom: 1px solid $grey-color;
+  margin: 0px;
+  padding-left: 16px;
+  padding-bottom: 12px;
+}
+.posts-title{
+  font: $font;
+  font-weight: 500;
+}

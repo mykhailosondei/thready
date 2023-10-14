@@ -3,6 +3,7 @@ import {HttpInternalService} from './http-internal.service';
 import {Observable} from 'rxjs';
 import {HttpResponse} from '@angular/common/http';
 import {UserDTO} from "../models/user/userDTO";
+import {UserUpdateDTO} from "../models/user/userUpdateDTO";
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +33,7 @@ export class UserService {
     return this.httpService.postFullRequest<void>(`${this.routePrefix}/${id}/unfollow`, {});
   }
 
-  public putUser(id: number, user : UserDTO): Observable<HttpResponse<UserDTO>>{
+  public putUser(id: number, user : UserUpdateDTO): Observable<HttpResponse<UserDTO>>{
     return this.httpService.putFullRequest<UserDTO>(`${this.routePrefix}/${id}`, user);
   }
 
@@ -40,7 +41,7 @@ export class UserService {
     return this.httpService.deleteFullRequest<void>(`${this.routePrefix}/${id}`);
   }
 
-  public copyUser({id, username, email, dateOfBirth, password, imageID, avatar, posts, followersIds,
+  public copyUser({id, username, email, dateOfBirth, password, imageID, avatar, posts, postsCount, followersIds,
     followingIds, bio, location, bookmarkedPostsIds, repostsIds}: UserDTO){
     return {
       id,
@@ -51,6 +52,7 @@ export class UserService {
       imageID,
       avatar,
       posts,
+      postsCount,
       followersIds,
       followingIds,
       bio,
