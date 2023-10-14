@@ -14,33 +14,17 @@ import {SnackbarService} from "../../Services/snackbar.service";
 })
 export class ConnectionPageComponent implements OnInit{
   protected readonly faArrowLeftLong = faArrowLeftLong;
-  public user! : UserDTO;
 
   @Input() public isFollowing : boolean;
   @Input() public isFollowers : boolean;
   @Input() public username : string;
-  @Output() public emittedUser: EventEmitter<UserDTO> = new EventEmitter<UserDTO>();
 
-
-  private unsubscribe$ = new Subject<void>;
-
-  constructor(private userService: UserService, private router: Router, private snackBarService : SnackbarService ) {
+  constructor(private router: Router) {
 
   }
 
   ngOnInit(): void {
-    this.userService.getUserByUsername(this.username)
-      .pipe(takeUntil(this.unsubscribe$), catchError(error => {
-        this.snackBarService.showErrorMessage(error.error.title);
-        this.backToMainPaige();
-        throw error;
-      })).subscribe( response =>
-    {
-      if (response.body != null){
-        this.user  = response.body;
-        this.emittedUser.emit(this.user);
-      }
-    })
+
   }
 
   backToMainPaige() {
@@ -48,11 +32,11 @@ export class ConnectionPageComponent implements OnInit{
   }
 
   public navigateToFollowing(){
-    this.router.navigate([this.user.username, "following"])
+    this.router.navigate([this.username, "following"])
   }
 
   public navigateToFollowers(){
-    this.router.navigate([this.user.username, "followers"])
+    this.router.navigate([this.username, "followers"])
   }
 }
 
