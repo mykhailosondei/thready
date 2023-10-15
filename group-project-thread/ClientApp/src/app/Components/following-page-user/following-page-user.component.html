@@ -12,7 +12,7 @@
             <div class="underline-box" (click)="navigateToUserProfile(pageUser.username)">
               <span class="username-span">{{pageUser.username}}</span>
             </div>
-            <div class="underline-box" (click)="getUserFollowing(pageUser.username)">
+            <div class="underline-box" (click)="getUserFollowing($event, pageUser.username)">
               <span class="connections-span">{{pageUser.following}} following</span>
             </div>
           </div>

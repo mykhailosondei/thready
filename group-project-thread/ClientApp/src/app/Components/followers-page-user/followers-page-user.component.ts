@@ -86,7 +86,8 @@ export class FollowersPageUserComponent {
     }
   }
 
-  getUserFollowers(username: string) {
+  getUserFollowers(event : Event, username: string) {
+    event.stopPropagation();
     this.router.navigate([username, 'followers'])
   }
 }

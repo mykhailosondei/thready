@@ -27,7 +27,8 @@ export class FollowingPageUserComponent {
   navigateToUserProfile(username : string) {
     this.router.navigate([username, 'profile']);
   }
-  getUserFollowing(username: string) {
+  getUserFollowing(event : Event, username: string) {
+    event.stopPropagation();
     this.router.navigate([username, 'following'])
   }
 
