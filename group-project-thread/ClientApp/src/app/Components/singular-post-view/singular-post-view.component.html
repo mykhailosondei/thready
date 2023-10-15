@@ -8,7 +8,7 @@
             <img *ngIf="!isAvatarNull()" src="{{authorInput.avatar!.url}}" alt="{{authorInput.username}}}">
             <div *ngIf="isAvatarNull()" class="initial">{{getFirstInitial()}}</div>
           </div>
-          <div class="user-info">
+          <div class="user-info" #userInfo (mouseenter)="onUserInfoMouseEnter()" (mouseleave)="onUserInfoMouseLeave()">
             <div class="user-name">
               <b>{{authorInput.username}}</b>
             </div>
@@ -107,6 +107,9 @@
           </div>
       </div>
       <app-comment-creator [post]="post"></app-comment-creator>
+      <div *ngIf="comments.length > 0">
+        <app-page-comment [commentInput]="comments[0]" [userInput]="comments[0].author"></app-page-comment>
+      </div>
   </div>
 </div>
 </div>

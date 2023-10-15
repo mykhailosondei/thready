@@ -1,25 +1,26 @@
 import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
-import {PagePostDTO} from "../../models/post/pagePostDTO";
 import {PostDTO} from "../../models/post/postDTO";
 import {UserDTO} from "../../models/user/userDTO";
-import {CommentCreateDialogData} from "../../models/coment/CommentCreateDialogData";
-import {faBookmark as faBookmarkUnactivated, faComment, faHeart as faHeartUnactivated} from "@fortawesome/free-regular-svg-icons";
-import {faBookmark as faBookmarkActivated, faRetweet, faHeart as faHeartActivated, faSquarePollVertical, faPen} from "@fortawesome/free-solid-svg-icons";
+import {PagePostDTO} from "../../models/post/pagePostDTO";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {CommentService} from "../../Services/comment.service";
 import {PostService} from "../../Services/post.service";
 import {UserService} from "../../Services/user.service";
 import {UserHoverCardTriggerService} from "../../Services/user-hover-card-trigger.service";
+import PostFormatter from "../../helpers/postFormatter";
 import {CommentCreationDialogComponent} from "../comment-creation-dialog/comment-creation-dialog.component";
+import {CommentCreateDialogData} from "../../models/coment/CommentCreateDialogData";
 import {PostEditorDialogComponent} from "../post-editor-dialog/post-editor-dialog.component";
-import PostFormatter from 'src/app/helpers/postFormatter';
+import {faBookmark as faBookmarkUnactivated, faComment, faHeart as faHeartUnactivated} from "@fortawesome/free-regular-svg-icons";
+import {faBookmark as faBookmarkActivated, faRetweet, faHeart as faHeartActivated, faSquarePollVertical, faPen} from "@fortawesome/free-solid-svg-icons";
+import {CommentDTO} from "../../models/coment/commentDTO";
 
 @Component({
-  selector: 'app-page-post',
-  templateUrl: './page-post.component.html',
-  styleUrls: ['./page-post.component.scss']
+  selector: 'app-page-comment',
+  templateUrl: './page-comment.component.html',
+  styleUrls: ['./page-comment.component.scss', '../page-post/page-post.component.scss']
 })
-export class PagePostComponent implements OnInit {
+export class PageCommentComponent implements OnInit {
   faPen = faPen;
   faComment = faComment;
   faRetweet = faRetweet;
@@ -29,9 +30,9 @@ export class PagePostComponent implements OnInit {
   faBookmarkActivated = faBookmarkActivated;
   faBookmarkUnactivated = faBookmarkUnactivated;
 
-  @Input() public postInput!: PostDTO;
+  @Input() public commentInput!: CommentDTO;
   @Input() public userInput!: UserDTO;
-  post: PagePostDTO = {} as PagePostDTO;
+  commentView: PagePostDTO = {} as PagePostDTO;
 
   @ViewChild('userInfo') userInfo: ElementRef<HTMLDivElement>;
   @ViewChild('wholePost') wholePost: ElementRef<HTMLDivElement>;
@@ -41,12 +42,10 @@ export class PagePostComponent implements OnInit {
   viewed: boolean = false;
   editable: boolean = false;
   liked: boolean = false;
-  reposted: boolean = false;
   bookmarked: boolean;
 
   constructor(public dialog: MatDialog,
               private readonly commentService: CommentService,
-              private readonly postService: PostService,
               private readonly userService: UserService,
               private readonly hoverCardTriggerService: UserHoverCardTriggerService) {
   }
@@ -54,13 +53,12 @@ export class PagePostComponent implements OnInit {
   ngOnInit(): void {
     this.userService.getCurrentUser().subscribe(response => {
       if (response.ok) {
-        this.editable = response.body!.id === this.postInput.author.id;
-        this.liked = this.postInput.likesIds.includes(response.body!.id);
-        this.reposted = this.postInput.repostersIds.includes(response.body!.id);
-        this.bookmarked = response.body!.bookmarkedPostsIds.includes(this.postInput.id);
+        this.editable = response.body!.id === this.commentInput.author.id;
+        this.liked = this.commentInput.likesIds.includes(response.body!.id);
+        this.bookmarked = response.body!.bookmarkedPostsIds.includes(this.commentInput.id);
       }
     });
-    this.post = PostFormatter.mapPostToPagePost(this.postInput, this.userInput);
+    this.commentView = PostFormatter.mapCommentToPagePost(this.commentInput, this.userInput);
     // Set up IntersectionObserver to watch for 50% visibility
     this.observer = new IntersectionObserver(this.handleIntersection.bind(this), {
       root: null, // Use the viewport as the root
@@ -79,26 +77,26 @@ export class PagePostComponent implements OnInit {
     entries.forEach((entry: any) => {
       if (entry.isIntersecting && !this.viewed) {
         // The component is at least 50% visible in the viewport
-        this.postService.viewPost(this.post.id).subscribe(Response => {
+        this.commentService.viewComment(this.commentView.id)/*.subscribe(Response => {
           console.log(Response);
           if (Response.ok) this.viewed = true;
-        });
+        });*/
       }
     });
   }
 
   getFirstInitial(): string {
-    return this.post.user.username[0].toUpperCase();
+    return this.commentView.user.username[0].toUpperCase();
   }
 
 
   public getCreatedDate(): string {
-    const date = new Date(this.post.dateCreated);
+    const date = new Date(this.commentView.dateCreated);
     return PostFormatter.getDateFormattedString(date);
   }
 
   isAvatarNull(): boolean {
-    return this.post.user.avatar === null;
+    return this.commentView.user.avatar === null;
   }
 
   handleCommentClick() {
@@ -108,21 +106,22 @@ export class PagePostComponent implements OnInit {
   openCommentDialog() {
     const dialogRef: MatDialogRef<CommentCreationDialogComponent, CommentCreateDialogData> = this.dialog.open(CommentCreationDialogComponent, {
       width: '500px',
-      data: {post: this.post, currentUser: this.post.user, textContent: "", images: []}
+      data: {post: this.commentView, currentUser: this.commentView.user, textContent: "", images: []}
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === undefined) return;
       console.log('The dialog was closed');
       console.log(result);
+      console.log(this.commentView);
       this.commentService.postComment({
-        postId: this.post.id,
+        parentCommentId: this.commentView.id,
         textContent: result.textContent,
         images: result.images
       }).subscribe(response => {
         console.log(response)
         if (!response.ok) return;
-        this.post.commentsAmount++;
+        this.commentView.commentsAmount++;
       });
     });
   }
@@ -133,57 +132,42 @@ export class PagePostComponent implements OnInit {
       textContentOutput: string
     }> = this.dialog.open(PostEditorDialogComponent, {
       width: '500px',
-      data: {post: this.post},
+      data: {post: this.commentView},
       disableClose: true
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === undefined) return;
-      this.postService.putPost(this.post.id, {
+      this.commentService.putComment(this.commentView.id, {
         textContent: result.textContentOutput,
         images: []
       }).subscribe(response => {
           console.log(response);
           if (!response.ok) return;
-          this.post.textContent = result.textContentOutput;
+          this.commentView.textContent = result.textContentOutput;
         }
       );
     });
-  }
-
-  handleRepostClick() {
-    console.log("Repost clicked");
-    switch (this.reposted) {
-      case true:
-        this.post.repostsAmount--;
-        this.reposted = false;
-        this.postService.undoRepost(this.post.id).subscribe();
-        break;
-      case false:
-        this.post.repostsAmount++;
-        this.reposted = true;
-        this.postService.repost(this.post.id).subscribe();
-    }
   }
 
   handleLikeClick() {
     console.log("Like clicked");
     switch (this.liked) {
       case true:
-        this.post.likesAmount--;
+        this.commentView.likesAmount--;
         this.liked = false;
-        this.postService.unlikePost(this.post.id).subscribe(response => console.log(response));
+        this.commentService.unlikeComment(this.commentView.id).subscribe(response => console.log(response));
         break;
       case false:
-        this.post.likesAmount++;
+        this.commentView.likesAmount++;
         this.liked = true;
-        this.postService.likePost(this.post.id).subscribe(response => console.log(response));
+        this.commentService.likeComment(this.commentView.id).subscribe(response => console.log(response));
         break;
     }
   }
 
   getCircleColor() {
-    return PostFormatter.getCircleColor(this.post.user.username);
+    return PostFormatter.getCircleColor(this.commentView.user.username);
   }
 
   async onUserInfoMouseLeave() {
@@ -201,7 +185,7 @@ export class PagePostComponent implements OnInit {
 
   onUserInfoMouseEnter() {
     console.log("Mouse enter");
-    this.hoverCardTriggerService.user = this.post.user;
+    this.hoverCardTriggerService.user = this.commentView.user;
     this.hoverCardTriggerService.enableHoverCardVisibility();
     this.hoverCardTriggerService.isHoveredOnTriggeringElement = true;
     this.hoverCardTriggerService.coordinates = {
@@ -214,26 +198,27 @@ export class PagePostComponent implements OnInit {
     console.log("Bookmark clicked");
     switch (this.bookmarked) {
       case true:
-            this.bookmarked = false;
-            this.post.bookmarksAmount--;
-        this.postService.removeFromBookmarksPost(this.post.id).subscribe(Response => {
+        this.bookmarked = false;
+        this.commentView.bookmarksAmount--;
+        this.commentService.undoBookmarkComment(this.commentView.id)/*.subscribe(Response => {
           if (!Response.ok) {
             this.bookmarked = true;
-            this.post.bookmarksAmount++;
+            this.commentView.bookmarksAmount++;
           }
           console.log(Response)
-        });
+        });*/
         break;
       case false:
-            this.bookmarked = true;
-            this.post.bookmarksAmount++;
-        this.postService.bookmarkPost(this.post.id).subscribe(Response => {
+        this.bookmarked = true;
+        this.commentView.bookmarksAmount++;
+        this.commentService.bookmarkComment(this.commentView.id)/*.subscribe(Response => {
           if (!Response.ok) {
             this.bookmarked = false;
-            this.post.bookmarksAmount--;
+            this.commentView.bookmarksAmount--;
           }
           console.log(Response)
-        });
+        });*/
+        break;
     }
   }
 }

@@ -40,4 +40,15 @@ export class CommentService {
     return this.httpInternalService.deleteFullRequest<void>(`${this.route}/${id}`);
   }
 
+  public viewComment(id: number) {
+    console.log("viewing comment with id: " + id);
+  }
+
+  public bookmarkComment(id: number){
+    console.log("bookmarking comment with id: " + id);
+  }
+
+  public undoBookmarkComment(id: number){
+    console.log("unbookmarking comment with id: " + id);
+  }
 }

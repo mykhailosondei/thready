@@ -1,5 +1,10 @@
 import {months} from "../../assets/months";
 import seedrandom from "seedrandom";
+import {PostDTO} from "../models/post/postDTO";
+import {UserDTO} from "../models/user/userDTO";
+import {PagePostDTO} from "../models/post/pagePostDTO";
+import {CommentDTO} from "../models/coment/commentDTO";
+import {Random} from "random";
 export default class PostFormatter{
 
   public static isInputLengthInvalid(input: string): boolean {
@@ -11,6 +16,62 @@ export default class PostFormatter{
     if(number < 1000000) return Math.floor(number/100)/10 + "K";
     if(number < 1000000000) return Math.floor(number/100000)/10 + "M";
     return Math.floor(number/100000000)/10 + "B";
+  }
+
+  public static mapPostToPagePost(postInput: PostDTO, userInput: UserDTO): PagePostDTO {
+    var rnd = new Random();
+    let numberOfImages = rnd.int(1, 4);
+    let imagesUrls : string[] = [];
+    for(let i = 0; i < numberOfImages; i++){
+      imagesUrls.push("https://picsum.photos/500/500")
+    }
+    return  {
+      id: postInput.id,
+      user: {
+        id: userInput.id,
+        username: userInput.username,
+        avatar: userInput.avatar,
+        bio: userInput.bio,
+        followers: userInput.followersIds.length,
+        following: userInput.followingIds.length
+      },
+      textContent: postInput.textContent,
+      dateCreated: postInput.createdAt,
+      imagesUrls: imagesUrls,
+      likesAmount: postInput.likesIds.length,
+      commentsAmount: postInput.commentsIds.length,
+      repostsAmount: postInput.repostersIds.length,
+      viewsAmount: postInput.viewedBy.length,
+      bookmarksAmount: postInput.bookmarks
+    }
+  }
+
+  public static mapCommentToPagePost(commentInput: CommentDTO, userInput: UserDTO): PagePostDTO {
+    var rnd = new Random();
+    let numberOfImages = rnd.int(1, 4);
+    let imagesUrls : string[] = [];
+    for(let i = 0; i < numberOfImages; i++){
+      imagesUrls.push("https://picsum.photos/500/500")
+    }
+    return  {
+      id: commentInput.id,
+      user: {
+        id: userInput.id,
+        username: userInput.username,
+        avatar: userInput.avatar,
+        bio: userInput.bio,
+        followers: userInput.followersIds.length,
+        following: userInput.followingIds.length
+      },
+      textContent: commentInput.textContent,
+      dateCreated: commentInput.createdAt,
+      imagesUrls: imagesUrls,
+      likesAmount: commentInput.likesIds.length,
+      commentsAmount: commentInput.commentsIds.length,
+      repostsAmount: 0,
+      viewsAmount: commentInput.viewedBy.length,
+      bookmarksAmount: 0
+    }
   }
 
   public static getCircleColor(username:string): string {

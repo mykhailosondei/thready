@@ -58,7 +58,7 @@ export class SingularPostViewComponent implements OnInit{
     }
     ngOnInit(): void {
       this.fetchEssentialData();
-      this.fetchComments();
+      //this.fetchComments();
     }
 
     fetchEssentialData() {
@@ -72,33 +72,17 @@ export class SingularPostViewComponent implements OnInit{
       this.postService.getPostById(this.incomingPostId).subscribe(response => {
         if(response.ok) {
           this.postInput = response.body!;
-          this.post = {
-            id: this.postInput.id,
-            user: {
-              id: this.authorInput.id,
-              username: this.authorInput.username,
-              avatar: this.authorInput.avatar,
-              bio: this.authorInput.bio,
-              followers: this.authorInput.followersIds.length,
-              following: this.authorInput.followingIds.length
-            },
-            textContent: this.postInput.textContent,
-            dateCreated: this.postInput.createdAt,
-            imagesUrls: ['https://picsum.photos/1000/1000'],
-            likesAmount: this.postInput.likesIds.length,
-            commentsAmount: this.postInput.commentsIds.length,
-            repostsAmount: this.postInput.repostersIds.length,
-            viewsAmount: this.postInput.viewedBy.length,
-            bookmarksAmount: this.postInput.bookmarks
-          }
+          this.post = PostFormatter.mapPostToPagePost(this.postInput, this.authorInput);
         console.log(response);
         }
-      });
+      }).add(()=>this.fetchComments());
     }
 
     fetchComments() {
+      console.log(this.postInput.commentsIds);
       for (let commentId of this.postInput.commentsIds) {
         this.commentService.getCommentById(commentId).subscribe(response => {
+            console.log(response);
           if(response.ok) {
             this.comments.push(response.body!);
           }
@@ -212,7 +196,6 @@ export class SingularPostViewComponent implements OnInit{
   }
 
   async onUserInfoMouseLeave() {
-    this.hoverCardTriggerService.triggeringElementOnLeaveTimeStamp = Date.now();
     this.hoverCardTriggerService.isHoveredOnTriggeringElement = false;
     await this.delay(100).then(() => {
       if (!this.hoverCardTriggerService.isInsideHoverCard && !this.hoverCardTriggerService.isHoveredOnTriggeringElement) {
