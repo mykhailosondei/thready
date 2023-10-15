@@ -23,25 +23,28 @@ public class UserService : BaseService
     private readonly EmailValidatorService _emailValidatorService;
     private readonly UserQueryRepository _userQueryRepository;
     private readonly PostQueryRepository _postQueryRepository;
+    private readonly CommentQueryRepository _commentQueryRepository;
     private readonly IValidator<RegisterUserDTO> _registerUserDTOValidator;
     private readonly IValidator<UserUpdateDTO> _updateUserValidator;
     
     public UserService(ApplicationContext applicationContext, IMapper mapper, 
         EmailValidatorService emailValidatorService, IValidator<RegisterUserDTO> registerUserDtoValidator, 
         UserQueryRepository userQueryRepository, PostQueryRepository postQueryRepository, 
-        IValidator<UserUpdateDTO> updateUserValidator) : base(applicationContext, mapper)
+        IValidator<UserUpdateDTO> updateUserValidator, CommentQueryRepository commentQueryRepository) : base(applicationContext, mapper)
     {
         _emailValidatorService = emailValidatorService;
         _registerUserDTOValidator = registerUserDtoValidator;
         _userQueryRepository = userQueryRepository;
         _postQueryRepository = postQueryRepository;
         _updateUserValidator = updateUserValidator;
+        _commentQueryRepository = commentQueryRepository;
     }
 
-    public UserService(UserQueryRepository userQueryRepository, PostQueryRepository postQueryRepository) : base(null, null)
+    public UserService(UserQueryRepository userQueryRepository, PostQueryRepository postQueryRepository, CommentQueryRepository commentQueryRepository) : base(null, null)
     {
         _userQueryRepository = userQueryRepository;
         _postQueryRepository = postQueryRepository;
+        _commentQueryRepository = commentQueryRepository;
     }
     
     
@@ -150,6 +153,7 @@ public class UserService : BaseService
         userEntity.Bio = "";
         userEntity.Location = "";
         userEntity.BookmarkedPostsIds = new List<int>();
+        userEntity.BookmarkedCommentsIds = new List<int>();
         userEntity.RepostsIds = new List<int>();
     }
 
@@ -208,6 +212,8 @@ public class UserService : BaseService
         var followers = userModel.FollowersIds.Select(async i => await _userQueryRepository.GetUserById(i));
         var followings = userModel.FollowingIds.Select(async i => await _userQueryRepository.GetUserById(i));
         var bookmarkedPosts = userModel.BookmarkedPostsIds.Select(async i => await _postQueryRepository.GetPostById(i));
+        var bookmarkComments =
+            userModel.BookmarkedCommentsIds.Select(async i => await _commentQueryRepository.GetCommentByIdPlain(i));
         var repostedPosts = userModel.RepostsIds.Select(async i => await _postQueryRepository.GetPostById(i));
         
         if (userModel == null)
@@ -241,6 +247,18 @@ public class UserService : BaseService
 
             _applicationContext.Attach(awaitedBookmarkedPost);
             _applicationContext.Entry(awaitedBookmarkedPost).Property(p => p.Bookmarks).IsModified = true;
+            await _applicationContext.SaveChangesAsync();
+            _applicationContext.ChangeTracker.Clear();
+        }
+        
+        foreach (var bookmarkComment in bookmarkComments)
+        {
+            var awaitedBookmarkedComment = await bookmarkComment;
+
+            awaitedBookmarkedComment.Bookmarks--;
+
+            _applicationContext.Attach(awaitedBookmarkedComment);
+            _applicationContext.Entry(awaitedBookmarkedComment).Property(c => c.Bookmarks).IsModified = true;
             await _applicationContext.SaveChangesAsync();
             _applicationContext.ChangeTracker.Clear();
         }

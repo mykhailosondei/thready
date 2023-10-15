@@ -29,6 +29,7 @@ namespace ApplicationDAL.Entities
         public List<int> CommentsIds { get; set; }
         public List<int> LikesIds { get; set; }
         public List<int> ViewedBy { get; set; }
+        public int Bookmarks { get; set; }
 
     }
 }

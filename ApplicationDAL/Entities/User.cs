@@ -38,6 +38,7 @@ namespace ApplicationDAL.Entities
         [MaxLength(30)]
         public string? Location { get; set; }
         public List<int> BookmarkedPostsIds { get; set; }
+        public List<int> BookmarkedCommentsIds { get; set; }
         public List<int> RepostsIds { get; set; }
     }
 }
