@@ -69,6 +69,61 @@ public class CommentService : BaseService
         
         return result;
     }
+    
+    public async Task BookmarkComment(int commentId, int userId)
+    {
+        var userModel = await _userQueryRepository.GetUserById(userId);
+        var comment = await _commentQueryRepository.GetCommentByIdPlain(commentId);
+        if (comment == null)
+        {
+            throw new CommentNotFoundException();
+        }
+
+        bool isBookmarked = userModel.BookmarkedCommentsIds.Contains(commentId);
+
+        if (isBookmarked)
+            throw new InvalidOperationException("Already bookmarked");
+        
+        var userEntity = _mapper.Map<User>(userModel);
+        var commentEntity = _mapper.Map<Comment>(comment);
+
+        commentEntity.Bookmarks++;
+        userEntity.BookmarkedCommentsIds.Add(commentId);
+        await BookmarkEntitiesSaveChanges(userEntity, commentEntity);
+    }
+    
+    public async Task RemoveFromBookmarksComment(int commentId, int userId)
+    {
+        var userModel = await _userQueryRepository.GetUserById(userId);
+        var comment = await _commentQueryRepository.GetCommentByIdPlain(commentId);
+        if (comment == null)
+        {
+            throw new CommentNotFoundException();
+        }
+
+        bool isBookmarked = userModel.BookmarkedCommentsIds.Contains(commentId);
+
+        if (!isBookmarked)
+        {
+            throw new InvalidOperationException("Not bookmarked");
+        }
+
+        var userEntity = _mapper.Map<User>(userModel);
+        var commentEntity = _mapper.Map<Comment>(comment);
+
+        commentEntity.Bookmarks--;
+        userEntity.BookmarkedCommentsIds.Remove(commentId);
+        await BookmarkEntitiesSaveChanges(userEntity, commentEntity);
+    }
+    
+    private async Task BookmarkEntitiesSaveChanges(User userEntity, Comment commentEntity)
+    {
+        _applicationContext.Attach(userEntity);
+        _applicationContext.Attach(commentEntity);
+        _applicationContext.Entry(userEntity).Property(u => u.BookmarkedCommentsIds).IsModified = true;
+        _applicationContext.Entry(commentEntity).Property(p => p.Bookmarks).IsModified = true;
+        await _applicationContext.SaveChangesAsync();
+    }
 
     private async Task UpdateCommentsIdsInParentPost(CommentDTO comment)
     {
@@ -189,6 +244,7 @@ public class CommentService : BaseService
         commentDto.LikesIds = new List<int>();
         commentDto.CommentsIds = new List<int>();
         commentDto.ViewedBy = new List<int>();
+        commentDto.Bookmarks = 0;
     }
     
     private Func<Image, string> imageSelector = image => image.Url;
