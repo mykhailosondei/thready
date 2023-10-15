@@ -19,10 +19,17 @@
             {{ getCreatedDate() }}
           </div>
         </div>
-        <div *ngIf="editable" class="edit">
-          <button class="edit-button" (click)="openEditDialog()">
-            <fa-icon [icon]="faPen"></fa-icon>
-          </button>
+        <div class="edit-and-bookmark-holder">
+          <div *ngIf="editable" class="edit">
+            <button class="action-button" (click)="openEditDialog()">
+              <fa-icon [icon]="faPen"></fa-icon>
+            </button>
+          </div>
+          <div class="bookmark">
+            <button class="action-button" (click)="handleBookmarkClick()">
+              <fa-icon [icon]="this.bookmarked ? faBookmarkActivated : faBookmarkUnactivated"></fa-icon>
+            </button>
+          </div>
         </div>
       </div>
       <div class="post-text-content">

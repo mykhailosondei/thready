@@ -2,8 +2,8 @@ import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {PagePostDTO} from "../../models/post/pagePostDTO";
 import {UserWithPostDTO} from "../../models/user/UserWithinPostDTO";
 import PostFormatter from 'src/app/helpers/postFormatter';
-import {faComment, faHeart as faHeartUnactivated} from "@fortawesome/free-regular-svg-icons";
-import {faEllipsisH, faRetweet, faSquarePollVertical} from "@fortawesome/free-solid-svg-icons";
+import {faBookmark as faBookmarkActivated, faComment, faHeart as faHeartUnactivated} from "@fortawesome/free-regular-svg-icons";
+import {faBookmark as faBookmarkUnactivated, faEllipsisH, faRetweet, faSquarePollVertical} from "@fortawesome/free-solid-svg-icons";
 import {faHeart as faHeartActivated} from "@fortawesome/free-solid-svg-icons";
 import seedrandom from "seedrandom";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
@@ -36,9 +36,11 @@ export class PagePostComponent implements OnInit {
   faSquarePollVertical = faSquarePollVertical;
   faHeartActivated = faHeartActivated;
   faHeartUnactivated = faHeartUnactivated;
+  faBookmarkActivated = faBookmarkActivated;
+  faBookmarkUnactivated = faBookmarkUnactivated;
 
   @Input() public postInput!: PostDTO;
-  post:PagePostDTO = {} as PagePostDTO;
+  post: PagePostDTO = {} as PagePostDTO;
   @Input() public userInput!: UserDTO;
   @Input() public excludeFooter: boolean = false;
   @Input() public excludeImages: boolean = false;
@@ -53,20 +55,22 @@ export class PagePostComponent implements OnInit {
   editable: boolean = false;
   liked: boolean = false;
   reposted: boolean = false;
+  bookmarked: boolean;
 
   constructor(public dialog: MatDialog,
-              private readonly commentService : CommentService,
-              private readonly postService : PostService,
-              private readonly userService : UserService,
+              private readonly commentService: CommentService,
+              private readonly postService: PostService,
+              private readonly userService: UserService,
               private readonly hoverCardTriggerService: UserHoverCardTriggerService) {
   }
 
   ngOnInit(): void {
     this.userService.getCurrentUser().subscribe(response => {
-      if(response.ok) {
+      if (response.ok) {
         this.editable = response.body!.id === this.postInput.author.id;
-      this.liked = this.postInput.likesIds.includes(response.body!.id);
-      this.reposted = this.postInput.repostersIds.includes(response.body!.id);
+        this.liked = this.postInput.likesIds.includes(response.body!.id);
+        this.reposted = this.postInput.repostersIds.includes(response.body!.id);
+        this.bookmarked = response.body!.bookmarkedPostsIds.includes(this.postInput.id);
       }
     });
     this.post = {
@@ -95,6 +99,7 @@ export class PagePostComponent implements OnInit {
     });
 
   }
+
   startObserve() {
     this.observer.observe(this.wholePost.nativeElement);
   }
@@ -105,7 +110,7 @@ export class PagePostComponent implements OnInit {
         // The component is at least 50% visible in the viewport
         this.postService.viewPost(this.post.id).subscribe(Response => {
           console.log(Response);
-          if(Response.ok) this.viewed = true;
+          if (Response.ok) this.viewed = true;
         });
       }
     });
@@ -114,7 +119,6 @@ export class PagePostComponent implements OnInit {
   getFirstInitial(): string {
     return this.post.user.username[0].toUpperCase();
   }
-
 
 
   public getCreatedDate(): string {
@@ -131,13 +135,13 @@ export class PagePostComponent implements OnInit {
   }
 
   openCommentDialog() {
-    const dialogRef : MatDialogRef<CommentCreationDialogComponent, CommentCreateDialogData> = this.dialog.open(CommentCreationDialogComponent, {
+    const dialogRef: MatDialogRef<CommentCreationDialogComponent, CommentCreateDialogData> = this.dialog.open(CommentCreationDialogComponent, {
       width: '500px',
-      data: { post: this.post, currentUser: this.post.user, textContent: "", images: []}
+      data: {post: this.post, currentUser: this.post.user, textContent: "", images: []}
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if(result === undefined) return;
+      if (result === undefined) return;
       console.log('The dialog was closed');
       console.log(result);
       this.commentService.postComment({
@@ -146,26 +150,32 @@ export class PagePostComponent implements OnInit {
         images: result.images
       }).subscribe(response => {
         console.log(response)
-        if(!response.ok) return;
+        if (!response.ok) return;
         this.post.commentsAmount++;
       });
     });
   }
+
   openEditDialog() {
-    const dialogRef: MatDialogRef<PostEditorDialogComponent, {post: PagePostDTO, textContentOutput: string}> = this.dialog.open(PostEditorDialogComponent, {
+    const dialogRef: MatDialogRef<PostEditorDialogComponent, {
+      post: PagePostDTO,
+      textContentOutput: string
+    }> = this.dialog.open(PostEditorDialogComponent, {
       width: '500px',
-      data: { post: this.post},
+      data: {post: this.post},
       disableClose: true
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if(result === undefined) return;
-      this.postService.putPost(this.post.id, {textContent: result.textContentOutput, images: []}).subscribe(response =>
-      {
-        console.log(response);
-        if(!response.ok) return;
-        this.post.textContent = result.textContentOutput;
-      }
+      if (result === undefined) return;
+      this.postService.putPost(this.post.id, {
+        textContent: result.textContentOutput,
+        images: []
+      }).subscribe(response => {
+          console.log(response);
+          if (!response.ok) return;
+          this.post.textContent = result.textContentOutput;
+        }
       );
     });
   }
@@ -188,7 +198,7 @@ export class PagePostComponent implements OnInit {
   handleLikeClick() {
     console.log("Like clicked");
     switch (this.liked) {
-        case true:
+      case true:
         this.post.likesAmount--;
         this.liked = false;
         this.postService.unlikePost(this.post.id).subscribe(response => console.log(response));
@@ -209,7 +219,7 @@ export class PagePostComponent implements OnInit {
     this.hoverCardTriggerService.triggeringElementOnLeaveTimeStamp = Date.now();
     this.hoverCardTriggerService.isHoveredOnTriggeringElement = false;
     await this.delay(100).then(() => {
-      if(!this.hoverCardTriggerService.isInsideHoverCard && !this.hoverCardTriggerService.isHoveredOnTriggeringElement) {
+      if (!this.hoverCardTriggerService.isInsideHoverCard && !this.hoverCardTriggerService.isHoveredOnTriggeringElement) {
         this.hoverCardTriggerService.disableHoverCardVisibility();
       }
     });
@@ -224,6 +234,30 @@ export class PagePostComponent implements OnInit {
     this.hoverCardTriggerService.user = this.post.user;
     this.hoverCardTriggerService.enableHoverCardVisibility();
     this.hoverCardTriggerService.isHoveredOnTriggeringElement = true;
-    this.hoverCardTriggerService.coordinates = {x: this.userInfo.nativeElement.offsetLeft - 60, y: this.userInfo.nativeElement.offsetTop + 20};
+    this.hoverCardTriggerService.coordinates = {
+      x: this.userInfo.nativeElement.offsetLeft - 60,
+      y: this.userInfo.nativeElement.offsetTop + 20
+    };
+  }
+
+  handleBookmarkClick() {
+    console.log("Bookmark clicked");
+    switch (this.bookmarked) {
+      case true:
+        this.postService.removeFromBookmarksPost(this.post.id).subscribe(Response => {
+          if (Response.ok) {
+            this.bookmarked = false;
+          }
+          console.log(Response)
+        });
+        break;
+      case false:
+        this.postService.bookmarkPost(this.post.id).subscribe(Response => {
+          if (Response.ok) {
+            this.bookmarked = true;
+          }
+          console.log(Response)
+        });
+    }
   }
 }
