@@ -61,7 +61,7 @@ import {FollowersPageUserComponent} from "./Components/followers-page-user/follo
     FollowingPageComponent,
     FollowersPageComponent,
     FollowingPageUserComponent,
-    FollowersPageUserComponen,
+    FollowersPageUserComponent,
     UserHoverCardComponent,
     OnDomEnterDirective,
     SingularPostViewComponent

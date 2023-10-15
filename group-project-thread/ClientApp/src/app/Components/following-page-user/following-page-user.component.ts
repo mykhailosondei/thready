@@ -40,7 +40,8 @@ export class FollowingPageUserComponent {
     }
   }
 
-  unfollow(id : number) {
+  unfollow(event : Event, id : number) {
+    event.stopPropagation();
     if (!this.unfollowSubmitted){
       this.unfollowSubmitted = true;
       this.userService.unfollowUser(id).
@@ -55,7 +56,8 @@ export class FollowingPageUserComponent {
     }
   }
 
-  follow(id: number) {
+  follow(event : Event, id: number) {
+    event.stopPropagation()
     if (!this.followSubmitted){
       this.followSubmitted = true;
       this.userService.followUser(id).

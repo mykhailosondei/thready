@@ -16,13 +16,13 @@
               <span class="connections-span">{{pageUser.following}} following</span>
             </div>
           </div>
-          <div *ngIf="isCurrentUser">
+          <div *ngIf="isCurrentUser" style="user-select: none;">
             <div *ngIf="!unfollowed" class="follow-button-box">
-              <div class="follow-button-border" (mouseenter)="changeSpan()" (mouseleave)="changeSpan()" (click)="unfollow(pageUser.id)">
-                <span class="follow">{{followingText}}</span>
+              <div class="follow-button-border" (mouseenter)="changeSpan()" (mouseleave)="changeSpan()" (click)="unfollow($event, pageUser.id)">
+                <span class="button-text">{{followingText}}</span>
               </div>
             </div>
-            <div *ngIf="unfollowed" class="unfollow-button-box" (click)="follow(pageUser.id)">
+            <div *ngIf="unfollowed" class="unfollow-button-box" (click)="follow($event, pageUser.id)">
               <div class="unfollow-button-border">
                 <span class="unfollow">Follow</span>
               </div>

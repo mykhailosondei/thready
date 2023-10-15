@@ -50,7 +50,8 @@ export class FollowersPageUserComponent {
       this.followingText = "Following";
     }
   }
-  unfollow(id : number) {
+  unfollow(event:Event, id : number) {
+    event.stopPropagation()
     if (!this.submittedUnfollow){
       this.submittedUnfollow = true;
       this.userService.unfollowUser(id).
@@ -69,7 +70,8 @@ export class FollowersPageUserComponent {
   }
 
 
-  follow(id : number) {
+  follow(event: Event, id : number) {
+    event.stopPropagation();
     if (!this.submittedFollow){
       this.submittedFollow = true;
       this.userService.followUser(id).

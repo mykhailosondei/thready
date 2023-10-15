@@ -37,7 +37,7 @@
               </div>
             </div>
 
-            <div *ngIf="!isCurrentUser">
+            <div *ngIf="!isCurrentUser" style="user-select: none;">
               <div *ngIf="isCurrentUserFollowing || !unfollowed" class="follow-button-box">
                 <div class="follow-button-border" (mouseenter)="changeSpan()" (mouseleave)="changeSpan()" (click)="unfollow(user.id)">
                   <span class="button-text">{{followingText}}</span>
