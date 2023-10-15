@@ -170,6 +170,11 @@ public class PostService : BaseService
         var postDTO = _mapper.Map<PostDTO>(postEntity); 
         ValidationResult validationResult = await _postValidator.ValidateAsync(postDTO);
 
+        if (await _applicationContext.Posts.AnyAsync(p => p.TextContent == post.TextContent))
+        {
+            throw new InvalidOperationException("Post with this content already exists");
+        }
+
         if (!validationResult.IsValid)
         {
             throw new EmptyPostException();

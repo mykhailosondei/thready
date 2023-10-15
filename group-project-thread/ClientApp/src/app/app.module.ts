@@ -30,6 +30,8 @@ import {PostCreatorComponent} from "./Components/post-creator/post-creator.compo
 import {AutoResizeInputComponent} from "./Components/auto-resize-input/auto-resize-input.component";
 import {PostEditorDialogComponent} from "./Components/post-editor-dialog/post-editor-dialog.component";
 import {UserHoverCardComponent} from "./Components/user-hover-card/user-hover-card.component";
+import {OnDomEnterDirective} from "./Directives/on-dom-enter.directive";
+import {SingularPostViewComponent} from "./Components/singular-post-view/singular-post-view.component";
 import {ConnectionPageComponent} from "./Components/connections-page/connection-page.component";
 import {FollowingPageComponent} from "./Components/following-page/following-page.component";
 import {FollowersPageComponent} from "./Components/followers-page/followers-page.component";
@@ -59,7 +61,10 @@ import {FollowersPageUserComponent} from "./Components/followers-page-user/follo
     FollowingPageComponent,
     FollowersPageComponent,
     FollowingPageUserComponent,
-    FollowersPageUserComponent
+    FollowersPageUserComponen,
+    UserHoverCardComponent,
+    OnDomEnterDirective,
+    SingularPostViewComponent
   ],
   imports: [
     BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),
@@ -88,5 +93,6 @@ import {FollowersPageUserComponent} from "./Components/followers-page-user/follo
   bootstrap: [AppComponent],
   entryComponents: [CommentCreationDialogComponent]
 })
+
 export class AppModule {
 }

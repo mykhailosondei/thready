@@ -1,7 +1,8 @@
-<div class="page-post">
+<div appOnDomEnter (domEnter)="startObserve()" class="page-post" #wholePost>
   <div class="user-collar-and-post-holder">
     <div class="user-avatar-collar">
       <div class="user-avatar" [ngStyle]="{'background-color': getCircleColor()}">
+        <a href="/profile" class="user-link"></a>
         <img *ngIf="!isAvatarNull()" src="{{post.user.avatar!.url}}" alt="{{post.user.username}}}">
         <div *ngIf="isAvatarNull()" class="initial">{{getFirstInitial()}}</div>
       </div>
@@ -10,6 +11,7 @@
       <div class="user-info-and-dots">
         <div class="user-date">
           <div class="user-info" #userInfo (mouseenter)="onUserInfoMouseEnter()" (mouseleave)="onUserInfoMouseLeave()">
+            <a href="/profile" class="user-link"></a>
             <b>{{post.user.username}}</b>
           </div>
           <div class="user-date-divider"></div>
@@ -17,10 +19,17 @@
             {{ getCreatedDate() }}
           </div>
         </div>
-        <div *ngIf="editable" class="edit">
-          <button class="edit-button" (click)="openEditDialog()">
-            <fa-icon [icon]="faPen"></fa-icon>
-          </button>
+        <div class="edit-and-bookmark-holder">
+          <div *ngIf="editable" class="edit">
+            <button class="action-button" (click)="openEditDialog()">
+              <fa-icon [icon]="faPen"></fa-icon>
+            </button>
+          </div>
+          <div class="bookmark">
+            <button class="action-button" (click)="handleBookmarkClick()">
+              <fa-icon [icon]="this.bookmarked ? faBookmarkActivated : faBookmarkUnactivated"></fa-icon>
+            </button>
+          </div>
         </div>
       </div>
       <div class="post-text-content">

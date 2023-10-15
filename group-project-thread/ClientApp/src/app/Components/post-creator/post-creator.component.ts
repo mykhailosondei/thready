@@ -18,6 +18,8 @@ export class PostCreatorComponent {
   @ViewChild('creatorInput') currentText: {inputValue: string} = {inputValue: ''};
   currentImages: string[] = [];
 
+  postingInProgress: boolean = false;
+
   //inject user service
   //inject post service
   constructor(private readonly userService: UserService, private readonly postService: PostService) { }
@@ -41,6 +43,8 @@ export class PostCreatorComponent {
   }
 
   createPost() {
+    if(this.postingInProgress) return;
+    this.postingInProgress = true;
     this.postService.createPost(
       {textContent: this.currentText.inputValue, images: this.currentImages.map<Image>(i => {return {url:i}})}
     ).subscribe(Response => {
@@ -52,7 +56,7 @@ export class PostCreatorComponent {
     });
   }
 
-  isButtonDisabled() : boolean {
+  get isButtonDisabled() : boolean {
     return PostFormatter.isInputLengthInvalid(this.currentText.inputValue);
   }
 }

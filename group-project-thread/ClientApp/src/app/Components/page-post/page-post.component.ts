@@ -2,8 +2,8 @@ import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {PagePostDTO} from "../../models/post/pagePostDTO";
 import {UserWithPostDTO} from "../../models/user/UserWithinPostDTO";
 import PostFormatter from 'src/app/helpers/postFormatter';
-import {faComment, faHeart as faHeartUnactivated} from "@fortawesome/free-regular-svg-icons";
-import {faEllipsisH, faRetweet, faSquarePollVertical} from "@fortawesome/free-solid-svg-icons";
+import {faBookmark as faBookmarkActivated, faComment, faHeart as faHeartUnactivated} from "@fortawesome/free-regular-svg-icons";
+import {faBookmark as faBookmarkUnactivated, faEllipsisH, faRetweet, faSquarePollVertical} from "@fortawesome/free-solid-svg-icons";
 import {faHeart as faHeartActivated} from "@fortawesome/free-solid-svg-icons";
 import seedrandom from "seedrandom";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
@@ -21,6 +21,7 @@ import {PostEditorDialogComponent} from "../post-editor-dialog/post-editor-dialo
 import {CommentCreateDialogData} from "../../models/coment/CommentCreateDialogData";
 import {UserHoverCardTriggerService} from "../../Services/user-hover-card-trigger.service";
 import {waitForAsync} from "@angular/core/testing";
+import {delay} from "rxjs";
 
 
 @Component({
@@ -33,34 +34,45 @@ export class PagePostComponent implements OnInit {
   faComment = faComment;
   faRetweet = faRetweet;
   faSquarePollVertical = faSquarePollVertical;
+  faHeartActivated = faHeartActivated;
+  faHeartUnactivated = faHeartUnactivated;
+  faBookmarkActivated = faBookmarkActivated;
+  faBookmarkUnactivated = faBookmarkUnactivated;
+
   @Input() public postInput!: PostDTO;
-  post:PagePostDTO = {} as PagePostDTO;
+  post: PagePostDTO = {} as PagePostDTO;
   @Input() public userInput!: UserDTO;
   @Input() public excludeFooter: boolean = false;
   @Input() public excludeImages: boolean = false;
 
   @ViewChild('userInfo') userInfo: ElementRef<HTMLDivElement>;
+  @ViewChild('wholePost') wholePost: ElementRef<HTMLDivElement>;
 
+  private observer: IntersectionObserver;
+
+
+  viewed: boolean = false;
   editable: boolean = false;
-
   liked: boolean = false;
   reposted: boolean = false;
-  faHeartActivated = faHeartActivated;
-  faHeartUnactivated = faHeartUnactivated;
+  bookmarked: boolean;
 
   constructor(public dialog: MatDialog,
-              private readonly commentService : CommentService,
-              private readonly postService : PostService,
-              private readonly userService : UserService,
+              private readonly commentService: CommentService,
+              private readonly postService: PostService,
+              private readonly userService: UserService,
               private readonly hoverCardTriggerService: UserHoverCardTriggerService) {
   }
 
   ngOnInit(): void {
     this.userService.getCurrentUser().subscribe(response => {
-      if(response.ok) this.editable = response.body!.id === this.postInput.author.id;
+      if (response.ok) {
+        this.editable = response.body!.id === this.postInput.author.id;
+        this.liked = this.postInput.likesIds.includes(response.body!.id);
+        this.reposted = this.postInput.repostersIds.includes(response.body!.id);
+        this.bookmarked = response.body!.bookmarkedPostsIds.includes(this.postInput.id);
+      }
     });
-    this.liked = this.postInput.likesIds.includes(this.userInput.id);
-    this.reposted = this.postInput.repostersIds.includes(this.userInput.id);
     this.post = {
       id: this.postInput.id,
       user: {
@@ -79,13 +91,34 @@ export class PagePostComponent implements OnInit {
       repostsAmount: this.postInput.repostersIds.length,
       viewsAmount: this.postInput.viewedBy.length
     }
-    this.postService.viewPost(this.post.id).subscribe();
+    // Set up IntersectionObserver to watch for 50% visibility
+    this.observer = new IntersectionObserver(this.handleIntersection.bind(this), {
+      root: null, // Use the viewport as the root
+      rootMargin: '0px', // No margin
+      threshold: 0.5, // 50% visibility
+    });
+
+  }
+
+  startObserve() {
+    this.observer.observe(this.wholePost.nativeElement);
+  }
+
+  handleIntersection(entries: any) {
+    entries.forEach((entry: any) => {
+      if (entry.isIntersecting && !this.viewed) {
+        // The component is at least 50% visible in the viewport
+        this.postService.viewPost(this.post.id).subscribe(Response => {
+          console.log(Response);
+          if (Response.ok) this.viewed = true;
+        });
+      }
+    });
   }
 
   getFirstInitial(): string {
     return this.post.user.username[0].toUpperCase();
   }
-
 
 
   public getCreatedDate(): string {
@@ -102,13 +135,13 @@ export class PagePostComponent implements OnInit {
   }
 
   openCommentDialog() {
-    const dialogRef : MatDialogRef<CommentCreationDialogComponent, CommentCreateDialogData> = this.dialog.open(CommentCreationDialogComponent, {
+    const dialogRef: MatDialogRef<CommentCreationDialogComponent, CommentCreateDialogData> = this.dialog.open(CommentCreationDialogComponent, {
       width: '500px',
-      data: { post: this.post, currentUser: this.post.user, textContent: "", images: []}
+      data: {post: this.post, currentUser: this.post.user, textContent: "", images: []}
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if(result === undefined) return;
+      if (result === undefined) return;
       console.log('The dialog was closed');
       console.log(result);
       this.commentService.postComment({
@@ -117,26 +150,32 @@ export class PagePostComponent implements OnInit {
         images: result.images
       }).subscribe(response => {
         console.log(response)
-        if(!response.ok) return;
+        if (!response.ok) return;
         this.post.commentsAmount++;
       });
     });
   }
+
   openEditDialog() {
-    const dialogRef: MatDialogRef<PostEditorDialogComponent, {post: PagePostDTO, textContentOutput: string}> = this.dialog.open(PostEditorDialogComponent, {
+    const dialogRef: MatDialogRef<PostEditorDialogComponent, {
+      post: PagePostDTO,
+      textContentOutput: string
+    }> = this.dialog.open(PostEditorDialogComponent, {
       width: '500px',
-      data: { post: this.post},
+      data: {post: this.post},
       disableClose: true
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if(result === undefined) return;
-      this.postService.putPost(this.post.id, {textContent: result.textContentOutput, images: []}).subscribe(response =>
-      {
-        console.log(response);
-        if(!response.ok) return;
-        this.post.textContent = result.textContentOutput;
-      }
+      if (result === undefined) return;
+      this.postService.putPost(this.post.id, {
+        textContent: result.textContentOutput,
+        images: []
+      }).subscribe(response => {
+          console.log(response);
+          if (!response.ok) return;
+          this.post.textContent = result.textContentOutput;
+        }
       );
     });
   }
@@ -159,7 +198,7 @@ export class PagePostComponent implements OnInit {
   handleLikeClick() {
     console.log("Like clicked");
     switch (this.liked) {
-        case true:
+      case true:
         this.post.likesAmount--;
         this.liked = false;
         this.postService.unlikePost(this.post.id).subscribe(response => console.log(response));
@@ -176,14 +215,49 @@ export class PagePostComponent implements OnInit {
     return PostFormatter.getCircleColor(this.post.user.username);
   }
 
-  onUserInfoMouseLeave() {
-    /*if(!this.hoverCardTriggerService.isInsideHoverCard){
-      this.hoverCardTriggerService.disableHoverCardVisibility();
-    }*/
+  async onUserInfoMouseLeave() {
+    this.hoverCardTriggerService.triggeringElementOnLeaveTimeStamp = Date.now();
+    this.hoverCardTriggerService.isHoveredOnTriggeringElement = false;
+    await this.delay(100).then(() => {
+      if (!this.hoverCardTriggerService.isInsideHoverCard && !this.hoverCardTriggerService.isHoveredOnTriggeringElement) {
+        this.hoverCardTriggerService.disableHoverCardVisibility();
+      }
+    });
+  }
+
+  private delay(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
   onUserInfoMouseEnter() {
+    console.log("Mouse enter");
+    this.hoverCardTriggerService.user = this.post.user;
     this.hoverCardTriggerService.enableHoverCardVisibility();
-    this.hoverCardTriggerService.coordiantes = {x: this.userInfo.nativeElement.offsetLeft - 60, y: this.userInfo.nativeElement.offsetTop + 20};
+    this.hoverCardTriggerService.isHoveredOnTriggeringElement = true;
+    this.hoverCardTriggerService.coordinates = {
+      x: this.userInfo.nativeElement.offsetLeft - 60,
+      y: this.userInfo.nativeElement.offsetTop + 20
+    };
+  }
+
+  handleBookmarkClick() {
+    console.log("Bookmark clicked");
+    switch (this.bookmarked) {
+      case true:
+        this.postService.removeFromBookmarksPost(this.post.id).subscribe(Response => {
+          if (Response.ok) {
+            this.bookmarked = false;
+          }
+          console.log(Response)
+        });
+        break;
+      case false:
+        this.postService.bookmarkPost(this.post.id).subscribe(Response => {
+          if (Response.ok) {
+            this.bookmarked = true;
+          }
+          console.log(Response)
+        });
+    }
   }
 }

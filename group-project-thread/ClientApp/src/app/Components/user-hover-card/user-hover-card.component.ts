@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {UserHoverCardTriggerService} from "../../Services/user-hover-card-trigger.service";
 import {animate, state, style, transition, trigger} from "@angular/animations";
+import PostFormatter from "../../helpers/postFormatter";
+import {UserService} from "../../Services/user.service";
 
 @Component({
   selector: 'app-user-hover-card',
@@ -18,14 +20,34 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
   ],
   styleUrls: ['./user-hover-card.component.scss']
 })
-export class UserHoverCardComponent {
-  constructor(private hoverCardTriggerService: UserHoverCardTriggerService) {
-
-  }
+export class UserHoverCardComponent{
+  constructor(private hoverCardTriggerService: UserHoverCardTriggerService,
+              private readonly userService: UserService) { }
 
   get user() { return this.hoverCardTriggerService.user; }
 
-  get coordinates(): {x: number, y: number} { return this.hoverCardTriggerService.coordiantes; }
+  isUserFollowed : boolean;
+  isUserMyself : boolean;
+  isFollowResponseSuccess : boolean;
+
+  get showFollowButton() { return !this.isUserFollowed && !this.isUserMyself; }
+  get following() {return PostFormatter.numberToReadable(this.user.following)}
+  get followers() {return PostFormatter.numberToReadable(this.user.followers)}
+  elementEntered() {
+    console.log("entered");
+    this.isFollowResponseSuccess = false;
+    this.userService.getCurrentUser().subscribe(response => {
+      if(response.ok) {
+        this.isUserFollowed = response.body!.followingIds.includes(this.user.id);
+        this.isUserMyself = response.body!.id === this.user.id;
+        this.isFollowResponseSuccess = true;
+      }
+    });
+  }
+
+  contentVisible = false;
+
+  get coordinates(): {x: number, y: number} { return this.hoverCardTriggerService.coordinates; }
 
   get isHoverCardVisible(): boolean {
     return this.hoverCardTriggerService.isHoverCardVisible;
@@ -39,5 +61,40 @@ export class UserHoverCardComponent {
   onMouseLeave() {
     this.hoverCardTriggerService.disableHoverCardVisibility();
     this.hoverCardTriggerService.isInsideHoverCard = false;
+  }
+
+  getCircleColor() {
+    return PostFormatter.getCircleColor(this.user.username);
+  }
+
+  isAvatarNull() {
+    return this.user.avatar === null
+  }
+
+  getFirstInitial() {
+    return this.user.username[0].toUpperCase();
+  }
+
+  followUser() {
+    console.log(this.user.username);
+    this.userService.followUser(this.user.id).subscribe(followResponse => {
+      if(followResponse.ok){
+        this.userService.getCurrentUser().subscribe(response => {
+          if(response.ok) this.user.followers = response.body!.followingIds.length;
+        });
+        this.isUserFollowed = true;
+      }
+    });
+  }
+
+  unfollowUser() {
+    this.userService.unfollowUser(this.user.id).subscribe(unfollowResponse => {
+      if(unfollowResponse.ok){
+        this.userService.getCurrentUser().subscribe(response => {
+          if(response.ok) this.user.followers = response.body!.followingIds.length;
+        });
+        this.isUserFollowed = false;
+      }
+    });
   }
 }
