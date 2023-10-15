@@ -1,12 +1,10 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {HttpInternalService} from "../../Services/http-internal.service";
-import {AuthService} from "../../Services/auth.service";
-import {BehaviorSubject, Observable, Subject, switchMap, takeUntil} from "rxjs";
+import {BehaviorSubject, finalize, Observable, Subject, switchMap, takeUntil} from "rxjs";
 import {UserDTO} from "../../models/user/userDTO";
 import {Image} from "../../models/image";
 import {SnackbarService} from "../../Services/snackbar.service";
 import {UserService} from "../../Services/user.service";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {faArrowLeftLong, faLocationDot} from "@fortawesome/free-solid-svg-icons";
 import {faCalendar} from "@fortawesome/free-regular-svg-icons"
 import {PostService} from "../../Services/post.service";
@@ -23,6 +21,7 @@ import {HttpResponse} from "@angular/common/http";
 })
 export class ProfilePageComponent implements OnInit, OnDestroy{
 
+  public username : string;
   public user = {} as UserDTO;
   public loading = false;
   public image: Image | null = null;
@@ -32,26 +31,34 @@ export class ProfilePageComponent implements OnInit, OnDestroy{
   public userPosts$ = new BehaviorSubject<PostDTO[]>([]);
   public followersCount! : number;
   public followingCount! : number;
-
+  protected isCurrentUser : boolean = false;
+  protected followingText : string = "Following";
+  protected unfollowed : boolean;
+  private unfollowSubmitted: boolean = false;
+  private followSubmitted : boolean = false;
+  protected isCurrentUserFollowing : boolean;
+  protected contentLoaded = false;
+  protected postsText: string = "";
 
   private unsubscribe$ = new Subject<void>;
 
-  constructor(httpServise: HttpInternalService,
-              private authService : AuthService,
-              private snackBarService: SnackbarService,
-              private userService : UserService,
-              private postService : PostService,
-              private router: Router,
-              public dialog: MatDialog,) {
+  constructor(private snackBarService: SnackbarService, private userService : UserService,
+              private postService : PostService, private router: Router,
+              public dialog: MatDialog, private route: ActivatedRoute) {
 
   }
   ngOnInit(): void {
-    this.authService.getUser()
+    this.route.paramMap.subscribe(params => {
+      this.username = params.get('username') || "DefaultUsername"; });
+      this.checkIsCurrentUser();
+    this.userService.getUserByUsername(this.username)
       .pipe(
         takeUntil(this.unsubscribe$),
-        switchMap((user : UserDTO | null) => {
+        switchMap((response ) => {
+          const user = response.body;
           if (user) {
             this.user = this.userService.copyUser(user);
+            this.updateIsCurrentUserFollowing();
             return this.postService.getPostsByUserId(this.user.id);
           }
           return []
@@ -105,5 +112,69 @@ export class ProfilePageComponent implements OnInit, OnDestroy{
         }
       })
     })
+  }
+  checkIsCurrentUser(): void{
+    this.userService.getCurrentUser().pipe(takeUntil(this.unsubscribe$))
+      .subscribe( (response) =>{
+        if (response.body != null){
+           this.isCurrentUser = this.username == response.body.username;
+           if (this.username == response.body.username){
+             this.postsText = "Your posts"
+           }else{
+             this.postsText = "User posts"
+           }
+        }
+      });
+  }
+  changeSpan() {
+    if (this.followingText === "Unfollow"){
+      this.followingText = "Following";
+    }
+    else {
+      this.followingText = "Unfollow";
+    }
+  }
+
+  updateIsCurrentUserFollowing(): void {
+    if (this.user.id) {
+      this.userService.getCurrentUser().pipe(takeUntil(this.unsubscribe$), finalize(() => this.contentLoaded = true)).subscribe((response) => {
+        if (response.body != null) {
+          this.isCurrentUserFollowing = response.body.followingIds.includes(this.user.id);
+          this.unfollowed = !this.isCurrentUserFollowing;
+        }
+      });
+    }
+  }
+
+  unfollow(id : number) {
+    if (!this.unfollowSubmitted){
+      this.unfollowSubmitted = true;
+      this.userService.unfollowUser(id).
+      pipe(finalize(() => {
+        this.unfollowSubmitted = false;
+      })).subscribe((response) => {
+        if(response.ok){
+          this.unfollowed = true;
+          this.isCurrentUserFollowing = false;
+        }
+      }, (error)=> {
+        this.snackBarService.showErrorMessage(error.error.title);});
+    }
+  }
+
+  follow(id: number) {
+    if (!this.followSubmitted){
+      this.followSubmitted = true;
+      this.userService.followUser(id).
+      pipe(finalize(() => {
+        this.followSubmitted = false;
+      })).subscribe((response) => {
+        if(response.ok){
+          this.unfollowed = false;
+          this.isCurrentUserFollowing = true;
+        }
+      }, (error)=> {
+        this.snackBarService.showErrorMessage(error.error.title);});
+    }
   }
 }

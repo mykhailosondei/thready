@@ -15,25 +15,9 @@ import {A} from "@angular/cdk/keycodes";
 })
 export class AuthService {
   public routePrefix: string = '/api/auth';
-  private user: UserDTO | null = null;
 
   constructor(private httpService : HttpInternalService, private userService : UserService,
     private eventService: EventService) { }
-
-  public getUser() : Observable<UserDTO | null> {
-    return this.user ? of(this.user) : this.userService.getCurrentUser().pipe(
-      map((response) => {
-        this.user = response.body;
-        this.eventService.userChanged(this.user);
-        return this.user;
-      } )
-    )
-  }
-
-  public setUser(user: UserDTO){
-    this.user = user;
-    this.eventService.userChanged(user);
-  }
 
   public register(user: RegisterUserDTO){
     return this.handleAuthResponse(this.httpService.postFullRequest<AuthUserDTO>(`${this.routePrefix}/register`, user))
@@ -48,7 +32,6 @@ export class AuthService {
         const user = resp.body?.user;
         if (authToken && user) {
             this.setToken(authToken);
-            this.user = user;
             this.eventService.userChanged(user);
             return user;
         }

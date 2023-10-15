@@ -37,7 +37,7 @@ export class MainPageComponent {
   }
 
   public navigateToProfile(){
-    this.router.navigate(['/profile']);
+    this.router.navigate(["dmytrosemeniuk", 'profile']);
   }
 
   protected readonly Number = Number;
