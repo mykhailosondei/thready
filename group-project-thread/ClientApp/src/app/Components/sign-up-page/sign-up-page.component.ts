@@ -37,7 +37,6 @@ export class SignUpPageComponent {
   months: { value: number; name: string }[] = months;
 
   regisForm!: FormGroup;
-  private unsubscribe$ = new Subject<void>();
   private submitted: boolean = false;
   private timeout: any = null;
   emailAvailabilityMessage : string = "";
@@ -70,11 +69,6 @@ export class SignUpPageComponent {
   }
 
 
-  public ngOnDestroy() {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
-}
-
   createUserFromForm(): RegisterUserDTO{
       const registerUser: RegisterUserDTO = {
       username: this.regisForm.get('username')!.value,
@@ -94,7 +88,7 @@ export class SignUpPageComponent {
     if(this.regisForm.valid && !this.submitted && this.emailAvailabilityMessage == "" && this.usernameAvailabilityMessage == ""){
       this.submitted = true;
       this.authService.register( this.createUserFromForm())
-        .pipe(takeUntil(this.unsubscribe$), finalize(() => this.submitted = false))
+        .pipe(finalize(() => this.submitted = false))
       .subscribe(
         () => {
           this.router.navigate(['/login']);
@@ -134,8 +128,7 @@ export class SignUpPageComponent {
       if (event.keyCode !== 13) {
         if (target) {
           this.availabilityService.isEmailAvailable(target.value)
-            .pipe(
-              takeUntil(this.unsubscribe$)).subscribe(
+            .subscribe(
             (responce : HttpResponse<boolean>) => {
               const result = responce.body;
               if (result){
@@ -163,8 +156,7 @@ export class SignUpPageComponent {
       if (event.keyCode !== 13) {
         if (target) {
           this.availabilityService.isUsernameAvailable(target.value)
-            .pipe(
-              takeUntil(this.unsubscribe$)).subscribe(
+            .subscribe(
             (responce : HttpResponse<boolean>) => {
               const result = responce.body;
               if (result){

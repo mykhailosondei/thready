@@ -35,6 +35,8 @@ import {SingularPostViewComponent} from "./Components/singular-post-view/singula
 import {ConnectionPageComponent} from "./Components/connections-page/connection-page.component";
 import {FollowingPageComponent} from "./Components/following-page/following-page.component";
 import {FollowersPageComponent} from "./Components/followers-page/followers-page.component";
+import {FollowingPageUserComponent} from "./Components/following-page-user/following-page-user.component";
+import {FollowersPageUserComponent} from "./Components/followers-page-user/followers-page-user.component";
 
 @NgModule({
   declarations: [
@@ -58,6 +60,8 @@ import {FollowersPageComponent} from "./Components/followers-page/followers-page
     ConnectionPageComponent,
     FollowingPageComponent,
     FollowersPageComponent,
+    FollowingPageUserComponent,
+    FollowersPageUserComponent,
     UserHoverCardComponent,
     OnDomEnterDirective,
     SingularPostViewComponent

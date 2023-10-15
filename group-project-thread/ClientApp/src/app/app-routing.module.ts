@@ -14,7 +14,7 @@ const routes: Routes = [
   {path:'login', component: LoginPageComponent},
   {path:'signup', component: SignUpPageComponent},
   {path:'mainPage', component: MainPageComponent},
-  {path: 'profile', component: ProfilePageComponent},
+  {path: ':username/profile', component: ProfilePageComponent},
   {path: ':username/following', component: FollowingPageComponent},
   {path: ':username/followers', component: FollowersPageComponent},
   {path: ':username/post/:id', component: SingularPostViewComponent},

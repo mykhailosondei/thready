@@ -5,6 +5,8 @@ $font : -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-
   border-bottom: 0px !important;
 }
 .navigation-bar{
+  backdrop-filter: blur(12px);
+  background-color: rgba(255, 255, 255, 0.85);
   border-bottom: 1px solid $grey-color;
 }
 .navigation-bar-content{
@@ -75,7 +77,7 @@ $font : -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-
 
 
 .selected-tab{
-  background-color: rgb(29,155,240);
+  background-color: cornflowerblue;
   height: 4px;
   align-self: center;
   min-width: 56px;
