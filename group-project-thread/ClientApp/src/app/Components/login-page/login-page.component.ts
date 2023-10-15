@@ -16,7 +16,6 @@ export class LoginPageComponent {
   isText: boolean = false;
   eyeIcon: string = "fa-eye-slash"
   loginForm!: FormGroup;
-  private unsubscribe$ = new Subject<void>();
   private submitted: boolean = false;
   constructor(private fb: FormBuilder, private authService: AuthService,
               private router: Router, private snackbarService: SnackbarService) {
@@ -40,7 +39,7 @@ export class LoginPageComponent {
       this.submitted = true;
       this.authService.login({email : this.loginForm.get('email')!.value,
         password: this.loginForm.get('password')!.value})
-        .pipe(takeUntil(this.unsubscribe$), finalize(() => this.submitted = false))
+        .pipe(finalize(() => this.submitted = false))
       .subscribe(
         (response) => {
           this.router.navigate(['/mainPage']);

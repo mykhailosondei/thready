@@ -33,6 +33,8 @@ import {UserHoverCardComponent} from "./Components/user-hover-card/user-hover-ca
 import {ConnectionPageComponent} from "./Components/connections-page/connection-page.component";
 import {FollowingPageComponent} from "./Components/following-page/following-page.component";
 import {FollowersPageComponent} from "./Components/followers-page/followers-page.component";
+import {FollowingPageUserComponent} from "./Components/following-page-user/following-page-user.component";
+import {FollowersPageUserComponent} from "./Components/followers-page-user/followers-page-user.component";
 
 @NgModule({
   declarations: [
@@ -55,7 +57,9 @@ import {FollowersPageComponent} from "./Components/followers-page/followers-page
     UserHoverCardComponent,
     ConnectionPageComponent,
     FollowingPageComponent,
-    FollowersPageComponent
+    FollowersPageComponent,
+    FollowingPageUserComponent,
+    FollowersPageUserComponent
   ],
   imports: [
     BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),

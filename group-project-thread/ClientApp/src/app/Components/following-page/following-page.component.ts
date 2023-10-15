@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {UserService} from "../../Services/user.service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {SnackbarService} from "../../Services/snackbar.service";
 import {UserDTO} from "../../models/user/userDTO";
 import {UserWithPostDTO} from "../../models/user/UserWithinPostDTO";
@@ -15,12 +15,11 @@ export class FollowingPageComponent implements OnInit{
   protected username : string;
   protected user! : UserDTO;
   protected following : UserWithPostDTO[];
-  protected followingText : string = "Following";
-  protected unfollowed : boolean = false;
-  private submitted: boolean = false;
   private unsubscribe$ = new Subject<void>();
+  protected isCurrentUser : boolean = false;
 
-  constructor(private userService: UserService, private route: ActivatedRoute, private snackBarService: SnackbarService) {
+
+  constructor(private userService: UserService, private route: ActivatedRoute) {
     this.route.paramMap.subscribe(params => {
       this.username = params.get('username') || "DefaultUsername";
     })
@@ -28,10 +27,24 @@ export class FollowingPageComponent implements OnInit{
   }
 
   ngOnInit(): void {
+    this.route.paramMap.subscribe(params => {
+      this.username = params.get('username') || "DefaultUsername";
+      this.checkIsCurrentUser();
+      this.fetchFollowingData(this.username);
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
+  }
+
+  fetchFollowingData(username: string) {
     this.userService.getUserByUsername(this.username)
       .subscribe(response => {
         if (response.body != null) {
           this.user = response.body;
+          this.following = [];
           for (let i = 0; i < this.user.followingIds.length; i++) {
             const userId = this.user.followingIds[i];
             this.userService.getUserById(userId)
@@ -54,35 +67,12 @@ export class FollowingPageComponent implements OnInit{
       });
   }
 
-  navigateToUserProfile() {
-
-  }
-
-  changeSpan() {
-    if (this.followingText === "Unfollow"){
-      this.followingText = "Following";
-    }
-    else {
-      this.followingText = "Unfollow";
-    }
-  }
-
-  unfollow(id : number) {
-    if (!this.submitted){
-      this.submitted = true;
-      this.userService.unfollowUser(id).
-      pipe(takeUntil(this.unsubscribe$), finalize(() => {
-        this.submitted = true;
-        this.unfollowed = true;
-      })).subscribe(() => {
-
-      }, (error)=> {
-        this.snackBarService.showErrorMessage(error.error.title);});
-    }
-
-  }
-
-  follow() {
-    this.unfollowed = false;
+  checkIsCurrentUser(): void{
+    this.userService.getCurrentUser().pipe(takeUntil(this.unsubscribe$))
+      .subscribe( (response) =>{
+        if (response.body != null){
+          this.isCurrentUser = this.username == response.body.username;
+        }
+      });
   }
 }

@@ -36,20 +36,17 @@ export class ProfilePageComponent implements OnInit, OnDestroy{
 
   private unsubscribe$ = new Subject<void>;
 
-  constructor(httpServise: HttpInternalService,
-              private authService : AuthService,
-              private snackBarService: SnackbarService,
-              private userService : UserService,
-              private postService : PostService,
-              private router: Router,
+  constructor(private snackBarService: SnackbarService, private userService : UserService,
+              private postService : PostService, private router: Router,
               public dialog: MatDialog,) {
 
   }
   ngOnInit(): void {
-    this.authService.getUser()
+    this.userService.getCurrentUser()
       .pipe(
         takeUntil(this.unsubscribe$),
-        switchMap((user : UserDTO | null) => {
+        switchMap((response ) => {
+          const user = response.body;
           if (user) {
             this.user = this.userService.copyUser(user);
             return this.postService.getPostsByUserId(this.user.id);
