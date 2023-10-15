@@ -175,7 +175,6 @@ export class SingularPostViewComponent implements OnInit{
   }
 
   getFirstInitial() {
-    console.log(this.authorInput.username[0].toUpperCase());
     return this.authorInput.username[0].toUpperCase();
   }
 

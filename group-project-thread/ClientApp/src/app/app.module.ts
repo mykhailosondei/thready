@@ -37,6 +37,7 @@ import {FollowingPageComponent} from "./Components/following-page/following-page
 import {FollowersPageComponent} from "./Components/followers-page/followers-page.component";
 import {FollowingPageUserComponent} from "./Components/following-page-user/following-page-user.component";
 import {FollowersPageUserComponent} from "./Components/followers-page-user/followers-page-user.component";
+import {CommentCreatorComponent} from "./Components/comment-creator/comment-creator.component";
 
 @NgModule({
   declarations: [
@@ -64,7 +65,8 @@ import {FollowersPageUserComponent} from "./Components/followers-page-user/follo
     FollowersPageUserComponent,
     UserHoverCardComponent,
     OnDomEnterDirective,
-    SingularPostViewComponent
+    SingularPostViewComponent,
+    CommentCreatorComponent
   ],
   imports: [
     BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),

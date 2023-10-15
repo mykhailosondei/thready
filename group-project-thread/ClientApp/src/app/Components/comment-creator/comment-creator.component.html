@@ -1,0 +1,16 @@
+<div class="comment-creator">
+  <div class="user-avatar-collar">
+    <div class="user-avatar" [ngStyle]="{'background-color': getCircleColor(post.user)}">
+      <img *ngIf="!isAvatarNull(post.user)" src="{{post.user.avatar!.url}}" alt="{{post.user.username}}}">
+      <div *ngIf="isAvatarNull(post.user)" class="initial">{{getFirstInitial(post.user)}}</div>
+    </div>
+    </div>
+    <div class="right-input">
+      <app-auto-resize-input [placeholder]="'Post your reply'" #inputComponent></app-auto-resize-input>
+      <div class="button-holder">
+      <button class="reply-button" (click)="onReplyClick()" [disabled]="isButtonDisabled()">
+        <b>Reply</b>
+      </button>
+      </div>
+  </div>
+</div>

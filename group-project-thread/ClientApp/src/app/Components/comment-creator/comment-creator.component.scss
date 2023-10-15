@@ -1,0 +1,29 @@
+.comment-creator {
+  padding: 10px;
+  display: flex;
+  border: 0 solid #dcdcdc;
+  border-bottom-width: 1px;
+  flex-direction: row;
+}
+
+.right-input {
+  width: 100%;
+}
+
+.button-holder{
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.reply-button {
+  background-color: cornflowerblue;
+  color: white;
+  border: 0;
+  border-radius: 10px;
+  height: 32px;
+  width: 64px;
+  &:disabled{
+    opacity: 0.5;
+  }
+}
