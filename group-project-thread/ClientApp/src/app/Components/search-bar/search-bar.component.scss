@@ -1,0 +1,24 @@
+.header{
+  cursor: auto !important;
+}
+.search-bar-area{
+  flex-shrink: 1;
+  height: 53px;
+}
+.search-bar-box{
+  flex-shrink: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: unset 4px;
+}
+.input-box{
+
+}
+.svg-box{
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+}
