@@ -1,1 +1,111 @@
-<p>singular-post-view works!</p>
+<div class="center-h">
+  <div class="main-page">
+    <div *ngIf="postInput && authorInput" class="post-holder">
+      <div class="page-post">
+        <div class="post-header">
+          <div class="user-avatar" [ngStyle]="{'background-color': getCircleColor()}">
+            <a href="/profile" class="user-link"></a>
+            <img *ngIf="!isAvatarNull()" src="{{authorInput.avatar!.url}}" alt="{{authorInput.username}}}">
+            <div *ngIf="isAvatarNull()" class="initial">{{getFirstInitial()}}</div>
+          </div>
+          <div class="user-info">
+            <div class="user-name">
+              <b>{{authorInput.username}}</b>
+            </div>
+          </div>
+        </div>
+        <div class="post-body">
+          <div class="post-text-content">
+            <p>{{ post.textContent }}</p>
+          </div>
+          <div class="post-image-content">
+            <div class="image-radius-wrap" [style.width]="post.imagesUrls.length === 1 ? 'fit-content' : '100%'">
+              <div *ngIf="post.imagesUrls.length === 4" class="four-image-container full-width">
+                <div class="two-image-container full-width">
+                  <div class="left-upper-image-container full-width">
+                    <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[0] + ')'"></div>
+                  </div>
+                  <div class="right-upper-image-container full-width">
+                    <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[0] + ')'"></div>
+                  </div>
+                </div>
+                <div class="two-image-container full-width">
+                  <div class="left-bottom-image-container full-width">
+                    <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[0] + ')'"></div>
+                  </div>
+                  <div class="right-bottom-image-container full-width">
+                    <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[0] + ')'"></div>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="post.imagesUrls.length === 3" class="three-image-container full-width">
+                <div class="left-big-image full-width">
+                  <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[0] + ')'"></div>
+                </div>
+                <div class="two-right-images full-width">
+                  <div class="right-upper-image-container full-width">
+                    <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[0] + ')'"></div>
+                  </div>
+                  <div class="right-bottom-image-container full-width">
+                    <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[0] + ')'"></div>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="post.imagesUrls.length === 2" class="two-image-container full-width">
+                <div class="left-big-image full-width">
+                  <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[0] + ')'"></div>
+                </div>
+                <div class="right-big-image full-width">
+                  <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[0] + ')'"></div>
+                </div>
+              </div>
+              <div *ngIf="post.imagesUrls.length === 1" class="solo-image-container">
+                <img class="solo-image full-width" src="{{post.imagesUrls[0]}}" alt="image">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="lower-info-stripe">
+          <div class="full-date">{{post.dateCreated}}</div>
+          <div class="views"></div>
+        </div>
+      </div>
+      <div class="post-footer">
+          <div class="comment-info" (click)="handleCommentClick()">
+            <div class="comment-icon color-grey">
+              <div class="blue-circle"></div>
+              <fa-icon [icon]="faComment"></fa-icon>
+            </div>
+            <div class="comment-amount color-grey">
+              {{post.commentsAmount}}
+            </div>
+          </div>
+          <div class="repost-info {{reposted?'repost-activated':''}}" (click)="handleRepostClick()">
+            <div class="repost-icon color-grey" style=" position: relative;">
+              <div class="green-circle">
+              </div>
+              <fa-icon [icon]="faRetweet" style="scale: calc(16/18)"></fa-icon>
+            </div>
+            <div class="repost-amount color-grey">{{post.repostsAmount}}</div>
+          </div>
+          <div class="likes-info {{liked?'likes-activated':''}}" (click)="handleLikeClick()">
+            <div class="likes-icon color-grey" style=" position: relative;">
+              <div class="red-circle">
+              </div>
+              <fa-icon [icon]="this.liked ? faHeartActivated : faHeartUnactivated"></fa-icon>
+            </div>
+            <div class="likes-amount color-grey">{{post.likesAmount}}</div>
+            <div></div>
+          </div>
+          <div class="bookmark-info" (click)="handleBookmarkClick()">
+            <div class="bookmark-icon color-grey" style=" position: relative;">
+              <div class="blue-circle">
+              </div>
+              <fa-icon [icon]="this.bookmarked ? faBookmarkActivated : faBookmarkUnactivated"></fa-icon>
+            </div>
+            <div class="bookmark-amount color-grey">{{post.bookmarksAmount}}</div>
+          </div>
+      </div>
+  </div>
+</div>
+</div>

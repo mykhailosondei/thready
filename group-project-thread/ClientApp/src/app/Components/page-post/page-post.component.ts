@@ -2,8 +2,8 @@ import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {PagePostDTO} from "../../models/post/pagePostDTO";
 import {UserWithPostDTO} from "../../models/user/UserWithinPostDTO";
 import PostFormatter from 'src/app/helpers/postFormatter';
-import {faBookmark as faBookmarkActivated, faComment, faHeart as faHeartUnactivated} from "@fortawesome/free-regular-svg-icons";
-import {faBookmark as faBookmarkUnactivated, faEllipsisH, faRetweet, faSquarePollVertical} from "@fortawesome/free-solid-svg-icons";
+import {faBookmark as faBookmarkUnactivated, faComment, faHeart as faHeartUnactivated} from "@fortawesome/free-regular-svg-icons";
+import {faBookmark as faBookmarkActivated, faEllipsisH, faRetweet, faSquarePollVertical} from "@fortawesome/free-solid-svg-icons";
 import {faHeart as faHeartActivated} from "@fortawesome/free-solid-svg-icons";
 import seedrandom from "seedrandom";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
@@ -89,7 +89,8 @@ export class PagePostComponent implements OnInit {
       likesAmount: this.postInput.likesIds.length,
       commentsAmount: this.postInput.commentsIds.length,
       repostsAmount: this.postInput.repostersIds.length,
-      viewsAmount: this.postInput.viewedBy.length
+      viewsAmount: this.postInput.viewedBy.length,
+      bookmarksAmount: this.postInput.bookmarks
     }
     // Set up IntersectionObserver to watch for 50% visibility
     this.observer = new IntersectionObserver(this.handleIntersection.bind(this), {
@@ -244,17 +245,23 @@ export class PagePostComponent implements OnInit {
     console.log("Bookmark clicked");
     switch (this.bookmarked) {
       case true:
-        this.postService.removeFromBookmarksPost(this.post.id).subscribe(Response => {
-          if (Response.ok) {
             this.bookmarked = false;
+            this.post.bookmarksAmount--;
+        this.postService.removeFromBookmarksPost(this.post.id).subscribe(Response => {
+          if (!Response.ok) {
+            this.bookmarked = true;
+            this.post.bookmarksAmount++;
           }
           console.log(Response)
         });
         break;
       case false:
-        this.postService.bookmarkPost(this.post.id).subscribe(Response => {
-          if (Response.ok) {
             this.bookmarked = true;
+            this.post.bookmarksAmount++;
+        this.postService.bookmarkPost(this.post.id).subscribe(Response => {
+          if (!Response.ok) {
+            this.bookmarked = false;
+            this.post.bookmarksAmount--;
           }
           console.log(Response)
         });
