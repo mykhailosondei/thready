@@ -29,7 +29,7 @@ export class FollowingPageComponent implements OnInit{
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
       this.username = params.get('username') || "DefaultUsername";
-      this.checkIsCurrentUser();
+      this.checkIsCurrentUser(this.username);
       this.fetchFollowingData(this.username);
     });
   }
@@ -66,8 +66,7 @@ export class FollowingPageComponent implements OnInit{
         }
       });
   }
-
-  checkIsCurrentUser(): void{
+  checkIsCurrentUser(username : string): void{
     this.userService.getCurrentUser().pipe(takeUntil(this.unsubscribe$))
       .subscribe( (response) =>{
         if (response.body != null){

@@ -19,14 +19,13 @@ export class FollowingPageUserComponent {
   protected unfollowed : boolean = false;
   private unfollowSubmitted: boolean = false;
   private followSubmitted : boolean = false;
-  private unsubscribe$ = new Subject<void>();
   constructor(private userService : UserService, private snackBarService : SnackbarService,
               private router: Router) {
   }
 
 
-  navigateToUserProfile() {
-
+  navigateToUserProfile(username : string) {
+    this.router.navigate([username, 'profile']);
   }
   getUserFollowing(username: string) {
     this.router.navigate([username, 'following'])

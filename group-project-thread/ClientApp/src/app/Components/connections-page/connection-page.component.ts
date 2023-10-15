@@ -38,5 +38,9 @@ export class ConnectionPageComponent implements OnInit{
   public navigateToFollowers(){
     this.router.navigate([this.username, "followers"])
   }
+
+  navigateToProfile(username: string) {
+    this.router.navigate([this.username, "profile"])
+  }
 }
 

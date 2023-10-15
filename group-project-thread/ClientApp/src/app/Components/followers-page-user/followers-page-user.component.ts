@@ -28,8 +28,8 @@ export class FollowersPageUserComponent {
   }
 
 
-  navigateToUserProfile() {
-
+  navigateToUserProfile(username : string) {
+    this.router.navigate([username, 'profile']);
   }
 
   amIFollowing(): boolean{

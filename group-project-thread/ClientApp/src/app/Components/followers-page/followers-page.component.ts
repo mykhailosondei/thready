@@ -16,8 +16,7 @@ export class FollowersPageComponent {
   protected followers : UserWithPostDTO[];
   private unsubscribe$ = new Subject<void>();
   protected isCurrentUser : boolean = false;
-  constructor(private userService: UserService, private route: ActivatedRoute,
-              private  snackBarService : SnackbarService, private router: Router) {
+  constructor(private userService: UserService, private route: ActivatedRoute) {
     this.route.paramMap.subscribe(params => {
       this.username = params.get('username') || "DefaultUsername";
     })

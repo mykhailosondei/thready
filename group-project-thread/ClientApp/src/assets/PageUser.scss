@@ -106,7 +106,7 @@
   &:hover{
     background-color: rgba(244, 33, 46, 0.1);
     border-color: rgb(253,201,206);
-    .follow{
+    .button-text{
       color: red;
     }}
 }
@@ -124,7 +124,7 @@
     background-color: rgba(39,44,48)}
 }
 
-.follow{
+.button-text{
   font-weight: 700;
   font-size: 13px;
 }

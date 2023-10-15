@@ -1,5 +1,5 @@
 <div class="user-box">
-  <div class="user-profile-button" (click)="navigateToUserProfile()">
+  <div class="user-profile-button" (click)="navigateToUserProfile(pageUser.username)">
     <div class="content">
       <div class="small-image-container">
         <div class="image-box">
@@ -9,7 +9,7 @@
       <div class="user-info-box">
         <div class="small-info">
           <div class="small-info-box">
-            <div class="underline-box" (click)="navigateToUserProfile()">
+            <div class="underline-box" (click)="navigateToUserProfile(pageUser.username)">
               <span class="username-span">{{pageUser.username}}</span>
             </div>
             <div class="underline-box" (click)="getUserFollowers(pageUser.username)">
@@ -19,7 +19,7 @@
           <div *ngIf="isCurrentUser">
             <div *ngIf="amIFollowing() || followed" class="follow-button-box">
               <div class="follow-button-border" (mouseenter)="changeSpan()" (mouseleave)="changeSpan()" (click)="unfollow(pageUser.id)">
-                <span class="follow">{{followingText}}</span>
+                <span class="button-text">{{followingText}}</span>
               </div>
             </div>
             <div *ngIf="!amIFollowing() || !followed" class="unfollow-button-box" (click)="follow(pageUser.id)">

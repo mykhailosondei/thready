@@ -2,7 +2,8 @@ $grey-color: #dcdcdc;
 $font : -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
 
 .profile-info{
-
+  max-width: 600px;
+  width: 100%;
 }
 
 .empty-area{
@@ -30,25 +31,34 @@ $font : -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-
   flex-direction: row;
   box-sizing: border-box;
   position: relative;
+  flex-wrap: wrap;
 }
 
-.image-box{
+.image-box {
   position: relative;
-  min-width: 48px;
-  width: 25%;
+  width: 132px;
+  height: 132px;
   margin-top: -15%;
   margin-bottom: 12px;
   overflow: visible;
   user-select: none;
 }
 
-.profile-image{
-  height: calc(100% - 12px);
-  width: calc(100% - 12px);
+.image-wrap {
+  position: absolute;
+  transform: translateX(-50%) translateY(-50%);
   top: 50%;
-  right: 50%;
+  left: 50%;
+  width: 132px;
+  height: 132px;
   border-radius: 50%;
   border: 4px solid white;
+}
+
+.profile-image {
+  height: calc(100%);
+  width: calc(100%);
+  border-radius: 50%;
 }
 
 .edit-box{
@@ -63,15 +73,13 @@ $font : -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-
   }
 }
 .edit-profile{
-  font: 14px $font;
-  font-weight: 700 !important;
-  min-height: 36px;
+  padding: 6px 16px;
   display: flex;
-  align-items: center;
-  color: black;
-  padding-right: 16px;
-  padding-left: 16px;
-  text-decoration: none;
+  flex-direction: row;
+  justify-content: center;
+  align-self: center;
+  border: 1px solid rgb(207, 217, 222);
+  border-radius: 25px;
 }
 
 .small-info-box{
@@ -169,4 +177,58 @@ $font : -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-
   font: $font;
   font-weight: 700;
   font-size: 20px;
+}
+
+.follow-button-box{
+  min-width: 99px;
+  margin-left: 12px;
+  transition-duration: 0.2s !important;
+  cursor: pointer;
+}
+
+.unfollow-button-box{
+  min-width: 99px;
+  margin-left: 12px;
+  transition-duration: 0.2s !important;
+  cursor: pointer;
+}
+
+
+.follow-button-border{
+  padding: 6px 16px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-self: center;
+  border: 1px solid rgb(207, 217, 222);
+  border-radius: 25px;
+  &:hover{
+    background-color: rgba(244, 33, 46, 0.1);
+    border-color: rgb(253,201,206);
+    .button-text{
+      color: red;
+    }}
+}
+
+.unfollow-button-border{
+  padding: 6px 16px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-self: center;
+  border: 0px solid black;
+  background-color: black;
+  border-radius: 25px;
+  &:hover{
+    background-color: rgba(39,44,48)}
+}
+
+.button-text{
+  font-weight: 700;
+  font-size: 13px;
+}
+.unfollow{
+  color: white;
+  font-weight: 700;
+  font-size: 13px;
 }
