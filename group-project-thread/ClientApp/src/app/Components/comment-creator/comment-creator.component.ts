@@ -1,4 +1,4 @@
-import {Component, Input, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, Output, ViewChild} from '@angular/core';
 import {PagePostDTO} from "../../models/post/pagePostDTO";
 import {UserWithPostDTO} from "../../models/user/UserWithinPostDTO";
 import PostFormatter from "../../helpers/postFormatter";
@@ -12,6 +12,8 @@ import {CommentService} from "../../Services/comment.service";
 export class CommentCreatorComponent {
 
   @Input() post: PagePostDTO;
+  @Input() replyArgs: {isCommentReply: boolean} = {isCommentReply: false};
+  @Output() onReplyClickEvent = new EventEmitter();
     constructor(private commentService : CommentService) { }
 
   @ViewChild('inputComponent') commentInput: {inputValue: string} = {inputValue: ""};
@@ -34,9 +36,24 @@ export class CommentCreatorComponent {
 
 
   onReplyClick() {
-    this.commentService.postComment({postId:this.post.id, textContent: this.commentInput.inputValue, images:[]}).subscribe(Response => {
-      this.commentInput.inputValue = "";
-      console.log(Response);
-    });
+    if(!this.replyArgs.isCommentReply) {
+      this.commentService.postComment({postId:this.post.id, textContent: this.commentInput.inputValue, images:[]}).subscribe(Response => {
+        this.commentInput.inputValue = "";
+        console.log(Response);
+
+        if(Response.ok){
+          this.onReplyClickEvent.emit();
+        }
+      });
+    }
+    else {
+      this.commentService.postComment({commentId:this.post.id, textContent: this.commentInput.inputValue, images:[]}).subscribe(Response => {
+        this.commentInput.inputValue = "";
+        console.log(Response);
+        if(Response.ok){
+          this.onReplyClickEvent.emit();
+        }
+      });
+    }
   }
 }

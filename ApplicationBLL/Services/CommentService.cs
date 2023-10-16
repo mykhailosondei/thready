@@ -339,4 +339,31 @@ public class CommentService : BaseService
             await _applicationContext.SaveChangesAsync();
         }
     }
+
+    public async Task ViewComment(int id, int authorId)
+    {   
+        var commentDTO = await _commentQueryRepository.GetCommentByIdPlain(id);
+        
+        if (commentDTO == null)
+        {
+            throw new CommentNotFoundException();
+        }
+
+        var commentEntity = _mapper.Map<Comment>(commentDTO);
+        var userEntity = _mapper.Map<User>(await _userQueryRepository.GetUserById(authorId));
+
+        if (commentEntity.ViewedBy.Contains(authorId))
+        {
+            return;
+        }
+        
+        commentEntity.ViewedBy.Add(authorId);
+        
+        _applicationContext.Attach(commentEntity);
+        _applicationContext.Attach(userEntity);
+        
+        _applicationContext.Entry(commentEntity).Property(c => c.ViewedBy).IsModified = true;
+        
+        await _applicationContext.SaveChangesAsync();
+    }
 }

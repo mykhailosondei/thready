@@ -41,14 +41,14 @@ export class CommentService {
   }
 
   public viewComment(id: number) {
-    console.log("viewing comment with id: " + id);
+    return this.httpInternalService.postFullRequest<void>(`${this.route}/${id}/viewComment`, {});
   }
 
   public bookmarkComment(id: number){
-    console.log("bookmarking comment with id: " + id);
+    return this.httpInternalService.postFullRequest<void>(`${this.route}/${id}/bookmarkComment`, {});
   }
 
   public undoBookmarkComment(id: number){
-    console.log("unbookmarking comment with id: " + id);
+    return this.httpInternalService.postFullRequest<void>(`${this.route}/${id}/removeFromBookmarks`, {});
   }
 }

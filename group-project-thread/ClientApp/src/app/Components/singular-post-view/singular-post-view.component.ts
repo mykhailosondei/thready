@@ -58,7 +58,6 @@ export class SingularPostViewComponent implements OnInit{
     }
     ngOnInit(): void {
       this.fetchEssentialData();
-      //this.fetchComments();
     }
 
     fetchEssentialData() {
@@ -82,9 +81,10 @@ export class SingularPostViewComponent implements OnInit{
       console.log(this.postInput.commentsIds);
       for (let commentId of this.postInput.commentsIds) {
         this.commentService.getCommentById(commentId).subscribe(response => {
-            console.log(response);
           if(response.ok) {
-            this.comments.push(response.body!);
+            let comment: CommentDTO = response.body!;
+            comment.id = commentId;
+            this.comments.push(comment);
           }
         });
       }
@@ -120,7 +120,6 @@ export class SingularPostViewComponent implements OnInit{
   }
 
   handleRepostClick() {
-    console.log("Repost clicked");
     switch (this.reposted) {
       case true:
         this.post.repostsAmount--;
@@ -135,7 +134,6 @@ export class SingularPostViewComponent implements OnInit{
   }
 
   handleLikeClick() {
-    console.log("Like clicked");
     switch (this.liked) {
       case true:
         this.post.likesAmount--;
@@ -165,7 +163,6 @@ export class SingularPostViewComponent implements OnInit{
   protected readonly faPen = faPen;
 
   handleBookmarkClick() {
-    console.log("Bookmark clicked");
     switch (this.bookmarked) {
       case true:
             this.bookmarked = false;
@@ -209,7 +206,6 @@ export class SingularPostViewComponent implements OnInit{
   }
 
   onUserInfoMouseEnter() {
-    console.log("Mouse enter");
     this.hoverCardTriggerService.user = this.post.user;
     this.hoverCardTriggerService.enableHoverCardVisibility();
     this.hoverCardTriggerService.isHoveredOnTriggeringElement = true;
@@ -218,6 +214,4 @@ export class SingularPostViewComponent implements OnInit{
       y: this.userInfo.nativeElement.offsetTop + 20
     };
   }
-
-  protected readonly A = A;
 }

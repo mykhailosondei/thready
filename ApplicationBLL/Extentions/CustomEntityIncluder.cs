@@ -20,6 +20,6 @@ public static class CustomEntityIncluder
             result = result.ThenInclude(c => c.ParentComment);
         }
         
-        return result.ThenInclude(c => c.Post);
+        return result.ThenInclude(c => c.Post).ThenInclude(p => p.Author);
     }
 }

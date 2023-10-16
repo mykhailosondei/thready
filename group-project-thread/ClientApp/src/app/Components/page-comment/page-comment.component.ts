@@ -51,6 +51,7 @@ export class PageCommentComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log(this.commentInput);
     this.userService.getCurrentUser().subscribe(response => {
       if (response.ok) {
         this.editable = response.body!.id === this.commentInput.author.id;
@@ -77,10 +78,13 @@ export class PageCommentComponent implements OnInit {
     entries.forEach((entry: any) => {
       if (entry.isIntersecting && !this.viewed) {
         // The component is at least 50% visible in the viewport
-        this.commentService.viewComment(this.commentView.id)/*.subscribe(Response => {
+        this.commentService.viewComment(this.commentView.id).subscribe(Response => {
           console.log(Response);
-          if (Response.ok) this.viewed = true;
-        });*/
+          if (Response.ok) {
+            this.viewed = true;
+            this.commentView.viewsAmount++;
+          }
+        });
       }
     });
   }
@@ -115,7 +119,7 @@ export class PageCommentComponent implements OnInit {
       console.log(result);
       console.log(this.commentView);
       this.commentService.postComment({
-        parentCommentId: this.commentView.id,
+        commentId: this.commentView.id,
         textContent: result.textContent,
         images: result.images
       }).subscribe(response => {
@@ -200,24 +204,24 @@ export class PageCommentComponent implements OnInit {
       case true:
         this.bookmarked = false;
         this.commentView.bookmarksAmount--;
-        this.commentService.undoBookmarkComment(this.commentView.id)/*.subscribe(Response => {
+        this.commentService.undoBookmarkComment(this.commentView.id).subscribe(Response => {
           if (!Response.ok) {
             this.bookmarked = true;
             this.commentView.bookmarksAmount++;
           }
           console.log(Response)
-        });*/
+        });
         break;
       case false:
         this.bookmarked = true;
         this.commentView.bookmarksAmount++;
-        this.commentService.bookmarkComment(this.commentView.id)/*.subscribe(Response => {
+        this.commentService.bookmarkComment(this.commentView.id).subscribe(Response => {
           if (!Response.ok) {
             this.bookmarked = false;
             this.commentView.bookmarksAmount--;
           }
           console.log(Response)
-        });*/
+        });
         break;
     }
   }

@@ -8,6 +8,7 @@ import {ProfilePageComponent} from "./Components/profile-page/profile-page.compo
 import {SingularPostViewComponent} from "./Components/singular-post-view/singular-post-view.component";
 import {FollowingPageComponent} from "./Components/following-page/following-page.component";
 import {FollowersPageComponent} from "./Components/followers-page/followers-page.component";
+import {SingularCommentViewComponent} from "./Components/singular-comment-view/singular-comment-view.component";
 
 const routes: Routes = [
   {path:'', redirectTo: '/login', pathMatch: 'full'},
@@ -18,6 +19,7 @@ const routes: Routes = [
   {path: ':username/following', component: FollowingPageComponent},
   {path: ':username/followers', component: FollowersPageComponent},
   {path: ':username/post/:id', component: SingularPostViewComponent},
+  {path: 'comment/:commentId', component: SingularCommentViewComponent},
 ];
 
 @NgModule({

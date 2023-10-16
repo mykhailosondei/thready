@@ -92,5 +92,12 @@ namespace group_project_thread.Controllers
             int authorId = _userIdGetter.CurrentId;
             await _commentService.RemoveFromBookmarksComment(id, authorId);
         }
+
+        [HttpPost("{id}/viewComment")]
+        public async Task ViewComment(int id)
+        {
+            int authorId = _userIdGetter.CurrentId;
+            await _commentService.ViewComment(id, authorId);
+        }
     }
 }
