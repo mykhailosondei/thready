@@ -4,7 +4,7 @@
       <div class="page-post">
         <div class="post-header">
           <div class="user-avatar" [ngStyle]="{'background-color': getCircleColor()}">
-            <a href="/profile" class="user-link"></a>
+            <a href="/{{authorInput.username}}/profile" class="user-link"></a>
             <img *ngIf="!isAvatarNull()" src="{{authorInput.avatar!.url}}" alt="{{authorInput.username}}}">
             <div *ngIf="isAvatarNull()" class="initial">{{getFirstInitial()}}</div>
           </div>

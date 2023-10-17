@@ -1,11 +1,13 @@
-<div appOnDomEnter (domEnter)="startObserve()" class="page-post" #wholePost>
+<div appOnDomEnter (domEnter)="startObserve()" class="page-post" [style.border-top-width]="this.isParentView? '0':'1px'" #wholePost>
+  <a href="{{this.userInput.username}}/post/{{this.postInput.id}}" class="post-link"></a>
   <div class="user-collar-and-post-holder">
     <div class="user-avatar-collar">
       <div class="user-avatar" [ngStyle]="{'background-color': getCircleColor()}">
-        <a href="/profile" class="user-link"></a>
+        <a href="/{{userInput.username}}/profile" class="user-link"></a>
         <img *ngIf="!isAvatarNull()" src="{{post.user.avatar!.url}}" alt="{{post.user.username}}}">
         <div *ngIf="isAvatarNull()" class="initial">{{getFirstInitial()}}</div>
       </div>
+      <div *ngIf="isParentView" class="gray-collar"></div>
     </div>
     <div class="post-holder">
       <div class="user-info-and-dots">

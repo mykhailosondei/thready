@@ -32,6 +32,7 @@ export class PageCommentComponent implements OnInit {
 
   @Input() public commentInput!: CommentDTO;
   @Input() public userInput!: UserDTO;
+  @Input() public isParentView: boolean = false;
   commentView: PagePostDTO = {} as PagePostDTO;
 
   @ViewChild('userInfo') userInfo: ElementRef<HTMLDivElement>;
@@ -193,8 +194,8 @@ export class PageCommentComponent implements OnInit {
     this.hoverCardTriggerService.enableHoverCardVisibility();
     this.hoverCardTriggerService.isHoveredOnTriggeringElement = true;
     this.hoverCardTriggerService.coordinates = {
-      x: this.userInfo.nativeElement.offsetLeft - 60,
-      y: this.userInfo.nativeElement.offsetTop + 20
+      x: this.userInfo.nativeElement.getBoundingClientRect().x - 60,
+      y: this.userInfo.nativeElement.getBoundingClientRect().y + 20
     };
   }
 

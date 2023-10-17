@@ -210,8 +210,8 @@ export class SingularPostViewComponent implements OnInit{
     this.hoverCardTriggerService.enableHoverCardVisibility();
     this.hoverCardTriggerService.isHoveredOnTriggeringElement = true;
     this.hoverCardTriggerService.coordinates = {
-      x: this.userInfo.nativeElement.offsetLeft - 60,
-      y: this.userInfo.nativeElement.offsetTop + 20
+      x: this.userInfo.nativeElement.getBoundingClientRect().x - 60,
+      y: this.userInfo.nativeElement.getBoundingClientRect().y + 20
     };
   }
 }

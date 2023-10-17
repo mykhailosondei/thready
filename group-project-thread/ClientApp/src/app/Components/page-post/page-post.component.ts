@@ -31,6 +31,7 @@ export class PagePostComponent implements OnInit {
 
   @Input() public postInput!: PostDTO;
   @Input() public userInput!: UserDTO;
+  @Input() public isParentView: boolean = false;
   post: PagePostDTO = {} as PagePostDTO;
 
   @ViewChild('userInfo') userInfo: ElementRef<HTMLDivElement>;
@@ -205,8 +206,8 @@ export class PagePostComponent implements OnInit {
     this.hoverCardTriggerService.enableHoverCardVisibility();
     this.hoverCardTriggerService.isHoveredOnTriggeringElement = true;
     this.hoverCardTriggerService.coordinates = {
-      x: this.userInfo.nativeElement.offsetLeft - 60,
-      y: this.userInfo.nativeElement.offsetTop + 20
+      x: this.userInfo.nativeElement.getBoundingClientRect().x - 60,
+      y: this.userInfo.nativeElement.getBoundingClientRect().y + 20
     };
   }
 

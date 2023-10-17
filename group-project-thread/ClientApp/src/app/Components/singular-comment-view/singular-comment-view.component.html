@@ -1,11 +1,15 @@
 <div class="center-h">
   <div class="main-page">
-    <app-page-post *ngIf="parents.length > 0" [postInput]="getParentPostFromUnionType()" [userInput]="getParentPostFromUnionType().author"></app-page-post>
+    <app-page-post [postInput]="parentPost" [userInput]="parentPost.author" [isParentView]="true"></app-page-post>
+    <app-page-comment *ngFor="let comment of parentComments" [commentInput]="comment" [userInput]="comment.author" [isParentView]="true"></app-page-comment>
     <div *ngIf="commentInput && authorInput" class="post-holder">
       <div class="page-post">
+        <div class="top-bar">
+          <div class="gray-collar-shorter"></div>
+        </div>
         <div class="post-header">
           <div class="user-avatar" [ngStyle]="{'background-color': getCircleColor()}">
-            <a href="/profile" class="user-link"></a>
+            <a href="/{{authorInput.username}}/profile" class="user-link"></a>
             <img *ngIf="!isAvatarNull()" src="{{authorInput.avatar!.url}}" alt="{{authorInput.username}}}">
             <div *ngIf="isAvatarNull()" class="initial">{{getFirstInitial()}}</div>
           </div>

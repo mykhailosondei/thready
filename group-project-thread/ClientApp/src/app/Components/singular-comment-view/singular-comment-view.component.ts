@@ -37,7 +37,8 @@ export class SingularCommentViewComponent {
   public commentInput : CommentDTO;
   public comments : CommentDTO[] = [];
   public commentView : PagePostDTO;
-  public parents : (PostDTO|CommentDTO)[] = [];
+  public parentComments : (CommentDTO)[] = [];
+  public parentPost : PostDTO;
   @ViewChild('userInfo') userInfo: ElementRef<HTMLDivElement>;
 
   liked: boolean = false;
@@ -116,23 +117,21 @@ export class SingularCommentViewComponent {
     });
   }
 
-  retrieveParents(comment: CommentDTO){
-    if(comment.parentComment){
+  retrieveParents(comment: CommentDTO) {
+    if (comment.parentComment) {
       this.userService.getUserById(comment.parentComment.userId).subscribe(response => {
-        if(response.ok){
+        if (response.ok) {
           comment.parentComment!.author = response.body!;
         }
-      }).add(()=>{
-        this.parents.unshift(comment.parentComment!);
+      }).add(() => {
+        this.parentComments.unshift(comment.parentComment!);
         this.retrieveParents(comment.parentComment!);
       });
-    }else if(comment.post){
-      this.parents.unshift(comment.post);
+    } else if (comment.post) {
+      this.parentPost = comment.post;
     }
-  }
-
-  getParentPostFromUnionType(){
-    return this.parents[0] as PostDTO;
+    console.log("aaaaaaaaaaaaaaa");
+    console.log(this.parentPost);
   }
 
 
@@ -213,8 +212,8 @@ export class SingularCommentViewComponent {
     this.hoverCardTriggerService.enableHoverCardVisibility();
     this.hoverCardTriggerService.isHoveredOnTriggeringElement = true;
     this.hoverCardTriggerService.coordinates = {
-      x: this.userInfo.nativeElement.offsetLeft - 60,
-      y: this.userInfo.nativeElement.offsetTop + 20
+      x: this.userInfo.nativeElement.getBoundingClientRect().x - 60,
+      y: this.userInfo.nativeElement.getBoundingClientRect().y + 20
     };
   }
 
