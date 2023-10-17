@@ -10,7 +10,7 @@ import {SnackbarService} from "../../Services/snackbar.service";
 @Component({
   selector: 'app-connection-page',
   templateUrl: './connection-page.component.html',
-  styleUrls: ['./connection-page.component.scss', '../../../assets/ContentFrame.scss']
+  styleUrls: ['./connection-page.component.scss', '../../../assets/ContentFrame.scss', '../../../assets/navigation-bar.scss']
 })
 export class ConnectionPageComponent implements OnInit{
   protected readonly faArrowLeftLong = faArrowLeftLong;

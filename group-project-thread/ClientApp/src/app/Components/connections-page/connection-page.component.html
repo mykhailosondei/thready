@@ -22,7 +22,7 @@
         <div class="tab-box" (click)="navigateToFollowing()">
           <div class="tab">
             <div class="tab-text-box">
-            <span class="following-tab-text" [ngClass]="{'following-tab-text-selected': isFollowing}">
+            <span class="first-tab-text" [ngClass]="{'first-tab-selected': isFollowing}">
               Following
             </span>
               <div *ngIf="isFollowing" class="selected-tab">
@@ -34,7 +34,7 @@
         <div class="tab-box" (click)="navigateToFollowers()">
           <div class="tab">
             <div class="tab-text-box">
-            <span class="followers-tab-text" [ngClass]="{'followers-tab-text-selected': isFollowers}">
+            <span class="second-tab-text" [ngClass]="{'followers-tab-text-selected': isFollowers}">
               Followers
             </span>
               <div *ngIf="isFollowers" class="selected-tab">

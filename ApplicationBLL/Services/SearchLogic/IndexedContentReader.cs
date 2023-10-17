@@ -39,7 +39,7 @@ public class IndexedContentReader
         {
             try
             {
-                 var potentialPost = await _postQueryRepository.GetPostById(wordCountInPostId.PostId);
+                 var potentialPost = await _postQueryRepository.GetPostById(wordCountInPostId.PostId, p=>p.Author);
                  matchingPosts.Add(potentialPost);
             }
             catch (Exception e)

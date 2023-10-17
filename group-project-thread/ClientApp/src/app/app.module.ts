@@ -38,6 +38,7 @@ import {FollowersPageComponent} from "./Components/followers-page/followers-page
 import {FollowingPageUserComponent} from "./Components/following-page-user/following-page-user.component";
 import {FollowersPageUserComponent} from "./Components/followers-page-user/followers-page-user.component";
 import {SearchBarComponent} from "./Components/search-bar/search-bar.component";
+import {InfiniteScrollModule} from "ngx-infinite-scroll";
 
 @NgModule({
   declarations: [
@@ -86,7 +87,8 @@ import {SearchBarComponent} from "./Components/search-bar/search-bar.component";
     NgOptimizedImage,
     MatDialogModule,
     MatButtonModule,
-    MatInputModule
+    MatInputModule,
+    InfiniteScrollModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi:true},

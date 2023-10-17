@@ -10,16 +10,64 @@
           </div>
           <div class="search-bar-area">
             <div class="search-bar-box">
-              <div class="svg-box">
-                <div class="svg">
-                  <fa-icon [icon]="faMagnifyingGlass" class="searсh-icon"></fa-icon>
+              <div class="input-box">
+                <div class="svg-box">
+                  <fa-icon [icon]="faMagnifyingGlass" class="search-icon"></fa-icon>
                 </div>
-
+                <div class="input-area">
+                  <input class="search-query-input" placeholder="Search" [(ngModel)]="query" (keyup.enter)="searchByQuery()">
+                </div>
               </div>
+            </div>
+          </div>
+          <div class="go-button">
+            <div class="go-box" (click)="searchByQuery()">
+              <span>Go</span>
             </div>
           </div>
         </div>
       </div>
+    </div>
+    <div style="border-bottom: 1px solid #dcdcdc">
+      <nav class="navigation-bar">
+        <div role="tablist" class="navigation-bar-content">
+          <div class="tab-box" (click)="navigateToForYouPage()">
+            <div class="tab">
+              <div class="tab-text-box">
+            <span class="first-tab-text" [ngClass]="{'first-tab-selected': isTrending}">
+              May be interesting
+            </span>
+                <div *ngIf="isTrending" class="selected-tab">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-box" (click)="navigateToTendingPage()">
+            <div class="tab">
+              <div class="tab-text-box">
+            <span class="second-tab-text" [ngClass]="{'second-tab-selected': isForYou}">
+              Trending
+            </span>
+                <div *ngIf="isForYou" class="selected-tab">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </div>
+    <div>
+
+    </div>
+    <div class="search-results"
+    infiniteScroll
+    [infiniteScrollDistance]="3"
+    [infiniteScrollThrottle]="500"
+    (scrolled)="onScroll()"
+    [scrollWindow]="true">
+      <app-page-post *ngFor="let post of matchingPosts$ | async"
+                     [postInput]="post" [userInput]="post.author "></app-page-post>
     </div>
   </div>
 </div>
