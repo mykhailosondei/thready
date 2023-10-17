@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+  max-width: 600px;
 }
 
 .user-profile-button{
@@ -11,17 +12,19 @@
   &:hover{
     background-color: rgba(0, 0, 0, 0.03);
   }
+  max-width: 100%;
 }
 .content{
   display: flex;
   flex-direction: row;
   align-items: stretch;
   box-sizing: border-box;
+  max-width: 100%;
 }
 
 .small-image-container{
   display: flex;
-  flex-basis: 40px;
+  flex-basis: auto;
   margin-right: 12px;
   justify-content: flex-start;
   position: relative;
@@ -138,5 +141,9 @@
 .bio{
   font-size: 13px;
   font-weight: 400;
+  padding-top: 4px;
+  max-width: 512px;
+  display: inline-block;
+  word-wrap: break-word;
 }
 

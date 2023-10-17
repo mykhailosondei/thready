@@ -63,16 +63,21 @@ public class PostsContentsIndexer
         string[] separateWords = TextContentSplit(words.ToLower());
         foreach (var word in separateWords)
         {
-            if (!result.ContainsKey(word))
-                result.Add(word, 1);
+            if (word == "")
+            {
+                continue;
+            }
+            string wordTrimmed = word.Trim();
+            if (!result.ContainsKey(wordTrimmed))
+                result.Add(wordTrimmed, 1);
             else
-                result[word]++;
+                result[wordTrimmed]++;
         }
         return result;
     }
     private string[] TextContentSplit(string textContent)
     {
-        string pattern = @"[^a-zA-Z']+";
+        string pattern = @"[^a-zA-Z'-]+";
 
         return Regex.Split(textContent, pattern);
     }

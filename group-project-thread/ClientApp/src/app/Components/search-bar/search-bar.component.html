@@ -57,17 +57,32 @@
         </div>
       </nav>
     </div>
-    <div>
-
+    <div *ngIf="matchingUsers$.getValue().length != 0" class="user-search-results">
+      <div class="people-box">
+        <span class="people-box-header">People</span>
+      </div>
+      <app-followers-page-user *ngFor="let user of matchingUsers$ | async"
+      [currentUser]="currentUser" [pageUser]="user" [isCurrentUser]="true" [isFollowing]="amIFollowing(user.id)"
+      [isMyPageProfile]="isCurrentUser(user.id)"></app-followers-page-user>
+      <div class="view-all-button" (click)="navigateToUserSearch()" *ngIf="matchingUsers$.getValue().length>3">
+        <div class="view-all-box">
+          <span class="view-all-box-header">View all</span>
+        </div>
+      </div>
     </div>
-    <div class="search-results"
-    infiniteScroll
-    [infiniteScrollDistance]="3"
-    [infiniteScrollThrottle]="500"
-    (scrolled)="onScroll()"
-    [scrollWindow]="true">
-      <app-page-post *ngFor="let post of matchingPosts$ | async"
-                     [postInput]="post" [userInput]="post.author "></app-page-post>
+    <div class="people-post-divider" *ngIf="matchingUsers$.getValue().length != 0 && matchingPosts$.getValue().length != 0">
+      <div class="divider-line"></div>
+    </div>
+    <div  *ngIf="matchingPosts$.getValue().length != 0">
+      <div class="search-results"
+           infiniteScroll
+           [infiniteScrollDistance]="3"
+           [infiniteScrollThrottle]="500"
+           (scrolled)="onScroll()"
+           [scrollWindow]="true">
+        <app-page-post *ngFor="let post of matchingPosts$ | async"
+                       [postInput]="post" [userInput]="post.author "></app-page-post>
+      </div>
     </div>
   </div>
 </div>

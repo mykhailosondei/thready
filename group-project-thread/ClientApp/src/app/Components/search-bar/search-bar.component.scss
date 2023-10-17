@@ -1,3 +1,5 @@
+$grey-color: #dcdcdc;
+
 .header{
   cursor: auto !important;
   border-bottom: 0px !important;
@@ -78,11 +80,47 @@
   border-radius: 50%;
   &:hover{
     border-radius: 50%;
-    background-color: #dcdcdc;
+    background-color: $grey-color;
 
   }
 }
 .go-button{
   font-weight: 600;
   color: rgb(83, 100, 113);
+}
+.people-box{
+  margin: 12px;
+}
+.people-box-header{
+  font-weight: 700;
+  font-size: 18px;
+}
+.view-all-button{
+  transition-duration: 0.2s;
+  cursor: pointer;
+  display: flex;
+  &:hover{
+    background-color: rgba(0, 0, 0, 0.03);
+  }
+}
+.view-all-box{
+  margin: 12px;
+}
+.view-all-box-header{
+  color: rgb(29, 155, 240);
+  font-weight: 400;
+  font-size: 14px;
+}
+.people-post-divider{
+  margin-top: 4px;
+  margin-bottom: 4px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.divider-line{
+  display: flex;
+  width: 1px;
+  border-bottom: 1px solid $grey-color;
+  flex: 1;
 }
