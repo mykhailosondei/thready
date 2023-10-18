@@ -190,8 +190,12 @@ export class SingularCommentViewComponent {
     }
   }
 
+  getCreatedTime() {
+    return PostFormatter.getTimeFormatted(new Date(this.commentInput.createdAt));
+  }
+
   getCreatedDate() {
-    return PostFormatter.getDateFormattedString(new Date(this.commentInput.createdAt));
+    return PostFormatter.getDateFormatted(new Date(this.commentInput.createdAt));
   }
 
   async onUserInfoMouseLeave() {

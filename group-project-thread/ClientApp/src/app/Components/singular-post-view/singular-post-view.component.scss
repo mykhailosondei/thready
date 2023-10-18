@@ -5,6 +5,8 @@
   border-left-width: 1px;
 }
 
+
+
 .center-h {
   display: flex;
   justify-content: center;
@@ -33,7 +35,10 @@
   margin-bottom: 16px;
 }
 
-.full-date {
+.full-date-and-views {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
   color: grey;
 }
 
@@ -87,3 +92,11 @@
   justify-content: center;
 }
 
+.small-dot {
+  height: 3px;
+  width: 3px;
+  background-color: grey;
+  border-radius: 50%;
+  margin-left: 4px;
+  margin-right: 4px;
+}

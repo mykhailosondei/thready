@@ -61,6 +61,7 @@ export class PagePostComponent implements OnInit {
         this.bookmarked = response.body!.bookmarkedPostsIds.includes(this.postInput.id);
       }
     });
+    console.log(this.postInput);
     this.post = PostFormatter.mapPostToPagePost(this.postInput, this.userInput);
     // Set up IntersectionObserver to watch for 50% visibility
     this.observer = new IntersectionObserver(this.handleIntersection.bind(this), {
@@ -94,7 +95,7 @@ export class PagePostComponent implements OnInit {
 
   public getCreatedDate(): string {
     const date = new Date(this.post.dateCreated);
-    return PostFormatter.getDateFormattedString(date);
+    return PostFormatter.getDateFormattedElapsed(date);
   }
 
   isAvatarNull(): boolean {

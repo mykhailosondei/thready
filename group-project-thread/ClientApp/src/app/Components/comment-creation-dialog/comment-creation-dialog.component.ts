@@ -45,7 +45,7 @@ export class CommentCreationDialogComponent {
     return user.username[0].toUpperCase();
   }
   getCreatedDate() {
-    return PostFormatter.getDateFormattedString(new Date(this.data.post.dateCreated));
+    return PostFormatter.getDateFormattedElapsed(new Date(this.data.post.dateCreated));
   }
 
   isButtonDisabled() : boolean {

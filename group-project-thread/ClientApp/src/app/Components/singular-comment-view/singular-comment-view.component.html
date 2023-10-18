@@ -72,7 +72,13 @@
           </div>
         </div>
         <div class="lower-info-stripe">
-          <div class="full-date">{{commentView.dateCreated}}</div>
+          <div class="full-date-and-views">
+            <div class="time">{{getCreatedTime()}}</div>
+            <div class="small-dot"></div>
+            <div class="date">{{getCreatedDate()}}</div>
+            <div class="small-dot"></div>
+            <div class="views"><b>{{commentView.viewsAmount}}</b> Views</div>
+          </div>
           <div class="views"></div>
         </div>
       </div>

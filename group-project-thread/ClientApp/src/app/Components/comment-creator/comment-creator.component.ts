@@ -1,36 +1,52 @@
-import {Component, EventEmitter, Input, Output, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {PagePostDTO} from "../../models/post/pagePostDTO";
 import {UserWithPostDTO} from "../../models/user/UserWithinPostDTO";
 import PostFormatter from "../../helpers/postFormatter";
 import {CommentService} from "../../Services/comment.service";
+import {UserDTO} from "../../models/user/userDTO";
+import {UserService} from "../../Services/user.service";
+import {User} from "oidc-client";
 
 @Component({
   selector: 'app-comment-creator',
   templateUrl: './comment-creator.component.html',
   styleUrls: ['./comment-creator.component.scss', '../page-post/page-post.component.scss']
 })
-export class CommentCreatorComponent {
+export class CommentCreatorComponent implements OnInit {
 
   @Input() post: PagePostDTO;
+  currentUser: UserDTO;
   @Input() replyArgs: {isCommentReply: boolean} = {isCommentReply: false};
   @Output() onReplyClickEvent = new EventEmitter();
-    constructor(private commentService : CommentService) { }
+  constructor(private commentService : CommentService, private userService : UserService) { }
 
   @ViewChild('inputComponent') commentInput: {inputValue: string} = {inputValue: ""};
+
+  ngOnInit(): void {
+    this.setCurrentUser();
+  }
 
   isButtonDisabled() {
     return PostFormatter.isInputLengthInvalid(this.commentInput.inputValue);
   }
 
-  getCircleColor(user: UserWithPostDTO) {
+  setCurrentUser() {
+    this.userService.getCurrentUser().subscribe(Response => {
+      if(Response.ok){
+        this.currentUser = Response.body!;
+      }
+    });
+  }
+
+  getCircleColor(user: UserDTO) {
     return PostFormatter.getCircleColor(user.username);
   }
 
-  isAvatarNull(user: UserWithPostDTO) {
+  isAvatarNull(user: UserDTO) {
     return user.avatar === null;
   }
 
-  getFirstInitial(user: UserWithPostDTO) {
+  getFirstInitial(user: UserDTO) {
     return user.username[0].toUpperCase();
   }
 
