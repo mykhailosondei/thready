@@ -3,9 +3,9 @@ import {faArrowLeftLong} from "@fortawesome/free-solid-svg-icons";
 import {faMagnifyingGlass} from "@fortawesome/free-solid-svg-icons/faMagnifyingGlass";
 import {PostDTO} from "../../models/post/postDTO";
 import {BehaviorSubject, takeUntil} from "rxjs";
-import {SearchServiceService} from "../../Services/search-service.service";
+import {SearchService} from "../../Services/search.service";
 import {HttpResponse} from "@angular/common/http";
-import {UserWithPostDTO} from "../../models/user/UserWithinPostDTO";
+import {PageUserDTO} from "../../models/user/pageUserDTO";
 import {UserDTO} from "../../models/user/userDTO";
 import {UserService} from "../../Services/user.service";
 import {error} from "@angular/compiler-cli/src/transformers/util";
@@ -21,7 +21,7 @@ export class SearchBarComponent implements OnInit{
   public currentUser! : UserDTO;
   public isFollowing : boolean;
   public matchingPosts$ = new BehaviorSubject<PostDTO[]>([]);
-  public matchingUsers$ = new BehaviorSubject<UserWithPostDTO[]>([]);
+  public matchingUsers$ = new BehaviorSubject<PageUserDTO[]>([]);
   private postsToLoadLowerCount = 0;
   private postsToLoadUpperCount = 10;
   private readonly postsPerPaged : number = 10;
@@ -29,7 +29,7 @@ export class SearchBarComponent implements OnInit{
   @Input() public isTrending : boolean;
   @Input() public isForYou : boolean = true;
 
-  constructor(private searchService : SearchServiceService, private userService : UserService) {
+  constructor(private searchService : SearchService, private userService : UserService) {
   }
   backToMainPaige() {
 
@@ -47,7 +47,7 @@ export class SearchBarComponent implements OnInit{
 
   loadInitialPeople(){
     this.searchService.getUsers(this.query, this.postsToLoadLowerCount, this.postsToLoadUpperCount).subscribe(
-      (users : HttpResponse<UserWithPostDTO[]>) => {
+      (users : HttpResponse<PageUserDTO[]>) => {
         this.matchingUsers$.next(users.body || []);
       },
       (error) => console.log(error.error)

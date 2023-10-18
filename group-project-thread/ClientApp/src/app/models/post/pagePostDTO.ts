@@ -1,11 +1,11 @@
 ﻿import {Image} from "../image";
-import {UserWithPostDTO} from "../user/UserWithinPostDTO";
+import {PageUserDTO} from "../user/pageUserDTO";
 
 export interface PagePostDTO {
   id: number;
   textContent: string;
   imagesUrls: string[];
-  user: UserWithPostDTO;
+  user: PageUserDTO;
   commentsAmount: number;
   repostsAmount: number;
   likesAmount: number;

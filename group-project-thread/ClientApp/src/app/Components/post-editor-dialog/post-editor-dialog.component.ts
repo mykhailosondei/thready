@@ -2,7 +2,7 @@ import {Component, Inject, ViewChild} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {CommentCreateDialogData} from "../../models/coment/CommentCreateDialogData";
 import {PostEditDialogData} from "../../models/post/PostEditDialogData";
-import {UserWithPostDTO} from "../../models/user/UserWithinPostDTO";
+import {PageUserDTO} from "../../models/user/pageUserDTO";
 import PostFormatter from "../../helpers/postFormatter";
 import {faTimes} from "@fortawesome/free-solid-svg-icons";
 import {animate, state, style, transition, trigger} from "@angular/animations";
@@ -35,15 +35,15 @@ export class PostEditorDialogComponent {
     this.dialogRef.close();
   }
 
-  isAvatarNull(user: UserWithPostDTO) {
+  isAvatarNull(user: PageUserDTO) {
     return user.avatar === null;
   }
 
-  getCircleColor(user: UserWithPostDTO) {
+  getCircleColor(user: PageUserDTO) {
     return PostFormatter.getCircleColor(user.username);
   }
 
-  getFirstInitial(user: UserWithPostDTO) {
+  getFirstInitial(user: PageUserDTO) {
     return user.username[0].toUpperCase();
   }
 

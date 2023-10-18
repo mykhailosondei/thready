@@ -1,7 +1,7 @@
 <div class="wrap">
   <div class="main-page">
     <app-connection-page [username]="username" [isFollowing] = "true" [isFollowers] = "false"></app-connection-page>
-    <div style="position: relative; min-height: 750.6px;">
+    <div style="position: relative;">
       <div *ngIf="following.length != 0">
         <div style="display: block" *ngFor="let user of following">
           <app-following-page-user [pageUser]="user" [isCurrentUser]="isCurrentUser"></app-following-page-user>

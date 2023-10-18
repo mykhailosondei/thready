@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {UserWithPostDTO} from "../../models/user/UserWithinPostDTO";
+import {PageUserDTO} from "../../models/user/pageUserDTO";
 import {finalize, Subject, takeUntil} from "rxjs";
 import {UserService} from "../../Services/user.service";
 import {SnackbarService} from "../../Services/snackbar.service";
@@ -12,7 +12,7 @@ import {UserDTO} from "../../models/user/userDTO";
   styleUrls: ['./followers-page-user.component.scss', '../../../assets/PageUser.scss']
 })
 export class FollowersPageUserComponent {
-  @Input() public pageUser : UserWithPostDTO;
+  @Input() public pageUser : PageUserDTO;
   @Input() public isCurrentUser : boolean;
   @Input() public isFollowing: boolean;
   @Input() public currentUser: UserDTO;

@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, Output, ViewChild} from '@angular/core';
 import {PagePostDTO} from "../../models/post/pagePostDTO";
-import {UserWithPostDTO} from "../../models/user/UserWithinPostDTO";
+import {PageUserDTO} from "../../models/user/pageUserDTO";
 import PostFormatter from "../../helpers/postFormatter";
 import {CommentService} from "../../Services/comment.service";
 
@@ -22,15 +22,15 @@ export class CommentCreatorComponent {
     return PostFormatter.isInputLengthInvalid(this.commentInput.inputValue);
   }
 
-  getCircleColor(user: UserWithPostDTO) {
+  getCircleColor(user: PageUserDTO) {
     return PostFormatter.getCircleColor(user.username);
   }
 
-  isAvatarNull(user: UserWithPostDTO) {
+  isAvatarNull(user: PageUserDTO) {
     return user.avatar === null;
   }
 
-  getFirstInitial(user: UserWithPostDTO) {
+  getFirstInitial(user: PageUserDTO) {
     return user.username[0].toUpperCase();
   }
 
