@@ -4,11 +4,11 @@ $font : -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-
 .wrap {
   display: flex;
   justify-content: center;
-
 }
 
 .main-page{
   width: 600px;
+  min-height: 101vh;
   border: 0 solid $grey-color;
   border-right-width: 1px;
   border-left-width: 1px;

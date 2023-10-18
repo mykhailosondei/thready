@@ -109,7 +109,6 @@ export class PagePostComponent implements OnInit {
       if (entry.isIntersecting && !this.viewed) {
         // The component is at least 50% visible in the viewport
         this.postService.viewPost(this.post.id).subscribe(Response => {
-          console.log(Response);
           if (Response.ok) this.viewed = true;
         });
       }

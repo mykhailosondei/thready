@@ -39,6 +39,7 @@ import {FollowingPageUserComponent} from "./Components/following-page-user/follo
 import {FollowersPageUserComponent} from "./Components/followers-page-user/followers-page-user.component";
 import {SearchBarComponent} from "./Components/search-bar/search-bar.component";
 import {InfiniteScrollModule} from "ngx-infinite-scroll";
+import {SearchResultsPageComponent} from "./Components/search-results-page/search-results-page.component";
 
 @NgModule({
   declarations: [
@@ -67,7 +68,8 @@ import {InfiniteScrollModule} from "ngx-infinite-scroll";
     UserHoverCardComponent,
     OnDomEnterDirective,
     SingularPostViewComponent,
-    SearchBarComponent
+    SearchBarComponent,
+    SearchResultsPageComponent
   ],
   imports: [
     BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),
