@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {UserWithPostDTO} from "../models/user/UserWithinPostDTO";
+import {PageUserDTO} from "../models/user/pageUserDTO";
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +9,7 @@ export class UserHoverCardTriggerService {
   isHoverCardVisible: boolean = false;
   isHoveredOnTriggeringElement: boolean = false;
   coordinates: {x: number, y: number} = {x: 10, y: 10};
-  user: UserWithPostDTO = {} as UserWithPostDTO;
+  user: PageUserDTO = {} as PageUserDTO;
   isInsideHoverCard: boolean = false;
 
   disableHoverCardVisibility() {

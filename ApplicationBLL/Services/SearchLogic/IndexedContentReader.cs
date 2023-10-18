@@ -114,7 +114,7 @@ public class IndexedContentReader
 
     
     
-    public async Task<IEnumerable<UserShortAccountDTO>> GetUsers(string query, int lowerCount, int upperCount)
+    public async Task<IEnumerable<PageUserDTO>> GetUsers(string query, int lowerCount, int upperCount)
     {
         var usersToLoad = await FindUsersIds(query, lowerCount, upperCount);
         if (usersToLoad.Count == 0)
@@ -122,14 +122,14 @@ public class IndexedContentReader
             throw new Exception("No users found");
         }
 
-        List<UserShortAccountDTO> matchingUsers = new List<UserShortAccountDTO>();
+        List<PageUserDTO> matchingUsers = new List<PageUserDTO>();
         foreach (var wordCountInPostId in usersToLoad)
         {
             try
             {
                 var potentialUser = await _userQueryRepository.GetUserById(wordCountInPostId.UserId);
-                UserShortAccountDTO userShortInfo = _mapper.Map<UserShortAccountDTO>(potentialUser); 
-                matchingUsers.Add(userShortInfo);
+                PageUserDTO pageUser = _mapper.Map<PageUserDTO>(potentialUser); 
+                matchingUsers.Add(pageUser);
             }
             catch (Exception e)
             {

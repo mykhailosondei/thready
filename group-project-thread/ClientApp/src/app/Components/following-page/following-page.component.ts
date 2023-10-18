@@ -3,7 +3,7 @@ import {UserService} from "../../Services/user.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {SnackbarService} from "../../Services/snackbar.service";
 import {UserDTO} from "../../models/user/userDTO";
-import {UserWithPostDTO} from "../../models/user/UserWithinPostDTO";
+import {PageUserDTO} from "../../models/user/pageUserDTO";
 import {finalize, Subject, takeUntil} from "rxjs";
 
 @Component({
@@ -14,7 +14,7 @@ import {finalize, Subject, takeUntil} from "rxjs";
 export class FollowingPageComponent implements OnInit{
   protected username : string;
   protected user! : UserDTO;
-  protected following : UserWithPostDTO[];
+  protected following : PageUserDTO[];
   private unsubscribe$ = new Subject<void>();
   protected isCurrentUser : boolean = false;
 
@@ -51,7 +51,7 @@ export class FollowingPageComponent implements OnInit{
               .subscribe(response => {
                 if (response.body != null) {
                   const userResponse: UserDTO = response.body;
-                  const followingUser: UserWithPostDTO = {
+                  const followingUser: PageUserDTO = {
                     avatar: userResponse.avatar,
                     bio: userResponse.bio,
                     followers: userResponse.followersIds.length,

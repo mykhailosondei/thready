@@ -3,9 +3,9 @@ import {faArrowLeftLong} from "@fortawesome/free-solid-svg-icons";
 import {faMagnifyingGlass} from "@fortawesome/free-solid-svg-icons/faMagnifyingGlass";
 import {PostDTO} from "../../models/post/postDTO";
 import {BehaviorSubject, takeUntil} from "rxjs";
-import {SearchServiceService} from "../../Services/search-service.service";
+import {SearchService} from "../../Services/search.service";
 import {HttpResponse} from "@angular/common/http";
-import {UserWithPostDTO} from "../../models/user/UserWithinPostDTO";
+import {PageUserDTO} from "../../models/user/pageUserDTO";
 import {UserDTO} from "../../models/user/userDTO";
 import {UserService} from "../../Services/user.service";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -22,7 +22,7 @@ export class SearchResultsPageComponent implements OnInit{
   public currentUser! : UserDTO;
   public isFollowing : boolean;
   public matchingPosts$ = new BehaviorSubject<PostDTO[]>([]);
-  public matchingUsers$ = new BehaviorSubject<UserWithPostDTO[]>([]);
+  public matchingUsers$ = new BehaviorSubject<PageUserDTO[]>([]);
   private postsToLoadLowerCount : number = 0;
   private postsToLoadUpperCount : number = 10;
   private readonly postsPerPage : number = 10;
@@ -34,7 +34,7 @@ export class SearchResultsPageComponent implements OnInit{
   public isAllPage : boolean;
   public isUsersPage : boolean;
 
-  constructor(private searchService : SearchServiceService, private userService : UserService, private route : ActivatedRoute,
+  constructor(private searchService : SearchService, private userService : UserService, private route : ActivatedRoute,
               private router : Router) {
 
   }
@@ -66,7 +66,7 @@ export class SearchResultsPageComponent implements OnInit{
     }
     if (this.isAllPage){
       this.matchingPosts$ = new BehaviorSubject<PostDTO[]>([]);
-      this.matchingUsers$ = new BehaviorSubject<UserWithPostDTO[]>([]);
+      this.matchingUsers$ = new BehaviorSubject<PageUserDTO[]>([]);
       this.allPostsLoaded = false;
       this.postsToLoadLowerCount = 0;
       this.postsToLoadUpperCount = 10;
@@ -75,7 +75,7 @@ export class SearchResultsPageComponent implements OnInit{
       this.loadPeopleInitially();
     }
     else {
-      this.matchingUsers$ = new BehaviorSubject<UserWithPostDTO[]>([]);
+      this.matchingUsers$ = new BehaviorSubject<PageUserDTO[]>([]);
       this.allPeopleLoaded = false;
       this.peopleToLoadLowerCount = 0;
       this.peopleToLoadUpperCount = 10;
@@ -87,7 +87,7 @@ export class SearchResultsPageComponent implements OnInit{
 
   loadPeopleInitially(){
     this.searchService.getUsers(this.query, 0, 3).subscribe(
-      (users : HttpResponse<UserWithPostDTO[]>) => {
+      (users : HttpResponse<PageUserDTO[]>) => {
         this.matchingUsers$.next(users.body || []);
       },
       (error) => {
@@ -108,7 +108,7 @@ export class SearchResultsPageComponent implements OnInit{
   loadMorePeople(){
     if (this.allPeopleLoaded) return;
     this.searchService.getUsers(this.query, this.peopleToLoadLowerCount, this.peopleToLoadUpperCount).subscribe(
-      (posts : HttpResponse<UserWithPostDTO[]>) => {
+      (posts : HttpResponse<PageUserDTO[]>) => {
         const currentUsers = this.matchingUsers$.getValue();
         const newUsers = posts.body || [];
         this.matchingUsers$.next([...currentUsers, ...newUsers]);

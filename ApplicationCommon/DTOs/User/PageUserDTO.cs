@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace ApplicationCommon.DTOs.User;
 
-public class UserShortAccountDTO
+public class PageUserDTO
 {
     [JsonIgnore]
     public int Id { get; set; }

@@ -1,9 +1,9 @@
 import {Image} from "../image";
 import {PagePostDTO} from "../post/pagePostDTO";
-import {UserWithPostDTO} from "../user/UserWithinPostDTO";
+import {PageUserDTO} from "../user/pageUserDTO";
 
 export interface CommentCreateDialogData {
-  currentUser: UserWithPostDTO;
+  currentUser: PageUserDTO;
   post: PagePostDTO;
   textContent: string;
   images: Image[];

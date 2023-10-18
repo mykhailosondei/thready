@@ -22,7 +22,7 @@ namespace group_project_thread.Controllers
         
         //GET: api/search/users?query={your query}&lowerCount={lowerCount}&upperCount={upperCount}
         [HttpGet("Users")]
-        public async Task<IEnumerable<UserShortAccountDTO>> GetUsers(string query, string lowerCount, string upperCount)
+        public async Task<IEnumerable<PageUserDTO>> GetUsers(string query, string lowerCount, string upperCount)
         {
             return await _indexedContentReader.GetUsers(query, int.Parse(lowerCount), int.Parse(upperCount));
         }
