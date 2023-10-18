@@ -40,6 +40,9 @@ import {FollowersPageUserComponent} from "./Components/followers-page-user/follo
 import {SearchBarComponent} from "./Components/search-bar/search-bar.component";
 import {InfiniteScrollModule} from "ngx-infinite-scroll";
 import {SearchResultsPageComponent} from "./Components/search-results-page/search-results-page.component";
+import {CommentCreatorComponent} from "./Components/comment-creator/comment-creator.component";
+import {PageCommentComponent} from "./Components/page-comment/page-comment.component";
+import {SingularCommentViewComponent} from "./Components/singular-comment-view/singular-comment-view.component";
 
 @NgModule({
   declarations: [
@@ -70,6 +73,9 @@ import {SearchResultsPageComponent} from "./Components/search-results-page/searc
     SingularPostViewComponent,
     SearchBarComponent,
     SearchResultsPageComponent
+    CommentCreatorComponent,
+    PageCommentComponent,
+    SingularCommentViewComponent
   ],
   imports: [
     BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),

@@ -1,0 +1,89 @@
+.main-page{
+  width: 600px;
+  border: 0 solid #dcdcdc;
+  border-right-width: 1px;
+  border-left-width: 1px;
+}
+
+.center-h {
+  display: flex;
+  justify-content: center;
+}
+
+.post-header {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  height: 100%;
+  width: 100%;
+}
+
+.user-name {
+  margin-left: 5px;
+}
+
+.post-body {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+
+.lower-info-stripe {
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+.full-date {
+  color: grey;
+}
+
+.page-post {
+  border-bottom-width: 1px !important;
+  &:hover {
+    background-color: white !important;
+    cursor: inherit !important;
+  }
+}
+
+.post-footer {
+  display: flex;
+  border: 0 solid #dcdcdc;
+  border-bottom-width: 1px;
+  justify-content: space-around;
+  align-items: center;
+  flex-direction: row;
+  height: 40px;
+  width: 100%;
+  * {
+    scale: 1.1;
+  }
+  .blue-circle, .red-circle, .green-circle {
+
+    scale: 1.5 !important;
+  }
+}
+
+.bookmark-info {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  user-select: none;
+  &:hover * {
+    cursor: pointer;
+    color: deepskyblue;
+  }
+  &:hover > :first-child > :first-child {
+    opacity: 25% !important;
+  }
+}
+
+.bookmark-amount {
+  padding-left: 7px;
+}
+
+.bookmark-icon{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+

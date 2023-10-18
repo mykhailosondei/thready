@@ -10,7 +10,7 @@ public static class CustomEntityIncluder
     {
         if (depth == 0)
         {
-            return source.Include(c => c.Post);
+            return source.Include(c => c.Post).ThenInclude(p => p.Author);
         }
 
         var result = source.Include(c => c.ParentComment);
@@ -20,6 +20,6 @@ public static class CustomEntityIncluder
             result = result.ThenInclude(c => c.ParentComment);
         }
         
-        return result.ThenInclude(c => c.Post);
+        return result.ThenInclude(c => c.Post).ThenInclude(p => p.Author);
     }
 }

@@ -57,6 +57,13 @@ namespace group_project_thread.Controllers
             int authorId = _userIdGetter.CurrentId;
             await _likeService.LikeComment(id, authorId);
         }
+        
+        [HttpPost("{id}/bookmarkComment")]
+        public async Task BookmarkComment(int id)
+        {
+            int authorId = _userIdGetter.CurrentId;
+            await _commentService.BookmarkComment(id, authorId);
+        }
 
         // PUT api/<CommentController>/5
         [HttpPut("{id}")]
@@ -76,6 +83,21 @@ namespace group_project_thread.Controllers
         {
             int authorId = _userIdGetter.CurrentId;
             await _likeService.DislikeComment(id, authorId);
+        }
+        
+        // POST api/<CommentController>/5/removeFromBookmarks
+        [HttpPost("{id}/removeFromBookmarks")]
+        public async Task RemoveFromBookmarksComment(int id)
+        {
+            int authorId = _userIdGetter.CurrentId;
+            await _commentService.RemoveFromBookmarksComment(id, authorId);
+        }
+
+        [HttpPost("{id}/viewComment")]
+        public async Task ViewComment(int id)
+        {
+            int authorId = _userIdGetter.CurrentId;
+            await _commentService.ViewComment(id, authorId);
         }
     }
 }

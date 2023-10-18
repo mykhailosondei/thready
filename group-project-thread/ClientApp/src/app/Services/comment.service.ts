@@ -40,4 +40,15 @@ export class CommentService {
     return this.httpInternalService.deleteFullRequest<void>(`${this.route}/${id}`);
   }
 
+  public viewComment(id: number) {
+    return this.httpInternalService.postFullRequest<void>(`${this.route}/${id}/viewComment`, {});
+  }
+
+  public bookmarkComment(id: number){
+    return this.httpInternalService.postFullRequest<void>(`${this.route}/${id}/bookmarkComment`, {});
+  }
+
+  public undoBookmarkComment(id: number){
+    return this.httpInternalService.postFullRequest<void>(`${this.route}/${id}/removeFromBookmarks`, {});
+  }
 }

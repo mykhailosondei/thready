@@ -19,7 +19,7 @@ export class PostService {
   }
 
   public getPostById(id : number) : Observable<HttpResponse<PostDTO>>{
-    return this.httpInternalService.getFullRequest<PostDTO>(`${this.route}/{id}`);
+    return this.httpInternalService.getFullRequest<PostDTO>(`${this.route}/${id}`);
   }
 
   public getPostsByUserId(userId: number) : Observable<HttpResponse<PostDTO[]>>{

@@ -10,5 +10,6 @@ export interface PagePostDTO {
   repostsAmount: number;
   likesAmount: number;
   viewsAmount: number;
+  bookmarksAmount: number;
   dateCreated: string;
 }
