@@ -4,11 +4,12 @@
       <div class="page-post">
         <div class="post-header">
           <div class="user-avatar" [ngStyle]="{'background-color': getCircleColor()}">
-            <a href="/{{authorInput.username}}/profile" class="user-link"></a>
+            <a href="{{authorInput.username}}/profile" class="user-link"></a>
             <img *ngIf="!isAvatarNull()" src="{{authorInput.avatar!.url}}" alt="{{authorInput.username}}}">
             <div *ngIf="isAvatarNull()" class="initial">{{getFirstInitial()}}</div>
           </div>
           <div class="user-info" #userInfo (mouseenter)="onUserInfoMouseEnter()" (mouseleave)="onUserInfoMouseLeave()">
+            <a href="{{authorInput.username}}/profile" class="user-link"></a>
             <div class="user-name">
               <b>{{authorInput.username}}</b>
             </div>
@@ -106,7 +107,7 @@
             <div class="bookmark-amount color-grey">{{post.bookmarksAmount}}</div>
           </div>
       </div>
-      <app-comment-creator [post]="post"></app-comment-creator>
+      <app-comment-creator [post]="post" (onReplyClickEvent)="handleCommentCreation()"></app-comment-creator>
       <div *ngIf="comments.length > 0">
         <app-page-comment *ngFor="let comment of comments" [commentInput]="comment" [userInput]="comment.author"></app-page-comment>
       </div>

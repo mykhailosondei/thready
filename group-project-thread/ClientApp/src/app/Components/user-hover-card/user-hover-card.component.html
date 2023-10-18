@@ -11,7 +11,7 @@
   <div class="user-content">
     <div class="avatar-and-follow-btn">
       <div class="avatar-holder" [ngStyle]="{'background-color': getCircleColor()}">
-        <a href="/profile" class="user-link"></a>
+        <a href="{{user.username}}/profile" class="user-link"></a>
         <img *ngIf="!isAvatarNull()" src="{{user.avatar!.url}}" alt="{{user.username}}}">
         <div *ngIf="isAvatarNull()" class="initial">{{getFirstInitial()}}</div>
       </div>
@@ -25,7 +25,7 @@
       </div>
     </div>
     <div class="username-holder">
-      <a href="/profile" class="user-link"></a>
+      <a href="{{user.username}}/profile" class="user-link"></a>
       <b>{{user.username}}</b>
     </div>
     <div class="bio-holder">

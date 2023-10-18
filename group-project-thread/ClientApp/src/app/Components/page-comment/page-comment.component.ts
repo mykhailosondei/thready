@@ -193,9 +193,10 @@ export class PageCommentComponent implements OnInit {
     this.hoverCardTriggerService.user = this.commentView.user;
     this.hoverCardTriggerService.enableHoverCardVisibility();
     this.hoverCardTriggerService.isHoveredOnTriggeringElement = true;
+    console.log(this.userInfo.nativeElement.getBoundingClientRect());
     this.hoverCardTriggerService.coordinates = {
       x: this.userInfo.nativeElement.getBoundingClientRect().x - 60,
-      y: this.userInfo.nativeElement.getBoundingClientRect().y + 20
+      y: this.userInfo.nativeElement.getBoundingClientRect().y + document.documentElement.scrollTop + 20
     };
   }
 

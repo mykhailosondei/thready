@@ -75,7 +75,7 @@ export default class PostFormatter{
   }
 
   public static getCircleColor(username:string): string {
-    const colorArray = ["red", "green", "yellow", "purple", "pink", "orange", "blue"];
+    const colorArray = ["red", "green", "yellow", "purple", "cornflowerblue", "orange", "blue"];
     return colorArray[Math.floor(seedrandom(username).double() * colorArray.length)];
   }
   public static getDateFormattedString(date: Date): string {

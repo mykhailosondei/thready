@@ -43,6 +43,7 @@ import {SearchResultsPageComponent} from "./Components/search-results-page/searc
 import {CommentCreatorComponent} from "./Components/comment-creator/comment-creator.component";
 import {PageCommentComponent} from "./Components/page-comment/page-comment.component";
 import {SingularCommentViewComponent} from "./Components/singular-comment-view/singular-comment-view.component";
+import {TopBlurryBarComponent} from "./Components/top-blurry-bar/top-blurry-bar.component";
 
 @NgModule({
   declarations: [
@@ -72,10 +73,11 @@ import {SingularCommentViewComponent} from "./Components/singular-comment-view/s
     OnDomEnterDirective,
     SingularPostViewComponent,
     SearchBarComponent,
-    SearchResultsPageComponent
+    SearchResultsPageComponent,
     CommentCreatorComponent,
     PageCommentComponent,
-    SingularCommentViewComponent
+    SingularCommentViewComponent,
+    TopBlurryBarComponent
   ],
   imports: [
     BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),

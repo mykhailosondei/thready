@@ -211,7 +211,23 @@ export class SingularPostViewComponent implements OnInit{
     this.hoverCardTriggerService.isHoveredOnTriggeringElement = true;
     this.hoverCardTriggerService.coordinates = {
       x: this.userInfo.nativeElement.getBoundingClientRect().x - 60,
-      y: this.userInfo.nativeElement.getBoundingClientRect().y + 20
+      y: this.userInfo.nativeElement.getBoundingClientRect().y + document.documentElement.scrollTop + 20
     };
+  }
+
+  handleCommentCreation() {
+    this.post.commentsAmount++;
+    this.postService.getPostById(this.post.id).subscribe(response => {
+      if(response.ok) {
+        let lastId = response.body!.commentsIds[response.body!.commentsIds.length - 1];
+        this.commentService.getCommentById(lastId).subscribe(response => {
+          if(response.ok) {
+            let commentToAdd: CommentDTO = response.body!;
+            commentToAdd.id = lastId;
+            this.comments.unshift(commentToAdd);
+          }
+        });
+      }
+    });
   }
 }

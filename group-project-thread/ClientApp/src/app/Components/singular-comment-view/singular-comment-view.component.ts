@@ -213,7 +213,7 @@ export class SingularCommentViewComponent {
     this.hoverCardTriggerService.isHoveredOnTriggeringElement = true;
     this.hoverCardTriggerService.coordinates = {
       x: this.userInfo.nativeElement.getBoundingClientRect().x - 60,
-      y: this.userInfo.nativeElement.getBoundingClientRect().y + 20
+      y: this.userInfo.nativeElement.getBoundingClientRect().y + document.documentElement.scrollTop + 20
     };
   }
 
