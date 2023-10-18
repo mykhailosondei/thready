@@ -16,34 +16,32 @@
       </div>
     </div>
   </div>
-  <div >
-    <nav class="navigation-bar">
-      <div role="tablist" class="navigation-bar-content">
-        <div class="tab-box" (click)="navigateToFollowing()">
-          <div class="tab">
-            <div class="tab-text-box">
-            <span class="following-tab-text" [ngClass]="{'following-tab-text-selected': isFollowing}">
+  <nav class="navigation-bar">
+    <div class="navigation-bar-content">
+      <div class="tab-box" (click)="navigateToFollowing()">
+        <div class="tab">
+          <div class="tab-text-box">
+            <span class="first-tab-text" [ngClass]="{'first-tab-selected': isFollowing}">
               Following
             </span>
-              <div *ngIf="isFollowing" class="selected-tab">
-              </div>
-            </div>
           </div>
-        </div>
-
-        <div class="tab-box" (click)="navigateToFollowers()">
-          <div class="tab">
-            <div class="tab-text-box">
-            <span class="followers-tab-text" [ngClass]="{'followers-tab-text-selected': isFollowers}">
-              Followers
-            </span>
-              <div *ngIf="isFollowers" class="selected-tab">
-              </div>
-            </div>
+          <div *ngIf="isFollowing" class="selected-tab">
           </div>
         </div>
       </div>
-    </nav>
-  </div>
+
+      <div class="tab-box" (click)="navigateToFollowers()">
+        <div class="tab">
+          <div class="tab-text-box">
+            <span class="second-tab-text" [ngClass]="{'second-tab-selected': isFollowers}">
+              Followers
+            </span>
+          </div>
+          <div *ngIf="isFollowers" class="selected-tab">
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
 </div>
 

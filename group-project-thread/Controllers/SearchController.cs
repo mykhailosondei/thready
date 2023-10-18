@@ -19,14 +19,15 @@ namespace group_project_thread.Controllers
         {
             _indexedContentReader = indexedContentReader;
         }
-
+        
+        //GET: api/search/users?query={your query}&lowerCount={lowerCount}&upperCount={upperCount}
         [HttpGet("Users")]
         public async Task<IEnumerable<UserShortAccountDTO>> GetUsers(string query, string lowerCount, string upperCount)
         {
             return await _indexedContentReader.GetUsers(query, int.Parse(lowerCount), int.Parse(upperCount));
         }
         
-        //GET: api/search/posts?query={your query}
+        //GET: api/search/posts?query={your query}&lowerCount={lowerCount}&upperCount={upperCount}
         [HttpGet("Posts")]
         public async Task<IEnumerable<PostDTO>> GetPosts(string query, string lowerCount, string upperCount)
         {

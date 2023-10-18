@@ -68,7 +68,6 @@ export class FollowersPageComponent {
 
   amIFollowing(id : number): boolean{
     return this.user.followingIds.includes(id);
-
   }
 
   checkIsCurrentUser(): void{

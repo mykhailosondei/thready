@@ -37,6 +37,9 @@ import {FollowingPageComponent} from "./Components/following-page/following-page
 import {FollowersPageComponent} from "./Components/followers-page/followers-page.component";
 import {FollowingPageUserComponent} from "./Components/following-page-user/following-page-user.component";
 import {FollowersPageUserComponent} from "./Components/followers-page-user/followers-page-user.component";
+import {SearchBarComponent} from "./Components/search-bar/search-bar.component";
+import {InfiniteScrollModule} from "ngx-infinite-scroll";
+import {SearchResultsPageComponent} from "./Components/search-results-page/search-results-page.component";
 import {CommentCreatorComponent} from "./Components/comment-creator/comment-creator.component";
 import {PageCommentComponent} from "./Components/page-comment/page-comment.component";
 import {SingularCommentViewComponent} from "./Components/singular-comment-view/singular-comment-view.component";
@@ -68,6 +71,8 @@ import {SingularCommentViewComponent} from "./Components/singular-comment-view/s
     UserHoverCardComponent,
     OnDomEnterDirective,
     SingularPostViewComponent,
+    SearchBarComponent,
+    SearchResultsPageComponent
     CommentCreatorComponent,
     PageCommentComponent,
     SingularCommentViewComponent
@@ -90,7 +95,8 @@ import {SingularCommentViewComponent} from "./Components/singular-comment-view/s
     NgOptimizedImage,
     MatDialogModule,
     MatButtonModule,
-    MatInputModule
+    MatInputModule,
+    InfiniteScrollModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi:true},

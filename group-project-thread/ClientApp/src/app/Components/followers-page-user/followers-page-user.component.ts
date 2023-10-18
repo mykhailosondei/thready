@@ -16,6 +16,7 @@ export class FollowersPageUserComponent {
   @Input() public isCurrentUser : boolean;
   @Input() public isFollowing: boolean;
   @Input() public currentUser: UserDTO;
+  @Input() public isMyPageProfile : boolean = false;
 
 
   protected isMyFollowing : boolean;

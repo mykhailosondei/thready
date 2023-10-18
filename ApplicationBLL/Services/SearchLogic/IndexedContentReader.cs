@@ -39,7 +39,7 @@ public class IndexedContentReader
         {
             try
             {
-                 var potentialPost = await _postQueryRepository.GetPostById(wordCountInPostId.PostId);
+                 var potentialPost = await _postQueryRepository.GetPostById(wordCountInPostId.PostId, p=>p.Author);
                  matchingPosts.Add(potentialPost);
             }
             catch (Exception e)
@@ -56,7 +56,7 @@ public class IndexedContentReader
             return new List<WordCountInPostId>();
         string pattern = @"[^a-zA-Z'-]+";
         var words = await _indexerContext.IndexedWords.ToListAsync(); 
-        string[] queryWords = Regex.Split(query, pattern);
+        string[] queryWords = Regex.Split(query.ToLower(), pattern);
         int postAmountToLoad = upperCount - lowerCount;
         List<WordCountInPostId> matchingWordCountInPostIds = new List<WordCountInPostId>();
         foreach (var word in queryWords)
@@ -149,7 +149,7 @@ public class IndexedContentReader
             Username = u.Username
         }).ToListAsync();
         string pattern = @"[^a-zA-Z\d-]+";
-        string[] queryWords = Regex.Split(query, pattern);
+        string[] queryWords = Regex.Split(query.ToLower(), pattern);
         List<IndexedUsernameDTO> result = new List<IndexedUsernameDTO>();
         int usersToTake = highCount - lowCount;
         foreach (var word in queryWords)
