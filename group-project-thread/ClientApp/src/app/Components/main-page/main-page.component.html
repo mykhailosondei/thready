@@ -1,11 +1,13 @@
 <app-user-hover-card></app-user-hover-card>
 <div class="wrap">
+
   <div class="main-page">
     <app-top-blurry-bar [title]="'Home'"></app-top-blurry-bar>
     <div style="height: 0; width: 100%;"></div>
     <app-post-creator></app-post-creator>
     <app-page-post *ngFor="let post of posts" [postInput]="post" [userInput]="post.author"></app-page-post>
   </div>
+
 </div>
 
 <input type="text" #box>

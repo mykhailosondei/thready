@@ -44,6 +44,9 @@ import {CommentCreatorComponent} from "./Components/comment-creator/comment-crea
 import {PageCommentComponent} from "./Components/page-comment/page-comment.component";
 import {SingularCommentViewComponent} from "./Components/singular-comment-view/singular-comment-view.component";
 import {TopBlurryBarComponent} from "./Components/top-blurry-bar/top-blurry-bar.component";
+import {
+  RecommendationsSideBarComponent
+} from "./Components/recommendations-side-bar/recommendations-side-bar.component";
 
 @NgModule({
   declarations: [
@@ -77,7 +80,8 @@ import {TopBlurryBarComponent} from "./Components/top-blurry-bar/top-blurry-bar.
     CommentCreatorComponent,
     PageCommentComponent,
     SingularCommentViewComponent,
-    TopBlurryBarComponent
+    TopBlurryBarComponent,
+    RecommendationsSideBarComponent
   ],
   imports: [
     BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),

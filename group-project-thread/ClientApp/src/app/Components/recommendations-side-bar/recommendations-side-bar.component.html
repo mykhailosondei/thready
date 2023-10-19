@@ -1,0 +1,79 @@
+<div class="recommendation-bar">
+  <div class="sticky">
+    <div class="sticky-search-box">
+      <div class="wrapper search-box-border">
+        <div class="wrapper search-box">
+          <div class="wrapper svg-box">
+            <fa-icon [icon]="faMagnifyingGlass" class="svg-icon"></fa-icon>
+          </div>
+          <div class="input-area">
+            <input placeholder="Search" class="search-query-input">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="empty-box">
+
+    </div>
+    <div class="recommendations-box wrapper">
+      <div class="recommendations-box-title wrapper">
+        <span class="title">What's happening</span>
+      </div>
+      <div class="trending-word-box wrapper">
+        <div class="text-box wrapper">
+            <span class="small-text">trending</span>
+            <span class="main-text">dimas</span>
+            <span class="small-text">200</span>
+        </div>
+      </div>
+      <div class="show-more wrapper">
+        <span class="show-more-span">Show More</span>
+      </div>
+    </div>
+    <div class="recommendations-box wrapper">
+      <div class="recommendations-box-title wrapper">
+        <span class="title">People To Follow</span>
+      </div>
+      <div class="user-box">
+        <div class="user-profile-button">
+          <div class="content">
+            <div class="small-image-container">
+              <div class="image-box">
+                <img class="user-image" src="https://picsum.photos/1080">
+              </div>
+            </div>
+            <div class="user-info-box">
+              <div class="small-info">
+                <div class="small-info-box">
+                  <div class="underline-box">
+                    <span class="username-span">Dimas</span>
+                  </div>
+                  <div class="underline-box">
+                    <span class="connections-span"> followers</span>
+                  </div>
+                </div>
+                <div style="user-select: none;">
+                  <div class="follow-button-box">
+                    <div class="follow-button-border">
+                      <span class="button-text"></span>
+                    </div>
+                  </div>
+                  <div *ngIf="false" class="unfollow-button-box">
+                    <div class="unfollow-button-border">
+                      <span class="unfollow">Follow</span>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="show-more wrapper">
+        <span class="show-more-span">Show More</span>
+      </div>
+    </div>
+  </div>
+</div>
