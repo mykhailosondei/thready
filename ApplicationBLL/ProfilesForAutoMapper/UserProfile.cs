@@ -22,5 +22,13 @@ public class UserProfile : Profile
         CreateMap<UserDTO, PageUserDTO>()
             .ForMember(dest => dest.Followers, src => src.MapFrom(s => s.FollowersIds.Count))
             .AfterMap((src, dest) => dest.Following = src.FollowingIds.Count);
+        CreateMap<User, PageUserDTO>()
+            .ForMember(dest => dest.Followers, src => src.MapFrom(s => s.FollowersIds.Count))
+            .AfterMap(( src, dest, context) =>
+            {
+                dest.Following = src.FollowingIds.Count;
+                dest.Avatar = context.Mapper.Map<Image, ImageDTO>(src.Avatar);
+            });
+        
     }
 }
