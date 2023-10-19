@@ -1,6 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {PagePostDTO} from "../../models/post/pagePostDTO";
-import {UserWithPostDTO} from "../../models/user/UserWithinPostDTO";
 import PostFormatter from "../../helpers/postFormatter";
 import {CommentService} from "../../Services/comment.service";
 import {UserDTO} from "../../models/user/userDTO";
