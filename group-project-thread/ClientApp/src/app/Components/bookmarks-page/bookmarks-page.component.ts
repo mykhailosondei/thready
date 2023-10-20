@@ -4,6 +4,7 @@ import {PostDTO} from "../../models/post/postDTO";
 import {PostService} from "../../Services/post.service";
 import {UserService} from "../../Services/user.service";
 import {UserDTO} from "../../models/user/userDTO";
+import {faBookmark} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'app-bookmarks-page',
@@ -33,4 +34,6 @@ export class BookmarksPageComponent implements OnInit {
       }
     }).add(() => this.loading = false);
   }
+
+  protected readonly faBookmark = faBookmark;
 }

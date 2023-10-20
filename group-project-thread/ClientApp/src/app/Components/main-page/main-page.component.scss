@@ -8,6 +8,9 @@ $border-color: #dcdcdc;
 .element{
   position: relative;
   display: flex;
+  flex-direction: row;
+  width: 990px;
+  justify-content: space-between;
 }
 .main-page{
   width: 600px;

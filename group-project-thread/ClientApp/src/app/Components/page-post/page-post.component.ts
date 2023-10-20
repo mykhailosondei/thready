@@ -79,8 +79,6 @@ export class PagePostComponent implements OnInit {
     });
   }
 
-
-
   startObserve() {
     this.observer.observe(this.wholePost.nativeElement);
   }

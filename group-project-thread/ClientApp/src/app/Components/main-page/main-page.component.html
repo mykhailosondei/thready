@@ -1,8 +1,6 @@
 <app-user-hover-card></app-user-hover-card>
 <div class="wrap">
-  <div class="element">
     <app-side-navbar></app-side-navbar>
-  </div>
   <div class="element">
     <div class="main-page">
       <app-top-blurry-bar [title]="'Home'"></app-top-blurry-bar>
@@ -10,8 +8,6 @@
       <app-post-creator></app-post-creator>
       <app-page-post *ngFor="let post of posts" [postInput]="post" [userInput]="post.author"></app-page-post>
     </div>
-  </div>
-  <div class="element">
     <app-recommendations-side-bar></app-recommendations-side-bar>
   </div>
 </div>

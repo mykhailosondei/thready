@@ -4,6 +4,7 @@ import {UserDTO} from "../../models/user/userDTO";
 import {PostService} from "../../Services/post.service";
 import {UserService} from "../../Services/user.service";
 import {PageUserDTO} from "../../models/user/pageUserDTO";
+import {faRetweet} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'app-reposts-page',
@@ -46,4 +47,6 @@ export class RepostsPageComponent implements OnInit{
       bio: this.user.bio
     };
   }
+
+  protected readonly faRetweet = faRetweet;
 }
