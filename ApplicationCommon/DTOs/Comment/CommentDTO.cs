@@ -7,7 +7,6 @@ namespace ApplicationCommon.DTOs.Comment
 {
     public class CommentDTO
     {
-        [System.Text.Json.Serialization.JsonIgnore]
         public int Id { get; set; }
         public int UserId { get; set; }
 

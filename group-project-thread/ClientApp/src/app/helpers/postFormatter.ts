@@ -78,7 +78,7 @@ export default class PostFormatter{
     const colorArray = ["red", "green", "yellow", "purple", "cornflowerblue", "orange", "blue"];
     return colorArray[Math.floor(seedrandom(username).double() * colorArray.length)];
   }
-  public static getDateFormattedString(date: Date): string {
+  public static getDateFormattedElapsed(date: Date): string {
     if(Date.now()-date.getTime() < 3600000){
       return this.minutesToReadable(date);
     }
@@ -92,6 +92,14 @@ export default class PostFormatter{
   }
   private static hoursToReadable(date: Date) {
     return Math.floor((Date.now() - date.getTime()) / 3600000) + "h";
+  }
+
+  public static getTimeFormatted(date: Date): string {
+    return date.getHours() + ":" + (date.getMinutes() < 10 ? "0" : "") + date.getMinutes() + " " + (date.getHours() < 12 ? "AM" : "PM");
+  }
+
+  public static getDateFormatted(date: Date): string {
+    return months[date.getMonth()].name.substring(0, 3) + " " + date.getDate() + ", " + date.getFullYear();
   }
 
   private static minutesToReadable(date: Date) {

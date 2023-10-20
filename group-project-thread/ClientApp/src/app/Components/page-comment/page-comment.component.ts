@@ -97,7 +97,7 @@ export class PageCommentComponent implements OnInit {
 
   public getCreatedDate(): string {
     const date = new Date(this.commentView.dateCreated);
-    return PostFormatter.getDateFormattedString(date);
+    return PostFormatter.getDateFormattedElapsed(date);
   }
 
   isAvatarNull(): boolean {

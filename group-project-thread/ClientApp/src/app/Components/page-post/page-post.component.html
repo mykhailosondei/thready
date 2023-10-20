@@ -1,5 +1,16 @@
 <div appOnDomEnter (domEnter)="startObserve()" class="page-post" [style.border-top-width]="this.isParentView? '0':'1px'" #wholePost>
   <a href="{{this.userInput.username}}/post/{{this.postInput.id}}" class="post-link"></a>
+  <div *ngIf="repostView" class="repost-header">
+    <div class="repost-text-holder">
+      <div class="repost-icon">
+        <fa-icon [icon]="faRetweet"></fa-icon>
+      </div>
+      <div class="repost-text" #reposterInfo (mouseenter)="onUserInfoMouseEnter(reposter, reposterInfo)" (mouseleave)="onUserInfoMouseLeave()">
+        <a href="{{reposter.username}}/profile" class="user-link"></a>
+        {{reposter.username}} reposted
+      </div>
+    </div>
+  </div>
   <div class="user-collar-and-post-holder">
     <div class="user-avatar-collar">
       <div class="user-avatar" [ngStyle]="{'background-color': getCircleColor()}">
@@ -12,7 +23,7 @@
     <div class="post-holder">
       <div class="user-info-and-dots">
         <div class="user-date">
-          <div class="user-info" #userInfo (mouseenter)="onUserInfoMouseEnter()" (mouseleave)="onUserInfoMouseLeave()">
+          <div class="user-info" #userInfo (mouseenter)="onUserInfoMouseEnter(post.user)" (mouseleave)="onUserInfoMouseLeave()">
             <a href="{{userInput.username}}/profile" class="user-link"></a>
             <b>{{post.user.username}}</b>
           </div>

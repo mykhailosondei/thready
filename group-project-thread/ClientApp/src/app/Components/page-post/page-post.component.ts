@@ -13,6 +13,11 @@ import {UserHoverCardTriggerService} from "../../Services/user-hover-card-trigge
 import {CommentCreationDialogComponent} from "../comment-creation-dialog/comment-creation-dialog.component";
 import {PostEditorDialogComponent} from "../post-editor-dialog/post-editor-dialog.component";
 import PostFormatter from 'src/app/helpers/postFormatter';
+import {PageUserDTO} from "../../models/user/pageUserDTO";
+
+interface HoverableWithBounds {
+  getBoundingClientRect: () => DOMRect;
+}
 
 @Component({
   selector: 'app-page-post',
@@ -32,9 +37,12 @@ export class PagePostComponent implements OnInit {
   @Input() public postInput!: PostDTO;
   @Input() public userInput!: UserDTO;
   @Input() public isParentView: boolean = false;
+  @Input() public repostView: boolean = false;
+  @Input() public reposter: PageUserDTO = {} as PageUserDTO;
   post: PagePostDTO = {} as PagePostDTO;
 
   @ViewChild('userInfo') userInfo: ElementRef<HTMLDivElement>;
+  @ViewChild('reposterInfo') reposterInfo: ElementRef<HTMLDivElement>;
   @ViewChild('wholePost') wholePost: ElementRef<HTMLDivElement>;
 
   private observer: IntersectionObserver;
@@ -61,6 +69,7 @@ export class PagePostComponent implements OnInit {
         this.bookmarked = response.body!.bookmarkedPostsIds.includes(this.postInput.id);
       }
     });
+    console.log(this.postInput);
     this.post = PostFormatter.mapPostToPagePost(this.postInput, this.userInput);
     // Set up IntersectionObserver to watch for 50% visibility
     this.observer = new IntersectionObserver(this.handleIntersection.bind(this), {
@@ -94,7 +103,7 @@ export class PagePostComponent implements OnInit {
 
   public getCreatedDate(): string {
     const date = new Date(this.post.dateCreated);
-    return PostFormatter.getDateFormattedString(date);
+    return PostFormatter.getDateFormattedElapsed(date);
   }
 
   isAvatarNull(): boolean {
@@ -199,14 +208,14 @@ export class PagePostComponent implements OnInit {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-  onUserInfoMouseEnter() {
+  onUserInfoMouseEnter(user : PageUserDTO, info: HoverableWithBounds = this.userInfo.nativeElement) {
     console.log("Mouse enter");
-    this.hoverCardTriggerService.user = this.post.user;
+    this.hoverCardTriggerService.user = user;
     this.hoverCardTriggerService.enableHoverCardVisibility();
     this.hoverCardTriggerService.isHoveredOnTriggeringElement = true;
     this.hoverCardTriggerService.coordinates = {
-      x: this.userInfo.nativeElement.getBoundingClientRect().x - 60,
-      y: this.userInfo.nativeElement.getBoundingClientRect().y + document.documentElement.scrollTop + 20
+      x: info.getBoundingClientRect().x - 60,
+      y: info.getBoundingClientRect().y + document.documentElement.scrollTop + 23
     };
   }
 

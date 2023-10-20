@@ -14,6 +14,8 @@ import {SingularCommentViewComponent} from "./Components/singular-comment-view/s
 import {
   RecommendationsSideBarComponent
 } from "./Components/recommendations-side-bar/recommendations-side-bar.component";
+import {BookmarksPageComponent} from "./Components/bookmarks-page/bookmarks-page.component";
+import {RepostsPageComponent} from "./Components/reposts-page/reposts-page.component";
 
 const routes: Routes = [
   {path:'', redirectTo: '/login', pathMatch: 'full'},
@@ -27,7 +29,9 @@ const routes: Routes = [
   {path: 'explore', component: SearchBarComponent},
   {path: "search", component: SearchResultsPageComponent},
   {path: 'comment/:commentId', component: SingularCommentViewComponent},
-  {path: 'bob', component: RecommendationsSideBarComponent}
+  {path: 'bob', component: RecommendationsSideBarComponent},
+  {path: 'bookmarks', component: BookmarksPageComponent},
+  {path: 'reposts', component: RepostsPageComponent}
 ];
 
 @NgModule({

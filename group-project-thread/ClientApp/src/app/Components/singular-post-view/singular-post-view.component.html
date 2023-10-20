@@ -1,6 +1,6 @@
 <div class="center-h">
   <div class="main-page">
-    <div *ngIf="postInput && authorInput" class="post-holder">
+    <div *ngIf="postInput && authorInput && post" class="post-holder">
       <div class="page-post">
         <div class="post-header">
           <div class="user-avatar" [ngStyle]="{'background-color': getCircleColor()}">
@@ -67,7 +67,13 @@
           </div>
         </div>
         <div class="lower-info-stripe">
-          <div class="full-date">{{post.dateCreated}}</div>
+          <div class="full-date-and-views">
+            <div class="time">{{getCreatedTime()}}</div>
+            <div class="small-dot"></div>
+            <div class="date">{{getCreatedDate()}}</div>
+            <div class="small-dot"></div>
+            <div class="views"><b>{{getFormattedNumber(post.viewsAmount)}}</b> Views</div>
+          </div>
           <div class="views"></div>
         </div>
       </div>

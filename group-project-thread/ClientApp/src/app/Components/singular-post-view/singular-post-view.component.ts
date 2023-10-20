@@ -188,8 +188,16 @@ export class SingularPostViewComponent implements OnInit{
     }
   }
 
+  getFormattedNumber(number: number) {
+    return PostFormatter.numberToReadable(number);
+  }
+
+  getCreatedTime() {
+    return PostFormatter.getTimeFormatted(new Date(this.postInput.createdAt));
+  }
+
   getCreatedDate() {
-    return PostFormatter.getDateFormattedString(new Date(this.postInput.createdAt));
+    return PostFormatter.getDateFormatted(new Date(this.postInput.createdAt));
   }
 
   async onUserInfoMouseLeave() {
