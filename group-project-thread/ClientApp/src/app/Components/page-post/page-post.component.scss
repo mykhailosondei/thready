@@ -9,6 +9,14 @@ $border-color: #dcdcdc;
 
 }
 
+.repost-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0 10px 4px 10px;
+  border: 0 solid $border-color;
+}
+
 .page-post {
   border: 0 solid $border-color;
   position: relative;
@@ -328,4 +336,24 @@ $border-color: #dcdcdc;
   width: 100%;
   height: 100%;
   transform: translate(-10px, -10px);
+}
+
+.repost-text-holder {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+  margin-left: 18px;
+  color: grey;
+}
+
+.repost-text {
+  margin-left: 4px;
+  &:hover {
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+  }
+  position: relative;
+  z-index: 1;
 }

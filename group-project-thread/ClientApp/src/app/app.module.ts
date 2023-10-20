@@ -47,6 +47,7 @@ import {TopBlurryBarComponent} from "./Components/top-blurry-bar/top-blurry-bar.
 import {SideNavbarComponent} from "./Components/side-navbar/side-navbar.component";
 import {PostCreationDialogComponent} from "./Components/post-creation-dialog/post-creation-dialog.component";
 import {BookmarksPageComponent} from "./Components/bookmarks-page/bookmarks-page.component";
+import {RepostsPageComponent} from "./Components/reposts-page/reposts-page.component";
 
 @NgModule({
     declarations: [
@@ -83,7 +84,8 @@ import {BookmarksPageComponent} from "./Components/bookmarks-page/bookmarks-page
         TopBlurryBarComponent,
         SideNavbarComponent,
         PostCreationDialogComponent,
-        BookmarksPageComponent
+        BookmarksPageComponent,
+        RepostsPageComponent
     ],
   imports: [
     BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),

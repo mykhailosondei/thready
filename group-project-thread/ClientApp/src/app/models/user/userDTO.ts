@@ -16,7 +16,7 @@ export interface UserDTO {
   bio: string;
   location: string;
   bookmarkedPostsIds: number[];
-  repostsIds: number;
+  repostsIds: number[];
 
 }
 

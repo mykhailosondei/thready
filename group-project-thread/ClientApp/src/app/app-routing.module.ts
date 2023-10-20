@@ -12,6 +12,7 @@ import {SearchBarComponent} from "./Components/search-bar/search-bar.component";
 import {SearchResultsPageComponent} from "./Components/search-results-page/search-results-page.component";
 import {SingularCommentViewComponent} from "./Components/singular-comment-view/singular-comment-view.component";
 import {BookmarksPageComponent} from "./Components/bookmarks-page/bookmarks-page.component";
+import {RepostsPageComponent} from "./Components/reposts-page/reposts-page.component";
 
 const routes: Routes = [
   {path:'', redirectTo: '/login', pathMatch: 'full'},
@@ -26,6 +27,7 @@ const routes: Routes = [
   {path: "search", component: SearchResultsPageComponent},
   {path: 'comment/:commentId', component: SingularCommentViewComponent},
   {path: 'bookmarks', component: BookmarksPageComponent},
+  {path: 'reposts', component: RepostsPageComponent}
 ];
 
 @NgModule({

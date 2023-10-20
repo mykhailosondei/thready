@@ -13,6 +13,8 @@ import {PostCreationDialogComponent} from "../post-creation-dialog/post-creation
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {MainPageComponent} from "../main-page/main-page.component";
 import {PostService} from "../../Services/post.service";
+import {UserDTO} from "../../models/user/userDTO";
+import {UserService} from "../../Services/user.service";
   interface faToggleIcon {
   activated : IconDefinition,
   unactivated : IconDefinition
@@ -24,31 +26,39 @@ import {PostService} from "../../Services/post.service";
 })
 export class SideNavbarComponent{
 
-
-    constructor(private dialog: MatDialog, private readonly postService: PostService) {
+    constructor(private dialog: MatDialog, private readonly postService: PostService, private readonly userService: UserService) {
 
     }
-  get faHome() { return faHome }
-  get faSearch() { return faSearch }
+    get faHome() { return faHome }
+    get faSearch() { return faSearch }
+    get faBookmarkIcon() { return this.faBookmark[this.activeIcon === faBookmarkActivated ? "activated" : "unactivated"] }
+    get faRetweet() { return faRetweet };
+    get faUserIcon() { return this.faUser[this.activeIcon === faUserActivated ? "activated" : "unactivated"] }
 
-  @Input() activeIcon : IconDefinition = faHome;
+    @Input() activeIcon : IconDefinition = faHome;
+    user : UserDTO = {} as UserDTO;
 
-  faBookmark : faToggleIcon = {activated: faBookmarkActivated, unactivated: faBookmarkUnactivated};
-  get faBookmarkIcon() { return this.faBookmark[this.activeIcon === faBookmarkActivated ? "activated" : "unactivated"] }
-  faUser : faToggleIcon = {activated: faUserActivated, unactivated: faUserUnactivated};
-  get faUserIcon() { return this.faUser[this.activeIcon === faUserActivated ? "activated" : "unactivated"] }
-
-  openPostingDialog() {
-    const dialogRef : MatDialogRef<PostCreationDialogComponent, {output:string}> = this.dialog.open(PostCreationDialogComponent, {
-       width: '500px'
-     });
-
-      dialogRef.afterClosed().subscribe(result => {
-       if(result) {
-         this.postService.createPost({textContent: result!.output, images: []}).subscribe(response => console.log(response));
-       }
+    ngOnInit(): void {
+      this.userService.getCurrentUser().subscribe(Response => {
+        if(Response.ok) {
+          this.user = Response.body!;
+        }
       });
-  }
+    }
 
-  get faRetweet() { return faRetweet };
+    faBookmark : faToggleIcon = {activated: faBookmarkActivated, unactivated: faBookmarkUnactivated};
+    faUser : faToggleIcon = {activated: faUserActivated, unactivated: faUserUnactivated};
+
+    openPostingDialog() {
+      const dialogRef : MatDialogRef<PostCreationDialogComponent, {output:string}> = this.dialog.open(PostCreationDialogComponent, {
+         width: '500px'
+       });
+
+        dialogRef.afterClosed().subscribe(result => {
+         if(result) {
+           this.postService.createPost({textContent: result!.output, images: []}).subscribe(response => console.log(response));
+         }
+        });
+    }
+
 }

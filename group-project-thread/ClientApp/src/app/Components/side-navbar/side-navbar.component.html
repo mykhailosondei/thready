@@ -8,6 +8,7 @@
             <fa-icon [icon]="faHome"></fa-icon>
           </div>
           <div class="content-text">Home</div>
+          <a href="/mainPage" class="user-link"></a>
         </div>
       </div>
       <div class="content-holder">
@@ -16,6 +17,7 @@
             <fa-icon [icon]="faSearch"></fa-icon>
           </div>
           <div class="content-text">Explore</div>
+          <a href="/search" class="user-link"></a>
         </div>
       </div>
       <div class="content-holder">
@@ -24,6 +26,7 @@
             <fa-icon [icon]="faBookmarkIcon"></fa-icon>
           </div>
           <div class="content-text">Bookmarks</div>
+          <a href="/bookmarks" class="user-link"></a>
         </div>
       </div>
       <div class="content-holder">
@@ -32,14 +35,16 @@
           <fa-icon [icon]="faRetweet"></fa-icon>
         </div>
         <div class="content-text">Reposts</div>
+        <a href="/reposts" class="user-link"></a>
       </div>
-    </div>
+      </div>
       <div class="content-holder">
         <div class="content-pressable">
           <div class="left-icon">
             <fa-icon [icon]="faUserIcon"></fa-icon>
           </div>
           <div class="content-text">Profile</div>
+          <a href="{{user.username}}/profile" class="user-link"></a>
         </div>
     </div>
       <button class="post-a-post-button" (click)="openPostingDialog()">Post</button>
