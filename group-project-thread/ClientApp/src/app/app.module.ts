@@ -46,6 +46,7 @@ import {SingularCommentViewComponent} from "./Components/singular-comment-view/s
 import {TopBlurryBarComponent} from "./Components/top-blurry-bar/top-blurry-bar.component";
 import {SideNavbarComponent} from "./Components/side-navbar/side-navbar.component";
 import {PostCreationDialogComponent} from "./Components/post-creation-dialog/post-creation-dialog.component";
+import {BookmarksPageComponent} from "./Components/bookmarks-page/bookmarks-page.component";
 
 @NgModule({
     declarations: [
@@ -81,7 +82,8 @@ import {PostCreationDialogComponent} from "./Components/post-creation-dialog/pos
         SingularCommentViewComponent,
         TopBlurryBarComponent,
         SideNavbarComponent,
-        PostCreationDialogComponent
+        PostCreationDialogComponent,
+        BookmarksPageComponent
     ],
   imports: [
     BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),

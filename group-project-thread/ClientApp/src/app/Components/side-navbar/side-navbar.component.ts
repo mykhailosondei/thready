@@ -1,5 +1,11 @@
 import {Component, Input} from '@angular/core';
-import {faHome, faBookmark as faBookmarkActivated, faSearch, faUser as faUserActivated} from "@fortawesome/free-solid-svg-icons";
+import {
+  faHome,
+  faBookmark as faBookmarkActivated,
+  faSearch,
+  faUser as faUserActivated,
+  faRetweet
+} from "@fortawesome/free-solid-svg-icons";
 import {faBookmark as faBookmarkUnactivated, faUser as faUserUnactivated} from "@fortawesome/free-regular-svg-icons";
 import {IconDefinition} from "@fortawesome/free-brands-svg-icons";
 import {Icon} from "@fortawesome/fontawesome-svg-core";
@@ -43,4 +49,6 @@ export class SideNavbarComponent{
        }
       });
   }
+
+  get faRetweet() { return faRetweet };
 }

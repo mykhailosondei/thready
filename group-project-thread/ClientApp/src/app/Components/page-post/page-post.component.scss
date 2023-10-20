@@ -278,6 +278,7 @@ $border-color: #dcdcdc;
 
 .action-button {
   border: none;
+  position: relative;
   background-color: transparent;
   border-radius: 50%;
   display: flex;
@@ -289,6 +290,8 @@ $border-color: #dcdcdc;
     cursor: pointer;
     background-color: rgba(128, 128, 128, 0.5);
   }
+
+  z-index: 1;
 }
 
 .user-link {

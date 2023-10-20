@@ -40,8 +40,6 @@ export class PostCreationDialogComponent implements OnInit {
     return user.avatar === null;
   }
 
-
-
   getFirstInitial(user : PageUserDTO | UserDTO): string {
     return user.username[0].toUpperCase();
   }
