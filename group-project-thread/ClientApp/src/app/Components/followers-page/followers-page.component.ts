@@ -15,7 +15,7 @@ export class FollowersPageComponent {
   protected user! : UserDTO;
   protected followers : PageUserDTO[];
   private unsubscribe$ = new Subject<void>();
-  protected isCurrentUser : boolean = false;
+  protected currentUser! : UserDTO;
   constructor(private userService: UserService, private route: ActivatedRoute) {
     this.route.paramMap.subscribe(params => {
       this.username = params.get('username') || "DefaultUsername";
@@ -30,7 +30,7 @@ export class FollowersPageComponent {
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
       this.username = params.get('username') || "DefaultUsername";
-      this.checkIsCurrentUser();
+      this.getCurrentUser();
       this.fetchFollowersData(this.username);
     });
   }
@@ -67,14 +67,14 @@ export class FollowersPageComponent {
   }
 
   amIFollowing(id : number): boolean{
-    return this.user.followingIds.includes(id);
+    return this.currentUser.followingIds.includes(id);
   }
 
-  checkIsCurrentUser(): void{
-    this.userService.getCurrentUser().pipe(takeUntil(this.unsubscribe$))
+  getCurrentUser(): void{
+    this.userService.getCurrentUser()
       .subscribe( (response) =>{
       if (response.body != null){
-        this.isCurrentUser = this.username == response.body.username;
+         this.currentUser = response.body;
       }
     });
   }

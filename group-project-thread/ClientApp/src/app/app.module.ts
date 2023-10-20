@@ -35,8 +35,7 @@ import {SingularPostViewComponent} from "./Components/singular-post-view/singula
 import {ConnectionPageComponent} from "./Components/connections-page/connection-page.component";
 import {FollowingPageComponent} from "./Components/following-page/following-page.component";
 import {FollowersPageComponent} from "./Components/followers-page/followers-page.component";
-import {FollowingPageUserComponent} from "./Components/following-page-user/following-page-user.component";
-import {FollowersPageUserComponent} from "./Components/followers-page-user/followers-page-user.component";
+import {PageUserComponent} from "./Components/page-user/page-user.component";
 import {SearchBarComponent} from "./Components/search-bar/search-bar.component";
 import {InfiniteScrollModule} from "ngx-infinite-scroll";
 import {SearchResultsPageComponent} from "./Components/search-results-page/search-results-page.component";
@@ -70,8 +69,7 @@ import {
     ConnectionPageComponent,
     FollowingPageComponent,
     FollowersPageComponent,
-    FollowingPageUserComponent,
-    FollowersPageUserComponent,
+    PageUserComponent,
     UserHoverCardComponent,
     OnDomEnterDirective,
     SingularPostViewComponent,

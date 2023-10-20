@@ -4,7 +4,9 @@
     <div style="position: relative; max-width: 600px">
       <div *ngIf="followers.length != 0">
         <div style="display: block" *ngFor="let follower of followers">
-          <app-followers-page-user [pageUser]="follower" [isCurrentUser]="isCurrentUser" [currentUser]="user" [isFollowing]="amIFollowing(follower.id)"></app-followers-page-user>
+          <app-page-user [pageUser]="follower" [currentUser]="currentUser"
+                                   [isCurrentUserPage]="currentUser.id == follower.id" [isFollowing]="amIFollowing(follower.id)">
+          </app-page-user>
         </div>
       </div>
     </div>

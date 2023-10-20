@@ -57,10 +57,11 @@ public class RecommendationService : BaseService
     }
     public async Task<List<PageUserDTO>> WhoToFollow()
     {
+        var currentUser = await _userQueryRepository.GetUserById(_userQueryRepository.GetCurrentUserId());
         var people = await _applicationContext.Users
             .Include(u=>u.Avatar).
             OrderByDescending(u => u.FollowersIds.Count)
-            .Where(u => u.Id != _userQueryRepository.GetCurrentUserId())
+            .Where(u => u.Id != currentUser.Id && !currentUser.FollowingIds.Contains(u.Id))
             .Take(3)
             .Select(u => _mapper.Map<PageUserDTO>(u))
             .ToListAsync();
@@ -69,12 +70,13 @@ public class RecommendationService : BaseService
     
     public async Task<List<PageUserDTO>> GetPeopleToConnectWith()
     {
+        var currentUser = await _userQueryRepository.GetUserById(_userQueryRepository.GetCurrentUserId());
         var userCount = _applicationContext.Users.Count();
         userCount = userCount - 50 < 0 ? 0 : new Random().Next(50, userCount);
         var people = await _applicationContext.Users
             .Include(u=>u.Avatar).
             OrderByDescending(u => u.FollowersIds.Count)
-            .Where(u => u.Id != _userQueryRepository.GetCurrentUserId())
+            .Where(u => u.Id != currentUser.Id && !currentUser.FollowingIds.Contains(u.Id))
             .Skip(userCount)
             .Take(50)
             .Select(u => _mapper.Map<PageUserDTO>(u))
@@ -84,12 +86,13 @@ public class RecommendationService : BaseService
     
     public async Task<List<PageUserDTO>> GetCreatorsForYou()
     {
+        var currentUser = await _userQueryRepository.GetUserById(_userQueryRepository.GetCurrentUserId());
         var userCount = _applicationContext.Users.Count();
         userCount = userCount - 5 < 0 ? 0 : new Random().Next(5, userCount/4);
         var people = await _applicationContext.Users
             .Include(u=>u.Avatar).
             OrderByDescending(u => u.FollowersIds.Count)
-            .Where(u => u.Id != _userQueryRepository.GetCurrentUserId())
+            .Where(u => u.Id != currentUser.Id && !currentUser.FollowingIds.Contains(u.Id))
             .Skip(userCount)
             .Take(5)
             .Select(u => _mapper.Map<PageUserDTO>(u))
