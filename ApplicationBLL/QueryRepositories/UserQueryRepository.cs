@@ -30,7 +30,7 @@ public class UserQueryRepository : BaseQueryRepository
 
     public virtual async Task<UserDTO> GetUserById(int id)
     {
-        var userModel = await _applicationContext.Users.FirstOrDefaultAsync(u => u.Id == id);
+        var userModel = await _applicationContext.Users.Include(u=> u.Avatar).FirstOrDefaultAsync(u => u.Id == id);
 
         if (userModel == null)
         {

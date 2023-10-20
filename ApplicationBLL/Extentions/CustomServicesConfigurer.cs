@@ -41,6 +41,7 @@ public static class CustomServicesConfigurer
         services.AddScoped<UsernameValidatorService>();
         services.AddScoped<PostsContentsIndexer>();
         services.AddScoped<IndexedContentReader>();
+        services.AddScoped<RecommendationService>();
         services.AddLogging();
         
 

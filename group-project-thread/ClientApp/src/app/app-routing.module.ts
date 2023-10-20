@@ -11,6 +11,9 @@ import {FollowersPageComponent} from "./Components/followers-page/followers-page
 import {SearchBarComponent} from "./Components/search-bar/search-bar.component";
 import {SearchResultsPageComponent} from "./Components/search-results-page/search-results-page.component";
 import {SingularCommentViewComponent} from "./Components/singular-comment-view/singular-comment-view.component";
+import {
+  RecommendationsSideBarComponent
+} from "./Components/recommendations-side-bar/recommendations-side-bar.component";
 import {BookmarksPageComponent} from "./Components/bookmarks-page/bookmarks-page.component";
 import {RepostsPageComponent} from "./Components/reposts-page/reposts-page.component";
 
@@ -26,6 +29,7 @@ const routes: Routes = [
   {path: 'explore', component: SearchBarComponent},
   {path: "search", component: SearchResultsPageComponent},
   {path: 'comment/:commentId', component: SingularCommentViewComponent},
+  {path: 'bob', component: RecommendationsSideBarComponent},
   {path: 'bookmarks', component: BookmarksPageComponent},
   {path: 'reposts', component: RepostsPageComponent}
 ];

@@ -7,16 +7,17 @@ import {Router} from "@angular/router";
 import {UserDTO} from "../../models/user/userDTO";
 
 @Component({
-  selector: 'app-followers-page-user',
-  templateUrl: './followers-page-user.component.html',
-  styleUrls: ['./followers-page-user.component.scss', '../../../assets/PageUser.scss']
+  selector: 'app-page-user',
+  templateUrl: './page-user.component.html',
+  styleUrls: ['./page-user.component.scss', '../../../assets/PageUser.scss']
 })
-export class FollowersPageUserComponent {
+export class PageUserComponent {
   @Input() public pageUser : PageUserDTO;
-  @Input() public isCurrentUser : boolean;
   @Input() public isFollowing: boolean;
   @Input() public currentUser: UserDTO;
-  @Input() public isMyPageProfile : boolean = false;
+  @Input() public showBio : boolean = true;
+  @Input() public isCurrentUserPage : boolean;
+  @Input() public containerHeight : number = 40;
 
 
   protected isMyFollowing : boolean;
@@ -60,13 +61,14 @@ export class FollowersPageUserComponent {
         this.submittedUnfollow = false;
       })).subscribe((responce) => {
         if (responce.ok){
+          this.isFollowing =false;
           this.followed = false;
           const index = this.currentUser.followingIds.indexOf(id);
           this.currentUser.followingIds.splice(index, 1);
 
         }
       }, (error)=> {
-        this.snackBarService.showErrorMessage(error);});
+        this.snackBarService.showErrorMessage(error.detail);});
     }
   }
 
@@ -79,11 +81,12 @@ export class FollowersPageUserComponent {
       pipe(finalize(() => this.submittedFollow = false ))
         .subscribe((responce) => {
           if (responce.ok){
+            this.isFollowing = true;
             this.followed = true;
             this.currentUser.followingIds.push(id);
           }
         }, (error)=> {
-          this.snackBarService.showErrorMessage(error.error.title);});
+          this.snackBarService.showErrorMessage(error.error.detail);});
     }
   }
 
@@ -91,4 +94,5 @@ export class FollowersPageUserComponent {
     event.stopPropagation();
     this.router.navigate([username, 'followers'])
   }
+
 }

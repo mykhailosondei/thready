@@ -5,6 +5,9 @@ import {SnackbarService} from "../../Services/snackbar.service";
 import {UserDTO} from "../../models/user/userDTO";
 import {PageUserDTO} from "../../models/user/pageUserDTO";
 import {finalize, Subject, takeUntil} from "rxjs";
+import {C} from "@angular/cdk/keycodes";
+import {FollowingFollowersNavigatorService} from "../../Services/following-followers-navigator.service";
+import {Tab} from "../../models/enums/Tab";
 
 @Component({
   selector: 'app-following-page',
@@ -16,10 +19,10 @@ export class FollowingPageComponent implements OnInit{
   protected user! : UserDTO;
   protected following : PageUserDTO[];
   private unsubscribe$ = new Subject<void>();
-  protected isCurrentUser : boolean = false;
+  protected currentUser! : UserDTO;
 
 
-  constructor(private userService: UserService, private route: ActivatedRoute) {
+  constructor(private userService: UserService, private route: ActivatedRoute, public navigatorService : FollowingFollowersNavigatorService) {
     this.route.paramMap.subscribe(params => {
       this.username = params.get('username') || "DefaultUsername";
     })
@@ -29,7 +32,7 @@ export class FollowingPageComponent implements OnInit{
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
       this.username = params.get('username') || "DefaultUsername";
-      this.checkIsCurrentUser(this.username);
+      this.getCurrentUser();
       this.fetchFollowingData(this.username);
     });
   }
@@ -37,6 +40,9 @@ export class FollowingPageComponent implements OnInit{
   ngOnDestroy(): void {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
+  }
+  amIFollowing(id : number): boolean{
+    return this.currentUser.followingIds.includes(id);
   }
 
   fetchFollowingData(username: string) {
@@ -66,12 +72,14 @@ export class FollowingPageComponent implements OnInit{
         }
       });
   }
-  checkIsCurrentUser(username : string): void{
-    this.userService.getCurrentUser().pipe(takeUntil(this.unsubscribe$))
+  getCurrentUser(): void{
+    this.userService.getCurrentUser()
       .subscribe( (response) =>{
         if (response.body != null){
-          this.isCurrentUser = this.username == response.body.username;
+          this.currentUser = response.body;
         }
       });
   }
+
+  protected readonly Tab = Tab;
 }

@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FollowersPageUserComponent } from './followers-page-user.component';
+import { PageUserComponent } from './page-user.component';
 
 describe('FollowersPageUserComponent', () => {
-  let component: FollowersPageUserComponent;
-  let fixture: ComponentFixture<FollowersPageUserComponent>;
+  let component: PageUserComponent;
+  let fixture: ComponentFixture<PageUserComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ FollowersPageUserComponent ]
+      declarations: [ PageUserComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(FollowersPageUserComponent);
+    fixture = TestBed.createComponent(PageUserComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

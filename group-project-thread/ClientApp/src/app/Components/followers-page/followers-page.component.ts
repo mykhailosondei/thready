@@ -1,10 +1,11 @@
 import {Component, NgZone} from '@angular/core';
 import {UserService} from "../../Services/user.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import {SnackbarService} from "../../Services/snackbar.service";
 import {UserDTO} from "../../models/user/userDTO";
 import {PageUserDTO} from "../../models/user/pageUserDTO";
 import {finalize, Subject, takeUntil} from "rxjs";
+import {FollowingFollowersNavigatorService} from "../../Services/following-followers-navigator.service";
+import {Tab} from "../../models/enums/Tab";
 @Component({
   selector: 'app-followers-page',
   templateUrl: './followers-page.component.html',
@@ -15,8 +16,8 @@ export class FollowersPageComponent {
   protected user! : UserDTO;
   protected followers : PageUserDTO[];
   private unsubscribe$ = new Subject<void>();
-  protected isCurrentUser : boolean = false;
-  constructor(private userService: UserService, private route: ActivatedRoute) {
+  protected currentUser! : UserDTO;
+  constructor(private userService: UserService, private route: ActivatedRoute, public navigatorService : FollowingFollowersNavigatorService) {
     this.route.paramMap.subscribe(params => {
       this.username = params.get('username') || "DefaultUsername";
     })
@@ -30,7 +31,7 @@ export class FollowersPageComponent {
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
       this.username = params.get('username') || "DefaultUsername";
-      this.checkIsCurrentUser();
+      this.getCurrentUser();
       this.fetchFollowersData(this.username);
     });
   }
@@ -67,15 +68,17 @@ export class FollowersPageComponent {
   }
 
   amIFollowing(id : number): boolean{
-    return this.user.followingIds.includes(id);
+    return this.currentUser.followingIds.includes(id);
   }
 
-  checkIsCurrentUser(): void{
-    this.userService.getCurrentUser().pipe(takeUntil(this.unsubscribe$))
+  getCurrentUser(): void{
+    this.userService.getCurrentUser()
       .subscribe( (response) =>{
       if (response.body != null){
-        this.isCurrentUser = this.username == response.body.username;
+         this.currentUser = response.body;
       }
     });
   }
+
+  protected readonly Tab = Tab;
 }

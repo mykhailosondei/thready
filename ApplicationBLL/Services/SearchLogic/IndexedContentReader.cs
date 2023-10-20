@@ -16,7 +16,7 @@ public class IndexedContentReader
     private readonly ApplicationContext _applicationContext;
     private readonly PostQueryRepository _postQueryRepository;
     private readonly UserQueryRepository _userQueryRepository;
-    private protected readonly IMapper _mapper;
+    private readonly IMapper _mapper;
     public IndexedContentReader(IndexerContext indexerContext, PostQueryRepository postQueryRepository, UserQueryRepository userQueryRepository, ApplicationContext applicationContext, IMapper mapper)
     {
         _indexerContext = indexerContext;
@@ -31,7 +31,7 @@ public class IndexedContentReader
         var postsToLoad = await FindPostsIds(query, lowerCount, upperCount);
         if (postsToLoad.Count == 0)
         {
-            throw new Exception("No posts found");
+            return new List<PostDTO>();
         }
 
         List<PostDTO> matchingPosts = new List<PostDTO>();
@@ -52,6 +52,10 @@ public class IndexedContentReader
 
     private async Task<List<WordCountInPostId>> FindPostsIds(string query, int lowerCount, int upperCount)
     {
+        if (query == null)
+        {
+            return new List<WordCountInPostId>();
+        }
         if (lowerCount > upperCount)
             return new List<WordCountInPostId>();
         string pattern = @"[^a-zA-Z'-]+";
@@ -119,7 +123,7 @@ public class IndexedContentReader
         var usersToLoad = await FindUsersIds(query, lowerCount, upperCount);
         if (usersToLoad.Count == 0)
         {
-            throw new Exception("No users found");
+            return new List<PageUserDTO>();
         }
 
         List<PageUserDTO> matchingUsers = new List<PageUserDTO>();
@@ -141,6 +145,10 @@ public class IndexedContentReader
     
     async Task<List<IndexedUsernameDTO>> FindUsersIds(string query, int lowCount, int highCount)
     {
+        if (query == null)
+        {
+            return new List<IndexedUsernameDTO>();
+        }
         if (lowCount > highCount)
             return new List<IndexedUsernameDTO>();
         var usernames = await _applicationContext.Users.Select(u => new IndexedUsernameDTO()
