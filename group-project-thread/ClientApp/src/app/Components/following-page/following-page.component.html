@@ -1,0 +1,20 @@
+<div class="wrap">
+  <div class="main-page">
+    <app-tablist-page [title]="username" [firstTabName] = "'Followers'" [secondTabName] = "'Following'"
+                         [selectedTab]="Tab.FirstTab"
+                         (titleClicked)="navigatorService.openProfilePage($event)"
+                         (firstTabClicked)="navigatorService.openFollowingPage($event)"
+                         (secondTabClicked)="navigatorService.openFollowersPage($event)">
+
+    </app-tablist-page>
+    <div style="position: relative;">
+      <div *ngIf="following.length != 0">
+        <div style="display: block" *ngFor="let user of following">
+          <app-page-user [pageUser]="user" [currentUser]="currentUser"
+                                   [isCurrentUserPage]="currentUser.id == user.id" [isFollowing]="amIFollowing(user.id)">
+          </app-page-user>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

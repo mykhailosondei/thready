@@ -61,9 +61,9 @@
       <div class="people-box">
         <span class="people-box-header">People</span>
       </div>
-      <app-followers-page-user *ngFor="let user of matchingUsers$ | async"
-      [currentUser]="currentUser" [pageUser]="user" [isCurrentUser]="true" [isFollowing]="amIFollowing(user.id)"
-      [isMyPageProfile]="isCurrentUser(user.id)"></app-followers-page-user>
+      <app-page-user *ngFor="let user of matchingUsers$ | async"
+      [currentUser]="currentUser" [pageUser]="user" [isFollowing]="amIFollowing(user.id)"
+      ></app-page-user>
       <div class="view-all-button" (click)="navigateToUserSearch()" *ngIf="matchingUsers$.getValue().length>3">
         <div class="view-all-box">
           <span class="view-all-box-header">View all</span>

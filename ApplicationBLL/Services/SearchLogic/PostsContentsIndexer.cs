@@ -17,22 +17,20 @@ public class PostsContentsIndexer
     public async Task AddIndexedWordsToTableByPostId(int id, string textContent)
     {
         var words = await _indexerContext.IndexedWords.ToListAsync();
-        foreach (var word in words)
-        {
-            _indexerContext.Attach(word);
-            await _indexerContext.Entry(word).Collection(w => w.WordCountInPostId).LoadAsync();
-        }
         var wordsFrequencyInPost = GetFrequencyOfWords(textContent);
         foreach (var wordFrequency in wordsFrequencyInPost)
         {
             var existingWord = words.FirstOrDefault(word => word.Word == wordFrequency.Key);
             if (existingWord != null)
             {
+                _indexerContext.Attach(existingWord);
+                await _indexerContext.Entry(existingWord).Collection(w => w.WordCountInPostId).LoadAsync();
                 existingWord.WordCountInPostId.Add(new WordCountInPostId()
                 {
                     PostId = id,
                     WordCount = wordFrequency.Value
                 });
+                existingWord.PostsCount++;
                 _indexerContext.Entry(existingWord).Collection(e => e.WordCountInPostId).IsModified = true;
             }
             else
@@ -45,6 +43,7 @@ public class PostsContentsIndexer
                 });
                 var newWord = new IndexedWord()
                 {
+                    PostsCount = 1,
                     Word = wordFrequency.Key,
                     WordCountInPostId = wordFrequencyByPosts
                 };
@@ -52,7 +51,7 @@ public class PostsContentsIndexer
                 _indexerContext.IndexedWords.Add(newWord);
             }
         }
-        
+        Console.WriteLine(DateTime.Now);
         await _indexerContext.SaveChangesAsync();
     }
     

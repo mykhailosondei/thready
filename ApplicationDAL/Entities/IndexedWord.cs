@@ -8,6 +8,8 @@ public class IndexedWord
     [MaxLength(45)]
     public string Word { get; set; }
     [Required]
+    public int PostsCount { get; set; }
+    [Required]
     public List<WordCountInPostId> WordCountInPostId { get; set; }
     
 }

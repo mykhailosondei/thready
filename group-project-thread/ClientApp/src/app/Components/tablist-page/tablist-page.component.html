@@ -1,0 +1,47 @@
+<div class="sticky-wrap">
+  <div class="header">
+    <div class="header-content">
+      <div  class="back-button" >
+        <div class="svg-pic" aria-label="back" role="button" (click)="backToMainPaige()" >
+          <fa-icon [icon]="faArrowLeftLong" class="arrowIcon"></fa-icon>
+        </div>
+      </div>
+      <div class="profile-info-area">
+        <div class="username" (click)="navigateToTitle(title)">
+          <span>{{title}}</span>
+        </div>
+        <div class="subtitle-box">
+          <span class="subtitle-text">connections</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <nav class="navigation-bar">
+    <div class="navigation-bar-content">
+      <div class="tab-box" (click)="navigateToFirstTab()">
+        <div class="tab">
+          <div class="tab-text-box">
+            <span class="first-tab-text" [ngClass]="{'first-tab-selected': selectedTab == Tab.FirstTab}">
+              {{firstTabName}}
+            </span>
+          </div>
+          <div *ngIf="selectedTab == Tab.FirstTab" class="selected-tab">
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-box" (click)="navigateToSecondTab()">
+        <div class="tab">
+          <div class="tab-text-box">
+            <span class="second-tab-text" [ngClass]="{'second-tab-selected': selectedTab == Tab.SecondTab}">
+              {{secondTabName}}
+            </span>
+          </div>
+          <div *ngIf="selectedTab == Tab.SecondTab" class="selected-tab">
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+</div>
+
