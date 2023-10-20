@@ -32,11 +32,6 @@ import {PostEditorDialogComponent} from "./Components/post-editor-dialog/post-ed
 import {UserHoverCardComponent} from "./Components/user-hover-card/user-hover-card.component";
 import {OnDomEnterDirective} from "./Directives/on-dom-enter.directive";
 import {SingularPostViewComponent} from "./Components/singular-post-view/singular-post-view.component";
-import {ConnectionPageComponent} from "./Components/connections-page/connection-page.component";
-import {FollowingPageComponent} from "./Components/following-page/following-page.component";
-import {FollowersPageComponent} from "./Components/followers-page/followers-page.component";
-import {FollowingPageUserComponent} from "./Components/following-page-user/following-page-user.component";
-import {FollowersPageUserComponent} from "./Components/followers-page-user/followers-page-user.component";
 import {SearchBarComponent} from "./Components/search-bar/search-bar.component";
 import {InfiniteScrollModule} from "ngx-infinite-scroll";
 import {SearchResultsPageComponent} from "./Components/search-results-page/search-results-page.component";
@@ -68,11 +63,6 @@ import {RepostsPageComponent} from "./Components/reposts-page/reposts-page.compo
         AutoResizeInputComponent,
         PostEditorDialogComponent,
         UserHoverCardComponent,
-        ConnectionPageComponent,
-        FollowingPageComponent,
-        FollowersPageComponent,
-        FollowingPageUserComponent,
-        FollowersPageUserComponent,
         UserHoverCardComponent,
         OnDomEnterDirective,
         SingularPostViewComponent,
