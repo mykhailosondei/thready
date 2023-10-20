@@ -32,7 +32,6 @@ import {PostEditorDialogComponent} from "./Components/post-editor-dialog/post-ed
 import {UserHoverCardComponent} from "./Components/user-hover-card/user-hover-card.component";
 import {OnDomEnterDirective} from "./Directives/on-dom-enter.directive";
 import {SingularPostViewComponent} from "./Components/singular-post-view/singular-post-view.component";
-import {ConnectionPageComponent} from "./Components/connections-page/connection-page.component";
 import {FollowingPageComponent} from "./Components/following-page/following-page.component";
 import {FollowersPageComponent} from "./Components/followers-page/followers-page.component";
 import {PageUserComponent} from "./Components/page-user/page-user.component";
@@ -46,6 +45,7 @@ import {TopBlurryBarComponent} from "./Components/top-blurry-bar/top-blurry-bar.
 import {
   RecommendationsSideBarComponent
 } from "./Components/recommendations-side-bar/recommendations-side-bar.component";
+import {TablistPageComponent} from "./Components/tablist-page/tablist-page.component";
 
 @NgModule({
   declarations: [
@@ -66,7 +66,6 @@ import {
     AutoResizeInputComponent,
     PostEditorDialogComponent,
     UserHoverCardComponent,
-    ConnectionPageComponent,
     FollowingPageComponent,
     FollowersPageComponent,
     PageUserComponent,
@@ -79,7 +78,8 @@ import {
     PageCommentComponent,
     SingularCommentViewComponent,
     TopBlurryBarComponent,
-    RecommendationsSideBarComponent
+    RecommendationsSideBarComponent,
+    TablistPageComponent
   ],
   imports: [
     BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),
@@ -104,7 +104,8 @@ import {
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi:true},
-    {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}}
+    {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: false},
+    }
   ],
   bootstrap: [AppComponent],
   entryComponents: [CommentCreationDialogComponent]

@@ -7,8 +7,8 @@
         </div>
       </div>
       <div class="profile-info-area">
-        <div class="username" (click)="navigateToProfile(username)">
-          <span>{{username}}</span>
+        <div class="username" (click)="navigateToTitle(title)">
+          <span>{{title}}</span>
         </div>
         <div class="subtitle-box">
           <span class="subtitle-text">connections</span>
@@ -18,26 +18,26 @@
   </div>
   <nav class="navigation-bar">
     <div class="navigation-bar-content">
-      <div class="tab-box" (click)="navigateToFollowing()">
+      <div class="tab-box" (click)="navigateToFirstTab()">
         <div class="tab">
           <div class="tab-text-box">
-            <span class="first-tab-text" [ngClass]="{'first-tab-selected': isFollowing}">
-              Following
+            <span class="first-tab-text" [ngClass]="{'first-tab-selected': selectedTab == Tab.FirstTab}">
+              {{firstTabName}}
             </span>
           </div>
-          <div *ngIf="isFollowing" class="selected-tab">
+          <div *ngIf="selectedTab == Tab.FirstTab" class="selected-tab">
           </div>
         </div>
       </div>
 
-      <div class="tab-box" (click)="navigateToFollowers()">
+      <div class="tab-box" (click)="navigateToSecondTab()">
         <div class="tab">
           <div class="tab-text-box">
-            <span class="second-tab-text" [ngClass]="{'second-tab-selected': isFollowers}">
-              Followers
+            <span class="second-tab-text" [ngClass]="{'second-tab-selected': selectedTab == Tab.SecondTab}">
+              {{secondTabName}}
             </span>
           </div>
-          <div *ngIf="isFollowers" class="selected-tab">
+          <div *ngIf="selectedTab == Tab.SecondTab" class="selected-tab">
           </div>
         </div>
       </div>

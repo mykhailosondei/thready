@@ -1,10 +1,11 @@
 import {Component, NgZone} from '@angular/core';
 import {UserService} from "../../Services/user.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import {SnackbarService} from "../../Services/snackbar.service";
 import {UserDTO} from "../../models/user/userDTO";
 import {PageUserDTO} from "../../models/user/pageUserDTO";
 import {finalize, Subject, takeUntil} from "rxjs";
+import {FollowingFollowersNavigatorService} from "../../Services/following-followers-navigator.service";
+import {Tab} from "../../models/enums/Tab";
 @Component({
   selector: 'app-followers-page',
   templateUrl: './followers-page.component.html',
@@ -16,7 +17,7 @@ export class FollowersPageComponent {
   protected followers : PageUserDTO[];
   private unsubscribe$ = new Subject<void>();
   protected currentUser! : UserDTO;
-  constructor(private userService: UserService, private route: ActivatedRoute) {
+  constructor(private userService: UserService, private route: ActivatedRoute, public navigatorService : FollowingFollowersNavigatorService) {
     this.route.paramMap.subscribe(params => {
       this.username = params.get('username') || "DefaultUsername";
     })
@@ -78,4 +79,6 @@ export class FollowersPageComponent {
       }
     });
   }
+
+  protected readonly Tab = Tab;
 }

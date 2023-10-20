@@ -6,6 +6,8 @@ import {UserDTO} from "../../models/user/userDTO";
 import {PageUserDTO} from "../../models/user/pageUserDTO";
 import {finalize, Subject, takeUntil} from "rxjs";
 import {C} from "@angular/cdk/keycodes";
+import {FollowingFollowersNavigatorService} from "../../Services/following-followers-navigator.service";
+import {Tab} from "../../models/enums/Tab";
 
 @Component({
   selector: 'app-following-page',
@@ -20,7 +22,7 @@ export class FollowingPageComponent implements OnInit{
   protected currentUser! : UserDTO;
 
 
-  constructor(private userService: UserService, private route: ActivatedRoute) {
+  constructor(private userService: UserService, private route: ActivatedRoute, public navigatorService : FollowingFollowersNavigatorService) {
     this.route.paramMap.subscribe(params => {
       this.username = params.get('username') || "DefaultUsername";
     })
@@ -78,4 +80,6 @@ export class FollowingPageComponent implements OnInit{
         }
       });
   }
+
+  protected readonly Tab = Tab;
 }

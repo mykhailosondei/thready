@@ -1,6 +1,12 @@
 <div class="wrap">
   <div class="main-page">
-    <app-connection-page [username]="username" [isFollowing] = "true" [isFollowers] = "false"></app-connection-page>
+    <app-tablist-page [title]="username" [firstTabName] = "'Followers'" [secondTabName] = "'Following'"
+                         [selectedTab]="Tab.FirstTab"
+                         (titleClicked)="navigatorService.openProfilePage($event)"
+                         (firstTabClicked)="navigatorService.openFollowingPage($event)"
+                         (secondTabClicked)="navigatorService.openFollowersPage($event)">
+
+    </app-tablist-page>
     <div style="position: relative;">
       <div *ngIf="following.length != 0">
         <div style="display: block" *ngFor="let user of following">
