@@ -10,7 +10,7 @@
         <div class="username" (click)="navigateToTitle(title)">
           <span>{{title}}</span>
         </div>
-        <div class="subtitle-box">
+        <div class="subtitle-box" *ngIf="showSubtitle">
           <span class="subtitle-text">connections</span>
         </div>
       </div>

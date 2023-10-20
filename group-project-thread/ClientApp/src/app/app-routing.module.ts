@@ -16,6 +16,8 @@ import {
 } from "./Components/recommendations-side-bar/recommendations-side-bar.component";
 import {BookmarksPageComponent} from "./Components/bookmarks-page/bookmarks-page.component";
 import {RepostsPageComponent} from "./Components/reposts-page/reposts-page.component";
+import {WhoToFollowPageComponent} from "./Components/who-to-follow-page/who-to-follow-page.component";
+import {CreatorsForYouPageComponent} from "./Components/creators-for-you-page/creators-for-you-page.component";
 
 const routes: Routes = [
   {path:'', redirectTo: '/login', pathMatch: 'full'},
@@ -31,7 +33,9 @@ const routes: Routes = [
   {path: 'comment/:commentId', component: SingularCommentViewComponent},
   {path: 'bob', component: RecommendationsSideBarComponent},
   {path: 'bookmarks', component: BookmarksPageComponent},
-  {path: 'reposts', component: RepostsPageComponent}
+  {path: 'reposts', component: RepostsPageComponent},
+  {path: 'connect-people', component: WhoToFollowPageComponent},
+  {path: 'creators-for-you', component: CreatorsForYouPageComponent}
 ];
 
 @NgModule({

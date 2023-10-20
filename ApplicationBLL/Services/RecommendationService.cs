@@ -28,7 +28,7 @@ public class RecommendationService : BaseService
     {
         var words = await _indexerContext.IndexedWords
             .OrderByDescending(w => w.PostsCount)
-            .Take(3)
+            .Take(5)
             .ToListAsync();
         return words;
     }

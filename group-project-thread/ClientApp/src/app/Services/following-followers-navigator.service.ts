@@ -16,4 +16,11 @@ export class FollowingFollowersNavigatorService {
   public openFollowersPage($event : string){
     this.router.navigate([$event, 'followers'])
   }
+
+  public openWhoToFollowPage($event : string){
+    this.router.navigate(['connect-people'])
+  }
+  public openCreatorsForYouPage($event : string) {
+    this.router.navigate(['creators-for-you'])
+  }
 }
