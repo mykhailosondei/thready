@@ -70,7 +70,6 @@ import {RepostsPageComponent} from "./Components/reposts-page/reposts-page.compo
         AutoResizeInputComponent,
         PostEditorDialogComponent,
         UserHoverCardComponent,
-        ConnectionPageComponent,
         FollowingPageComponent,
         FollowersPageComponent,
         UserHoverCardComponent,
@@ -88,7 +87,9 @@ import {RepostsPageComponent} from "./Components/reposts-page/reposts-page.compo
         RepostsPageComponent,
         PageUserComponent,
         RecommendationsSideBarComponent,
-        TablistPageComponent
+        TablistPageComponent,
+        FollowersPageComponent,
+
     ],
   imports: [
     BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),

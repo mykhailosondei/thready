@@ -2,9 +2,13 @@ $border-color: #dcdcdc;
 
 .wrap {
   display: flex;
+  flex-direction: row;
   justify-content: center;
 }
-
+.element{
+  position: relative;
+  display: flex;
+}
 .main-page{
   width: 600px;
   border: 0 solid $border-color;

@@ -1,45 +1,43 @@
-<div style="display: flex; justify-content: center">
-  <div class="recommendation-bar">
-    <div class="sticky">
-      <div class="sticky-search-box">
-        <div class="wrapper search-box-border">
-          <div class="wrapper search-box">
-            <div class="wrapper svg-box">
-              <fa-icon [icon]="faMagnifyingGlass" class="svg-icon"></fa-icon>
-            </div>
-            <div class="input-area">
-              <input placeholder="Search" class="search-query-input">
-            </div>
+<div class="recommendation-bar">
+  <div class="sticky">
+    <div class="sticky-search-box">
+      <div class="wrapper search-box-border">
+        <div class="wrapper search-box">
+          <div class="wrapper svg-box">
+            <fa-icon [icon]="faMagnifyingGlass" class="svg-icon"></fa-icon>
+          </div>
+          <div class="input-area">
+            <input placeholder="Search" class="search-query-input">
           </div>
         </div>
       </div>
-      <div class="recommendations-box wrapper">
-        <div class="recommendations-box-title wrapper">
-          <span class="title">What's happening</span>
-        </div>
-        <div *ngFor="let word of smallTrends$ | async" class="trending-word-box wrapper">
-          <div class="text-box wrapper">
-            <span class="small-text">Trending</span>
-            <span class="main-text">{{word.word}}</span>
-            <span *ngIf="word.postsCount != 1" class="small-text">{{word.postsCount}} posts</span>
-            <span *ngIf="word.postsCount == 1" class="small-text">{{word.postsCount}} post</span>
-          </div>
-        </div>
-        <div class="show-more wrapper">
-          <span class="show-more-span">Show More</span>
+    </div>
+    <div class="recommendations-box wrapper">
+      <div class="recommendations-box-title wrapper">
+        <span class="title">What's happening</span>
+      </div>
+      <div *ngFor="let word of smallTrends$ | async" class="trending-word-box wrapper">
+        <div class="text-box wrapper">
+          <span class="small-text">Trending</span>
+          <span class="main-text">{{word.word}}</span>
+          <span *ngIf="word.postsCount != 1" class="small-text">{{word.postsCount}} posts</span>
+          <span *ngIf="word.postsCount == 1" class="small-text">{{word.postsCount}} post</span>
         </div>
       </div>
-      <div class="recommendations-box wrapper">
-        <div class="recommendations-box-title wrapper">
-          <span class="title">People To Follow</span>
-        </div>
-        <div *ngFor="let user of whoToFollow$ | async">
-          <app-page-user [pageUser]="user" [isFollowing]="false" [containerHeight]="40"
-          [currentUser]="currentUser" [showBio]="false"></app-page-user>
-        </div>
-        <div class="show-more wrapper">
-          <span class="show-more-span">Show More</span>
-        </div>
+      <div class="show-more wrapper">
+        <span class="show-more-span">Show More</span>
+      </div>
+    </div>
+    <div class="recommendations-box wrapper">
+      <div class="recommendations-box-title wrapper">
+        <span class="title">People To Follow</span>
+      </div>
+      <div *ngFor="let user of whoToFollow$ | async">
+        <app-page-user [pageUser]="user" [isFollowing]="false" [containerHeight]="40"
+        [currentUser]="currentUser" [showBio]="false"></app-page-user>
+      </div>
+      <div class="show-more wrapper">
+        <span class="show-more-span">Show More</span>
       </div>
     </div>
   </div>
