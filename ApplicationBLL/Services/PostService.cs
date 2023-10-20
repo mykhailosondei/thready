@@ -184,8 +184,8 @@ public class PostService : BaseService
         
         _applicationContext.Posts.Add(postEntity);
         _applicationContext.Attach(postEntity.Author);
+        _applicationContext.Attach(postEntity.Author.Avatar);
         postEntity.Author.PostsCount++;
-        Console.WriteLine(postEntity.Author.PostsCount);
         
         await _applicationContext.SaveChangesAsync();
         await _postsContentsIndexer.AddIndexedWordsToTableByPostId(postEntity.Id, postEntity.TextContent);

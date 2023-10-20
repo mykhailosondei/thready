@@ -20,6 +20,7 @@ export class TablistPageComponent implements OnInit{
   @Input() public firstTabName : string;
   @Input() public secondTabName : string;
   @Input() public title : string;
+  @Input() public showSubtitle : boolean = true;
 
   @Output() titleClicked : EventEmitter<string> = new EventEmitter<string>();
   @Output() firstTabClicked : EventEmitter<string> = new EventEmitter<string>();

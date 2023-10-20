@@ -50,9 +50,10 @@ import {SideNavbarComponent} from "./Components/side-navbar/side-navbar.componen
 import {PostCreationDialogComponent} from "./Components/post-creation-dialog/post-creation-dialog.component";
 import {BookmarksPageComponent} from "./Components/bookmarks-page/bookmarks-page.component";
 import {RepostsPageComponent} from "./Components/reposts-page/reposts-page.component";
+import {WhoToFollowPageComponent} from "./Components/who-to-follow-page/who-to-follow-page.component";
+import {CreatorsForYouPageComponent} from "./Components/creators-for-you-page/creators-for-you-page.component";
 
-@NgModule({
-    declarations: [
+@NgModule({ declarations: [
         AppComponent,
         NavMenuComponent,
         HomeComponent,
@@ -89,7 +90,8 @@ import {RepostsPageComponent} from "./Components/reposts-page/reposts-page.compo
         RecommendationsSideBarComponent,
         TablistPageComponent,
         FollowersPageComponent,
-
+        WhoToFollowPageComponent,
+        CreatorsForYouPageComponent
     ],
   imports: [
     BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),

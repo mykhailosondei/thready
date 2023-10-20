@@ -6,6 +6,7 @@ $grey-color : #dcdcdc;
   box-sizing: border-box;
 }
 
+
 .recommendation-bar{
   display: flex;
   flex-direction: column;
@@ -15,20 +16,37 @@ $grey-color : #dcdcdc;
 }
 .sticky{
   position: sticky;
-  top: 0px;
 }
-.content-wrap{
-  padding-bottom: 64px;
+.content-box{
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding-top: 12px;
+}
+
+.empty-box{
+  height: 53px;
+  position: relative;
+  display: flex;
 }
 .sticky-search-box{
   min-height: 32px;
+  width: 350px;
   height: 53px;
   margin-bottom: 12px;
-  position: sticky;
+  position: fixed;
+  top: 0;
+  background-color: white;
+  z-index: 2;
+
 }
 .search-box-border{
   width: 100%;
   height: 100%;
+  display: flex;
+  position: relative;
+  z-index: 0;
+  box-sizing: border-box;
 }
 .search-box{
   border: 0px solid;

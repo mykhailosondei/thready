@@ -1,12 +1,12 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, HostListener, OnInit, ViewChild} from '@angular/core';
 import {faMagnifyingGlass} from "@fortawesome/free-solid-svg-icons/faMagnifyingGlass";
 import {RecommendationService} from "../../Services/recommendation.service";
 import {IndexedWordDTO} from "../../models/indexedWordDTO";
 import {BehaviorSubject, takeUntil} from "rxjs";
-import {PostDTO} from "../../models/post/postDTO";
 import {PageUserDTO} from "../../models/user/pageUserDTO";
 import {UserDTO} from "../../models/user/userDTO";
 import {UserService} from "../../Services/user.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-recommendations-side-bar',
@@ -20,7 +20,13 @@ export class RecommendationsSideBarComponent implements OnInit{
   public whoToFollow$ = new BehaviorSubject<PageUserDTO[]>([]);
   public currentUser : UserDTO;
   imagewidth: number = 40;
-  constructor(private recommendationService : RecommendationService, private userService : UserService) {
+
+  @ViewChild('recommendationBarMargin') recommendationBarMargin: ElementRef;
+  @ViewChild('stickWrap') stickyWrap : ElementRef;
+  public stickyWrapHeight : number;
+  sideBarFixed: boolean = false;
+  constructor(private recommendationService : RecommendationService, private userService : UserService,
+              private router : Router) {
   }
 
 
@@ -57,5 +63,21 @@ export class RecommendationsSideBarComponent implements OnInit{
           this.currentUser = response.body;
         }
       });
+  }
+  @HostListener('window:scroll', ['$event']) onscroll(){
+    const scrollTop = window.scrollY;
+    console.log(scrollTop)
+    if (scrollTop > 0) {
+      this.recommendationBarMargin.nativeElement.style.marginTop = scrollTop + 'px';
+      this.stickyWrap.nativeElement.style.bottom = `-${516.8}px`
+    } else {
+      this.recommendationBarMargin.nativeElement.style.marginTop = '0';
+      this.stickyWrap.nativeElement.style.top = `-${300.4}px`
+    }
+
+  }
+
+  navigateToConnectPeople() {
+    this.router.navigate(['connect-people']);
   }
 }

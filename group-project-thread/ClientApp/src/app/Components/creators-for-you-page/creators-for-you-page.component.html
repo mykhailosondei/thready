@@ -1,0 +1,20 @@
+<div class="wrap">
+  <div class="main-page">
+    <app-tablist-page [title]="'Connect'" [firstTabName] = "'Who to follow'" [secondTabName] = "'Creators for you'"
+                      [selectedTab]="Tab.SecondTab" [showSubtitle] = "false"
+                      (firstTabClicked)="navigator.openWhoToFollowPage($event)"
+                      (secondTabClicked)="navigator.openCreatorsForYouPage($event)"
+    ></app-tablist-page>
+    <div style="position: relative; max-width: 600px">
+      <div *ngIf="users$.getValue().length != 0">
+        <div style="display: block" *ngFor="let user of users$ | async">
+          <app-page-user [pageUser]="user" [currentUser]="currentUser"
+                         [isCurrentUserPage]="false" [isFollowing]="false">
+          </app-page-user>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
