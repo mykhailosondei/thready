@@ -87,6 +87,35 @@ $grey-color : #dcdcdc;
   outline: none;
 }
 
+.go-button{
+  display: flex;
+  flex: 1;
+  width: 100%;
+  align-items: center;
+  user-select: none;
+  margin-left: 12px;
+}
+.go-box{
+  cursor: pointer;
+  height: 32px;
+  width: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition-duration: 0.2s;
+  border-radius: 50%;
+  &:hover{
+    border-radius: 50%;
+    background-color: $grey-color;
+
+  }
+}
+.go-button{
+  font-size: 17px;
+  font-weight: 600;
+  color: rgb(83, 100, 113);
+}
+
 .recommendations-box{
   flex-direction: column;
   width: 100%;

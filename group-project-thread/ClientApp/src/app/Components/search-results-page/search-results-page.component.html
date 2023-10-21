@@ -1,62 +1,15 @@
 <div class="wrap">
   <div class="main-page">
-    <div class="sticky-wrap">
-      <div class="header">
-        <div class="header-content">
-          <div  class="back-button" >
-            <div class="svg-pic" aria-label="back" role="button" (click)="goBack()" >
-              <fa-icon [icon]="faArrowLeftLong" class="arrowIcon"></fa-icon>
-            </div>
-          </div>
-          <div class="search-bar-area">
-            <div class="search-bar-box">
-              <div class="input-box">
-                <div class="svg-box">
-                  <fa-icon [icon]="faMagnifyingGlass" class="search-icon"></fa-icon>
-                </div>
-                <div class="input-area">
-                  <input class="search-query-input" placeholder="Search" [(ngModel)]="query" [value]="query" (keyup.enter)="searchByQuery()">
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="go-button">
-            <div class="go-box" (click)="searchByQuery()">
-              <span>Go</span>
-            </div>
-          </div>
-        </div>
-      </div>
+    <app-search-bar
+    [selectedTab]="selectedTab" [firstTabName]="'Top'" [secondTabName]="'People'"
+    [query]="query"
+    (firstTabClicked)="navigateToTopSearch()"
+    (secondTabClicked)="navigateToUserSearch()"
+    (searchByQueryClicked)="searchByQuery()"
+    (queryChanged)="onQueryChanged($event)">
 
-      <nav class="navigation-bar">
-        <div role="tablist" class="navigation-bar-content">
-          <div class="tab-box" (click)="navigateToTopSearch()">
-            <div class="tab">
-              <div class="tab-text-box">
-                <span class="first-tab-text" [ngClass]="{'first-tab-selected': isAllPage}">
-                 Top
-                </span>
-              </div>
-              <div *ngIf="isAllPage" class="selected-tab">
-              </div>
-            </div>
-          </div>
-
-          <div class="tab-box" (click)="navigateToUserSearch()">
-            <div class="tab">
-              <div class="tab-text-box">
-                <span class="second-tab-text" [ngClass]="{'second-tab-selected': isUsersPage}">
-                  People
-                </span>
-              </div>
-              <div *ngIf="isUsersPage" class="selected-tab">
-              </div>
-            </div>
-          </div>
-        </div>
-      </nav>
-    </div>
-    <div *ngIf="isAllPage">
+    </app-search-bar>
+    <div *ngIf="selectedTab==0">
       <div *ngIf="matchingUsers$.getValue().length != 0" class="user-search-results">
         <div class="people-box">
           <span class="people-box-header">People</span>
@@ -82,7 +35,7 @@
         </div>
       </div>
     </div>
-    <div *ngIf="isUsersPage">
+    <div *ngIf="selectedTab==1">
       <div *ngIf="matchingUsers$.getValue().length != 0"
            infiniteScroll
            [infiniteScrollDistance]="3"

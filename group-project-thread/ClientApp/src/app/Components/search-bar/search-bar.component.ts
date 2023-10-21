@@ -1,119 +1,48 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {faArrowLeftLong} from "@fortawesome/free-solid-svg-icons";
 import {faMagnifyingGlass} from "@fortawesome/free-solid-svg-icons/faMagnifyingGlass";
-import {PostDTO} from "../../models/post/postDTO";
-import {BehaviorSubject, takeUntil} from "rxjs";
-import {SearchService} from "../../Services/search.service";
-import {HttpResponse} from "@angular/common/http";
-import {PageUserDTO} from "../../models/user/pageUserDTO";
-import {UserDTO} from "../../models/user/userDTO";
-import {UserService} from "../../Services/user.service";
-import {error} from "@angular/compiler-cli/src/transformers/util";
 import {Tab} from "../../models/enums/Tab";
-import {DataLoadingService} from "../../Services/data-loading.service";
+import {Router} from "@angular/router";
 @Component({
   selector: 'app-search-bar',
   templateUrl: './search-bar.component.html',
   styleUrls: ['./search-bar.component.scss', '../../../assets/ContentFrame.scss', '../../../assets/navigation-bar.scss']
 })
-export class SearchBarComponent implements OnInit{
+export class SearchBarComponent{
 
   protected readonly faArrowLeftLong = faArrowLeftLong;
-  public query : string = "";
-  public currentUser! : UserDTO;
-  public isFollowing : boolean;
-  public matchingPosts$ = new BehaviorSubject<PostDTO[]>([]);
-  public matchingUsers$ = new BehaviorSubject<PageUserDTO[]>([]);
-  private postsToLoadLowerCount = 0;
-  private postsToLoadUpperCount = 10;
-  private readonly postsPerPaged : number = 10;
-  private allPostsLoaded = false;
-  @Input() public isTrending : boolean;
-  @Input() public isForYou : boolean = true;
+  protected readonly faMagnifyingGlass = faMagnifyingGlass;
 
   @Input() public selectedTab : Tab;
   @Input() public firstTabName : string;
   @Input() public secondTabName : string;
+  @Input() public query : string  = "";
 
+  @Output() searchByQueryClicked : EventEmitter<string> = new EventEmitter<string>();
   @Output() firstTabClicked : EventEmitter<string> = new EventEmitter<string>();
   @Output() secondTabClicked : EventEmitter<string> = new EventEmitter<string>();
+  @Output() queryChanged: EventEmitter<string> = new EventEmitter<string>();
 
-  constructor(private searchService : SearchService, private userService : UserService,
-              private dataLoadingService : DataLoadingService) {
+  constructor(private router : Router) {
   }
+
+
+
   backToMainPaige() {
-
+    this.router.navigate(["mainPage"]);
   }
 
-  protected readonly faMagnifyingGlass = faMagnifyingGlass;
+  public navigateToFirstTab(){
+    this.firstTabClicked.emit();
+  }
+
+  public navigateToSecondTab(){
+    this.secondTabClicked.emit();
+  }
 
   searchByQuery() {
-    if (this.query == ""){
-      return;
-    }
-    this.loadInitialPosts();
-    this.dataLoadingService.loadInitialPeople(this.query, this.postsToLoadLowerCount, this.postsToLoadUpperCount, this.matchingUsers$);
-  }
-  loadInitialPosts(){
-    if (this.allPostsLoaded) return;
-    this.searchService.getPosts(this.query, this.postsToLoadLowerCount, this.postsToLoadUpperCount).subscribe(
-      (posts : HttpResponse<PostDTO[]>) => {
-        this.matchingPosts$.next(posts.body || []);
-      },
-      (error) => console.log(error.error)
-    );
+    this.queryChanged.emit(this.query);
+    this.searchByQueryClicked.emit();
   }
 
-  loadMorePosts(){
-    if (this.allPostsLoaded) return;
-    this.searchService.getPosts(this.query, this.postsToLoadLowerCount, this.postsToLoadUpperCount).subscribe(
-      (posts : HttpResponse<PostDTO[]>) => {
-        const currentPosts = this.matchingPosts$.getValue();
-        const newPosts = posts.body || [];
-        if (newPosts.length == 0){
-          this.allPostsLoaded = true;
-        }
-        this.matchingPosts$.next([...currentPosts, ...newPosts]);
-      },
-      (error) => console.log(error.error)
-    );
-  }
-
-  onScroll(){
-    this.postsToLoadLowerCount = this.postsToLoadLowerCount + this.postsPerPaged;
-    this.postsToLoadUpperCount = this.postsToLoadUpperCount + this.postsPerPaged;
-    this.loadMorePosts()
-  }
-  navigateToForYouPage() {
-
-  }
-
-  navigateToTendingPage() {
-
-  }
-
-  getCurrentUser(): void{
-    this.userService.getCurrentUser()
-      .subscribe( (response) =>{
-        if (response.body != null){
-          this.currentUser = response.body;
-          console.log(this.currentUser)
-        }
-      });
-  }
-  amIFollowing(id : number): boolean{
-    if (id == this.currentUser.id) return true;
-    return this.currentUser.followingIds.includes(id);
-  }
-  isCurrentUser(id : number){
-    return id == this.currentUser.id;
-  }
-
-  ngOnInit(): void {
-    this.getCurrentUser();
-  }
-
-  navigateToUserSearch() {
-
-  }
 }
