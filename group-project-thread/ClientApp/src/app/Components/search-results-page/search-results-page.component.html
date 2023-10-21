@@ -50,7 +50,17 @@
                                  [currentUser]="currentUser" [pageUser]="user" [isFollowing]="amIFollowing(user.id)"></app-page-user>
       </div>
     </div>
+    <div *ngIf="matchingUsers$.getValue().length == 0 && matchingPosts$.getValue().length==0" class="no-results">
+      <div class="no-results-box">
+        <div class="query-box">
+          <span class="query-box-text">No results for "{{query}}"</span>
+        </div>
+        <div class="reason-box">
+          <span class="reason-box-text">Try searching for something else, or check your country search policy it could be protecting you from potentially sensitive content.</span>
+        </div>
+      </div>
+    </div>
   </div>
-    <app-recommendations-side-bar [showWhatsHappening]="false" [showSearchbar]="false"></app-recommendations-side-bar>
+    <app-recommendations-side-bar [showSearchbar]="false"></app-recommendations-side-bar>
   </div>
 </div>

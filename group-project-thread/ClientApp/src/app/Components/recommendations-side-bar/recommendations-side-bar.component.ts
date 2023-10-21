@@ -8,6 +8,7 @@ import {UserDTO} from "../../models/user/userDTO";
 import {UserService} from "../../Services/user.service";
 import {Router} from "@angular/router";
 import {NavigatorService} from "../../Services/navigator.service";
+import {Tab} from "../../models/enums/Tab";
 
 @Component({
   selector: 'app-recommendations-side-bar',
@@ -68,4 +69,6 @@ export class RecommendationsSideBarComponent implements OnInit{
   navigateToConnectPeople() {
     this.router.navigate(['connect-people']);
   }
+
+  protected readonly Tab = Tab;
 }

@@ -3,8 +3,8 @@
     <app-search-bar
       [selectedTab]="selectedTab" [firstTabName]="'May be Interesting'" [secondTabName]="'Trending'"
       [query]="query"
-      (firstTabClicked)="navigatorService.navigateToMayBeInterestingPage()"
-      (secondTabClicked)="navigatorService.navigateToTrendingPage()"
+      (firstTabClicked)="navigatorService.navigateToMayBeInterestingPage(selectedTab)"
+      (secondTabClicked)="navigatorService.navigateToTrendingPage(selectedTab)"
       (searchByQueryClicked)="searchByQuery()"
       (queryChanged)="onQueryChanged($event)">
     </app-search-bar>

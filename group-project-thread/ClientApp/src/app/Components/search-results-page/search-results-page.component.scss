@@ -123,3 +123,40 @@ $grey-color: #dcdcdc;
   font-size: 14px;
 }
 
+.no-results {
+  width: 600px;
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.no-results-box {
+  max-width: 100%;
+  width: calc(400px);
+  margin-top: 32px;
+  margin-bottom: 32px;
+  padding-left: 32px;
+  padding-right: 32px;
+  display: flex;
+  flex-direction: column;
+}
+.query-box{
+  line-height: 36px;
+  word-wrap: break-word;
+  text-align: left;
+  margin-bottom: 8px;
+}
+.query-box-text{
+  font-weight: 700;
+  font-size: 31px;
+}
+
+.reason-box{
+  word-wrap: break-word;
+  text-align: left;
+  line-height: 20px;
+}
+.reason-box-text{
+  color: rgb(83, 100, 113);
+}

@@ -15,7 +15,7 @@ import {IndexedWordDTO} from "../../models/indexedWordDTO";
   styleUrls: ['./trending-page.component.scss', '../../../assets/ContentFrame.scss']
 })
 export class TrendingPageComponent {
-  public selectedTab : Tab = 0;
+  public selectedTab : Tab = 1;
   public query : string;
   public trends$ : BehaviorSubject<IndexedWordDTO[]> = new BehaviorSubject<IndexedWordDTO[]>([]);
   public currentUser! : UserDTO;
