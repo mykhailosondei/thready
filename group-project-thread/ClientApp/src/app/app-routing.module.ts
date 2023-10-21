@@ -18,6 +18,8 @@ import {BookmarksPageComponent} from "./Components/bookmarks-page/bookmarks-page
 import {RepostsPageComponent} from "./Components/reposts-page/reposts-page.component";
 import {WhoToFollowPageComponent} from "./Components/who-to-follow-page/who-to-follow-page.component";
 import {CreatorsForYouPageComponent} from "./Components/creators-for-you-page/creators-for-you-page.component";
+import {MayBeInterestingPageComponent} from "./Components/may-be-interesting-page/may-be-interesting-page.component";
+import {TrendingPageComponent} from "./Components/trending-page/trending-page.component";
 
 const routes: Routes = [
   {path:'', redirectTo: '/login', pathMatch: 'full'},
@@ -28,7 +30,8 @@ const routes: Routes = [
   {path: ':username/following', component: FollowingPageComponent},
   {path: ':username/followers', component: FollowersPageComponent},
   {path: ':username/post/:id', component: SingularPostViewComponent},
-  {path: 'explore', component: SearchBarComponent},
+  {path: 'explore', component: MayBeInterestingPageComponent},
+  {path: 'trending', component: TrendingPageComponent},
   {path: "search", component: SearchResultsPageComponent},
   {path: 'comment/:commentId', component: SingularCommentViewComponent},
   {path: 'bob', component: RecommendationsSideBarComponent},

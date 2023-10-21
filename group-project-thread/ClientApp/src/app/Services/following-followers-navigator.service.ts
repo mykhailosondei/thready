@@ -23,4 +23,12 @@ export class FollowingFollowersNavigatorService {
   public openCreatorsForYouPage($event : string) {
     this.router.navigate(['creators-for-you'])
   }
+
+  navigateToMayBeInterestingPage() {
+    this.router.navigate(['explore']);
+  }
+
+  navigateToTrendingPage() {
+    this.router.navigate(['trending']);
+  }
 }

@@ -52,6 +52,8 @@ import {BookmarksPageComponent} from "./Components/bookmarks-page/bookmarks-page
 import {RepostsPageComponent} from "./Components/reposts-page/reposts-page.component";
 import {WhoToFollowPageComponent} from "./Components/who-to-follow-page/who-to-follow-page.component";
 import {CreatorsForYouPageComponent} from "./Components/creators-for-you-page/creators-for-you-page.component";
+import {MayBeInterestingPageComponent} from "./Components/may-be-interesting-page/may-be-interesting-page.component";
+import {TrendingPageComponent} from "./Components/trending-page/trending-page.component";
 
 @NgModule({ declarations: [
         AppComponent,
@@ -91,7 +93,9 @@ import {CreatorsForYouPageComponent} from "./Components/creators-for-you-page/cr
         TablistPageComponent,
         FollowersPageComponent,
         WhoToFollowPageComponent,
-        CreatorsForYouPageComponent
+        CreatorsForYouPageComponent,
+        MayBeInterestingPageComponent,
+        TrendingPageComponent
     ],
   imports: [
     BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),

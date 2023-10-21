@@ -1,0 +1,19 @@
+<div class="wrap">
+  <div class="main-page">
+    <app-search-bar
+      [selectedTab]="selectedTab" [firstTabName]="'May be Interesting'" [secondTabName]="'Trending'"
+      [query]="query"
+      (firstTabClicked)="navigatorService.navigateToMayBeInterestingPage()"
+      (secondTabClicked)="navigatorService.navigateToTrendingPage()"
+      (searchByQueryClicked)="searchByQuery()"
+      (queryChanged)="onQueryChanged($event)">
+    </app-search-bar>
+    <div class="title-box">
+      <span class="title">This could be interesting for you</span>
+    </div>
+    <div>
+      <app-page-post *ngFor="let post of matchingPosts$ | async"
+                     [postInput]="post" [userInput]="currentUser"></app-page-post>
+    </div>
+  </div>
+</div>

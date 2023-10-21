@@ -63,6 +63,7 @@ export class SearchResultsPageComponent implements OnInit{
         this.peopleToLoadUpperCount, this.matchingUsers$);
     }
   }
+  
 
   searchByQuery() {
     if(this.query === ""){

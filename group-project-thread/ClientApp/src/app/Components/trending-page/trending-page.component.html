@@ -1,0 +1,23 @@
+<div class="wrap">
+  <div class="main-page">
+    <app-search-bar
+      [selectedTab]="selectedTab" [firstTabName]="'May be Interesting'" [secondTabName]="'Trending'"
+      [query]="query"
+      (firstTabClicked)="navigatorService.navigateToMayBeInterestingPage()"
+      (secondTabClicked)="navigatorService.navigateToTrendingPage()"
+      (searchByQueryClicked)="searchByQuery()"
+      (queryChanged)="onQueryChanged($event)">
+    </app-search-bar>
+    <div class="title-box">
+      <span class="title">The most popular now</span>
+    </div>
+    <div *ngFor="let word of trends$ | async; let i = index" class="trending-word-box wrapper">
+      <div class="text-box wrapper">
+        <span class="small-text">{{i+1}} · in trending</span>
+        <span class="main-text">{{word.word}}</span>
+        <span *ngIf="word.postsCount != 1" class="small-text">{{word.postsCount}} posts</span>
+        <span *ngIf="word.postsCount == 1" class="small-text">{{word.postsCount}} post</span>
+      </div>
+    </div>
+  </div>
+</div>
