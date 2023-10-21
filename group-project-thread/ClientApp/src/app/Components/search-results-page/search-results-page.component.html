@@ -62,7 +62,8 @@
           <span class="people-box-header">People</span>
         </div>
         <app-page-user *ngFor="let user of matchingUsers$ | async"
-                                 [currentUser]="currentUser" [pageUser]="user" [isFollowing]="amIFollowing(user.id)"
+                                 [currentUser]="currentUser" [isCurrentUserPage] = "user.id == currentUser.id"
+                       [pageUser]="user" [isFollowing]="amIFollowing(user.id)"
                                  ></app-page-user>
         <div class="view-all-button" (click)="navigateToUserSearch()">
           <div class="view-all-box">

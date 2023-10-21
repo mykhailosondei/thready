@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {faArrowLeftLong} from "@fortawesome/free-solid-svg-icons";
 import {faMagnifyingGlass} from "@fortawesome/free-solid-svg-icons/faMagnifyingGlass";
 import {PostDTO} from "../../models/post/postDTO";
@@ -9,6 +9,8 @@ import {PageUserDTO} from "../../models/user/pageUserDTO";
 import {UserDTO} from "../../models/user/userDTO";
 import {UserService} from "../../Services/user.service";
 import {error} from "@angular/compiler-cli/src/transformers/util";
+import {Tab} from "../../models/enums/Tab";
+import {DataLoadingService} from "../../Services/data-loading.service";
 @Component({
   selector: 'app-search-bar',
   templateUrl: './search-bar.component.html',
@@ -29,7 +31,15 @@ export class SearchBarComponent implements OnInit{
   @Input() public isTrending : boolean;
   @Input() public isForYou : boolean = true;
 
-  constructor(private searchService : SearchService, private userService : UserService) {
+  @Input() public selectedTab : Tab;
+  @Input() public firstTabName : string;
+  @Input() public secondTabName : string;
+
+  @Output() firstTabClicked : EventEmitter<string> = new EventEmitter<string>();
+  @Output() secondTabClicked : EventEmitter<string> = new EventEmitter<string>();
+
+  constructor(private searchService : SearchService, private userService : UserService,
+              private dataLoadingService : DataLoadingService) {
   }
   backToMainPaige() {
 
@@ -42,16 +52,7 @@ export class SearchBarComponent implements OnInit{
       return;
     }
     this.loadInitialPosts();
-    this.loadInitialPeople();
-  }
-
-  loadInitialPeople(){
-    this.searchService.getUsers(this.query, this.postsToLoadLowerCount, this.postsToLoadUpperCount).subscribe(
-      (users : HttpResponse<PageUserDTO[]>) => {
-        this.matchingUsers$.next(users.body || []);
-      },
-      (error) => console.log(error.error)
-    );
+    this.dataLoadingService.loadInitialPeople(this.query, this.postsToLoadLowerCount, this.postsToLoadUpperCount, this.matchingUsers$);
   }
   loadInitialPosts(){
     if (this.allPostsLoaded) return;

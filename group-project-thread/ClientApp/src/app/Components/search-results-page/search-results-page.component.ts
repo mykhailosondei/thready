@@ -9,6 +9,7 @@ import {PageUserDTO} from "../../models/user/pageUserDTO";
 import {UserDTO} from "../../models/user/userDTO";
 import {UserService} from "../../Services/user.service";
 import {ActivatedRoute, Router} from "@angular/router";
+import {DataLoadingService} from "../../Services/data-loading.service";
 @Component({
   selector: 'app-search-results-page',
   templateUrl: './search-results-page.component.html',
@@ -35,7 +36,7 @@ export class SearchResultsPageComponent implements OnInit{
   public isUsersPage : boolean;
 
   constructor(private searchService : SearchService, private userService : UserService, private route : ActivatedRoute,
-              private router : Router) {
+              private router : Router, private dataLoadingService : DataLoadingService) {
 
   }
 
@@ -51,12 +52,14 @@ export class SearchResultsPageComponent implements OnInit{
     });
     this.getCurrentUser();
     if (this.isAllPage){
-      this.loadPostsInitially();
-      this.loadPeopleInitially();
+      this.dataLoadingService.loadInitialPosts(this.query, this.postsToLoadLowerCount,
+        this.postsToLoadUpperCount, this.matchingPosts$);
+      this.dataLoadingService.loadInitialPeople(this.query, 0, 3,
+        this.matchingUsers$);
     }
     if (this.isUsersPage){
-      console.log('bob')
-      this.loadMorePeople();
+      this.dataLoadingService.loadMorePeople(this.allPeopleLoaded, this.query, this.peopleToLoadLowerCount,
+        this.peopleToLoadUpperCount, this.matchingUsers$);
     }
   }
 
@@ -71,8 +74,9 @@ export class SearchResultsPageComponent implements OnInit{
       this.postsToLoadLowerCount = 0;
       this.postsToLoadUpperCount = 10;
       this.router.navigate(['search'], { queryParams: { q: this.query } });
-      this.loadPostsInitially();
-      this.loadPeopleInitially();
+      this.dataLoadingService.loadInitialPosts(this.query, this.postsToLoadLowerCount,
+        this.postsToLoadUpperCount, this.matchingPosts$);
+      this.dataLoadingService.loadInitialPeople(this.query, 0, 3, this.matchingUsers$);
     }
     else {
       this.matchingUsers$ = new BehaviorSubject<PageUserDTO[]>([]);
@@ -80,57 +84,10 @@ export class SearchResultsPageComponent implements OnInit{
       this.peopleToLoadLowerCount = 0;
       this.peopleToLoadUpperCount = 10;
       this.router.navigate(['search'], { queryParams: { q: this.query, f: 'user' } });
-      this.loadMorePeople();
+      this.dataLoadingService.loadMorePeople(this.allPeopleLoaded, this.query, this.peopleToLoadLowerCount,
+        this.peopleToLoadUpperCount, this.matchingUsers$);
     }
 
-  }
-
-  loadPeopleInitially(){
-    this.searchService.getUsers(this.query, 0, 3).subscribe(
-      (users : HttpResponse<PageUserDTO[]>) => {
-        this.matchingUsers$.next(users.body || []);
-      },
-      (error) => {
-        this.allPeopleLoaded = true;
-      }
-    );
-  }
-  loadPostsInitially(){
-    this.searchService.getPosts(this.query, this.postsToLoadLowerCount, this.postsToLoadUpperCount).subscribe(
-      (posts : HttpResponse<PostDTO[]>) => {
-        this.matchingPosts$.next(posts.body || []);
-      },
-      () =>
-        this.allPostsLoaded = true
-    );
-  }
-
-  loadMorePeople(){
-    if (this.allPeopleLoaded) return;
-    this.searchService.getUsers(this.query, this.peopleToLoadLowerCount, this.peopleToLoadUpperCount).subscribe(
-      (posts : HttpResponse<PageUserDTO[]>) => {
-        const currentUsers = this.matchingUsers$.getValue();
-        const newUsers = posts.body || [];
-        this.matchingUsers$.next([...currentUsers, ...newUsers]);
-      },
-      () => {
-        this.allPeopleLoaded = true;
-      }
-    );
-  }
-
-  loadMorePosts(){
-    if (this.allPostsLoaded) return;
-    this.searchService.getPosts(this.query, this.postsToLoadLowerCount, this.postsToLoadUpperCount).subscribe(
-      (posts : HttpResponse<PostDTO[]>) => {
-        const currentPosts = this.matchingPosts$.getValue();
-        const newPosts = posts.body || [];
-        this.matchingPosts$.next([...currentPosts, ...newPosts]);
-      },
-      () => {
-        this.allPostsLoaded = true;
-      }
-    );
   }
   navigateToTopSearch() {
     this.isUsersPage =false;
@@ -147,13 +104,15 @@ export class SearchResultsPageComponent implements OnInit{
   onScrollPostsPage(){
     this.postsToLoadLowerCount += this.postsPerPage;
     this.postsToLoadUpperCount += this.postsPerPage;
-    this.loadMorePosts()
+    this.dataLoadingService.loadMorePosts(this.allPostsLoaded, this.query, this.postsToLoadLowerCount,
+      this.postsToLoadUpperCount, this.matchingPosts$);
   }
 
   onScrollUsersPage(){
     this.peopleToLoadLowerCount += this.peoplePerPage;
     this.peopleToLoadUpperCount += this.peoplePerPage;
-    this.loadMorePosts()
+    this.dataLoadingService.loadMorePeople(this.allPeopleLoaded, this.query, this.peopleToLoadLowerCount,
+      this.peopleToLoadUpperCount, this.matchingUsers$);
   }
 
   goBack() {
