@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import {Tab} from "../../models/enums/Tab";
-import {FollowingFollowersNavigatorService} from "../../Services/following-followers-navigator.service";
+import {NavigatorService} from "../../Services/navigator.service";
 import {RecommendationService} from "../../Services/recommendation.service";
 import {BehaviorSubject} from "rxjs";
 import {PageUserDTO} from "../../models/user/pageUserDTO";
@@ -17,7 +17,7 @@ export class WhoToFollowPageComponent {
   protected readonly Tab = Tab;
   public users$ : BehaviorSubject<PageUserDTO[]> = new BehaviorSubject<PageUserDTO[]>([]);
   public currentUser! : UserDTO;
-  constructor(public navigator : FollowingFollowersNavigatorService,
+  constructor(public navigator : NavigatorService,
               private recommendationService : RecommendationService,
               private userService : UserService) {
   }

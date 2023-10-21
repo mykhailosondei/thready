@@ -6,7 +6,7 @@ import {UserDTO} from "../../models/user/userDTO";
 import {Router} from "@angular/router";
 import {RecommendationService} from "../../Services/recommendation.service";
 import {UserService} from "../../Services/user.service";
-import {FollowingFollowersNavigatorService} from "../../Services/following-followers-navigator.service";
+import {NavigatorService} from "../../Services/navigator.service";
 import {IndexedWordDTO} from "../../models/indexedWordDTO";
 
 @Component({
@@ -20,7 +20,7 @@ export class TrendingPageComponent {
   public trends$ : BehaviorSubject<IndexedWordDTO[]> = new BehaviorSubject<IndexedWordDTO[]>([]);
   public currentUser! : UserDTO;
   constructor(private router : Router, private recommendationService : RecommendationService,
-              private userService : UserService, public navigatorService : FollowingFollowersNavigatorService) {
+              private userService : UserService, public navigatorService : NavigatorService) {
   }
 
   ngOnInit(): void {
@@ -52,4 +52,6 @@ export class TrendingPageComponent {
   onQueryChanged(query: string) {
     this.query = query;
   }
+
+
 }

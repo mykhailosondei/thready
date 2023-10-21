@@ -4,7 +4,7 @@ import {Router} from "@angular/router";
 @Injectable({
   providedIn: 'root'
 })
-export class FollowingFollowersNavigatorService {
+export class NavigatorService {
   constructor(private router : Router) { }
 
   public openProfilePage($event : string){
@@ -30,5 +30,9 @@ export class FollowingFollowersNavigatorService {
 
   navigateToTrendingPage() {
     this.router.navigate(['trending']);
+  }
+
+  searchByWord(word: string) {
+    this.router.navigate(['search'], {queryParams : {q : word}})
   }
 }

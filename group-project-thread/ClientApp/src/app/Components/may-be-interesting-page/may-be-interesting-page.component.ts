@@ -6,7 +6,7 @@ import {BehaviorSubject, Subject} from "rxjs";
 import {PostDTO} from "../../models/post/postDTO";
 import {UserDTO} from "../../models/user/userDTO";
 import {UserService} from "../../Services/user.service";
-import {FollowingFollowersNavigatorService} from "../../Services/following-followers-navigator.service";
+import {NavigatorService} from "../../Services/navigator.service";
 
 @Component({
   selector: 'app-may-be-interesting-page',
@@ -20,7 +20,7 @@ export class MayBeInterestingPageComponent implements OnInit{
   public currentUser! : UserDTO;
   public currentUserId$ = new BehaviorSubject<number | undefined>(undefined);
   constructor(private router : Router, private recommendationService : RecommendationService,
-              private userService : UserService, public navigatorService : FollowingFollowersNavigatorService) {
+              private userService : UserService, public navigatorService : NavigatorService) {
   }
 
   ngOnInit(): void {

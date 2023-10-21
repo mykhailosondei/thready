@@ -4,7 +4,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {UserDTO} from "../../models/user/userDTO";
 import {PageUserDTO} from "../../models/user/pageUserDTO";
 import {finalize, Subject, takeUntil} from "rxjs";
-import {FollowingFollowersNavigatorService} from "../../Services/following-followers-navigator.service";
+import {NavigatorService} from "../../Services/navigator.service";
 import {Tab} from "../../models/enums/Tab";
 @Component({
   selector: 'app-followers-page',
@@ -17,7 +17,7 @@ export class FollowersPageComponent {
   protected followers : PageUserDTO[];
   private unsubscribe$ = new Subject<void>();
   protected currentUser! : UserDTO;
-  constructor(private userService: UserService, private route: ActivatedRoute, public navigatorService : FollowingFollowersNavigatorService) {
+  constructor(private userService: UserService, private route: ActivatedRoute, public navigatorService : NavigatorService) {
     this.route.paramMap.subscribe(params => {
       this.username = params.get('username') || "DefaultUsername";
     })

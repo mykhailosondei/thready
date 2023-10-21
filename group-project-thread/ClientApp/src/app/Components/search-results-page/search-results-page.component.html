@@ -32,7 +32,8 @@
              [infiniteScrollDistance]="3"
              [infiniteScrollThrottle]="500"
              (scrolled)="onScrollPostsPage()"
-             [scrollWindow]="true">
+             [scrollWindow]="true"
+        class="infinite-scroll">
           <app-page-post *ngFor="let post of matchingPosts$ | async"
                          [postInput]="post" [userInput]="post.author "></app-page-post>
         </div>
@@ -49,7 +50,7 @@
                                  [currentUser]="currentUser" [pageUser]="user" [isFollowing]="amIFollowing(user.id)"></app-page-user>
       </div>
     </div>
-    <app-recommendations-side-bar></app-recommendations-side-bar>
   </div>
+    <app-recommendations-side-bar [showWhatsHappening]="false" [showSearchbar]="false"></app-recommendations-side-bar>
   </div>
 </div>

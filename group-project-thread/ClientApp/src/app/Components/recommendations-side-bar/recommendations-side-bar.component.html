@@ -1,7 +1,7 @@
  <div class="recommendation-bar">
     <div class="sticky">
       <div class="content-box">
-        <div class="sticky-search-box">
+        <div *ngIf="showSearchbar" class="sticky-search-box">
           <div class="wrapper search-box-border">
             <div class="wrapper search-box">
               <div class="wrapper svg-box">
@@ -18,12 +18,12 @@
             </div>
           </div>
         </div>
-        <div class="empty-box"></div>
-        <div class="recommendations-box wrapper">
+        <div *ngIf="showSearchbar" class="empty-box"></div>
+        <div *ngIf="showWhatsHappening" class="recommendations-box wrapper">
           <div class="recommendations-box-title wrapper">
             <span class="title">What's happening</span>
           </div>
-          <div *ngFor="let word of smallTrends$ | async" class="trending-word-box wrapper">
+          <div *ngFor="let word of smallTrends$ | async" class="trending-word-box wrapper" (click)="navigatorService.searchByWord(word.word)" >
             <div class="text-box wrapper">
               <span class="small-text">Trending</span>
               <span class="main-text">{{word.word}}</span>
@@ -31,11 +31,11 @@
               <span *ngIf="word.postsCount == 1" class="small-text">{{word.postsCount}} post</span>
             </div>
           </div>
-          <div class="show-more wrapper">
+          <div class="show-more wrapper" (click)="navigatorService.navigateToMayBeInterestingPage()">
             <span class="show-more-span">Show More</span>
           </div>
         </div>
-        <div class="recommendations-box wrapper">
+        <div *ngIf="showWhoToFollow" class="recommendations-box wrapper">
           <div class="recommendations-box-title wrapper">
             <span class="title">People To Follow</span>
           </div>
@@ -43,7 +43,7 @@
             <app-page-user [pageUser]="user" [isFollowing]="false" [containerHeight]="40"
                            [currentUser]="currentUser" [showBio]="false"></app-page-user>
           </div>
-          <div class="show-more wrapper" (click)="navigateToConnectPeople()">
+          <div class="show-more wrapper" (click)="navigatorService.openWhoToFollowPage('')">
             <span class="show-more-span">Show More</span>
           </div>
         </div>

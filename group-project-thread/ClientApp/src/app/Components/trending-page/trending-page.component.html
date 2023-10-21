@@ -11,7 +11,7 @@
     <div class="title-box">
       <span class="title">The most popular now</span>
     </div>
-    <div *ngFor="let word of trends$ | async; let i = index" class="trending-word-box wrapper">
+    <div *ngFor="let word of trends$ | async; let i = index" class="trending-word-box wrapper" (click)="navigatorService.searchByWord(word.word)">
       <div class="text-box wrapper">
         <span class="small-text">{{i+1}} · in trending</span>
         <span class="main-text">{{word.word}}</span>
