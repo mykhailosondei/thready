@@ -13,6 +13,7 @@ import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {UserUpdateDialogComponent} from "../user-update-dialog/user-update-dialog.component";
 import {UpdateUserDialogData} from "../../models/user/updateUserDialogData";
 import {HttpResponse} from "@angular/common/http";
+import {Endpoint} from "../side-navbar/side-navbar.component";
 
 @Component({
   selector: 'app-profile-page',
@@ -177,4 +178,6 @@ export class ProfilePageComponent implements OnInit, OnDestroy{
         this.snackBarService.showErrorMessage(error.error.title);});
     }
   }
+
+    protected readonly Endpoint = Endpoint;
 }

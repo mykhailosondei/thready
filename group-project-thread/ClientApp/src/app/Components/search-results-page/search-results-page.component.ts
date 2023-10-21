@@ -10,6 +10,7 @@ import {UserDTO} from "../../models/user/userDTO";
 import {UserService} from "../../Services/user.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {DataLoadingService} from "../../Services/data-loading.service";
+import {Endpoint} from "../side-navbar/side-navbar.component";
 @Component({
   selector: 'app-search-results-page',
   templateUrl: './search-results-page.component.html',
@@ -136,4 +137,5 @@ export class SearchResultsPageComponent implements OnInit{
     return id == this.currentUser.id;
   }
 
+    protected readonly Endpoint = Endpoint;
 }

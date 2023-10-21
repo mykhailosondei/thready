@@ -4,6 +4,7 @@ import {HttpInternalService} from "../../Services/http-internal.service";
 import {PostDTO} from "../../models/post/postDTO";
 import {Router} from "@angular/router";
 import {PostService} from "../../Services/post.service";
+import {Endpoint} from "../side-navbar/side-navbar.component";
 
 @Component({
   selector: 'app-main-page',
@@ -33,4 +34,5 @@ export class MainPageComponent {
   }
 
   protected readonly Number = Number;
+  protected readonly Endpoint = Endpoint;
 }

@@ -1,6 +1,14 @@
 $grey-color: #dcdcdc;
 $font : -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
 
+.element{
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  width: 990px;
+  justify-content: space-between;
+}
+
 .profile-info{
   max-width: 600px;
   width: 100%;
