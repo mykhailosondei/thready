@@ -31,7 +31,7 @@
               <span *ngIf="word.postsCount == 1" class="small-text">{{word.postsCount}} post</span>
             </div>
           </div>
-          <div class="show-more wrapper" (click)="navigatorService.navigateToMayBeInterestingPage()">
+          <div class="show-more wrapper" (click)="navigatorService.navigateToMayBeInterestingPage(Tab.FirstTab)">
             <span class="show-more-span">Show More</span>
           </div>
         </div>

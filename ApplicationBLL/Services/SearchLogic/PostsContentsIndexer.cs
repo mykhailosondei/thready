@@ -51,7 +51,32 @@ public class PostsContentsIndexer
                 _indexerContext.IndexedWords.Add(newWord);
             }
         }
-        Console.WriteLine(DateTime.Now);
+        await _indexerContext.SaveChangesAsync();
+    }
+    
+    
+    public async Task ChangeIndexedWordsPostsCountByPostId(string textContent)
+    {
+        var words = await _indexerContext.IndexedWords.ToListAsync();
+        var wordsFrequencyInPost = GetFrequencyOfWords(textContent);
+        foreach (var wordFrequency in wordsFrequencyInPost)
+        {
+            var existingWord = words.FirstOrDefault(word => word.Word == wordFrequency.Key);
+            if (existingWord != null)
+            {
+                _indexerContext.Attach(existingWord);
+                if (--existingWord.PostsCount == 0)
+                {
+                    _indexerContext.Remove(existingWord);
+                }
+            }
+        }
+        await _indexerContext.SaveChangesAsync();
+    }
+    
+    public async Task RemoveWordsCountsFromTableByPostId(int postId)
+    {
+        _indexerContext.WordCountInPostIds.RemoveRange(_indexerContext.WordCountInPostIds.Where(w => w.PostId == postId));
         await _indexerContext.SaveChangesAsync();
     }
     
