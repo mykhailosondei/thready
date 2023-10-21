@@ -1,5 +1,13 @@
 $grey-color: #dcdcdc;
 
+.element{
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  width: 990px;
+  justify-content: space-between;
+}
+
 .header{
   cursor: auto !important;
   border-bottom: 0px !important;

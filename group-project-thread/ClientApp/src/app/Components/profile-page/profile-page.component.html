@@ -1,91 +1,97 @@
 <div *ngIf="contentLoaded" class="wrap">
-  <div class="main-page">
-    <div class="sticky-wrap">
-      <div class="header">
-        <div class="header-content">
-          <div  class="back-button" >
-            <div class="svg-pic" aria-label="back" role="button" (click)="backToMainPaige()" >
-              <fa-icon [icon]="faArrowLeftLong" class="arrowIcon"></fa-icon>
-            </div>
-          </div>
-          <div class="profile-info-area">
-            <div class="username">
-              <span>{{user.username}}</span>
-            </div>
-            <div class="subtitle-box">
-              <span class="subtitle-text">{{ user.posts.length}} posts</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="profile-info">
-        <div class="empty-area">
-        </div>
-
-        <div class="user-info">
-          <div class="profile-photo-edit-profile">
-            <div class="image-box">
-              <div class="image-wrap">
-                <img class="profile-image" src="https://picsum.photos/1080">
+  <app-side-navbar [activatedEndpoint]="Endpoint.Profile"></app-side-navbar>
+  <div class="element">
+    <div class="main-page">
+      <div class="sticky-wrap">
+        <div class="header">
+          <div class="header-content">
+            <div class="back-button">
+              <div class="svg-pic" aria-label="back" role="button" (click)="backToMainPaige()">
+                <fa-icon [icon]="faArrowLeftLong" class="arrowIcon"></fa-icon>
               </div>
             </div>
-            <div *ngIf="isCurrentUser">
-              <div class="edit-box">
-                <div class="edit-profile" (click)="openEditDialog()">
-                  <span class="button-text">Edit profile</span>
+            <div class="profile-info-area">
+              <div class="username">
+                <span>{{user.username}}</span>
+              </div>
+              <div class="subtitle-box">
+                <span class="subtitle-text">{{ user.posts.length}} posts</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="profile-info">
+          <div class="empty-area">
+          </div>
+
+          <div class="user-info">
+            <div class="profile-photo-edit-profile">
+              <div class="image-box">
+                <div class="image-wrap">
+                  <img class="profile-image" src="https://picsum.photos/1080">
+                </div>
+              </div>
+              <div *ngIf="isCurrentUser">
+                <div class="edit-box">
+                  <div class="edit-profile" (click)="openEditDialog()">
+                    <span class="button-text">Edit profile</span>
+                  </div>
+                </div>
+              </div>
+
+              <div *ngIf="!isCurrentUser" style="user-select: none;">
+                <div *ngIf="isCurrentUserFollowing || !unfollowed" class="follow-button-box">
+                  <div class="follow-button-border" (mouseenter)="changeSpan()" (mouseleave)="changeSpan()"
+                       (click)="unfollow(user.id)">
+                    <span class="button-text">{{followingText}}</span>
+                  </div>
+                </div>
+                <div *ngIf="!isCurrentUserFollowing || unfollowed" class="unfollow-button-box"
+                     (click)="follow(user.id)">
+                  <div class="unfollow-button-border">
+                    <span class="unfollow">Follow</span>
+                  </div>
                 </div>
               </div>
             </div>
-
-            <div *ngIf="!isCurrentUser" style="user-select: none;">
-              <div *ngIf="isCurrentUserFollowing || !unfollowed" class="follow-button-box">
-                <div class="follow-button-border" (mouseenter)="changeSpan()" (mouseleave)="changeSpan()" (click)="unfollow(user.id)">
-                  <span class="button-text">{{followingText}}</span>
-                </div>
+            <div class="underline-box">
+              <span class="user-tag">@{{user.username}}</span>
+            </div>
+            <div *ngIf="user.bio != ''" class="bio-box">
+              <span class="bio">{{user.bio}}</span>
+            </div>
+            <div class="dob-location">
+              <div *ngIf="user.location != ''" class="location-item">
+                <fa-icon [icon]="faLocationDot" class="small-item"></fa-icon>
+                <span class="small-info">{{user.location}}</span>
               </div>
-              <div *ngIf="!isCurrentUserFollowing || unfollowed" class="unfollow-button-box" (click)="follow(user.id)">
-                <div class="unfollow-button-border">
-                  <span class="unfollow">Follow</span>
-                </div>
+              <div class="birth-date">
+                <fa-icon [icon]="faCalendar" class="small-item"></fa-icon>
+                <span class="small-info">Date of birth: {{user.dateOfBirth | date: 'd MMMM y'}}</span>
               </div>
             </div>
-          </div>
-          <div class="underline-box">
-            <span class="user-tag">@{{user.username}}</span>
-          </div>
-          <div *ngIf="user.bio != ''" class="bio-box">
-            <span class="bio">{{user.bio}}</span>
-          </div>
-          <div class="dob-location">
-            <div *ngIf="user.location != ''" class="location-item">
-              <fa-icon [icon]="faLocationDot" class="small-item"></fa-icon>
-              <span class="small-info">{{user.location}}</span>
+            <div class="following-followers">
+              <a class="following-link" (click)="navigateToFollowing()">
+                <span class="following-count">{{user.followingIds?.length}} </span>
+                <span class="following">Following</span>
+              </a>
+              <a class="followers-link" (click)="navigateToFollowers()">
+                <span class="followers-count">{{user.followersIds?.length}} </span>
+                <span class="followers">Followers</span>
+              </a>
             </div>
-            <div class="birth-date">
-              <fa-icon [icon]="faCalendar" class="small-item"></fa-icon>
-              <span class="small-info">Date of birth: {{user.dateOfBirth | date: 'd MMMM y'}}</span>
-            </div>
-          </div>
-          <div class="following-followers">
-            <a class="following-link" (click)="navigateToFollowing()" >
-              <span class="following-count">{{user.followingIds?.length}} </span>
-              <span class="following">Following</span>
-            </a>
-            <a class="followers-link" (click)="navigateToFollowers()">
-              <span class="followers-count">{{user.followersIds?.length}} </span>
-              <span class="followers">Followers</span>
-            </a>
-          </div>
 
-        </div>
-        <div class="posts-title-box">
-          <span class="posts-title">{{postsText}}</span>
-        </div>
-        <div class="posts-thread">
-          <app-page-post *ngFor="let post of userPosts$ | async"
-                         [postInput]="post" [userInput]="user"></app-page-post>
+          </div>
+          <div class="posts-title-box">
+            <span class="posts-title">{{postsText}}</span>
+          </div>
+          <div class="posts-thread">
+            <app-page-post *ngFor="let post of userPosts$ | async"
+                           [postInput]="post" [userInput]="user"></app-page-post>
+          </div>
         </div>
       </div>
     </div>
+    <app-recommendations-side-bar></app-recommendations-side-bar>
   </div>
 </div>

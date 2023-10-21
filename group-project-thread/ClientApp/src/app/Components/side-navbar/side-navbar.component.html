@@ -3,7 +3,7 @@
     <div class="logo-link"></div>
     <div class="contents">
       <div class="content-holder">
-        <div class="content-pressable">
+        <div class="content-pressable {{this.activatedEndpoint === Endpoint.Home ? 'activated' : 'not-activated'}}">
           <div class="left-icon">
             <fa-icon [icon]="faHome"></fa-icon>
           </div>
@@ -12,7 +12,7 @@
         </div>
       </div>
       <div class="content-holder">
-        <div class="content-pressable">
+        <div class="content-pressable {{this.activatedEndpoint === Endpoint.Search ? 'activated' : 'not-activated'}}">
           <div class="left-icon">
             <fa-icon [icon]="faSearch"></fa-icon>
           </div>
@@ -21,7 +21,7 @@
         </div>
       </div>
       <div class="content-holder">
-        <div class="content-pressable">
+        <div class="content-pressable {{this.activatedEndpoint === Endpoint.Bookmarks ? 'activated' : 'not-activated'}}">
           <div class="left-icon">
             <fa-icon [icon]="faBookmarkIcon"></fa-icon>
           </div>
@@ -30,7 +30,7 @@
         </div>
       </div>
       <div class="content-holder">
-      <div class="content-pressable">
+      <div class="content-pressable {{this.activatedEndpoint === Endpoint.Reposts ? 'activated' : 'not-activated'}}">
         <div class="left-icon">
           <fa-icon [icon]="faRetweet"></fa-icon>
         </div>
@@ -39,7 +39,7 @@
       </div>
       </div>
       <div class="content-holder">
-        <div class="content-pressable">
+        <div class="content-pressable {{this.activatedEndpoint === Endpoint.Profile? 'activated' : 'not-activated'}}">
           <div class="left-icon">
             <fa-icon [icon]="faUserIcon"></fa-icon>
           </div>
@@ -48,7 +48,23 @@
         </div>
     </div>
       <button class="post-a-post-button" (click)="openPostingDialog()">Post</button>
+      <div class="logout-button" (click)="logoutBtnClick()" #logoutButton>
+        {{numberOfLogoutClicks < 1 ? 'Logout' : 'Are you sure?'}}
+      </div>
+      <div *ngIf="numberOfLogoutClicks==1" (click)="discardCloseBtnClick()" class="discard-close">
+        <fa-icon [icon]="faTimes"></fa-icon>
+      </div>
     </div>
-    <div class="profile-footer"></div>
+    <div class="profile-footer">
+      <div></div>
+      <div class="profile">
+        <a href="{{user.username}}/profile" class="user-link"></a>
+          <div class="user-avatar" [ngStyle]="{'background-color': getCircleColor()}">
+            <img *ngIf="!isAvatarNull()" src="{{user.avatar!.url}}" alt="{{user.username}}}">
+            <div *ngIf="isAvatarNull()" class="initial">{{getFirstInitial()}}</div>
+          </div>
+        <div class="profile-username">{{user.username}}</div>
+      </div>
+    </div>
   </div>
 </div>

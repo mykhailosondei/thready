@@ -1,4 +1,7 @@
 <div class="wrap">
+  <app-side-navbar [activatedEndpoint]="Endpoint.Search"></app-side-navbar>
+  <div class="element">
+
   <div class="main-page">
     <app-search-bar
     [selectedTab]="selectedTab" [firstTabName]="'Top'" [secondTabName]="'People'"
@@ -46,5 +49,7 @@
                                  [currentUser]="currentUser" [pageUser]="user" [isFollowing]="amIFollowing(user.id)"></app-page-user>
       </div>
     </div>
+    <app-recommendations-side-bar></app-recommendations-side-bar>
+  </div>
   </div>
 </div>

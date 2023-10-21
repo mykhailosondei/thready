@@ -1,14 +1,16 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {faArrowLeftLong} from "@fortawesome/free-solid-svg-icons";
 import {faMagnifyingGlass} from "@fortawesome/free-solid-svg-icons/faMagnifyingGlass";
 import {PostDTO} from "../../models/post/postDTO";
-import {BehaviorSubject} from "rxjs";
+import {BehaviorSubject, takeUntil} from "rxjs";
 import {SearchService} from "../../Services/search.service";
+import {HttpResponse} from "@angular/common/http";
 import {PageUserDTO} from "../../models/user/pageUserDTO";
 import {UserDTO} from "../../models/user/userDTO";
 import {UserService} from "../../Services/user.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {DataLoadingService} from "../../Services/data-loading.service";
+import {Endpoint} from "../side-navbar/side-navbar.component";
 import {Tab} from "../../models/enums/Tab";
 import {Q} from "@angular/cdk/keycodes";
 
@@ -139,4 +141,6 @@ export class SearchResultsPageComponent implements OnInit{
   isCurrentUser(id : number){
     return id == this.currentUser.id;
   }
+
+    protected readonly Endpoint = Endpoint;
 }

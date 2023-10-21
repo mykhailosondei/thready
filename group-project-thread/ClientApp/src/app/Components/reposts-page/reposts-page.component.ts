@@ -5,6 +5,7 @@ import {PostService} from "../../Services/post.service";
 import {UserService} from "../../Services/user.service";
 import {PageUserDTO} from "../../models/user/pageUserDTO";
 import {faRetweet} from "@fortawesome/free-solid-svg-icons";
+import {Endpoint} from "../side-navbar/side-navbar.component";
 
 @Component({
   selector: 'app-reposts-page',
@@ -49,4 +50,5 @@ export class RepostsPageComponent implements OnInit{
   }
 
   protected readonly faRetweet = faRetweet;
+    protected readonly Endpoint = Endpoint;
 }

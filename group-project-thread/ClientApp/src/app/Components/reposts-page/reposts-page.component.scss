@@ -12,3 +12,10 @@ $border-color: #dcdcdc;
   border-left-width: 1px;
 }
 
+.element{
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  width: 990px;
+  justify-content: space-between;
+}
