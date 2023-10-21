@@ -249,6 +249,8 @@ public class PostService : BaseService
     public async Task DeletePost(int postId)
     {
         var post = await _postQueryRepository.GetPostById(postId, (p) => p.Author);
+        await _postsContentsIndexer.ChangeIndexedWordsPostsCountByPostId(post.TextContent);
+        await _postsContentsIndexer.RemoveWordsCountsFromTableByPostId(post.Id);
         var postEntity = _mapper.Map<Post>(post);
         _applicationContext.Posts.Remove(postEntity);
         
