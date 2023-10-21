@@ -207,6 +207,9 @@ public class PostService : BaseService
     {
         var postToUpdate = await _postQueryRepository.GetPostById(id, p => p.Author);
         
+        await _postsContentsIndexer.ChangeIndexedWordsPostsCountByPostId(postToUpdate.TextContent);
+        await _postsContentsIndexer.RemoveWordsCountsFromTableByPostId(postToUpdate.Id);
+        
         var currentUserId = _userQueryRepository.GetCurrentUserId();
         
         if (postToUpdate.Author.Id != currentUserId)
@@ -244,6 +247,7 @@ public class PostService : BaseService
         _applicationContext.Entry(postEntity).Collection(p => p.Images).IsModified = true;
         _applicationContext.Entry(postEntity).Property(p => p.TextContent).IsModified = true;
         await _applicationContext.SaveChangesAsync();
+        await _postsContentsIndexer.AddIndexedWordsToTableByPostId(postEntity.Id, postEntity.TextContent);
     }
 
     public async Task DeletePost(int postId)
