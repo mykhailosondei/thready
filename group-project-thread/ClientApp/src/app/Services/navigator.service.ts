@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {Router} from "@angular/router";
+import {Tab} from "../models/enums/Tab";
 
 @Injectable({
   providedIn: 'root'
@@ -24,11 +25,13 @@ export class NavigatorService {
     this.router.navigate(['creators-for-you'])
   }
 
-  navigateToMayBeInterestingPage() {
+  navigateToMayBeInterestingPage(currentTab : Tab) {
+    currentTab = 0;
     this.router.navigate(['explore']);
   }
 
-  navigateToTrendingPage() {
+  navigateToTrendingPage(currentTab : Tab) {
+    currentTab = 1;
     this.router.navigate(['trending']);
   }
 

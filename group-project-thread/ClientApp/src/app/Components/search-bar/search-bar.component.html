@@ -25,33 +25,34 @@
       </div>
     </div>
   </div>
-</div>
-<div style="border-bottom: 1px solid #dcdcdc">
-  <nav class="navigation-bar">
-    <div role="tablist" class="navigation-bar-content">
-      <div class="tab-box" (click)="navigateToFirstTab()">
-        <div class="tab">
-          <div class="tab-text-box">
-            <span class="first-tab-text" [ngClass]="{'first-tab-selected': selectedTab== 0}">
-              {{firstTabName}}
-            </span>
-          </div>
-          <div *ngIf="selectedTab==0" class="selected-tab">
-          </div>
-        </div>
-      </div>
 
-      <div class="tab-box" (click)="navigateToSecondTab()">
-        <div class="tab">
-          <div class="tab-text-box">
-            <span class="second-tab-text" [ngClass]="{'second-tab-selected': selectedTab == 1}">
-              {{secondTabName}}
-            </span>
+  <div style="border-bottom: 1px solid #dcdcdc">
+    <nav class="navigation-bar">
+      <div role="tablist" class="navigation-bar-content">
+        <div class="tab-box" (click)="navigateToFirstTab()">
+          <div class="tab">
+            <div class="tab-text-box">
+              <span class="first-tab-text" [ngClass]="{'first-tab-selected': selectedTab== 0}">
+                {{firstTabName}}
+              </span>
+            </div>
+            <div *ngIf="selectedTab==0" class="selected-tab">
+            </div>
           </div>
-          <div *ngIf="selectedTab == 1" class="selected-tab">
+        </div>
+
+        <div class="tab-box" (click)="navigateToSecondTab()">
+          <div class="tab">
+            <div class="tab-text-box">
+              <span class="second-tab-text" [ngClass]="{'second-tab-selected': selectedTab == 1}">
+                {{secondTabName}}
+              </span>
+            </div>
+            <div *ngIf="selectedTab == 1" class="selected-tab">
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </nav>
+    </nav>
+  </div>
 </div>
