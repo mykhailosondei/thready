@@ -1,6 +1,6 @@
 <div class="wrap">
   <div class="main-page">
-    <app-tablist-page [title]="username" [firstTabName] = "'Followers'" [secondTabName] = "'Following'"
+    <app-tablist-page [title]="username" [firstTabName] = "'Following'" [secondTabName] = "'Followers'"
                          [selectedTab]="Tab.SecondTab"
                          (titleClicked)="navigatorService.openProfilePage($event)"
                          (firstTabClicked)="navigatorService.openFollowingPage($event)"

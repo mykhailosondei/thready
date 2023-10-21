@@ -11,6 +11,9 @@ import {UserService} from "../../Services/user.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {DataLoadingService} from "../../Services/data-loading.service";
 import {Endpoint} from "../side-navbar/side-navbar.component";
+import {Tab} from "../../models/enums/Tab";
+import {Q} from "@angular/cdk/keycodes";
+
 @Component({
   selector: 'app-search-results-page',
   templateUrl: './search-results-page.component.html',
@@ -33,8 +36,7 @@ export class SearchResultsPageComponent implements OnInit{
   private readonly peoplePerPage : number = 10;
   private allPostsLoaded : boolean = false;
   private allPeopleLoaded : boolean = false;
-  public isAllPage : boolean;
-  public isUsersPage : boolean;
+  public selectedTab : Tab;
 
   constructor(private searchService : SearchService, private userService : UserService, private route : ActivatedRoute,
               private router : Router, private dataLoadingService : DataLoadingService) {
@@ -45,20 +47,20 @@ export class SearchResultsPageComponent implements OnInit{
     this.route.queryParams.subscribe((params) =>{
       this.query = params['q'];
       if (params['f'] === "user"){
-        this.isUsersPage = true;
+        this.selectedTab = Tab.SecondTab;
       }
       else if (params['f'] === undefined || params['f'] === ''){
-        this.isAllPage = true;
+        this.selectedTab = Tab.FirstTab;
       }
     });
     this.getCurrentUser();
-    if (this.isAllPage){
+    if (this.selectedTab == Tab.FirstTab){
       this.dataLoadingService.loadInitialPosts(this.query, this.postsToLoadLowerCount,
         this.postsToLoadUpperCount, this.matchingPosts$);
       this.dataLoadingService.loadInitialPeople(this.query, 0, 3,
         this.matchingUsers$);
     }
-    if (this.isUsersPage){
+    if (this.selectedTab == Tab.SecondTab){
       this.dataLoadingService.loadMorePeople(this.allPeopleLoaded, this.query, this.peopleToLoadLowerCount,
         this.peopleToLoadUpperCount, this.matchingUsers$);
     }
@@ -68,7 +70,7 @@ export class SearchResultsPageComponent implements OnInit{
     if(this.query === ""){
       return;
     }
-    if (this.isAllPage){
+    if (this.selectedTab == Tab.FirstTab){
       this.matchingPosts$ = new BehaviorSubject<PostDTO[]>([]);
       this.matchingUsers$ = new BehaviorSubject<PageUserDTO[]>([]);
       this.allPostsLoaded = false;
@@ -91,14 +93,12 @@ export class SearchResultsPageComponent implements OnInit{
 
   }
   navigateToTopSearch() {
-    this.isUsersPage =false;
-    this.isAllPage = true;
+    this.selectedTab = Tab.FirstTab;
     this.searchByQuery();
   }
 
   navigateToUserSearch() {
-    this.isUsersPage =true;
-    this.isAllPage = false;
+    this.selectedTab  = Tab.SecondTab;
     this.searchByQuery();
   }
 
@@ -114,6 +114,10 @@ export class SearchResultsPageComponent implements OnInit{
     this.peopleToLoadUpperCount += this.peoplePerPage;
     this.dataLoadingService.loadMorePeople(this.allPeopleLoaded, this.query, this.peopleToLoadLowerCount,
       this.peopleToLoadUpperCount, this.matchingUsers$);
+  }
+
+  onQueryChanged(query: string) {
+    this.query = query;
   }
 
   goBack() {

@@ -1,88 +1,57 @@
-<div class="wrap">
-  <div class="main-page">
-    <div class="sticky-wrap">
-      <div class="header">
-        <div class="header-content">
-          <div  class="back-button" >
-            <div class="svg-pic" aria-label="back" role="button" (click)="backToMainPaige()" >
-              <fa-icon [icon]="faArrowLeftLong" class="arrowIcon"></fa-icon>
+<div class="sticky-wrap">
+  <div class="header">
+    <div class="header-content">
+      <div  class="back-button" >
+        <div class="svg-pic" aria-label="back" role="button" (click)="backToMainPaige()" >
+          <fa-icon [icon]="faArrowLeftLong" class="arrowIcon"></fa-icon>
+        </div>
+      </div>
+      <div class="search-bar-area">
+        <div class="search-bar-box">
+          <div class="input-box">
+            <div class="svg-box">
+              <fa-icon [icon]="faMagnifyingGlass" class="search-icon"></fa-icon>
             </div>
-          </div>
-          <div class="search-bar-area">
-            <div class="search-bar-box">
-              <div class="input-box">
-                <div class="svg-box">
-                  <fa-icon [icon]="faMagnifyingGlass" class="search-icon"></fa-icon>
-                </div>
-                <div class="input-area">
-                  <input class="search-query-input" placeholder="Search" [(ngModel)]="query" (keyup.enter)="searchByQuery()">
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="go-button">
-            <div class="go-box" (click)="searchByQuery()">
-              <span>Go</span>
+            <div class="input-area">
+              <input class="search-query-input" placeholder="Search" [(ngModel)]="query" [value]="query" (keyup.enter)="searchByQuery()">
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <div style="border-bottom: 1px solid #dcdcdc">
-      <nav class="navigation-bar">
-        <div role="tablist" class="navigation-bar-content">
-          <div class="tab-box" (click)="navigateToForYouPage()">
-            <div class="tab">
-              <div class="tab-text-box">
-            <span class="first-tab-text" [ngClass]="{'first-tab-selected': isTrending}">
-              May be interesting
-            </span>
-                <div *ngIf="isTrending" class="selected-tab">
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="tab-box" (click)="navigateToTendingPage()">
-            <div class="tab">
-              <div class="tab-text-box">
-            <span class="second-tab-text" [ngClass]="{'second-tab-selected': isForYou}">
-              Trending
-            </span>
-                <div *ngIf="isForYou" class="selected-tab">
-                </div>
-              </div>
-            </div>
-          </div>
+      <div class="go-button">
+        <div class="go-box" (click)="searchByQuery()">
+          <span>Go</span>
         </div>
-      </nav>
-    </div>
-    <div *ngIf="matchingUsers$.getValue().length != 0" class="user-search-results">
-      <div class="people-box">
-        <span class="people-box-header">People</span>
-      </div>
-      <app-page-user *ngFor="let user of matchingUsers$ | async"
-      [currentUser]="currentUser" [pageUser]="user" [isFollowing]="amIFollowing(user.id)"
-      ></app-page-user>
-      <div class="view-all-button" (click)="navigateToUserSearch()" *ngIf="matchingUsers$.getValue().length>3">
-        <div class="view-all-box">
-          <span class="view-all-box-header">View all</span>
-        </div>
-      </div>
-    </div>
-    <div class="people-post-divider" *ngIf="matchingUsers$.getValue().length != 0 && matchingPosts$.getValue().length != 0">
-      <div class="divider-line"></div>
-    </div>
-    <div  *ngIf="matchingPosts$.getValue().length != 0">
-      <div class="search-results"
-           infiniteScroll
-           [infiniteScrollDistance]="3"
-           [infiniteScrollThrottle]="500"
-           (scrolled)="onScroll()"
-           [scrollWindow]="true">
-        <app-page-post *ngFor="let post of matchingPosts$ | async"
-                       [postInput]="post" [userInput]="post.author "></app-page-post>
       </div>
     </div>
   </div>
+</div>
+<div style="border-bottom: 1px solid #dcdcdc">
+  <nav class="navigation-bar">
+    <div role="tablist" class="navigation-bar-content">
+      <div class="tab-box" (click)="navigateToFirstTab()">
+        <div class="tab">
+          <div class="tab-text-box">
+            <span class="first-tab-text" [ngClass]="{'first-tab-selected': selectedTab== 0}">
+              {{firstTabName}}
+            </span>
+          </div>
+          <div *ngIf="selectedTab==0" class="selected-tab">
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-box" (click)="navigateToSecondTab()">
+        <div class="tab">
+          <div class="tab-text-box">
+            <span class="second-tab-text" [ngClass]="{'second-tab-selected': selectedTab == 1}">
+              {{secondTabName}}
+            </span>
+          </div>
+          <div *ngIf="selectedTab == 1" class="selected-tab">
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
 </div>
