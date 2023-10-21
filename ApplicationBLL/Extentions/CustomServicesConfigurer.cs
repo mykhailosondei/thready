@@ -1,4 +1,5 @@
 using System.Reflection;
+using ApplicationBLL.CloudStorage;
 using ApplicationBLL.Logic;
 using ApplicationBLL.ProfilesForAutoMapper;
 using ApplicationBLL.QueryRepositories;
@@ -22,7 +23,7 @@ public static class CustomServicesConfigurer
 {
     public static void ConfigureCustomServices(this IServiceCollection services)
     {
-        services.AddScoped<LikeService>();
+        services.AddSingleton<ICloudStorage, GoogleCloudStorage>();
         services.AddTransient<IValidator<PostDTO>, PostDTOValidator>();
         services.AddTransient<IValidator<CommentDTO>, CommentDTOValidator>();
         services.AddTransient<IValidator<RegisterUserDTO>, RegisterUserDTOValidator>();
@@ -33,15 +34,16 @@ public static class CustomServicesConfigurer
         services.AddScoped<UserQueryRepository>();
         services.AddScoped<PostQueryRepository>();
         services.AddScoped<CommentQueryRepository>();
+        services.AddScoped<LikeService>();
         services.AddScoped<UserService>();
         services.AddScoped<PostService>();
         services.AddScoped<CommentService>();
         services.AddScoped<AuthService>();
         services.AddScoped<EmailValidatorService>();
+        services.AddScoped<RecommendationService>();
         services.AddScoped<UsernameValidatorService>();
         services.AddScoped<PostsContentsIndexer>();
         services.AddScoped<IndexedContentReader>();
-        services.AddScoped<RecommendationService>();
         services.AddLogging();
         
 

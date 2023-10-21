@@ -7,8 +7,10 @@ using Microsoft.EntityFrameworkCore;
 
 
 using AutoMapper;
+using group_project_thread.AppSettingsMimics;
 using group_project_thread.Middlewares;
 using Microsoft.AspNetCore.Http.Json;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -39,6 +41,7 @@ builder.Services.AddAuthentication().AddJwtBearer(options =>
 });
 
 builder.Services.AddSingleton<IConfiguration>(c => config);
+builder.Services.Configure<GoogleCloudStorageSettings>(config.GetSection("GoogleCloudStorageSettings")).AddSingleton(sp => sp.GetRequiredService<IOptions<GoogleCloudStorageSettings>>().Value);
 builder.Services.AddDbContext<ApplicationContext>(options =>
 {
     options.UseNpgsql(config.GetConnectionString("Default"));
