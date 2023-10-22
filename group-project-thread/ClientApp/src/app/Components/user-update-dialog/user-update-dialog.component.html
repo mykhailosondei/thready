@@ -6,14 +6,15 @@
     <div class="title">
       <span class="title-text">Edit profile</span>
     </div>
-    <div class="save-button" [mat-dialog-close]="data">
+    <div class="save-button" [mat-dialog-close]="{imageUrl: imageUrl, data : data}">
       <span class="Save-text">Save</span>
     </div>
   </div>
   <div class="edit-content">
     <div class="user-avatar-edit">
-      <img class="avatar" src="https://picsum.photos/1080">
-      <div class="change-image" (click)="changeImage()">
+      <div class="change-image" (click)="changeImage()" [ngStyle]="{'background-color': getAvatarColor()}">
+        <img *ngIf="data.currentUser.avatar" class="profile-image" src="{{imageUrl}}">
+        <div *ngIf="!data.currentUser.avatar" class="initial">{{getFirstInitial()}}</div>
         <fa-icon class="faCamera" [icon]="faCamere"></fa-icon>
       </div>
     </div>
