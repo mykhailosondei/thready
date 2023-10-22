@@ -35,6 +35,7 @@ $border-color: #dcdcdc;
 .parent-view-page-post{
   border: 0 solid $border-color;
   padding: 10px 10px 0 10px;
+  position: relative;
   transition: background-color 0.3s ease;
   * {
     user-select: none;
@@ -158,7 +159,7 @@ $border-color: #dcdcdc;
   transition: filter 0.3s ease;
   filter: brightness(1);
   width: 40px;
-  min-height: 40px;
+  height: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -262,6 +263,7 @@ $border-color: #dcdcdc;
 }
 
 .solo-image-container {
+  position: relative;
   :first-child{
     max-height: 500px !important;
   }

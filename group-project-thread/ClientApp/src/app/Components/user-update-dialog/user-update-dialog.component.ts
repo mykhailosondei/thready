@@ -1,9 +1,13 @@
-import {Component, Inject, NgModule, OnInit, } from '@angular/core';
+import {Component, Inject, NgModule, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {UpdateUserDialogData} from "../../models/user/updateUserDialogData";
 import {faCamera, faXmark} from "@fortawesome/free-solid-svg-icons";
 import {Image} from "../../models/image";
 import {animate, state, style, transition, trigger} from "@angular/animations";
+import DevExpress from "devextreme/bundles/dx.all";
+import data = DevExpress.data;
+import PostFormatter from "../../helpers/postFormatter";
+import {ImageUploadService} from "../../Services/image-upload.service";
 
 
 @Component({
@@ -24,7 +28,7 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
 })
 export class UserUpdateDialogComponent implements OnInit{
   faCross = faXmark;
-  image: Image | null = null;
+  imageUrl: string = this.data.currentUser.avatar!.url;
   faXmark = faXmark;
   faCamere = faCamera;
   inputLocationFocused: boolean = false;
@@ -33,20 +37,40 @@ export class UserUpdateDialogComponent implements OnInit{
   maxCharCountLocation: number = 30;
   charCountBio: number = this.data.bio.length;
   maxCharCountBio: number = 100;
-  showContent : boolean;
 
+  private selectedFile: File;
 
-  constructor(public dialogRef: MatDialogRef<UserUpdateDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: UpdateUserDialogData) {
+  constructor(public dialogRef: MatDialogRef<UserUpdateDialogComponent>,
+              @Inject(MAT_DIALOG_DATA) public data: UpdateUserDialogData,
+              private imageUploadService: ImageUploadService) {
   }
-  ngOnInit() {
-    setTimeout(()=>this.showContent=true, 200);
+  ngOnInit(): void {
   }
 
   onNoClick(): void {
     this.dialogRef.close();
   }
   changeImage(){
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*';
+    fileInput.style.display = 'none';
 
+    fileInput.addEventListener('change', (event: Event) => {
+      this.onFileSelected(event);
+    });
+
+    document.body.appendChild(fileInput);
+
+    fileInput.click();
+  }
+
+  onFileSelected($event: Event) {
+    this.selectedFile = ($event.target as HTMLInputElement).files![0];
+    this.imageUploadService.uploadImage(this.selectedFile).subscribe((res) => {
+      console.log(res.body!.url);
+      this.imageUrl = res.body!.url;
+    });
   }
 
   onInputBioFocus() {
@@ -72,4 +96,11 @@ export class UserUpdateDialogComponent implements OnInit{
   }
 
 
+  getFirstInitial() {
+    return this.data.currentUser.username[0].toUpperCase();
+  }
+
+  getAvatarColor() {
+    return PostFormatter.getCircleColor(this.data.currentUser.username);
+  }
 }

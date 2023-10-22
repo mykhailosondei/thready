@@ -52,6 +52,11 @@ public class PostService : BaseService
         
         _applicationContext.Attach(userEntity);
         await _applicationContext.Entry(userEntity).Collection(u => u.Posts).LoadAsync();
+
+        foreach (var post in userEntity.Posts)
+        {
+            await _applicationContext.Entry(post).Collection(p => p.Images).LoadAsync();
+        }
         
         userModel = _mapper.Map<UserDTO>(userEntity);
         return userModel.Posts;
@@ -170,7 +175,7 @@ public class PostService : BaseService
         var postDTO = _mapper.Map<PostDTO>(postEntity); 
         ValidationResult validationResult = await _postValidator.ValidateAsync(postDTO);
 
-        if (await _applicationContext.Posts.AnyAsync(p => p.TextContent == post.TextContent))
+        if (post.Images.Count == 0 && await _applicationContext.Posts.AnyAsync(p => p.TextContent == post.TextContent))
         {
             throw new InvalidOperationException("Post with this content already exists");
         }
@@ -184,7 +189,10 @@ public class PostService : BaseService
         
         _applicationContext.Posts.Add(postEntity);
         _applicationContext.Attach(postEntity.Author);
-        _applicationContext.Attach(postEntity.Author.Avatar);
+        if (postEntity.Author.Avatar != null)
+        {
+            _applicationContext.Attach(postEntity.Author.Avatar);
+        }
         postEntity.Author.PostsCount++;
         
         await _applicationContext.SaveChangesAsync();

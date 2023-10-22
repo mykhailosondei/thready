@@ -5,6 +5,8 @@ import {CommentService} from "../../Services/comment.service";
 import {UserDTO} from "../../models/user/userDTO";
 import {UserService} from "../../Services/user.service";
 import {User} from "oidc-client";
+import {faTimes} from "@fortawesome/free-solid-svg-icons";
+import {ImageUploadService} from "../../Services/image-upload.service";
 
 @Component({
   selector: 'app-comment-creator',
@@ -17,7 +19,10 @@ export class CommentCreatorComponent implements OnInit {
   currentUser: UserDTO;
   @Input() replyArgs: {isCommentReply: boolean} = {isCommentReply: false};
   @Output() onReplyClickEvent = new EventEmitter();
-  constructor(private commentService : CommentService, private userService : UserService) { }
+  imageUrls: string[] = [];
+  constructor(private commentService : CommentService,
+              private userService : UserService,
+              private imageUploadService : ImageUploadService) { }
 
   @ViewChild('inputComponent') commentInput: {inputValue: string} = {inputValue: ""};
 
@@ -26,7 +31,8 @@ export class CommentCreatorComponent implements OnInit {
   }
 
   isButtonDisabled() {
-    return PostFormatter.isInputLengthInvalid(this.commentInput.inputValue);
+    if(this.imageUrls.length > 0) return false;
+    return PostFormatter.isInputLengthTooBig(this.commentInput.inputValue) || this.commentInput.inputValue == "";
   }
 
   setCurrentUser() {
@@ -52,8 +58,9 @@ export class CommentCreatorComponent implements OnInit {
 
   onReplyClick() {
     if(!this.replyArgs.isCommentReply) {
-      this.commentService.postComment({postId:this.post.id, textContent: this.commentInput.inputValue, images:[]}).subscribe(Response => {
+      this.commentService.postComment({postId:this.post.id, textContent: this.commentInput.inputValue, images:this.imageUrls.map(i => {return{url:i}})}).subscribe(Response => {
         this.commentInput.inputValue = "";
+        this.imageUrls = [];
         console.log(Response);
 
         if(Response.ok){
@@ -62,13 +69,26 @@ export class CommentCreatorComponent implements OnInit {
       });
     }
     else {
-      this.commentService.postComment({commentId:this.post.id, textContent: this.commentInput.inputValue, images:[]}).subscribe(Response => {
+      this.commentService.postComment({commentId:this.post.id, textContent: this.commentInput.inputValue, images:this.imageUrls.map(i => {return{url:i}})}).subscribe(Response => {
         this.commentInput.inputValue = "";
+        this.imageUrls = [];
         console.log(Response);
         if(Response.ok){
           this.onReplyClickEvent.emit();
         }
       });
     }
+  }
+
+    protected readonly faTimes = faTimes;
+
+  deleteImage($event: string) {
+    this.imageUrls = this.imageUrls.filter(i => i !== $event);
+    var deletionName = $event.split('/').pop()!;
+    this.imageUploadService.deleteImage(deletionName).subscribe();
+  }
+
+  onPhotoLoaded($event: string) {
+    this.imageUrls.push($event);
   }
 }

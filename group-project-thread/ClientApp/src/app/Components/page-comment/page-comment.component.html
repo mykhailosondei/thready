@@ -5,7 +5,7 @@
       <div *ngIf="isParentView" class="gray-collar-short"></div>
       <div class="user-avatar" [ngStyle]="{'background-color': getCircleColor()}">
         <a href="{{userInput.username}}/profile" class="user-link"></a>
-        <img *ngIf="!isAvatarNull()" src="{{commentView.user.avatar!.url}}" alt="{{commentView.user.username}}}">
+        <img class="profile-small-image" *ngIf="!isAvatarNull()" src="{{commentView.user.avatar!.url}}" alt="{{commentView.user.username}}}">
         <div *ngIf="isAvatarNull()" class="initial">{{getFirstInitial()}}</div>
       </div>
       <div *ngIf="isParentView" class="gray-collar"></div>
@@ -39,22 +39,22 @@
         <p>{{ commentView.textContent }}</p>
       </div>
       <div class="post-image-content">
-        <div class="image-radius-wrap" [style.width]="commentView.imagesUrls.length === 1 ? 'fit-content' : '100%'">
+        <div class="image-radius-wrap" [style.width]="commentView.imagesUrls.length === 1 ? 'fit-content' : '100%'" [style.border-width]="commentView.imagesUrls.length == 0 ? '0' : '2px' ">
           <div *ngIf="commentView.imagesUrls.length === 4" class="four-image-container full-width">
             <div class="two-image-container full-width">
               <div class="left-upper-image-container full-width">
                 <div class="image-wrap full-width" [style.background-image]="'url(' + commentView.imagesUrls[0] + ')'"></div>
               </div>
               <div class="right-upper-image-container full-width">
-                <div class="image-wrap full-width" [style.background-image]="'url(' + commentView.imagesUrls[0] + ')'"></div>
+                <div class="image-wrap full-width" [style.background-image]="'url(' + commentView.imagesUrls[1] + ')'"></div>
               </div>
             </div>
             <div class="two-image-container full-width">
               <div class="left-bottom-image-container full-width">
-                <div class="image-wrap full-width" [style.background-image]="'url(' + commentView.imagesUrls[0] + ')'"></div>
+                <div class="image-wrap full-width" [style.background-image]="'url(' + commentView.imagesUrls[2] + ')'"></div>
               </div>
               <div class="right-bottom-image-container full-width">
-                <div class="image-wrap full-width" [style.background-image]="'url(' + commentView.imagesUrls[0] + ')'"></div>
+                <div class="image-wrap full-width" [style.background-image]="'url(' + commentView.imagesUrls[3] + ')'"></div>
               </div>
             </div>
           </div>
@@ -64,10 +64,10 @@
             </div>
             <div class="two-right-images full-width">
               <div class="right-upper-image-container full-width">
-                <div class="image-wrap full-width" [style.background-image]="'url(' + commentView.imagesUrls[0] + ')'"></div>
+                <div class="image-wrap full-width" [style.background-image]="'url(' + commentView.imagesUrls[1] + ')'"></div>
               </div>
               <div class="right-bottom-image-container full-width">
-                <div class="image-wrap full-width" [style.background-image]="'url(' + commentView.imagesUrls[0] + ')'"></div>
+                <div class="image-wrap full-width" [style.background-image]="'url(' + commentView.imagesUrls[2] + ')'"></div>
               </div>
             </div>
           </div>
@@ -76,7 +76,7 @@
               <div class="image-wrap full-width" [style.background-image]="'url(' + commentView.imagesUrls[0] + ')'"></div>
             </div>
             <div class="right-big-image full-width">
-              <div class="image-wrap full-width" [style.background-image]="'url(' + commentView.imagesUrls[0] + ')'"></div>
+              <div class="image-wrap full-width" [style.background-image]="'url(' + commentView.imagesUrls[1] + ')'"></div>
             </div>
           </div>
           <div *ngIf="commentView.imagesUrls.length === 1" class="solo-image-container">

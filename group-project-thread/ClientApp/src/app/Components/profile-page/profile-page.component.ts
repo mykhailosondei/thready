@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {BehaviorSubject, finalize, Observable, Subject, switchMap, takeUntil} from "rxjs";
 import {UserDTO} from "../../models/user/userDTO";
 import {Image} from "../../models/image";
@@ -17,6 +17,7 @@ import {Endpoint} from "../side-navbar/side-navbar.component";
 import {NavigatorService} from "../../Services/navigator.service";
 import {NavigationHistoryService} from "../../Services/navigation-history.service";
 import {Location} from "@angular/common";
+import PostFormatter from "../../helpers/postFormatter";
 
 @Component({
   selector: 'app-profile-page',
@@ -68,6 +69,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy{
         switchMap((response ) => {
           const user = response.body;
           if (user) {
+            console.log(user);
             this.user = this.userService.copyUser(user);
             this.updateIsCurrentUserFollowing();
             return this.postService.getPostsByUserId(this.user.id);
@@ -109,8 +111,8 @@ export class ProfilePageComponent implements OnInit, OnDestroy{
   }
 
   public openEditDialog(){
-    const dialog : MatDialogRef<UserUpdateDialogComponent, UpdateUserDialogData> = this.dialog.open(UserUpdateDialogComponent, {
-      maxWidth: "550px", minHeight: "360px",
+    const dialog : MatDialogRef<UserUpdateDialogComponent, {imageUrl:string, data: UpdateUserDialogData}> = this.dialog.open(UserUpdateDialogComponent, {
+      minWidth: "550px", minHeight: "360px",
       data: {currentUser: this.user, bio: this.user.bio, location: this.user.location, avatar: this.user.avatar }
     })
     dialog.afterClosed().subscribe(result => {
@@ -118,9 +120,9 @@ export class ProfilePageComponent implements OnInit, OnDestroy{
       console.log(result);
       this.userService.putUser(this.user.id, {
         id : this.user.id,
-        bio : result.bio,
-        location : result.location,
-        avatar : null
+        bio : result.data.bio,
+        location : result.data.location,
+        avatar : {url: result.imageUrl}
       }).subscribe(response => {
         if (response.body != null){
           const user : UserDTO = response.body;
@@ -197,6 +199,14 @@ export class ProfilePageComponent implements OnInit, OnDestroy{
   }
 
     protected readonly Endpoint = Endpoint;
+
+  getFirstInitial() {
+    return this.user.username.charAt(0).toUpperCase();
+  }
+
+  getAvatarColor() {
+    return PostFormatter.getCircleColor(this.user.username);
+  }
 
   loadNewUser(username : string) {
     if (this.username == username){

@@ -1,6 +1,7 @@
 ﻿using ApplicationBLL.QueryRepositories;
 using ApplicationBLL.Services;
 using ApplicationCommon.DTOs.Comment;
+using ApplicationCommon.DTOs.Image;
 using ApplicationCommon.Interfaces;
 using ApplicationDAL.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -35,12 +36,26 @@ namespace group_project_thread.Controllers
         {
             return await _commentQueryRepository.GetCommentWithAllCommentTreeById(id);
         }
-
+        
+        [HttpGet("{id}/plain")]
+        [AllowAnonymous]
+        public async Task<CommentDTO> GetCommentByIdPlain(int id)
+        {
+            return await _commentQueryRepository.GetCommentByIdPlain(id, c => c.Author, c => c.Images);
+        }
+        
         [AllowAnonymous]
         [HttpGet("{postId}/comments")]
         public async Task<IEnumerable<CommentDTO>> GetCommentsOfPostId(int postId)
         {
             return await _commentService.GetCommentsOfPostId(postId);
+        }
+        
+        [AllowAnonymous]
+        [HttpGet("{commentId}/images")]
+        public async Task<IEnumerable<ImageDTO>> GetImagesOfCommentId(int commentId)
+        {
+            return await _commentService.GetImagesOfCommentId(commentId);
         }
 
         // POST api/<CommentController>

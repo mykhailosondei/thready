@@ -7,8 +7,8 @@ import {CommentDTO} from "../models/coment/commentDTO";
 import {Random} from "random";
 export default class PostFormatter{
 
-  public static isInputLengthInvalid(input: string): boolean {
-    return input.length > 500 || input.length === 0;
+  public static isInputLengthTooBig(input: string): boolean {
+    return input.length > 500;
   }
 
   public static numberToReadable(number: number): string {
@@ -37,7 +37,7 @@ export default class PostFormatter{
       },
       textContent: postInput.textContent,
       dateCreated: postInput.createdAt,
-      imagesUrls: imagesUrls,
+      imagesUrls: postInput.images.map(i => i.url),
       likesAmount: postInput.likesIds.length,
       commentsAmount: postInput.commentsIds.length,
       repostsAmount: postInput.repostersIds.length,
@@ -65,7 +65,7 @@ export default class PostFormatter{
       },
       textContent: commentInput.textContent,
       dateCreated: commentInput.createdAt,
-      imagesUrls: imagesUrls,
+      imagesUrls: commentInput.images.map(i => i.url),
       likesAmount: commentInput.likesIds.length,
       commentsAmount: commentInput.commentsIds.length,
       repostsAmount: 0,

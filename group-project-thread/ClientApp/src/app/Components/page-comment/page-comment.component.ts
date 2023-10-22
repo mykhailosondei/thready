@@ -133,7 +133,7 @@ export class PageCommentComponent implements OnInit {
 
   openEditDialog() {
     const dialogRef: MatDialogRef<PostEditorDialogComponent, {
-      post: PagePostDTO,
+      imagesOutput: string[],
       textContentOutput: string
     }> = this.dialog.open(PostEditorDialogComponent, {
       width: '500px',
@@ -145,11 +145,12 @@ export class PageCommentComponent implements OnInit {
       if (result === undefined) return;
       this.commentService.putComment(this.commentView.id, {
         textContent: result.textContentOutput,
-        images: []
+        images: result.imagesOutput.map(i => {return {url: i}})
       }).subscribe(response => {
           console.log(response);
           if (!response.ok) return;
           this.commentView.textContent = result.textContentOutput;
+          this.commentView.imagesUrls = result.imagesOutput;
         }
       );
     });

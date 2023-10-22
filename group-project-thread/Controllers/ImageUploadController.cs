@@ -1,4 +1,5 @@
 using ApplicationBLL.CloudStorage;
+using ApplicationCommon.DTOs.Image;
 using Microsoft.AspNetCore.Mvc;
 
 [Route("api/[controller]")]
@@ -15,12 +16,12 @@ public class ImageUploadController : ControllerBase
     }
     
     [HttpPost("upload")]
-    public async Task<IActionResult> UploadImage(IFormFile file)
+    public async Task<ImageStorageResponseDTO> UploadImage(IFormFile file)
     {
         _logger.LogWarning(_cloudStorage.Log());
         if (file == null || file.Length == 0)
         {
-            return BadRequest("No file was uploaded");
+            throw new InvalidOperationException("File is empty");
         }
         
         var contentType = file.ContentType;
@@ -28,13 +29,12 @@ public class ImageUploadController : ControllerBase
         var fileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
         
         var result = await _cloudStorage.UploadFileAsync(file, fileName, contentType);
-        if (result == null)
-        {
-            return BadRequest("Something went wrong");
-        }
-        else
-        {
-            return Ok(result);
-        }
+        return new ImageStorageResponseDTO(){Url = result};
+    }
+
+    [HttpDelete("delete")]
+    public async Task DeleteImage(string fileName)
+    {
+        await _cloudStorage.DeleteFileAsync(fileName);
     }
 }

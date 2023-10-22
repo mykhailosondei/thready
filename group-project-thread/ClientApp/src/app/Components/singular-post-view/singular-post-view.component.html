@@ -5,7 +5,7 @@
         <div class="post-header">
           <div class="user-avatar" [ngStyle]="{'background-color': getCircleColor()}">
             <a href="{{authorInput.username}}/profile" class="user-link"></a>
-            <img *ngIf="!isAvatarNull()" src="{{authorInput.avatar!.url}}" alt="{{authorInput.username}}}">
+            <img class="profile-small-image" *ngIf="!isAvatarNull()" src="{{authorInput.avatar!.url}}" alt="{{authorInput.username}}}">
             <div *ngIf="isAvatarNull()" class="initial">{{getFirstInitial()}}</div>
           </div>
           <div class="user-info" #userInfo (mouseenter)="onUserInfoMouseEnter()" (mouseleave)="onUserInfoMouseLeave()">
@@ -20,22 +20,22 @@
             <p>{{ post.textContent }}</p>
           </div>
           <div class="post-image-content">
-            <div class="image-radius-wrap" [style.width]="post.imagesUrls.length === 1 ? 'fit-content' : '100%'">
+            <div class="image-radius-wrap" [style.width]="post.imagesUrls.length === 1 ? 'fit-content' : '100%'" [style.border-width]="post.imagesUrls.length == 0 ? '0' : '2px' ">
               <div *ngIf="post.imagesUrls.length === 4" class="four-image-container full-width">
                 <div class="two-image-container full-width">
                   <div class="left-upper-image-container full-width">
                     <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[0] + ')'"></div>
                   </div>
                   <div class="right-upper-image-container full-width">
-                    <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[0] + ')'"></div>
+                    <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[1] + ')'"></div>
                   </div>
                 </div>
                 <div class="two-image-container full-width">
                   <div class="left-bottom-image-container full-width">
-                    <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[0] + ')'"></div>
+                    <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[2] + ')'"></div>
                   </div>
                   <div class="right-bottom-image-container full-width">
-                    <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[0] + ')'"></div>
+                    <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[3] + ')'"></div>
                   </div>
                 </div>
               </div>
@@ -45,10 +45,10 @@
                 </div>
                 <div class="two-right-images full-width">
                   <div class="right-upper-image-container full-width">
-                    <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[0] + ')'"></div>
+                    <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[1] + ')'"></div>
                   </div>
                   <div class="right-bottom-image-container full-width">
-                    <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[0] + ')'"></div>
+                    <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[2] + ')'"></div>
                   </div>
                 </div>
               </div>
@@ -57,7 +57,7 @@
                   <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[0] + ')'"></div>
                 </div>
                 <div class="right-big-image full-width">
-                  <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[0] + ')'"></div>
+                  <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[1] + ')'"></div>
                 </div>
               </div>
               <div *ngIf="post.imagesUrls.length === 1" class="solo-image-container">

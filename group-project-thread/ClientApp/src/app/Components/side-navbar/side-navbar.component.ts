@@ -68,13 +68,13 @@ export class SideNavbarComponent{
     faUser : faToggleIcon = {activated: faUserActivated, unactivated: faUserUnactivated};
 
     openPostingDialog() {
-      const dialogRef : MatDialogRef<PostCreationDialogComponent, {output:string}> = this.dialog.open(PostCreationDialogComponent, {
+      const dialogRef : MatDialogRef<PostCreationDialogComponent, {imagesOutput : string[],textOutput:string}> = this.dialog.open(PostCreationDialogComponent, {
          width: '500px'
        });
 
         dialogRef.afterClosed().subscribe(result => {
          if(result) {
-           this.postService.createPost({textContent: result!.output, images: []}).subscribe(response => console.log(response));
+           this.postService.createPost({textContent: result!.textOutput, images: result.imagesOutput.map(i => {return {url:i}})}).subscribe(response => console.log(response));
          }
         });
     }

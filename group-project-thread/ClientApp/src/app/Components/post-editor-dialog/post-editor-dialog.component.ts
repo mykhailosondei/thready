@@ -6,6 +6,7 @@ import {PageUserDTO} from "../../models/user/pageUserDTO";
 import PostFormatter from "../../helpers/postFormatter";
 import {faTimes} from "@fortawesome/free-solid-svg-icons";
 import {animate, state, style, transition, trigger} from "@angular/animations";
+import {ImageUploadService} from "../../Services/image-upload.service";
 
 @Component({
   selector: 'app-post-editor-dialog',
@@ -28,8 +29,12 @@ export class PostEditorDialogComponent {
   faTimes = faTimes;
 
   @ViewChild('editInputBox') editInputBox: {inputValue: string} = {inputValue: this.data.post.textContent}
+  imagesUrls: string[] = this.data.post.imagesUrls;
+  imagesAreChanged: boolean = false;
 
-  constructor(public dialogRef: MatDialogRef<PostEditorDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: PostEditDialogData) { }
+  constructor(public dialogRef: MatDialogRef<PostEditorDialogComponent>,
+              @Inject(MAT_DIALOG_DATA) public data: PostEditDialogData,
+              private readonly imageUploadService : ImageUploadService) { }
 
   onNoClick(): void {
     this.dialogRef.close();
@@ -48,6 +53,21 @@ export class PostEditorDialogComponent {
   }
 
   isButtonDisabled() {
-    return PostFormatter.isInputLengthInvalid(this.editInputBox.inputValue) || this.editInputBox.inputValue === this.data.post.textContent;
+    if(this.editInputBox.inputValue === '' && this.imagesUrls.length === 0) return true;
+    if(this.imagesAreChanged) return false;
+    return PostFormatter.isInputLengthTooBig(this.editInputBox.inputValue)
+      || this.editInputBox.inputValue === this.data.post.textContent;
+  }
+
+  onPhotoLoaded($event: string) {
+    this.imagesAreChanged = true;
+    this.imagesUrls.push($event);
+  }
+
+  deleteImage($event: string) {
+    this.imagesAreChanged = true;
+    this.imagesUrls = this.imagesUrls.filter(i => i !== $event);
+    var deletionName = $event.split('/').pop()!;
+    this.imageUploadService.deleteImage(deletionName).subscribe();
   }
 }

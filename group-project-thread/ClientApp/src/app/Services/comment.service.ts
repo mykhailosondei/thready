@@ -14,6 +14,10 @@ export class CommentService {
   constructor(private httpInternalService: HttpInternalService) { }
 
   public getCommentById(id: number): Observable<HttpResponse<CommentDTO>> {
+    return this.httpInternalService.getFullRequest<CommentDTO>(`${this.route}/${id}/plain`);
+  }
+
+  public getCommentTreeById(id: number): Observable<HttpResponse<CommentDTO>> {
     return this.httpInternalService.getFullRequest<CommentDTO>(`${this.route}/${id}`);
   }
 
