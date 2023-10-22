@@ -18,7 +18,7 @@ public class PostQueryRepository : BaseQueryRepository
     
     public async Task<IEnumerable<PostDTO>> GetAllPosts()
     {
-        var posts = await _applicationContext.Posts.AsNoTracking().Include(post => post.Author).Include(p => p.Images).ToListAsync();
+        var posts = await _applicationContext.Posts.AsNoTracking().Include(post => post.Author).ThenInclude(u => u.Avatar).Include(p => p.Images).ToListAsync();
         
         return _mapper.Map<IEnumerable<PostDTO>>(posts);
     }
@@ -31,6 +31,8 @@ public class PostQueryRepository : BaseQueryRepository
         {
             query = query.Include(includeExpression);
         }
+
+        query.Include(c => c.Author).ThenInclude(u => u.Avatar);
 
         var postModel = await query.FirstOrDefaultAsync(p => p.Id == id);
 

@@ -52,6 +52,11 @@ public class PostService : BaseService
         
         _applicationContext.Attach(userEntity);
         await _applicationContext.Entry(userEntity).Collection(u => u.Posts).LoadAsync();
+
+        foreach (var post in userEntity.Posts)
+        {
+            await _applicationContext.Entry(post).Collection(p => p.Images).LoadAsync();
+        }
         
         userModel = _mapper.Map<UserDTO>(userEntity);
         return userModel.Posts;
