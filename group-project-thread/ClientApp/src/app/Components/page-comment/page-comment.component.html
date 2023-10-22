@@ -5,7 +5,7 @@
       <div *ngIf="isParentView" class="gray-collar-short"></div>
       <div class="user-avatar" [ngStyle]="{'background-color': getCircleColor()}">
         <a href="{{userInput.username}}/profile" class="user-link"></a>
-        <img *ngIf="!isAvatarNull()" src="{{commentView.user.avatar!.url}}" alt="{{commentView.user.username}}}">
+        <img class="profile-small-image" *ngIf="!isAvatarNull()" src="{{commentView.user.avatar!.url}}" alt="{{commentView.user.username}}}">
         <div *ngIf="isAvatarNull()" class="initial">{{getFirstInitial()}}</div>
       </div>
       <div *ngIf="isParentView" class="gray-collar"></div>

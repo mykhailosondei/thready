@@ -5,7 +5,7 @@
         <div class="post-header">
           <div class="user-avatar" [ngStyle]="{'background-color': getCircleColor()}">
             <a href="{{authorInput.username}}/profile" class="user-link"></a>
-            <img *ngIf="!isAvatarNull()" src="{{authorInput.avatar!.url}}" alt="{{authorInput.username}}}">
+            <img class="profile-small-image" *ngIf="!isAvatarNull()" src="{{authorInput.avatar!.url}}" alt="{{authorInput.username}}}">
             <div *ngIf="isAvatarNull()" class="initial">{{getFirstInitial()}}</div>
           </div>
           <div class="user-info" #userInfo (mouseenter)="onUserInfoMouseEnter()" (mouseleave)="onUserInfoMouseLeave()">

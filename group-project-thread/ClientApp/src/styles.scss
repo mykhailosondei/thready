@@ -41,5 +41,11 @@ code {
   border-color: #1861ac;
 }
 
+.profile-small-image{
+  height: 100%;
+  width: 100%;
+  border-radius: 50%;
+}
+
 html, body { height: 100%; }
 body { margin: 0; font-family: "TwitterChirp", -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif, sans-serif; }

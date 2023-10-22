@@ -60,7 +60,7 @@
       <div class="profile">
         <a href="{{user.username}}/profile" class="user-link"></a>
           <div class="user-avatar" [ngStyle]="{'background-color': getCircleColor()}">
-            <img *ngIf="!isAvatarNull()" src="{{user.avatar!.url}}" alt="{{user.username}}}">
+            <img class="profile-small-image" *ngIf="!isAvatarNull()" src="{{user.avatar!.url}}" alt="{{user.username}}}">
             <div *ngIf="isAvatarNull()" class="initial">{{getFirstInitial()}}</div>
           </div>
         <div class="profile-username">{{user.username}}</div>

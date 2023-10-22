@@ -10,7 +10,7 @@ public class CommentDTOValidator : AbstractValidator<CommentDTO>
         RuleFor(c => c.TextContent ).NotEmpty().
             When(p => p.Images.Count == 0).WithMessage("You can not create comment with no content")
             .MaximumLength(200)
-            .WithMessage("More than characters max amount");;
+            .WithMessage("More than characters max amount");
         
         RuleFor(p => p.Images).NotEmpty()
             .When(p => p.TextContent == String.Empty).WithMessage("You can not create comment with no content");

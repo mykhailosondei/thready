@@ -11,7 +11,7 @@
         <div class="user-collar-and-post-holder">
           <div class="user-avatar-collar">
             <div class="user-avatar" [ngStyle]="{'background-color': getCircleColor(data.post.user)}">
-              <img *ngIf="!isAvatarNull(data.post.user)" src="{{data.post.user.avatar!.url}}" alt="{{data.post.user.username}}}">
+              <img class="profile-small-image" *ngIf="!isAvatarNull(data.post.user)" src="{{data.post.user.avatar!.url}}" alt="{{data.post.user.username}}}">
               <div *ngIf="isAvatarNull(data.post.user)" class="initial">{{getFirstInitial(data.post.user)}}</div>
             </div>
             <div class="gray-collar"></div>
