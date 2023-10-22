@@ -27,6 +27,7 @@ const routes: Routes = [
   {path:'login', component: LoginPageComponent},
   {path:'signup', component: SignUpPageComponent},
   {path:'mainPage', component: MainPageComponent},
+  {path: 'mainpage', redirectTo: '/mainPage', pathMatch: 'full'},
   {path: ':username/profile', component: ProfilePageComponent},
   {path: ':username/following', component: FollowingPageComponent},
   {path: ':username/followers', component: FollowersPageComponent},
