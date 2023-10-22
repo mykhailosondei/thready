@@ -18,7 +18,7 @@ public class PostQueryRepository : BaseQueryRepository
     
     public async Task<IEnumerable<PostDTO>> GetAllPosts()
     {
-        var posts = await _applicationContext.Posts.AsNoTracking().Include(post => post.Author).ToListAsync();
+        var posts = await _applicationContext.Posts.AsNoTracking().Include(post => post.Author).Include(p => p.Images).ToListAsync();
         
         return _mapper.Map<IEnumerable<PostDTO>>(posts);
     }

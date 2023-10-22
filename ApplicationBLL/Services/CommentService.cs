@@ -58,7 +58,7 @@ public class CommentService : BaseService
         {
             try
             {
-                result.Add(await _commentQueryRepository.GetCommentByIdPlain(id));
+                result.Add(await _commentQueryRepository.GetCommentByIdPlain(id, c => c.Images, c => c.Author));
             }
             catch (CommentNotFoundException e)
             {

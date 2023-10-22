@@ -79,7 +79,7 @@ export class SingularPostViewComponent implements OnInit{
 
     fetchComments() {
       console.log(this.postInput.commentsIds);
-      for (let commentId of this.postInput.commentsIds) {
+      /*for (let commentId of this.postInput.commentsIds) {
         this.commentService.getCommentById(commentId).subscribe(response => {
           if(response.ok) {
             let comment: CommentDTO = response.body!;
@@ -87,8 +87,14 @@ export class SingularPostViewComponent implements OnInit{
             this.comments.push(comment);
           }
         });
-      }
-    };
+      }*/
+      this.commentService.getCommentsOfPostId(this.incomingPostId).subscribe(response => {
+        if(response.ok) {
+          this.comments = response.body!;
+          console.log(response);
+        }
+      })
+    }
 
     faRetweet = faRetweet;
     faComment = faComment;

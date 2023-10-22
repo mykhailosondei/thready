@@ -26,7 +26,7 @@ export class CommentCreatorComponent implements OnInit {
   }
 
   isButtonDisabled() {
-    return PostFormatter.isInputLengthInvalid(this.commentInput.inputValue);
+    return PostFormatter.isInputLengthTooBig(this.commentInput.inputValue);
   }
 
   setCurrentUser() {

@@ -262,6 +262,7 @@ $border-color: #dcdcdc;
 }
 
 .solo-image-container {
+  position: relative;
   :first-child{
     max-height: 500px !important;
   }

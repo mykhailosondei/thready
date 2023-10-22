@@ -20,6 +20,7 @@ import {WhoToFollowPageComponent} from "./Components/who-to-follow-page/who-to-f
 import {CreatorsForYouPageComponent} from "./Components/creators-for-you-page/creators-for-you-page.component";
 import {MayBeInterestingPageComponent} from "./Components/may-be-interesting-page/may-be-interesting-page.component";
 import {TrendingPageComponent} from "./Components/trending-page/trending-page.component";
+import {PhotoLoaderComponent} from "./Components/photo-loader/photo-loader.component";
 
 const routes: Routes = [
   {path:'', redirectTo: '/login', pathMatch: 'full'},
@@ -38,7 +39,8 @@ const routes: Routes = [
   {path: 'bookmarks', component: BookmarksPageComponent},
   {path: 'reposts', component: RepostsPageComponent},
   {path: 'connect-people', component: WhoToFollowPageComponent},
-  {path: 'creators-for-you', component: CreatorsForYouPageComponent}
+  {path: 'creators-for-you', component: CreatorsForYouPageComponent},
+  {path: 'photo', component: PhotoLoaderComponent},
 ];
 
 @NgModule({

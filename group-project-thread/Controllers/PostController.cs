@@ -42,7 +42,7 @@ namespace group_project_thread.Controllers
         [AllowAnonymous]
         public async Task<PostDTO> GetPostById(int id)
         {
-            return await _postQueryRepository.GetPostById(id, p => p.Author);
+            return await _postQueryRepository.GetPostById(id, p => p.Author, p => p.Images);
         }
         
         [HttpGet("{userId}/posts")]

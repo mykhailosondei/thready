@@ -136,7 +136,7 @@ export class PagePostComponent implements OnInit {
 
   openEditDialog() {
     const dialogRef: MatDialogRef<PostEditorDialogComponent, {
-      post: PagePostDTO,
+      imagesOutput: string[],
       textContentOutput: string
     }> = this.dialog.open(PostEditorDialogComponent, {
       width: '500px',
@@ -148,11 +148,12 @@ export class PagePostComponent implements OnInit {
       if (result === undefined) return;
       this.postService.putPost(this.post.id, {
         textContent: result.textContentOutput,
-        images: []
+        images: result.imagesOutput.map(i => {return {url: i}})
       }).subscribe(response => {
           console.log(response);
           if (!response.ok) return;
           this.post.textContent = result.textContentOutput;
+          this.post.imagesUrls = result.imagesOutput;
         }
       );
     });

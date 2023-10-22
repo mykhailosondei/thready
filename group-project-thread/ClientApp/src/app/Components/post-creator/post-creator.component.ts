@@ -6,6 +6,8 @@ import {UserService} from "../../Services/user.service";
 import PostFormatter from "../../helpers/postFormatter";
 import {PostService} from "../../Services/post.service";
 import {Image} from "../../models/image";
+import {ImageUploadService} from "../../Services/image-upload.service";
+import {faTimes} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'app-post-creator',
@@ -14,15 +16,18 @@ import {Image} from "../../models/image";
 })
 export class PostCreatorComponent {
 
-  currentUser= {} as UserDTO;
   @ViewChild('creatorInput') currentText: {inputValue: string} = {inputValue: ''};
-  currentImages: string[] = [];
+  currentUser= {} as UserDTO;
+  imageUrls: string[] = [];
 
   postingInProgress: boolean = false;
 
   //inject user service
   //inject post service
-  constructor(private readonly userService: UserService, private readonly postService: PostService) { }
+  constructor(private readonly userService: UserService,
+              private readonly postService: PostService,
+              private readonly imageUploadService: ImageUploadService
+  ) { }
 
   ngOnInit(): void {
     this.userService.getCurrentUser().subscribe(Response => {
@@ -46,17 +51,29 @@ export class PostCreatorComponent {
     if(this.postingInProgress) return;
     this.postingInProgress = true;
     this.postService.createPost(
-      {textContent: this.currentText.inputValue, images: this.currentImages.map<Image>(i => {return {url:i}})}
-    ).subscribe(Response => {
+      {textContent: this.currentText.inputValue, images: this.imageUrls.map(i => {return {url: i}})}).subscribe(Response => {
       console.log(Response);
       if(Response.ok){
         this.currentText.inputValue = '';
-        this.currentImages = [];
+        this.imageUrls = [];
       }
-    });
+    }).add(() => this.postingInProgress = false);
   }
 
   get isButtonDisabled() : boolean {
-    return PostFormatter.isInputLengthInvalid(this.currentText.inputValue);
+    return PostFormatter.isInputLengthTooBig(this.currentText.inputValue) && this.imageUrls.length === 0;
   }
+
+
+  onPhotoLoaded($event: string) {
+    this.imageUrls.push($event);
+  }
+
+  deleteImage($event: string) {
+    this.imageUrls = this.imageUrls.filter(i => i !== $event);
+    var deletionName = $event.split('/').pop()!;
+    this.imageUploadService.deleteImage(deletionName).subscribe();
+  }
+
+  protected readonly faTimes = faTimes;
 }

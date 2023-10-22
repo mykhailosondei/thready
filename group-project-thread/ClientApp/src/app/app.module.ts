@@ -54,6 +54,8 @@ import {WhoToFollowPageComponent} from "./Components/who-to-follow-page/who-to-f
 import {CreatorsForYouPageComponent} from "./Components/creators-for-you-page/creators-for-you-page.component";
 import {MayBeInterestingPageComponent} from "./Components/may-be-interesting-page/may-be-interesting-page.component";
 import {TrendingPageComponent} from "./Components/trending-page/trending-page.component";
+import {PhotoLoaderComponent} from "./Components/photo-loader/photo-loader.component";
+import {DeletableImageComponent} from "./Components/deletable-image/deletable-image.component";
 
 @NgModule({ declarations: [
     AppComponent,
@@ -95,7 +97,9 @@ import {TrendingPageComponent} from "./Components/trending-page/trending-page.co
     WhoToFollowPageComponent,
     CreatorsForYouPageComponent,
     MayBeInterestingPageComponent,
-    TrendingPageComponent
+    TrendingPageComponent,
+    PhotoLoaderComponent,
+    DeletableImageComponent
     ],
   imports: [
     BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),

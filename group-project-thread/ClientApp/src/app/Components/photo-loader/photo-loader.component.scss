@@ -1,0 +1,17 @@
+.upload-image-button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  &:hover {
+    background-color: rgba(164, 195, 255, 0.2);
+  }
+}
+
+.image-icon{
+  display: flex;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  color:cornflowerblue;
+}
