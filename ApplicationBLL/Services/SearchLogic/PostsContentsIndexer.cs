@@ -64,14 +64,17 @@ public class PostsContentsIndexer
             var existingWord = words.FirstOrDefault(word => word.Word == wordFrequency.Key);
             if (existingWord != null)
             {
-                _indexerContext.Attach(existingWord);
                 if (--existingWord.PostsCount == 0)
                 {
                     _indexerContext.Remove(existingWord);
                 }
+
+                _indexerContext.Entry(existingWord).Property(e => e.PostsCount).IsModified = true;
+                await _indexerContext.SaveChangesAsync();
+                _indexerContext.Entry(existingWord).State = EntityState.Detached;
             }
         }
-        await _indexerContext.SaveChangesAsync();
+        
     }
     
     public async Task RemoveWordsCountsFromTableByPostId(int postId)
