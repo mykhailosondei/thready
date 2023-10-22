@@ -3,11 +3,11 @@
     <app-search-bar
       [selectedTab]="selectedTab" [firstTabName]="'May be Interesting'" [secondTabName]="'Trending'"
       [query]="query"
-      (firstTabClicked)="navigatorService.navigateToMayBeInterestingPage(selectedTab)"
+      (firstTabClicked)="navigateToMayBeInteresting()"
       (secondTabClicked)="navigatorService.navigateToTrendingPage(selectedTab)"
       (searchByQueryClicked)="searchByQuery()"
       (queryChanged)="onQueryChanged($event)"
-      (backButtonClicked)="navigatorService.goBack()">
+      (backButtonClicked)="goBack()">
     </app-search-bar>
     <div class="title-box">
       <span class="title">The most popular now</span>

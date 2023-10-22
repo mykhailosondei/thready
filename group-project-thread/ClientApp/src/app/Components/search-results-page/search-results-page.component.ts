@@ -15,6 +15,7 @@ import {Tab} from "../../models/enums/Tab";
 import {Q} from "@angular/cdk/keycodes";
 import {Location} from "@angular/common";
 import {faCircleNotch} from "@fortawesome/free-solid-svg-icons/faCircleNotch";
+import {NavigationHistoryService} from "../../Services/navigation-history.service";
 
 @Component({
   selector: 'app-search-results-page',
@@ -39,10 +40,11 @@ export class SearchResultsPageComponent implements OnInit{
   private allPeopleLoaded : boolean = false;
   public selectedTab : Tab;
   public loading : boolean;
+  private queries : string[] = [];
 
   constructor(private userService : UserService, private route : ActivatedRoute,
               private router : Router, private dataLoadingService : DataLoadingService,
-              private location: Location) {
+              private location: Location, private historyOfPages : NavigationHistoryService) {
 
   }
 
@@ -67,6 +69,11 @@ export class SearchResultsPageComponent implements OnInit{
     if(this.query === ""){
       return;
     }
+    else if (this.query == this.queries.pop()){
+      this.queries.push(this.query);
+      return;
+    }
+    this.queries.push(this.query);
     this.matchingPosts$ = new BehaviorSubject<PostDTO[]>([]);
     this.matchingUsers$ = new BehaviorSubject<PageUserDTO[]>([]);
     if (this.selectedTab == Tab.FirstTab){
@@ -86,7 +93,7 @@ export class SearchResultsPageComponent implements OnInit{
       this.dataLoadingService.loadMorePeople(this.allPeopleLoaded, this.query, this.peopleToLoadLowerCount,
         this.peopleToLoadUpperCount, this.matchingUsers$);
     }
-
+    console.log(this.queries);
   }
   navigateToTopSearch() {
     this.selectedTab = Tab.FirstTab;
@@ -121,11 +128,6 @@ export class SearchResultsPageComponent implements OnInit{
     this.searchByQuery();
   }
 
-  goBack() {
-    this.router.navigate(['mainPage']);
-  }
-
-
   getCurrentUser(): void{
     this.userService.getCurrentUser()
       .subscribe( (response) =>{
@@ -145,12 +147,22 @@ export class SearchResultsPageComponent implements OnInit{
 
 
   backToMainPage() {
-    this.location.back();
-    this.route.queryParams.subscribe((params) =>{
-      this.query = params['q'];
-      console.log(this.query);
-      this.searchByQuery();
-    });
+    this.queries.pop();
+    const query : string | undefined = this.queries.pop();
+    if (query != undefined){
+      this.query = query
+      this.router.navigate(['search'], {queryParams : {q : this.query}}).then( () => {
+        this.route.queryParams.subscribe((params) =>{
+          this.query = params['q'];
+          this.searchByQuery();
+        });
+      })
+    }
+    else {
+      this.router.navigate(['explore'])
+      return;
+    }
+
   }
 
   protected readonly faCircleNotch = faCircleNotch;

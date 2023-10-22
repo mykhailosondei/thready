@@ -8,6 +8,8 @@ import {finalize, Subject, takeUntil} from "rxjs";
 import {C} from "@angular/cdk/keycodes";
 import {NavigatorService} from "../../Services/navigator.service";
 import {Tab} from "../../models/enums/Tab";
+import {Location} from "@angular/common";
+import {NavigationHistoryService} from "../../Services/navigation-history.service";
 
 @Component({
   selector: 'app-following-page',
@@ -20,9 +22,11 @@ export class FollowingPageComponent implements OnInit{
   protected following : PageUserDTO[];
   private unsubscribe$ = new Subject<void>();
   protected currentUser! : UserDTO;
+  private navigateToUserPage: boolean;
 
 
-  constructor(private userService: UserService, private route: ActivatedRoute, public navigatorService : NavigatorService) {
+  constructor(private userService: UserService, private route: ActivatedRoute, public navigatorService : NavigatorService,
+              private location : Location, private historyOfPages : NavigationHistoryService) {
     this.route.paramMap.subscribe(params => {
       this.username = params.get('username') || "DefaultUsername";
     })
@@ -79,6 +83,25 @@ export class FollowingPageComponent implements OnInit{
           this.currentUser = response.body;
         }
       });
+  }
+
+  navigateToFollowers(username : string){
+    if (this.historyOfPages.getPageInHistoryCounter() == 0){
+      this.navigateToUserPage =true;
+    }
+    this.historyOfPages.IncrementPageInHistoryCounter();
+    this.navigatorService.openFollowersPage(username);
+  }
+
+  goBack(){
+    const pagesCount = this.historyOfPages.getPageInHistoryCounter();
+    if (pagesCount == 0 || this.navigateToUserPage){
+      this.historyOfPages.resetCounter();
+      this.navigatorService.openProfilePage(this.username);
+      return;
+    }
+    this.historyOfPages.resetCounter();
+    this.location.historyGo(-pagesCount);
   }
 
   protected readonly Tab = Tab;

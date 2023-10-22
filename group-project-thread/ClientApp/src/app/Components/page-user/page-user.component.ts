@@ -1,10 +1,12 @@
-import {Component, Input} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {PageUserDTO} from "../../models/user/pageUserDTO";
 import {finalize, Subject, takeUntil} from "rxjs";
 import {UserService} from "../../Services/user.service";
 import {SnackbarService} from "../../Services/snackbar.service";
 import {Router} from "@angular/router";
 import {UserDTO} from "../../models/user/userDTO";
+import {NavigationHistoryService} from "../../Services/navigation-history.service";
+import {NavigatorService} from "../../Services/navigator.service";
 
 @Component({
   selector: 'app-page-user',
@@ -19,19 +21,23 @@ export class PageUserComponent {
   @Input() public isCurrentUserPage : boolean;
   @Input() public containerHeight : number = 40;
 
+  @Output() userClicked : EventEmitter<string> = new EventEmitter<string>();
 
   protected isMyFollowing : boolean;
   public followingText : string = "Following";
   private submittedUnfollow: boolean = false;
   private submittedFollow : boolean = false;
   protected followed = false;
+
   constructor(private userService : UserService, private snackBarService : SnackbarService,
-              private router: Router) {
+              private router: Router, private historyOfPages : NavigationHistoryService,
+              private navigatorService : NavigatorService) {
   }
 
 
-  navigateToUserProfile(username : string) {
-    this.router.navigate([username, 'profile']);
+  getUserPage(username : string){
+    this.userClicked.emit(username);
+    this.navigatorService.openProfilePage(username);
   }
 
   amIFollowing(): boolean{
@@ -92,6 +98,7 @@ export class PageUserComponent {
 
   getUserFollowers(event : Event, username: string) {
     event.stopPropagation();
+    this.historyOfPages.IncrementPageInHistoryCounter();
     this.router.navigate([username, 'followers'])
   }
 

@@ -31,7 +31,7 @@
               <span *ngIf="word.postsCount == 1" class="small-text">{{word.postsCount}} post</span>
             </div>
           </div>
-          <div class="show-more wrapper" (click)="navigatorService.navigateToMayBeInterestingPage(Tab.FirstTab)">
+          <div class="show-more wrapper" (click)="navigateToMayBeInteresting()">
             <span class="show-more-span">Show More</span>
           </div>
         </div>
@@ -41,7 +41,10 @@
           </div>
           <div *ngFor="let user of whoToFollow$ | async">
             <app-page-user [pageUser]="user" [isFollowing]="false" [containerHeight]="40"
-                           [currentUser]="currentUser" [showBio]="false"></app-page-user>
+                           [currentUser]="currentUser" [showBio]="false"
+            (userClicked)="navigateToUserPage(user.username)">
+
+            </app-page-user>
           </div>
           <div class="show-more wrapper" (click)="navigatorService.openWhoToFollowPage('')">
             <span class="show-more-span">Show More</span>

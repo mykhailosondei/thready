@@ -17,6 +17,9 @@ import {UserDTO} from "../../models/user/userDTO";
 import {UserService} from "../../Services/user.service";
 import PostFormatter from "../../helpers/postFormatter";
 import {Router, RouterOutlet} from "@angular/router";
+import {NavigationHistoryService} from "../../Services/navigation-history.service";
+import {NavigatorService} from "../../Services/navigator.service";
+import {Tab} from "../../models/enums/Tab";
   interface faToggleIcon {
   activated : IconDefinition,
   unactivated : IconDefinition
@@ -36,7 +39,9 @@ export enum Endpoint{
 })
 export class SideNavbarComponent{
 
-    constructor(private router : Router,private dialog: MatDialog, private readonly postService: PostService, private readonly userService: UserService) {
+    constructor(private router : Router,private dialog: MatDialog, private readonly postService: PostService,
+                private readonly userService: UserService, private historyOfPages : NavigationHistoryService,
+                private navigator : NavigatorService) {
 
     }
 
@@ -76,6 +81,10 @@ export class SideNavbarComponent{
 
   protected readonly Endpoint = Endpoint;
 
+  navigateToMayBeInteresting() {
+    this.historyOfPages.IncrementPageInHistoryCounter();
+    this.navigator.navigateToMayBeInterestingPage(Tab.FirstTab);
+  }
   isAvatarNull() {
     return this.user.avatar === null;
   }

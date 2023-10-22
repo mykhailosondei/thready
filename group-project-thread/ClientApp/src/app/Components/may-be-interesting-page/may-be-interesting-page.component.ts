@@ -7,6 +7,8 @@ import {PostDTO} from "../../models/post/postDTO";
 import {UserDTO} from "../../models/user/userDTO";
 import {UserService} from "../../Services/user.service";
 import {NavigatorService} from "../../Services/navigator.service";
+import {NavigationHistoryService} from "../../Services/navigation-history.service";
+import {Location} from "@angular/common";
 
 @Component({
   selector: 'app-may-be-interesting-page',
@@ -18,9 +20,12 @@ export class MayBeInterestingPageComponent implements OnInit{
   public query : string;
   public matchingPosts$ : BehaviorSubject<PostDTO[]> = new BehaviorSubject<PostDTO[]>([]);
   public currentUser! : UserDTO;
+
   public currentUserId$ = new BehaviorSubject<number | undefined>(undefined);
+  private navigateToMainPage: boolean;
   constructor(private router : Router, private recommendationService : RecommendationService,
-              private userService : UserService, public navigatorService : NavigatorService) {
+              private userService : UserService, public navigatorService : NavigatorService,
+              private historyOfPages : NavigationHistoryService, private location : Location) {
   }
 
   ngOnInit(): void {
@@ -51,12 +56,23 @@ export class MayBeInterestingPageComponent implements OnInit{
       } )
   }
 
-  navigateToMayBeInterestingPage() {
-
+  navigateToTrending(){
+    if (this.historyOfPages.getPageInHistoryCounter() == 0){
+      this.navigateToMainPage =true;
+    }
+    this.historyOfPages.IncrementPageInHistoryCounter();
+    this.navigatorService.navigateToTrendingPage(Tab.SecondTab);
   }
 
-  navigateToTrendingPage() {
-
+  goBack(){
+    const pagesCount = this.historyOfPages.getPageInHistoryCounter();
+    if (pagesCount == 0 || this.navigateToMainPage){
+      this.historyOfPages.resetCounter();
+      this.navigatorService.backToMainPage();
+      return;
+    }
+    this.historyOfPages.resetCounter();
+    this.location.historyGo(-pagesCount);
   }
 
   searchByQuery() {

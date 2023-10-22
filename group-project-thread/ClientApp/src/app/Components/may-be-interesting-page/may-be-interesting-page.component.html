@@ -4,10 +4,10 @@
       [selectedTab]="selectedTab" [firstTabName]="'May be Interesting'" [secondTabName]="'Trending'"
       [query]="query"
       (firstTabClicked)="navigatorService.navigateToMayBeInterestingPage(selectedTab)"
-      (secondTabClicked)="navigatorService.navigateToTrendingPage(selectedTab)"
+      (secondTabClicked)="navigateToTrending()"
       (searchByQueryClicked)="searchByQuery()"
       (queryChanged)="onQueryChanged($event)"
-      (backButtonClicked)="navigatorService.backToMainPage()">
+      (backButtonClicked)="goBack()">
     </app-search-bar>
     <div class="title-box">
       <span class="title">This could be interesting for you</span>

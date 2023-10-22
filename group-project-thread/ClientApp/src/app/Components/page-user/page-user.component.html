@@ -1,5 +1,5 @@
 <div class="user-box">
-  <div class="user-profile-button" (click)="navigateToUserProfile(pageUser.username)">
+  <div class="user-profile-button" (click)="getUserPage(pageUser.username)">
     <div class="content">
       <div class="small-image-container" [style.max-height.px]="containerHeight">
         <div class="image-box">
@@ -9,7 +9,7 @@
       <div class="user-info-box">
           <div class="small-info">
             <div class="small-info-box">
-              <div class="underline-box" (click)="navigateToUserProfile(pageUser.username)">
+              <div class="underline-box" (click)="getUserPage(pageUser.username)">
                 <span class="username-span">{{pageUser.username}}</span>
               </div>
               <div class="underline-box" (click)="getUserFollowers($event, pageUser.username)">

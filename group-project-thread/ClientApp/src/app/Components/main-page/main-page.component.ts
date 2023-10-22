@@ -5,6 +5,7 @@ import {PostDTO} from "../../models/post/postDTO";
 import {Router} from "@angular/router";
 import {PostService} from "../../Services/post.service";
 import {Endpoint} from "../side-navbar/side-navbar.component";
+import {NavigationHistoryService} from "../../Services/navigation-history.service";
 
 @Component({
   selector: 'app-main-page',
@@ -15,11 +16,12 @@ export class MainPageComponent {
 
   posts: PostDTO[] = [];
 
-  constructor(private postService: PostService, private router : Router) {
+  constructor(private postService: PostService, private historyOfPages : NavigationHistoryService) {
   }
 
   ngOnInit(): void {
     this.fetchPosts();
+    console.log(this.historyOfPages.getPageInHistoryCounter())
   }
 
   public fetchPosts() {

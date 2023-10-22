@@ -3,9 +3,8 @@
     <app-tablist-page [title]="username" [firstTabName] = "'Following'" [secondTabName] = "'Followers'"
                       [selectedTab]="Tab.SecondTab"
                       (titleClicked)="navigatorService.openProfilePage($event)"
-                      (firstTabClicked)="navigatorService.openFollowingPage($event)"
-                      (secondTabClicked)="navigatorService.openFollowersPage($event)"
-                      (backButtonClicked)="navigatorService.openProfilePage(username)"
+                      (firstTabClicked)="navigateToFollowing(username)"
+                      (backButtonClicked)="goBack()"
     ></app-tablist-page>
     <div style="position: relative; max-width: 600px">
       <div *ngIf="followers.length != 0">

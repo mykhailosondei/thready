@@ -1,14 +1,16 @@
-import {Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {faMagnifyingGlass} from "@fortawesome/free-solid-svg-icons/faMagnifyingGlass";
 import {RecommendationService} from "../../Services/recommendation.service";
 import {IndexedWordDTO} from "../../models/indexedWordDTO";
-import {BehaviorSubject, takeUntil} from "rxjs";
+import {BehaviorSubject} from "rxjs";
 import {PageUserDTO} from "../../models/user/pageUserDTO";
 import {UserDTO} from "../../models/user/userDTO";
 import {UserService} from "../../Services/user.service";
 import {Router} from "@angular/router";
 import {NavigatorService} from "../../Services/navigator.service";
 import {Tab} from "../../models/enums/Tab";
+import {NavigationHistoryService} from "../../Services/navigation-history.service";
+import {Location} from "@angular/common";
 
 @Component({
   selector: 'app-recommendations-side-bar',
@@ -27,9 +29,11 @@ export class RecommendationsSideBarComponent implements OnInit{
   @Input() showSearchbar : boolean = true;
 
   @Output() trendClicked : EventEmitter<string> = new EventEmitter<string>();
+  @Output() userClicked : EventEmitter<string> = new EventEmitter<string>();
 
   constructor(private recommendationService : RecommendationService, private userService : UserService,
-              private router : Router, public navigatorService : NavigatorService) {
+              private router : Router, public navigatorService : NavigatorService,
+              private  historyOfPages : NavigationHistoryService) {
   }
 
 
@@ -77,4 +81,15 @@ export class RecommendationsSideBarComponent implements OnInit{
     this.trendClicked.emit(word);
     this.navigatorService.searchByWord(word);
   }
+
+  navigateToUserPage(username : string) {
+    this.userClicked.emit(username);
+  }
+
+  navigateToMayBeInteresting() {
+    this.historyOfPages.IncrementPageInHistoryCounter();
+    this.navigatorService.navigateToMayBeInterestingPage(Tab.FirstTab);
+  }
+
+
 }

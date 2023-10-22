@@ -69,7 +69,6 @@ export class PagePostComponent implements OnInit {
         this.bookmarked = response.body!.bookmarkedPostsIds.includes(this.postInput.id);
       }
     });
-    console.log(this.postInput);
     this.post = PostFormatter.mapPostToPagePost(this.postInput, this.userInput);
     // Set up IntersectionObserver to watch for 50% visibility
     this.observer = new IntersectionObserver(this.handleIntersection.bind(this), {

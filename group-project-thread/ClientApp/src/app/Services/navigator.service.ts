@@ -2,17 +2,19 @@ import { Injectable } from '@angular/core';
 import {Router} from "@angular/router";
 import {Tab} from "../models/enums/Tab";
 import {Location} from "@angular/common";
+import {NavigationHistoryService} from "./navigation-history.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class NavigatorService {
-  constructor(private router : Router, private location: Location) { }
+  constructor(private router : Router, private location: Location, private historyOfPages : NavigationHistoryService) { }
 
   public goBack(){
     this.location.back();
   }
   public openProfilePage($event : string){
+    this.historyOfPages.resetCounter();
     this.router.navigate([$event, 'profile'])
   }
   public openFollowingPage($event : string){
@@ -42,8 +44,8 @@ export class NavigatorService {
   searchByWord(word: string) {
     this.router.navigate(['search'], {queryParams : {q : word}})
   }
-
   backToMainPage(){
     this.router.navigate(['mainPage']);
   }
 }
+

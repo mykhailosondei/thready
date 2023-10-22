@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import {BehaviorSubject, finalize, Observable, Subject, switchMap, takeUntil} from "rxjs";
 import {UserDTO} from "../../models/user/userDTO";
 import {Image} from "../../models/image";
@@ -15,6 +15,8 @@ import {UpdateUserDialogData} from "../../models/user/updateUserDialogData";
 import {HttpResponse} from "@angular/common/http";
 import {Endpoint} from "../side-navbar/side-navbar.component";
 import {NavigatorService} from "../../Services/navigator.service";
+import {NavigationHistoryService} from "../../Services/navigation-history.service";
+import {Location} from "@angular/common";
 
 @Component({
   selector: 'app-profile-page',
@@ -45,15 +47,21 @@ export class ProfilePageComponent implements OnInit, OnDestroy{
   private unsubscribe$ = new Subject<void>;
 
   constructor(private snackBarService: SnackbarService, private userService : UserService,
-              private postService : PostService, private router: Router,
+              private postService : PostService, private location : Location,
               public dialog: MatDialog, private route: ActivatedRoute,
-              private navigator: NavigatorService) {
+              private navigator: NavigatorService, private historyOfPages : NavigationHistoryService) {
 
   }
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
       this.username = params.get('username') || "DefaultUsername"; });
-      this.checkIsCurrentUser();
+    this.checkIsCurrentUser();
+    this.getUserInstance();
+  }
+
+  getUserInstance(){
+    this.user = {} as UserDTO;
+    this.userPosts$ = new BehaviorSubject<PostDTO[]>([]);
     this.userService.getUserByUsername(this.username)
       .pipe(
         takeUntil(this.unsubscribe$),
@@ -83,13 +91,20 @@ export class ProfilePageComponent implements OnInit, OnDestroy{
     this.unsubscribe$.complete();
   }
   public backToMainPaige(){
-    this.navigator.goBack();
+    this.location.back();
+    this.route.paramMap.subscribe(params => {
+      this.username = params.get('username') || "DefaultUsername";
+      console.log(this.username)
+      this.getUserInstance();
+    });
   }
   public navigateToFollowing(){
+    this.historyOfPages.IncrementPageInHistoryCounter();
     this.navigator.openFollowingPage(this.user.username);
   }
 
   public navigateToFollowers(){
+    this.historyOfPages.IncrementPageInHistoryCounter();
     this.navigator.openFollowersPage(this.user.username);
   }
 
@@ -182,4 +197,12 @@ export class ProfilePageComponent implements OnInit, OnDestroy{
   }
 
     protected readonly Endpoint = Endpoint;
+
+  loadNewUser(username : string) {
+    if (this.username == username){
+      return
+    }
+    this.username = username;
+    this.getUserInstance()
+  }
 }
