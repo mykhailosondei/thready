@@ -4,6 +4,7 @@ using ApplicationBLL.Extentions;
 using ApplicationBLL.QueryRepositories;
 using ApplicationBLL.Services.Abstract;
 using ApplicationCommon.DTOs.Comment;
+using ApplicationCommon.DTOs.Image;
 using ApplicationCommon.DTOs.Post;
 using ApplicationCommon.DTOs.User;
 using ApplicationDAL.Context;
@@ -365,5 +366,24 @@ public class CommentService : BaseService
         _applicationContext.Entry(commentEntity).Property(c => c.ViewedBy).IsModified = true;
         
         await _applicationContext.SaveChangesAsync();
+    }
+
+    public async Task<IEnumerable<ImageDTO>> GetImagesOfCommentId(int commentId)
+    {
+        var commentEntity = await _commentQueryRepository.GetCommentByIdPlain(commentId, c => c.Images);
+
+        if (commentEntity == null)
+        {
+            throw new CommentNotFoundException();
+        }
+        
+        var result = new List<ImageDTO>();
+        
+        foreach (var image in commentEntity.Images)
+        {
+            result.Add(_mapper.Map<ImageDTO>(image));
+        }
+
+        return result;
     }
 }

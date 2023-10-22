@@ -25,7 +25,7 @@
             <p>{{ commentView.textContent }}</p>
           </div>
           <div class="post-image-content">
-            <div class="image-radius-wrap" [style.width]="commentView.imagesUrls.length === 1 ? 'fit-content' : '100%'">
+            <div class="image-radius-wrap" [style.width]="commentView.imagesUrls.length === 1 ? 'fit-content' : '100%'" [style.border-width]="commentView.imagesUrls.length == 0 ? '0' : '2px' ">
               <div *ngIf="commentView.imagesUrls.length === 4" class="four-image-container full-width">
                 <div class="two-image-container full-width">
                   <div class="left-upper-image-container full-width">

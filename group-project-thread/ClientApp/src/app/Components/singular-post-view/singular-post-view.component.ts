@@ -93,7 +93,7 @@ export class SingularPostViewComponent implements OnInit{
           this.comments = response.body!;
           console.log(response);
         }
-      })
+      });
     }
 
     faRetweet = faRetweet;

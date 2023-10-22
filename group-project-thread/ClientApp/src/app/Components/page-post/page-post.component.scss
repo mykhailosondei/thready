@@ -35,6 +35,7 @@ $border-color: #dcdcdc;
 .parent-view-page-post{
   border: 0 solid $border-color;
   padding: 10px 10px 0 10px;
+  position: relative;
   transition: background-color 0.3s ease;
   * {
     user-select: none;

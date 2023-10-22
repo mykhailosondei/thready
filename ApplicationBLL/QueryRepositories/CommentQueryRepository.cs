@@ -53,7 +53,25 @@ public class CommentQueryRepository : BaseQueryRepository
 
         Console.WriteLine(depth);
         
-        var comment = await _applicationContext.Comments.Include(c => c.Author).CustomInclude(depth).AsNoTracking().FirstOrDefaultAsync(c => c.Id == id);
+        var comment = await _applicationContext.Comments.Include(c => c.Author).Include(c => c.Images).CustomInclude(depth).AsNoTracking().FirstOrDefaultAsync(c => c.Id == id);
+
+        if (depth == 0)
+        {
+            _applicationContext.Attach(comment!.Post!);
+            _applicationContext.Entry(comment.Post!).Collection(c => c.Images).Load();
+        }
+        
+        for (Comment comment1 = comment.ParentComment; comment1 != null; comment1 = comment1.ParentComment)
+        {
+            _applicationContext.Attach(comment1);
+            _applicationContext.Entry(comment1).Collection(c => c.Images).Load();
+            if (comment1.Post != null)
+            {
+                _applicationContext.Attach(comment1.Post);
+                _applicationContext.Entry(comment1.Post).Collection(c => c.Images).Load();
+                break;
+            }
+        }
         
         return _mapper.Map<CommentDTO>(comment);
     }

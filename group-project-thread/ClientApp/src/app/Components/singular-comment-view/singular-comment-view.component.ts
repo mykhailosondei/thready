@@ -61,12 +61,13 @@ export class SingularCommentViewComponent {
   }
 
   fetchEssentialData() {
-    this.commentService.getCommentById(this.incomingCommentId).subscribe(response => {
+    this.commentService.getCommentTreeById(this.incomingCommentId).subscribe(response => {
       if(response.ok) {
         this.commentInput = response.body!;
         this.commentInput.id = this.incomingCommentId;
         this.authorInput = this.commentInput.author;
         this.commentView = PostFormatter.mapCommentToPagePost(this.commentInput, this.authorInput);
+        console.log("=============commentWithTree=============");
         console.log(response);
       }
     }).add(()=>{
