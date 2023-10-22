@@ -3,6 +3,7 @@ import {faArrowLeftLong} from "@fortawesome/free-solid-svg-icons";
 import {faMagnifyingGlass} from "@fortawesome/free-solid-svg-icons/faMagnifyingGlass";
 import {Tab} from "../../models/enums/Tab";
 import {Router} from "@angular/router";
+import {Location} from "@angular/common";
 @Component({
   selector: 'app-search-bar',
   templateUrl: './search-bar.component.html',
@@ -22,14 +23,15 @@ export class SearchBarComponent{
   @Output() firstTabClicked : EventEmitter<string> = new EventEmitter<string>();
   @Output() secondTabClicked : EventEmitter<string> = new EventEmitter<string>();
   @Output() queryChanged: EventEmitter<string> = new EventEmitter<string>();
+  @Output() backButtonClicked : EventEmitter<undefined> = new EventEmitter<undefined>();
 
-  constructor(private router : Router) {
+  constructor() {
   }
 
 
 
   backToMainPaige() {
-    this.router.navigate(["mainPage"]);
+    this.backButtonClicked.emit();
   }
 
   public navigateToFirstTab(){

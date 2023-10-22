@@ -23,7 +23,7 @@
           <div class="recommendations-box-title wrapper">
             <span class="title">What's happening</span>
           </div>
-          <div *ngFor="let word of smallTrends$ | async" class="trending-word-box wrapper" (click)="navigatorService.searchByWord(word.word)" >
+          <div *ngFor="let word of smallTrends$ | async" class="trending-word-box wrapper" (click)="searchByWord(word.word)" >
             <div class="text-box wrapper">
               <span class="small-text">Trending</span>
               <span class="main-text">{{word.word}}</span>

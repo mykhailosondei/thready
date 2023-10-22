@@ -1,13 +1,17 @@
 import { Injectable } from '@angular/core';
 import {Router} from "@angular/router";
 import {Tab} from "../models/enums/Tab";
+import {Location} from "@angular/common";
 
 @Injectable({
   providedIn: 'root'
 })
 export class NavigatorService {
-  constructor(private router : Router) { }
+  constructor(private router : Router, private location: Location) { }
 
+  public goBack(){
+    this.location.back();
+  }
   public openProfilePage($event : string){
     this.router.navigate([$event, 'profile'])
   }
@@ -37,5 +41,9 @@ export class NavigatorService {
 
   searchByWord(word: string) {
     this.router.navigate(['search'], {queryParams : {q : word}})
+  }
+
+  backToMainPage(){
+    this.router.navigate(['mainPage']);
   }
 }

@@ -6,7 +6,8 @@
       (firstTabClicked)="navigatorService.navigateToMayBeInterestingPage(selectedTab)"
       (secondTabClicked)="navigatorService.navigateToTrendingPage(selectedTab)"
       (searchByQueryClicked)="searchByQuery()"
-      (queryChanged)="onQueryChanged($event)">
+      (queryChanged)="onQueryChanged($event)"
+      (backButtonClicked)="navigatorService.backToMainPage()">
     </app-search-bar>
     <div class="title-box">
       <span class="title">This could be interesting for you</span>

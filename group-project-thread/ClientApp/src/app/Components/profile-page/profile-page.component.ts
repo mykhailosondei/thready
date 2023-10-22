@@ -14,6 +14,7 @@ import {UserUpdateDialogComponent} from "../user-update-dialog/user-update-dialo
 import {UpdateUserDialogData} from "../../models/user/updateUserDialogData";
 import {HttpResponse} from "@angular/common/http";
 import {Endpoint} from "../side-navbar/side-navbar.component";
+import {NavigatorService} from "../../Services/navigator.service";
 
 @Component({
   selector: 'app-profile-page',
@@ -45,7 +46,8 @@ export class ProfilePageComponent implements OnInit, OnDestroy{
 
   constructor(private snackBarService: SnackbarService, private userService : UserService,
               private postService : PostService, private router: Router,
-              public dialog: MatDialog, private route: ActivatedRoute) {
+              public dialog: MatDialog, private route: ActivatedRoute,
+              private navigator: NavigatorService) {
 
   }
   ngOnInit(): void {
@@ -81,14 +83,14 @@ export class ProfilePageComponent implements OnInit, OnDestroy{
     this.unsubscribe$.complete();
   }
   public backToMainPaige(){
-    this.router.navigate(['/mainPage']);
+    this.navigator.goBack();
   }
   public navigateToFollowing(){
-    this.router.navigate([this.user.username, "following"])
+    this.navigator.openFollowingPage(this.user.username);
   }
 
   public navigateToFollowers(){
-    this.router.navigate([this.user.username, "followers"])
+    this.navigator.openFollowersPage(this.user.username);
   }
 
   public openEditDialog(){

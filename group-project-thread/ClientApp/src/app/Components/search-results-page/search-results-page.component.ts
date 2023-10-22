@@ -1,5 +1,5 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {faArrowLeftLong} from "@fortawesome/free-solid-svg-icons";
+import {Component, Input, OnInit, SimpleChanges} from '@angular/core';
+import {faArrowLeftLong, faSpinner} from "@fortawesome/free-solid-svg-icons";
 import {faMagnifyingGlass} from "@fortawesome/free-solid-svg-icons/faMagnifyingGlass";
 import {PostDTO} from "../../models/post/postDTO";
 import {BehaviorSubject, takeUntil} from "rxjs";
@@ -13,6 +13,8 @@ import {DataLoadingService} from "../../Services/data-loading.service";
 import {Endpoint} from "../side-navbar/side-navbar.component";
 import {Tab} from "../../models/enums/Tab";
 import {Q} from "@angular/cdk/keycodes";
+import {Location} from "@angular/common";
+import {faCircleNotch} from "@fortawesome/free-solid-svg-icons/faCircleNotch";
 
 @Component({
   selector: 'app-search-results-page',
@@ -21,8 +23,7 @@ import {Q} from "@angular/cdk/keycodes";
 })
 export class SearchResultsPageComponent implements OnInit{
 
-  protected readonly faArrowLeftLong = faArrowLeftLong;
-  protected readonly faMagnifyingGlass = faMagnifyingGlass;
+  protected readonly Endpoint = Endpoint;
   public query : string = "";
   public currentUser! : UserDTO;
   public isFollowing : boolean;
@@ -37,15 +38,20 @@ export class SearchResultsPageComponent implements OnInit{
   private allPostsLoaded : boolean = false;
   private allPeopleLoaded : boolean = false;
   public selectedTab : Tab;
+  public loading : boolean;
 
-  constructor(private searchService : SearchService, private userService : UserService, private route : ActivatedRoute,
-              private router : Router, private dataLoadingService : DataLoadingService) {
+  constructor(private userService : UserService, private route : ActivatedRoute,
+              private router : Router, private dataLoadingService : DataLoadingService,
+              private location: Location) {
 
   }
 
   ngOnInit() {
     this.route.queryParams.subscribe((params) =>{
       this.query = params['q'];
+      if (this.query == undefined){
+        this.router.navigate(['explore']);
+      }
       if (params['f'] === "user"){
         this.selectedTab = Tab.SecondTab;
       }
@@ -54,26 +60,16 @@ export class SearchResultsPageComponent implements OnInit{
       }
     });
     this.getCurrentUser();
-    if (this.selectedTab == Tab.FirstTab){
-      this.dataLoadingService.loadInitialPosts(this.query, this.postsToLoadLowerCount,
-        this.postsToLoadUpperCount, this.matchingPosts$);
-      this.dataLoadingService.loadInitialPeople(this.query, 0, 3,
-        this.matchingUsers$);
-    }
-    if (this.selectedTab == Tab.SecondTab){
-      this.dataLoadingService.loadMorePeople(this.allPeopleLoaded, this.query, this.peopleToLoadLowerCount,
-        this.peopleToLoadUpperCount, this.matchingUsers$);
-    }
+    this.searchByQuery();
   }
-  
 
   searchByQuery() {
     if(this.query === ""){
       return;
     }
+    this.matchingPosts$ = new BehaviorSubject<PostDTO[]>([]);
+    this.matchingUsers$ = new BehaviorSubject<PageUserDTO[]>([]);
     if (this.selectedTab == Tab.FirstTab){
-      this.matchingPosts$ = new BehaviorSubject<PostDTO[]>([]);
-      this.matchingUsers$ = new BehaviorSubject<PageUserDTO[]>([]);
       this.allPostsLoaded = false;
       this.postsToLoadLowerCount = 0;
       this.postsToLoadUpperCount = 10;
@@ -83,7 +79,6 @@ export class SearchResultsPageComponent implements OnInit{
       this.dataLoadingService.loadInitialPeople(this.query, 0, 3, this.matchingUsers$);
     }
     else {
-      this.matchingUsers$ = new BehaviorSubject<PageUserDTO[]>([]);
       this.allPeopleLoaded = false;
       this.peopleToLoadLowerCount = 0;
       this.peopleToLoadUpperCount = 10;
@@ -121,6 +116,11 @@ export class SearchResultsPageComponent implements OnInit{
     this.query = query;
   }
 
+  getTrend(query : string){
+    this.query = query;
+    this.searchByQuery();
+  }
+
   goBack() {
     this.router.navigate(['mainPage']);
   }
@@ -142,5 +142,17 @@ export class SearchResultsPageComponent implements OnInit{
     return id == this.currentUser.id;
   }
 
-    protected readonly Endpoint = Endpoint;
+
+
+  backToMainPage() {
+    this.location.back();
+    this.route.queryParams.subscribe((params) =>{
+      this.query = params['q'];
+      console.log(this.query);
+      this.searchByQuery();
+    });
+  }
+
+  protected readonly faCircleNotch = faCircleNotch;
+  protected readonly faSpinner = faSpinner;
 }
