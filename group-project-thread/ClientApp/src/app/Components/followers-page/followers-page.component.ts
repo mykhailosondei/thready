@@ -6,6 +6,7 @@ import {PageUserDTO} from "../../models/user/pageUserDTO";
 import {finalize, Subject, takeUntil} from "rxjs";
 import {NavigatorService} from "../../Services/navigator.service";
 import {Tab} from "../../models/enums/Tab";
+import {Location} from "@angular/common";
 @Component({
   selector: 'app-followers-page',
   templateUrl: './followers-page.component.html',
@@ -17,7 +18,8 @@ export class FollowersPageComponent {
   protected followers : PageUserDTO[];
   private unsubscribe$ = new Subject<void>();
   protected currentUser! : UserDTO;
-  constructor(private userService: UserService, private route: ActivatedRoute, public navigatorService : NavigatorService) {
+  constructor(private userService: UserService, private route: ActivatedRoute, public navigatorService : NavigatorService,
+  private location : Location) {
     this.route.paramMap.subscribe(params => {
       this.username = params.get('username') || "DefaultUsername";
     })

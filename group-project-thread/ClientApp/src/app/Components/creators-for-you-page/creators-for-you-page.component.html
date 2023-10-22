@@ -4,6 +4,7 @@
                       [selectedTab]="Tab.SecondTab" [showSubtitle] = "false"
                       (firstTabClicked)="navigator.openWhoToFollowPage($event)"
                       (secondTabClicked)="navigator.openCreatorsForYouPage($event)"
+                      (backButtonClicked)="navigator.goBack()"
     ></app-tablist-page>
     <div style="position: relative; max-width: 600px">
       <div *ngIf="users$.getValue().length != 0">

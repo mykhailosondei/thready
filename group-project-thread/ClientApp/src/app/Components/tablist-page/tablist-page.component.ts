@@ -25,6 +25,7 @@ export class TablistPageComponent implements OnInit{
   @Output() titleClicked : EventEmitter<string> = new EventEmitter<string>();
   @Output() firstTabClicked : EventEmitter<string> = new EventEmitter<string>();
   @Output() secondTabClicked : EventEmitter<string> = new EventEmitter<string>();
+  @Output() backButtonClicked : EventEmitter<undefined> = new EventEmitter<undefined>();
 
   constructor(private router: Router) {
 
@@ -35,7 +36,7 @@ export class TablistPageComponent implements OnInit{
   }
 
   backToMainPaige() {
-    this.router.navigate(["mainPage"]);
+    this.backButtonClicked.emit();
   }
 
   public navigateToFirstTab(){

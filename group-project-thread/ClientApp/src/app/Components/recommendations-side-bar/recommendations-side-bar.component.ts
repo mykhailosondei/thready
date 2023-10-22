@@ -1,4 +1,4 @@
-import {Component, ElementRef, HostListener, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {faMagnifyingGlass} from "@fortawesome/free-solid-svg-icons/faMagnifyingGlass";
 import {RecommendationService} from "../../Services/recommendation.service";
 import {IndexedWordDTO} from "../../models/indexedWordDTO";
@@ -26,6 +26,8 @@ export class RecommendationsSideBarComponent implements OnInit{
   @Input() showWhoToFollow : boolean = true;
   @Input() showSearchbar : boolean = true;
 
+  @Output() trendClicked : EventEmitter<string> = new EventEmitter<string>();
+
   constructor(private recommendationService : RecommendationService, private userService : UserService,
               private router : Router, public navigatorService : NavigatorService) {
   }
@@ -52,7 +54,6 @@ export class RecommendationsSideBarComponent implements OnInit{
       .subscribe( (response) => {
         if (response.body != null){
           this.whoToFollow$.next( response.body || []);
-          console.log(this.whoToFollow$)
         }
       } )
   }
@@ -71,4 +72,9 @@ export class RecommendationsSideBarComponent implements OnInit{
   }
 
   protected readonly Tab = Tab;
+
+  searchByWord(word: string) {
+    this.trendClicked.emit(word);
+    this.navigatorService.searchByWord(word);
+  }
 }
