@@ -348,7 +348,6 @@ public class CommentService : BaseService
         commentEntity.ViewedBy.Add(authorId);
         
         _applicationContext.Attach(commentEntity);
-        _applicationContext.Attach(userEntity);
         
         _applicationContext.Entry(commentEntity).Property(c => c.ViewedBy).IsModified = true;
         

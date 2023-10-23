@@ -3,6 +3,7 @@ import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {RouterModule} from '@angular/router';
+
 import {AppComponent} from './app.component';
 import {NavMenuComponent} from './nav-menu/nav-menu.component';
 import {HomeComponent} from './home/home.component';
@@ -58,6 +59,8 @@ import {PhotoLoaderComponent} from "./Components/photo-loader/photo-loader.compo
 import {DeletableImageComponent} from "./Components/deletable-image/deletable-image.component";
 import {LoadingSpinnerComponent} from "./Components/loading-spinner/loading-spinner.component";
 import {NoResultFoundPageComponent} from "./Components/no-result-found-page/no-result-found-page.component";
+import {ModalModule} from "ngx-bootstrap/modal";
+import {NavWrapperComponent} from "./Components/nav-wrapper/nav-wrapper.component";
 
 @NgModule({ declarations: [
     AppComponent,
@@ -103,7 +106,8 @@ import {NoResultFoundPageComponent} from "./Components/no-result-found-page/no-r
     PhotoLoaderComponent,
     DeletableImageComponent,
     LoadingSpinnerComponent,
-    NoResultFoundPageComponent
+    NoResultFoundPageComponent,
+    NavWrapperComponent
     ],
   imports: [
     BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),
@@ -125,6 +129,7 @@ import {NoResultFoundPageComponent} from "./Components/no-result-found-page/no-r
     MatButtonModule,
     MatInputModule,
     InfiniteScrollModule,
+    ModalModule.forRoot(),
     MatProgressSpinnerModule
   ],
   providers: [
