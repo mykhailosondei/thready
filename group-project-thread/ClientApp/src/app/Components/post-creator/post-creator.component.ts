@@ -10,13 +10,14 @@ import {Image} from "../../models/image";
 @Component({
   selector: 'app-post-creator',
   templateUrl: './post-creator.component.html',
-  styleUrls: ['./post-creator.component.scss', '../page-post/page-post.component.scss']
+  styleUrls: ['./post-creator.component.scss', '../page-post/page-post.component.scss', '../../../assets/spinner.scss']
 })
 export class PostCreatorComponent {
 
   currentUser= {} as UserDTO;
   @ViewChild('creatorInput') currentText: {inputValue: string} = {inputValue: ''};
   currentImages: string[] = [];
+  public loading : boolean;
 
   postingInProgress: boolean = false;
 
@@ -25,8 +26,10 @@ export class PostCreatorComponent {
   constructor(private readonly userService: UserService, private readonly postService: PostService) { }
 
   ngOnInit(): void {
+    this.loading = true;
     this.userService.getCurrentUser().subscribe(Response => {
-      this.currentUser = Response.body!;
+      this.currentUser = Response.body!
+      this.loading = false
     });
   }
 
@@ -45,13 +48,15 @@ export class PostCreatorComponent {
   createPost() {
     if(this.postingInProgress) return;
     this.postingInProgress = true;
+    this.loading = true;
     this.postService.createPost(
       {textContent: this.currentText.inputValue, images: this.currentImages.map<Image>(i => {return {url:i}})}
     ).subscribe(Response => {
-      console.log(Response);
       if(Response.ok){
         this.currentText.inputValue = '';
         this.currentImages = [];
+        this.loading = false;
+        console.log(this.loading)
       }
     });
   }

@@ -4,7 +4,7 @@
       [selectedTab]="selectedTab" [firstTabName]="'May be Interesting'" [secondTabName]="'Trending'"
       [query]="query"
       (firstTabClicked)="navigateToMayBeInteresting()"
-      (secondTabClicked)="navigatorService.navigateToTrendingPage(selectedTab)"
+      (secondTabClicked)="navigator.navigateToTrendingPage(selectedTab)"
       (searchByQueryClicked)="searchByQuery()"
       (queryChanged)="onQueryChanged($event)"
       (backButtonClicked)="goBack()">
@@ -12,7 +12,7 @@
     <div class="title-box">
       <span class="title">The most popular now</span>
     </div>
-    <div *ngFor="let word of trends$ | async; let i = index" class="trending-word-box wrapper" (click)="navigatorService.searchByWord(word.word)">
+    <div *ngFor="let word of trends$ | async; let i = index" class="trending-word-box wrapper" (click)="navigator.searchByWord(word.word)">
       <div class="text-box wrapper">
         <span class="small-text">{{i+1}} · in trending</span>
         <span class="main-text">{{word.word}}</span>

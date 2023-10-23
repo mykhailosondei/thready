@@ -11,7 +11,7 @@ import {NavigationHistoryService} from "../../Services/navigation-history.servic
 @Component({
   selector: 'app-followers-page',
   templateUrl: './followers-page.component.html',
-  styleUrls: ['./followers-page.component.scss', '../../../assets/ContentFrame.scss']
+  styleUrls: ['./followers-page.component.scss', '../../../assets/ContentFrame.scss', '../../../assets/spinner.scss']
 })
 export class FollowersPageComponent {
   protected username : string;
@@ -19,7 +19,7 @@ export class FollowersPageComponent {
   protected followers : PageUserDTO[];
   private unsubscribe$ = new Subject<void>();
   protected currentUser! : UserDTO;
-  private navigateToUserPage: boolean;
+  public loading : boolean;
   constructor(private userService: UserService, private route: ActivatedRoute, public navigatorService : NavigatorService,
   private historyOfPages : NavigationHistoryService, private location : Location) {
     this.route.paramMap.subscribe(params => {
@@ -33,6 +33,7 @@ export class FollowersPageComponent {
   }
 
   ngOnInit(): void {
+    this.loading = true;
     this.route.paramMap.subscribe(params => {
       this.username = params.get('username') || "DefaultUsername";
       this.getCurrentUser();
@@ -67,6 +68,7 @@ export class FollowersPageComponent {
             }
           });
         }
+        this.loading = false;
       }
     });
   }
@@ -77,7 +79,7 @@ export class FollowersPageComponent {
 
   navigateToFollowing(username : string){
     if (this.historyOfPages.getPageInHistoryCounter() == 0){
-      this.navigateToUserPage =true;
+      this.historyOfPages.setNavigateToUserPage();
     }
     this.historyOfPages.IncrementPageInHistoryCounter();
     this.navigatorService.openFollowingPage(username);
@@ -85,8 +87,9 @@ export class FollowersPageComponent {
 
   goBack(){
     const pagesCount = this.historyOfPages.getPageInHistoryCounter();
-    if (pagesCount == 0 || this.navigateToUserPage){
+    if (pagesCount == 0 || this.historyOfPages.getNavigateToUserPage()){
       this.historyOfPages.resetCounter();
+      this.historyOfPages.resetNavigateToUserPage();
       this.navigatorService.openProfilePage(this.username);
       return;
     }

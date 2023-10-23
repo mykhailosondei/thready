@@ -184,7 +184,10 @@ public class PostService : BaseService
         
         _applicationContext.Posts.Add(postEntity);
         _applicationContext.Attach(postEntity.Author);
-        _applicationContext.Attach(postEntity.Author.Avatar);
+        if (postEntity.Author.Avatar != null)
+        {
+            _applicationContext.Attach(postEntity.Author.Avatar);
+        }
         postEntity.Author.PostsCount++;
         
         await _applicationContext.SaveChangesAsync();

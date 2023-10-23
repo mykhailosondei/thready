@@ -5,7 +5,9 @@ import {finalize, Subject, takeUntil} from 'rxjs';
 import {AuthService} from 'src/app/Services/auth.service';
 import ValidateForm from 'src/app/helpers/validateForm';
 import {SnackbarService} from "../../Services/snackbar.service";
-
+import {MatProgressSpinnerHarness} from '@angular/material/progress-spinner/testing';
+import {ThemePalette} from "@angular/material/core";
+import {ProgressSpinnerMode} from "@angular/material/progress-spinner";
 @Component({
   selector: 'app-login-page',
   templateUrl: './login-page.component.html',
@@ -16,7 +18,9 @@ export class LoginPageComponent {
   isText: boolean = false;
   eyeIcon: string = "fa-eye-slash"
   loginForm!: FormGroup;
+  mode: ProgressSpinnerMode = 'indeterminate';
   private submitted: boolean = false;
+  public loading : boolean = false;
   constructor(private fb: FormBuilder, private authService: AuthService,
               private router: Router, private snackbarService: SnackbarService) {
 
@@ -37,9 +41,11 @@ export class LoginPageComponent {
 
     if(this.loginForm.valid && !this.submitted){
       this.submitted = true;
+      this.loading = true;
       this.authService.login({email : this.loginForm.get('email')!.value,
         password: this.loginForm.get('password')!.value})
-        .pipe(finalize(() => this.submitted = false))
+        .pipe(finalize(() => {this.submitted = false
+        this.loading = false;}))
       .subscribe(
         (response) => {
           this.router.navigate(['/mainPage']);

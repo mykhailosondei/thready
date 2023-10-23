@@ -3,7 +3,7 @@
     <app-search-bar
       [selectedTab]="selectedTab" [firstTabName]="'May be Interesting'" [secondTabName]="'Trending'"
       [query]="query"
-      (firstTabClicked)="navigatorService.navigateToMayBeInterestingPage(selectedTab)"
+      (firstTabClicked)="navigator.navigateToMayBeInterestingPage(selectedTab)"
       (secondTabClicked)="navigateToTrending()"
       (searchByQueryClicked)="searchByQuery()"
       (queryChanged)="onQueryChanged($event)"

@@ -24,7 +24,7 @@ export class MayBeInterestingPageComponent implements OnInit{
   public currentUserId$ = new BehaviorSubject<number | undefined>(undefined);
   private navigateToMainPage: boolean;
   constructor(private router : Router, private recommendationService : RecommendationService,
-              private userService : UserService, public navigatorService : NavigatorService,
+              private userService : UserService, public navigator : NavigatorService,
               private historyOfPages : NavigationHistoryService, private location : Location) {
   }
 
@@ -61,18 +61,11 @@ export class MayBeInterestingPageComponent implements OnInit{
       this.navigateToMainPage =true;
     }
     this.historyOfPages.IncrementPageInHistoryCounter();
-    this.navigatorService.navigateToTrendingPage(Tab.SecondTab);
+    this.navigator.navigateToTrendingPage(Tab.SecondTab);
   }
 
   goBack(){
-    const pagesCount = this.historyOfPages.getPageInHistoryCounter();
-    if (pagesCount == 0 || this.navigateToMainPage){
-      this.historyOfPages.resetCounter();
-      this.navigatorService.backToMainPage();
-      return;
-    }
-    this.historyOfPages.resetCounter();
-    this.location.historyGo(-pagesCount);
+    this.navigator.backToMainPage();
   }
 
   searchByQuery() {
