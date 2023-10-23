@@ -3,8 +3,8 @@
     <app-tablist-page [title]="'Connect'" [firstTabName] = "'Who to follow'" [secondTabName] = "'Creators for you'"
                       [selectedTab]="Tab.FirstTab" [showSubtitle] = "false"
                       (firstTabClicked)="navigator.openWhoToFollowPage($event)"
-                      (secondTabClicked)="navigator.openCreatorsForYouPage($event)"
-                      (backButtonClicked)="navigator.goBack()"
+                      (secondTabClicked)="navigateToCreatorsForYou()"
+                      (backButtonClicked)="goBack()"
     ></app-tablist-page>
     <div class="title-box">
       <span class="title">Suggested for you</span>

@@ -92,4 +92,8 @@ export class RecommendationsSideBarComponent implements OnInit{
   }
 
 
+  openWhoToFollowPage(event: string) {
+    this.historyOfPages.IncrementPageInHistoryCounter();
+    this.navigatorService.openWhoToFollowPage(event);
+  }
 }

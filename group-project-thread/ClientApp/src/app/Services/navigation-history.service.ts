@@ -5,7 +5,9 @@ import { Injectable } from '@angular/core';
 })
 export class NavigationHistoryService {
 
-  private pageInHistoryCounter : number = 0
+  private pageInHistoryCounter : number = 0;
+  private navigateToUserPage = false;
+  private navigateToMainPage = false;
   constructor() { }
 
   public IncrementPageInHistoryCounter(){
@@ -18,4 +20,29 @@ export class NavigationHistoryService {
   public resetCounter(){
     this.pageInHistoryCounter = 0;
   }
+
+  public setNavigateToUserPage() : void{
+    this.navigateToUserPage = true;
+  }
+
+  public getNavigateToUserPage() : boolean{
+    return this.navigateToUserPage;
+  }
+
+  public resetNavigateToUserPage(){
+    this.navigateToUserPage = false;
+  }
+
+  public setNavigateToMainPage() : void{
+    this.navigateToMainPage = true;
+  }
+
+  public getNavigateToMainPage() : boolean{
+    return this.navigateToMainPage;
+  }
+
+  public resetNavigateToMainPage(){
+    this.navigateToMainPage = false;
+  }
+
 }

@@ -23,7 +23,9 @@ a:hover {
 }
 
 .plate {
+  position: relative;
   width: 30%;
+  min-height: 275px;
 }
 
 .panel-border {
@@ -32,6 +34,7 @@ a:hover {
   border-radius: 12px;
   margin-top: 75px;
   border: 1px, solid;
+  width: 100%;
   background-color: white;
 }
 

@@ -3,7 +3,6 @@ import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {RouterModule} from '@angular/router';
-
 import {AppComponent} from './app.component';
 import {NavMenuComponent} from './nav-menu/nav-menu.component';
 import {HomeComponent} from './home/home.component';
@@ -18,6 +17,7 @@ import {NotifierComponent} from "./Components/notifier/notifier.component";
 import {MainPageComponent} from "./Components/main-page/main-page.component";
 import {PagePostComponent} from "./Components/page-post/page-post.component";
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {ProfilePageComponent} from "./Components/profile-page/profile-page.component";
 import {JwtInterceptor} from "./helpers/jwt.interceptor";
 import {NgOptimizedImage} from "@angular/common";
@@ -54,8 +54,6 @@ import {WhoToFollowPageComponent} from "./Components/who-to-follow-page/who-to-f
 import {CreatorsForYouPageComponent} from "./Components/creators-for-you-page/creators-for-you-page.component";
 import {MayBeInterestingPageComponent} from "./Components/may-be-interesting-page/may-be-interesting-page.component";
 import {TrendingPageComponent} from "./Components/trending-page/trending-page.component";
-import {PhotoLoaderComponent} from "./Components/photo-loader/photo-loader.component";
-import {DeletableImageComponent} from "./Components/deletable-image/deletable-image.component";
 
 @NgModule({ declarations: [
     AppComponent,

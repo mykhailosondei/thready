@@ -1,0 +1,11 @@
+﻿.loading-icon {
+  display: flex;
+  margin-top: 10px;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.spinner {
+  --mdc-circular-progress-active-indicator-color: cornflowerblue !important;
+}

@@ -21,9 +21,8 @@ export class TrendingPageComponent {
   public query : string;
   public trends$ : BehaviorSubject<IndexedWordDTO[]> = new BehaviorSubject<IndexedWordDTO[]>([]);
   public currentUser! : UserDTO;
-  private navigateToMainPage: boolean;
   constructor(private router : Router, private recommendationService : RecommendationService,
-              private userService : UserService, public navigatorService : NavigatorService,
+              private userService : UserService, public navigator : NavigatorService,
               private historyOfPages : NavigationHistoryService, private location : Location) {
   }
 
@@ -52,21 +51,14 @@ export class TrendingPageComponent {
 
   navigateToMayBeInteresting(){
     if (this.historyOfPages.getPageInHistoryCounter() == 0){
-      this.navigateToMainPage =true;
+      this.historyOfPages.setNavigateToMainPage();
     }
     this.historyOfPages.IncrementPageInHistoryCounter();
-    this.navigatorService.navigateToMayBeInterestingPage(Tab.FirstTab);
+    this.navigator.navigateToMayBeInterestingPage(Tab.FirstTab);
   }
 
   goBack(){
-    const pagesCount = this.historyOfPages.getPageInHistoryCounter();
-    if (pagesCount == 0 || this.navigateToMainPage){
-      this.historyOfPages.resetCounter();
-      this.navigatorService.backToMainPage();
-      return;
-    }
-    this.historyOfPages.resetCounter();
-    this.location.historyGo(-pagesCount);
+    this.navigator.backToMainPage();
   }
   searchByQuery() {
     this.router.navigate(['search'], {queryParams : {q : this.query}})

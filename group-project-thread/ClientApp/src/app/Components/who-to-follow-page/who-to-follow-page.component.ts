@@ -6,6 +6,8 @@ import {BehaviorSubject} from "rxjs";
 import {PageUserDTO} from "../../models/user/pageUserDTO";
 import {UserService} from "../../Services/user.service";
 import {UserDTO} from "../../models/user/userDTO";
+import {NavigationHistoryService} from "../../Services/navigation-history.service";
+import {Location} from "@angular/common";
 
 @Component({
   selector: 'app-who-to-follow-page',
@@ -19,7 +21,8 @@ export class WhoToFollowPageComponent {
   public currentUser! : UserDTO;
   constructor(public navigator : NavigatorService,
               private recommendationService : RecommendationService,
-              private userService : UserService) {
+              private userService : UserService, private historyOfPages : NavigationHistoryService,
+              private location : Location) {
   }
 
   ngOnInit(){
@@ -43,6 +46,18 @@ export class WhoToFollowPageComponent {
           this.currentUser = response.body;
         }
       });
+  }
+
+  navigateToCreatorsForYou(){
+    if (this.historyOfPages.getPageInHistoryCounter() == 0){
+      this.historyOfPages.setNavigateToMainPage();
+    }
+    this.historyOfPages.IncrementPageInHistoryCounter();
+    this.navigator.openCreatorsForYouPage('');
+  }
+
+  goBack(){
+    this.navigator.backToMainPage();
   }
 
 }

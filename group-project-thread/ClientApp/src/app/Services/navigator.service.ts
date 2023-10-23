@@ -47,5 +47,17 @@ export class NavigatorService {
   backToMainPage(){
     this.router.navigate(['mainPage']);
   }
+
+  goBackToMainPage(){
+    const pagesCount = this.historyOfPages.getPageInHistoryCounter();
+    if (pagesCount == 0 || this.historyOfPages.getNavigateToMainPage()){
+      this.historyOfPages.resetCounter();
+      this.historyOfPages.resetNavigateToMainPage();
+      this.backToMainPage();
+      return;
+    }
+    this.historyOfPages.resetCounter();
+    this.location.historyGo(-pagesCount);
+  }
 }
 

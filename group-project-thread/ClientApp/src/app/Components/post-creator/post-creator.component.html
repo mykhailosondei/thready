@@ -3,7 +3,7 @@
     <div class="user-avatar-collar">
       <div class="user-avatar" [ngStyle]="{'background-color': getAvatarColor()}">
         <a href="/profile" class="user-link"></a>
-        <img class="profile-small-image" *ngIf="!isAvatarNull()" src="{{currentUser.avatar!.url}}" alt="{{currentUser.username}}}">
+        <img *ngIf="!isAvatarNull()" src="{{currentUser.avatar!.url}}" alt="{{currentUser.username}}}">
         <div *ngIf="isAvatarNull()" class="initial">{{getFirstInitial()}}</div>
       </div>
     </div>
