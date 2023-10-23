@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, Input, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {PagePostDTO} from "../../models/post/pagePostDTO";
 import {PostDTO} from "../../models/post/postDTO";
 import {UserDTO} from "../../models/user/userDTO";
@@ -14,6 +14,7 @@ import {CommentCreationDialogComponent} from "../comment-creation-dialog/comment
 import {PostEditorDialogComponent} from "../post-editor-dialog/post-editor-dialog.component";
 import PostFormatter from 'src/app/helpers/postFormatter';
 import {PageUserDTO} from "../../models/user/pageUserDTO";
+import {BsModalRef, BsModalService} from "ngx-bootstrap/modal";
 
 interface HoverableWithBounds {
   getBoundingClientRect: () => DOMRect;
@@ -44,6 +45,9 @@ export class PagePostComponent implements OnInit {
   @ViewChild('userInfo') userInfo: ElementRef<HTMLDivElement>;
   @ViewChild('reposterInfo') reposterInfo: ElementRef<HTMLDivElement>;
   @ViewChild('wholePost') wholePost: ElementRef<HTMLDivElement>;
+  @ViewChild('imageRef') imageRef: TemplateRef<any>;
+  modalRef: BsModalRef;
+  clickedImage: string = "";
 
   private observer: IntersectionObserver;
 
@@ -57,7 +61,8 @@ export class PagePostComponent implements OnInit {
               private readonly commentService: CommentService,
               private readonly postService: PostService,
               private readonly userService: UserService,
-              private readonly hoverCardTriggerService: UserHoverCardTriggerService) {
+              private readonly hoverCardTriggerService: UserHoverCardTriggerService,
+              private modalService: BsModalService) {
   }
 
   ngOnInit(): void {
@@ -242,5 +247,10 @@ export class PagePostComponent implements OnInit {
           console.log(Response)
         });
     }
+  }
+
+  openFullImage(url: string) {
+    this.clickedImage = url;
+    this.modalRef = this.modalService.show(this.imageRef, {class: 'modal-lg'});
   }
 }

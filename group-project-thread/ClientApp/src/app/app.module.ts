@@ -56,6 +56,7 @@ import {MayBeInterestingPageComponent} from "./Components/may-be-interesting-pag
 import {TrendingPageComponent} from "./Components/trending-page/trending-page.component";
 import {PhotoLoaderComponent} from "./Components/photo-loader/photo-loader.component";
 import {DeletableImageComponent} from "./Components/deletable-image/deletable-image.component";
+import {ModalModule} from "ngx-bootstrap/modal";
 
 @NgModule({ declarations: [
     AppComponent,
@@ -120,7 +121,8 @@ import {DeletableImageComponent} from "./Components/deletable-image/deletable-im
     MatDialogModule,
     MatButtonModule,
     MatInputModule,
-    InfiniteScrollModule
+    InfiniteScrollModule,
+    ModalModule.forRoot(),
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi:true},
