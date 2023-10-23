@@ -1,5 +1,10 @@
-<app-side-navbar [activatedEndpoint]="activatedEndpoint"></app-side-navbar>
-<div class="element">
-  <ng-content></ng-content>
-  <app-recommendations-side-bar></app-recommendations-side-bar>
+<div class="wrap">
+  <app-side-navbar [activatedEndpoint]="activatedEndpoint"></app-side-navbar>
+  <div class="element">
+    <ng-content></ng-content>
+    <app-recommendations-side-bar [showSearchbar]="showSearchBar"
+                                  [showWhatsHappening]="showWhatsHappening"
+                                  [showWhoToFollow]="showWhoToFollow"></app-recommendations-side-bar>
+  </div>
 </div>
+

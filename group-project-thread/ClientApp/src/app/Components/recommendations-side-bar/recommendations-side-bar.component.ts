@@ -25,6 +25,8 @@ export class RecommendationsSideBarComponent implements OnInit{
   imagewidth: number = 40;
   public whoToFollowLoading : boolean;
   public smallTrendsLoading : boolean;
+  public query : string;
+  public upperMargin : number;
   @Input() showWhatsHappening : boolean = true;
   @Input() showWhoToFollow : boolean = true;
   @Input() showSearchbar : boolean = true;
@@ -46,6 +48,7 @@ export class RecommendationsSideBarComponent implements OnInit{
     this.getSmallTrends();
     this.getWhoToFollow();
   }
+
 
   public getSmallTrends() {
     this.recommendationService.getSmallTrends().pipe(finalize(() => this.smallTrendsLoading = false ))
@@ -79,6 +82,10 @@ export class RecommendationsSideBarComponent implements OnInit{
   }
 
   protected readonly Tab = Tab;
+
+  searchByQuery(){
+    this.navigatorService.searchByWord(this.query)
+  }
 
   searchByWord(word: string) {
     this.trendClicked.emit(word);

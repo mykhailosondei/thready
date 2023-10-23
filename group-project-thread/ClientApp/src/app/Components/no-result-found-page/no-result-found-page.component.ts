@@ -6,5 +6,14 @@ import {Component, Input} from '@angular/core';
   styleUrls: ['./no-result-found-page.component.scss']
 })
 export class NoResultFoundPageComponent {
-  @Input() query : string;
+  @Input() headerText : string;
+  @Input() smallText : string;
+  public showNoResults = false;
+
+  ngOnInit() {
+    // Add a delay of 2000 milliseconds (2 seconds) before showing the element.
+    setTimeout(() => {
+      this.showNoResults = true;
+    }, 1);
+  }
 }

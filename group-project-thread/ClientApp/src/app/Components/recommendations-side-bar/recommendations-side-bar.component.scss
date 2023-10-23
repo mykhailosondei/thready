@@ -15,7 +15,6 @@ $grey-color : #dcdcdc;
   min-height: 900px;
 }
 .sticky{
-  position: sticky;
 }
 .content-box{
   display: flex;
@@ -72,7 +71,6 @@ $grey-color : #dcdcdc;
   display: flex;
   flex-shrink: 1;
   width: 100%;
-  background-color: rgb(239, 243, 244);
   border-radius: 25px;
 }
 .search-query-input{

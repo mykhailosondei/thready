@@ -61,6 +61,7 @@ import {LoadingSpinnerComponent} from "./Components/loading-spinner/loading-spin
 import {NoResultFoundPageComponent} from "./Components/no-result-found-page/no-result-found-page.component";
 import {ModalModule} from "ngx-bootstrap/modal";
 import {NavWrapperComponent} from "./Components/nav-wrapper/nav-wrapper.component";
+import {StickyDirective} from "./Directives/sticky.directive";
 
 @NgModule({ declarations: [
     AppComponent,
@@ -107,7 +108,8 @@ import {NavWrapperComponent} from "./Components/nav-wrapper/nav-wrapper.componen
     DeletableImageComponent,
     LoadingSpinnerComponent,
     NoResultFoundPageComponent,
-    NavWrapperComponent
+    NavWrapperComponent,
+    StickyDirective
     ],
   imports: [
     BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),

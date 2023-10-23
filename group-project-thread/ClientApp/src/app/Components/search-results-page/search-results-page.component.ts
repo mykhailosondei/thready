@@ -2,7 +2,7 @@ import {Component, Input, OnInit, SimpleChanges} from '@angular/core';
 import {faArrowLeftLong, faSpinner} from "@fortawesome/free-solid-svg-icons";
 import {faMagnifyingGlass} from "@fortawesome/free-solid-svg-icons/faMagnifyingGlass";
 import {PostDTO} from "../../models/post/postDTO";
-import {BehaviorSubject, takeUntil} from "rxjs";
+import {BehaviorSubject, finalize, takeUntil} from "rxjs";
 import {SearchService} from "../../Services/search.service";
 import {HttpResponse} from "@angular/common/http";
 import {PageUserDTO} from "../../models/user/pageUserDTO";
@@ -16,6 +16,7 @@ import {Q} from "@angular/cdk/keycodes";
 import {Location} from "@angular/common";
 import {faCircleNotch} from "@fortawesome/free-solid-svg-icons/faCircleNotch";
 import {NavigationHistoryService} from "../../Services/navigation-history.service";
+import {User} from "oidc-client";
 
 @Component({
   selector: 'app-search-results-page',
@@ -39,86 +40,167 @@ export class SearchResultsPageComponent implements OnInit{
   private allPostsLoaded : boolean = false;
   private allPeopleLoaded : boolean = false;
   public selectedTab : Tab;
-  public loadingTop : boolean;
+  public loadingPosts : boolean = true;
   public loadingUsers : boolean;
+  public noPeopleFound : boolean;
+  public noPostsFound : boolean;
   private queries : string[] = [];
+  public notFoundSmallText = 'Try searching for something else, or check your country search policy it could be protecting you\n' +
+    '      from potentially sensitive content.';
+  public notFoundHeaderText : string;
 
   constructor(private userService : UserService, private route : ActivatedRoute,
-              private router : Router, private dataLoadingService : DataLoadingService) {
+              private router : Router, private searchService : SearchService) {
 
   }
 
   ngOnInit() {
     this.route.queryParams.subscribe((params) =>{
-      this.query = params['q'];
-      if (this.query == undefined){
-        this.router.navigate(['explore']);
-      }
-      if (params['f'] === "user"){
-        this.selectedTab = Tab.SecondTab;
-      }
-      else if (params['f'] === undefined || params['f'] === ''){
-        this.selectedTab = Tab.FirstTab;
-      }
-    });
+    this.query = params['q'];
+    if (this.query == undefined){
+      this.router.navigate(['explore']);
+    }
+    if (params['f'] === "user"){
+      this.selectedTab = 1;
+    }
+    else if (params['f'] === undefined || params['f'] === ''){
+      this.selectedTab = 0;
+    }
+  });
     this.getCurrentUser();
     this.searchByQuery();
   }
 
-  searchByQuery() {
+  searchByQuery(initialTab? : Tab, changedTab? : Tab) {
+
     if(this.query === ""){
       return;
     }
-    else if (this.query == this.queries[this.queries.length-1]){
+    else if (this.query == this.queries[this.queries.length-1] && initialTab == changedTab){
       return;
     }
-    this.queries.push(this.query);
+    this.notFoundHeaderText = `No results for "${this.query}"`
+    if (this.query != this.queries[this.queries.length-1]){
+      this.queries.push(this.query);
+    }
     this.matchingPosts$ = new BehaviorSubject<PostDTO[]>([]);
     this.matchingUsers$ = new BehaviorSubject<PageUserDTO[]>([]);
-    if (this.selectedTab == Tab.FirstTab){
-      this.loadingTop = true;
+    if (this.selectedTab == 0){
       this.allPostsLoaded = false;
       this.postsToLoadLowerCount = 0;
       this.postsToLoadUpperCount = 10;
       this.router.navigate(['search'], { queryParams: { q: this.query } });
-      this.dataLoadingService.loadInitialPosts(this.query, this.postsToLoadLowerCount,
-        this.postsToLoadUpperCount, this.matchingPosts$);
-      this.dataLoadingService.loadInitialPeople(this.query, 0, 3, this.matchingUsers$);
-      this.loadingTop = false;
+      this.loadInitialPosts();
+      this.loadInitialPeople();
+      this.loadingPosts = false;
     }
     else {
-      this.loadingUsers = true;
       this.allPeopleLoaded = false;
       this.peopleToLoadLowerCount = 0;
       this.peopleToLoadUpperCount = 10;
       this.router.navigate(['search'], { queryParams: { q: this.query, f: 'user' } });
-      this.dataLoadingService.loadMorePeople(this.allPeopleLoaded, this.query, this.peopleToLoadLowerCount,
-        this.peopleToLoadUpperCount, this.matchingUsers$);
-      this.loadingUsers =false;
+      this.loadMorePeople();
     }
   }
+
+  public loadInitialPeople(){
+    this.loadingUsers = true;
+    this.noPeopleFound = false;
+    this.searchService.getUsers(this.query, 0, 3)
+      .pipe(finalize(() => this.loadingUsers = false))
+      .subscribe(
+      (users : HttpResponse<PageUserDTO[]>) => {
+        if (users.body?.length == 0){
+          this.noPeopleFound = true;
+        }
+        this.matchingUsers$.next(users.body || []);
+      }
+    );
+  }
+
+  public loadInitialPosts(){
+    this.loadingPosts = true;
+    this.noPostsFound = false;
+    this.searchService.getPosts(this.query, this.postsToLoadLowerCount, this.postsToLoadUpperCount)
+      .pipe(finalize(() => this.loadingPosts = false))
+      .subscribe(
+      (posts : HttpResponse<PostDTO[]>) => {
+        if (posts.body?.length == 0){
+          this.noPostsFound = true;
+        }
+        this.matchingPosts$.next(posts.body || []);
+      }
+    );
+  }
+
+  loadMorePeople(){
+    if (this.allPeopleLoaded) return;
+    this.loadingUsers = true;
+    this.noPeopleFound = false;
+    this.searchService.getUsers(this.query, this.peopleToLoadLowerCount, this.peopleToLoadUpperCount)
+      .pipe(finalize(() =>
+        this.loadingUsers = false))
+      .subscribe(
+        (users : HttpResponse<PageUserDTO[]>) => {
+          const newUsers = users.body || [];
+          if (newUsers.length == 0){
+            this.noPeopleFound = true;
+            this.allPeopleLoaded = true;
+            return;
+          }
+          const currentUsers = this.matchingUsers$.getValue();
+          this.matchingUsers$.next([...currentUsers, ...newUsers])
+        }
+      );
+  }
+
+  loadMorePosts(){
+    if (this.allPostsLoaded) return;
+    this.loadingPosts = true;
+    this.noPostsFound = false;
+    this.searchService.getPosts(this.query, this.postsToLoadLowerCount, this.postsToLoadUpperCount)
+      .pipe(
+        finalize(() => {
+          this.loadingPosts = false;
+        })
+      )
+      .subscribe(
+      (posts : HttpResponse<PostDTO[]>) => {
+        const newPosts = posts.body || [];
+        if (newPosts.length == 0){
+          this.allPostsLoaded = true;
+          this.noPostsFound = true;
+          return;
+        }
+        const currentPosts = this.matchingPosts$.getValue();
+        this.matchingPosts$.next([...currentPosts, ...newPosts]);
+      }
+    );
+  }
+
+
   navigateToTopSearch() {
-    this.selectedTab = Tab.FirstTab;
-    this.searchByQuery();
+    this.selectedTab = 0;
+    this.searchByQuery(1, 0);
+    this.router.navigate(['search'], {queryParams : {q : this.query}})
   }
 
   navigateToUserSearch() {
-    this.selectedTab  = Tab.SecondTab;
-    this.searchByQuery();
+    this.selectedTab  = 1;
+    this.searchByQuery(0, 1);
+    this.router.navigate(['search'], {queryParams : {q : this.query, f : 'user'}})
   }
 
   onScrollPostsPage(){
     this.postsToLoadLowerCount += this.postsPerPage;
     this.postsToLoadUpperCount += this.postsPerPage;
-    this.dataLoadingService.loadMorePosts(this.allPostsLoaded, this.query, this.postsToLoadLowerCount,
-      this.postsToLoadUpperCount, this.matchingPosts$);
+    this.loadMorePosts();
   }
 
   onScrollUsersPage(){
     this.peopleToLoadLowerCount += this.peoplePerPage;
     this.peopleToLoadUpperCount += this.peoplePerPage;
-    this.dataLoadingService.loadMorePeople(this.allPeopleLoaded, this.query, this.peopleToLoadLowerCount,
-      this.peopleToLoadUpperCount, this.matchingUsers$);
+    this.loadMorePeople();
   }
 
   onQueryChanged(query: string) {

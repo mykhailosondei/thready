@@ -8,6 +8,7 @@ import {UserService} from "../../Services/user.service";
 import {Tab} from "../../models/enums/Tab";
 import {NavigationHistoryService} from "../../Services/navigation-history.service";
 import {Location} from "@angular/common";
+import {Endpoint} from "../side-navbar/side-navbar.component";
 
 @Component({
   selector: 'app-creators-for-you-page',
@@ -19,7 +20,6 @@ export class CreatorsForYouPageComponent {
   public users$ : BehaviorSubject<PageUserDTO[]> = new BehaviorSubject<PageUserDTO[]>([]);
   public currentUser! : UserDTO;
   loading: boolean;
-  private navigateToMainPage: boolean;
   constructor(public navigator : NavigatorService,
               private recommendationService : RecommendationService,
               private userService : UserService, private historyOfPages : NavigationHistoryService,
@@ -29,15 +29,17 @@ export class CreatorsForYouPageComponent {
   ngOnInit(){
     this.loading = true;
     this.getCurrentUser();
-    this.getUsersToFollow();
+    this.getCreatorsForYou();
   }
 
-  getUsersToFollow(){
+  getCreatorsForYou(){
     this.recommendationService.getCreatorsForYou()
       .subscribe((response) =>
       {
+        console.log(response)
         if (response.body != null){
           this.users$.next(response.body)
+          console.log("dsadaasddsadassadsadas")
           this.loading = false;
         }
       })
@@ -53,7 +55,7 @@ export class CreatorsForYouPageComponent {
 
   navigateToWhoToFollow(){
     if (this.historyOfPages.getPageInHistoryCounter() == 0){
-      this.navigateToMainPage =true;
+      this.historyOfPages.setNavigateToMainPage();
     }
     this.historyOfPages.IncrementPageInHistoryCounter();
     this.navigator.openWhoToFollowPage('');
@@ -62,4 +64,6 @@ export class CreatorsForYouPageComponent {
   goBack(){
     this.navigator.backToMainPage();
   }
+
+  protected readonly Endpoint = Endpoint;
 }

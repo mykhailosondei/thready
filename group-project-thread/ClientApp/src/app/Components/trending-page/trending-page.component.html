@@ -1,25 +1,28 @@
-<div class="wrap">
-  <div class="main-page">
-    <app-search-bar
-      [selectedTab]="selectedTab" [firstTabName]="'May be Interesting'" [secondTabName]="'Trending'"
-      [query]="query"
-      (firstTabClicked)="navigateToMayBeInteresting()"
-      (secondTabClicked)="navigator.navigateToTrendingPage(selectedTab)"
-      (searchByQueryClicked)="searchByQuery()"
-      (queryChanged)="onQueryChanged($event)"
-      (backButtonClicked)="goBack()">
-    </app-search-bar>
-    <div class="title-box">
-      <span class="title">The most popular now</span>
-    </div>
-    <app-loading-spinner [loading]="loading"></app-loading-spinner>
-    <div *ngFor="let word of trends$ | async; let i = index" class="trending-word-box wrapper" (click)="navigator.searchByWord(word.word)">
-      <div class="text-box wrapper">
-        <span class="small-text">{{i+1}} · in trending</span>
-        <span class="main-text">{{word.word}}</span>
-        <span *ngIf="word.postsCount != 1" class="small-text">{{word.postsCount}} posts</span>
-        <span *ngIf="word.postsCount == 1" class="small-text">{{word.postsCount}} post</span>
+<app-nav-wrapper [activatedEndpoint]="Endpoint.Search" [showSearchBar]="false">
+  <div class="wrap">
+    <div class="main-page">
+      <app-search-bar
+        [selectedTab]="selectedTab" [firstTabName]="'May be Interesting'" [secondTabName]="'Trending'"
+        [query]="query"
+        (firstTabClicked)="navigateToMayBeInteresting()"
+        (secondTabClicked)="navigator.navigateToTrendingPage(selectedTab)"
+        (searchByQueryClicked)="searchByQuery()"
+        (queryChanged)="onQueryChanged($event)"
+        (backButtonClicked)="goBack()">
+      </app-search-bar>
+      <div class="title-box">
+        <span class="title">The most popular now</span>
+      </div>
+      <app-loading-spinner [loading]="loading"></app-loading-spinner>
+      <div *ngFor="let word of trends$ | async; let i = index" class="trending-word-box wrapper"
+           (click)="navigator.searchByWord(word.word)">
+        <div class="text-box wrapper">
+          <span class="small-text">{{i + 1}} · in trending</span>
+          <span class="main-text">{{word.word}}</span>
+          <span *ngIf="word.postsCount != 1" class="small-text">{{word.postsCount}} posts</span>
+          <span *ngIf="word.postsCount == 1" class="small-text">{{word.postsCount}} post</span>
+        </div>
       </div>
     </div>
   </div>
-</div>
+</app-nav-wrapper>

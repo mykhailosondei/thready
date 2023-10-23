@@ -9,4 +9,7 @@ import {Endpoint} from "../side-navbar/side-navbar.component";
 export class NavWrapperComponent {
 
   @Input() activatedEndpoint : Endpoint = Endpoint.Home;
+  @Input() showSearchBar : boolean = true;
+  @Input() showWhatsHappening : boolean = true;
+  @Input() showWhoToFollow : boolean = true;
 }

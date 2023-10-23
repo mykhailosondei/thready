@@ -1,4 +1,5 @@
  <div class="recommendation-bar">
+   <div class="margin-top"></div>
     <div class="sticky">
       <div class="content-box">
         <div *ngIf="showSearchbar" class="sticky-search-box">
@@ -8,9 +9,9 @@
                 <fa-icon [icon]="faMagnifyingGlass" class="svg-icon"></fa-icon>
               </div>
               <div class="input-area">
-                <input placeholder="Search" class="search-query-input">
+                <input placeholder="Search" class="search-query-input" [(ngModel)]="query" (keyup.enter)="searchByQuery()">
               </div>
-              <div class="go-button">
+              <div class="go-button" (click)="searchByQuery()">
                 <div class="go-box">
                   <span>Go</span>
                 </div>

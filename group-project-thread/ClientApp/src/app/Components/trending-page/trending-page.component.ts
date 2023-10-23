@@ -10,6 +10,7 @@ import {NavigatorService} from "../../Services/navigator.service";
 import {IndexedWordDTO} from "../../models/indexedWordDTO";
 import {NavigationHistoryService} from "../../Services/navigation-history.service";
 import {Location} from "@angular/common";
+import {Endpoint} from "../side-navbar/side-navbar.component";
 
 @Component({
   selector: 'app-trending-page',
@@ -72,4 +73,5 @@ export class TrendingPageComponent {
   }
 
 
+  protected readonly Endpoint = Endpoint;
 }

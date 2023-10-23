@@ -14,9 +14,9 @@
 
     </app-search-bar>
     <div *ngIf="selectedTab==0">
-      <app-loading-spinner [loading]="loadingTop"></app-loading-spinner>
-      <div *ngIf="matchingUsers$.getValue().length == 0 && matchingPosts$.getValue().length==0 && !loadingTop" class="no-results">
-        <app-no-result-found-page [query]="query"></app-no-result-found-page>
+      <app-loading-spinner [loading]="loadingUsers || loadingPosts"></app-loading-spinner>
+      <div *ngIf="!loadingPosts && noPostsFound && noPeopleFound" class="no-results">
+        <app-no-result-found-page [headerText]="notFoundHeaderText" [smallText]="notFoundSmallText"></app-no-result-found-page>
       </div>
       <div *ngIf="matchingUsers$.getValue().length != 0" class="user-search-results">
         <div class="people-box">
@@ -45,7 +45,7 @@
       </div>
     </div>
     <div *ngIf="selectedTab==1">
-      <app-loading-spinner [loading]="loadingTop"></app-loading-spinner>
+      <app-loading-spinner [loading]="loadingUsers"></app-loading-spinner>
       <div *ngIf="matchingUsers$.getValue().length != 0"
            infiniteScroll
            [infiniteScrollDistance]="3"
@@ -55,8 +55,8 @@
         <app-page-user *ngFor="let user of matchingUsers$ | async"
                                  [currentUser]="currentUser" [pageUser]="user" [isFollowing]="amIFollowing(user.id)"></app-page-user>
       </div>
-      <div *ngIf="matchingUsers$.getValue().length == 0 && !loadingUsers" class="no-results">
-        <app-no-result-found-page [query]="query"></app-no-result-found-page>
+      <div *ngIf="!loadingUsers && noPeopleFound">
+        <app-no-result-found-page [headerText]="notFoundHeaderText" [smallText]="notFoundSmallText"></app-no-result-found-page>
       </div>
     </div>
 

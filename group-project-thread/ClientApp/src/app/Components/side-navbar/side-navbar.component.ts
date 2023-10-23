@@ -25,7 +25,8 @@ import {Tab} from "../../models/enums/Tab";
   unactivated : IconDefinition
 }
 
-export enum Endpoint{
+  export enum Endpoint{
+    None,
   Home ,
   Search ,
   Bookmarks,

@@ -17,8 +17,7 @@ export class BookmarksPageComponent implements OnInit {
   posts: PostDTO[] = [];
   user: UserDTO;
   loading: boolean = false;
-
-
+  noBookmarksFound : boolean;
   constructor(private userService : UserService, private postService:PostService) {}
 
   ngOnInit(): void {
@@ -26,14 +25,17 @@ export class BookmarksPageComponent implements OnInit {
     this.userService.getCurrentUser().subscribe(Response => {
       if(Response.ok){
         this.user = Response.body!;
+        if (this.user.bookmarkedPostsIds.length == 0){
+          this.noBookmarksFound = true;
+        }
         for(let bookmarkId of this.user.bookmarkedPostsIds) {
           this.postService.getPostById(bookmarkId).subscribe(Response => {
             if(Response.ok) {
-              this.loading = false;
               this.posts.push(Response.body!);
             }
           });
         }
+        this.loading = false;
       }
     });
   }

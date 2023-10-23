@@ -1,3 +1,11 @@
+.no-results {
+  width: 600px;
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  justify-content: center;
+}
+
 .no-results-box {
   max-width: 100%;
   width: calc(400px);
