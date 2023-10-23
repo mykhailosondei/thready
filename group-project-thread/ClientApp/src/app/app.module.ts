@@ -57,6 +57,7 @@ import {TrendingPageComponent} from "./Components/trending-page/trending-page.co
 import {PhotoLoaderComponent} from "./Components/photo-loader/photo-loader.component";
 import {DeletableImageComponent} from "./Components/deletable-image/deletable-image.component";
 import {ModalModule} from "ngx-bootstrap/modal";
+import {NavWrapperComponent} from "./Components/nav-wrapper/nav-wrapper.component";
 
 @NgModule({ declarations: [
     AppComponent,
@@ -100,7 +101,8 @@ import {ModalModule} from "ngx-bootstrap/modal";
     MayBeInterestingPageComponent,
     TrendingPageComponent,
     PhotoLoaderComponent,
-    DeletableImageComponent
+    DeletableImageComponent,
+    NavWrapperComponent
     ],
   imports: [
     BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),
@@ -122,7 +124,7 @@ import {ModalModule} from "ngx-bootstrap/modal";
     MatButtonModule,
     MatInputModule,
     InfiniteScrollModule,
-    ModalModule.forRoot(),
+    ModalModule.forRoot()
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi:true},
