@@ -19,6 +19,7 @@ export class WhoToFollowPageComponent {
   protected readonly Tab = Tab;
   public users$ : BehaviorSubject<PageUserDTO[]> = new BehaviorSubject<PageUserDTO[]>([]);
   public currentUser! : UserDTO;
+  loading: boolean;
   constructor(public navigator : NavigatorService,
               private recommendationService : RecommendationService,
               private userService : UserService, private historyOfPages : NavigationHistoryService,
@@ -26,6 +27,7 @@ export class WhoToFollowPageComponent {
   }
 
   ngOnInit(){
+    this.loading = true;
     this.getCurrentUser();
     this.getUsersToFollow();
   }
@@ -34,6 +36,7 @@ export class WhoToFollowPageComponent {
     this.recommendationService.getWhoToFollow()
       .subscribe((response) =>
       {
+        this.loading = false;
         if (response.body != null){
           this.users$.next(response.body)
         }

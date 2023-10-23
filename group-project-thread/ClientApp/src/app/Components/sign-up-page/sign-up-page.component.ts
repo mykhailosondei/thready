@@ -41,6 +41,7 @@ export class SignUpPageComponent {
   private timeout: any = null;
   emailAvailabilityMessage : string = "";
   usernameAvailabilityMessage : string = "";
+  loading: boolean;
 
   constructor(private fb: FormBuilder, private authService : AuthService,
               private router: Router, private snackBarService : SnackbarService,
@@ -87,10 +88,12 @@ export class SignUpPageComponent {
   onSubmit(){
     if(this.regisForm.valid && !this.submitted && this.emailAvailabilityMessage == "" && this.usernameAvailabilityMessage == ""){
       this.submitted = true;
+      this.loading = true;
       this.authService.register( this.createUserFromForm())
         .pipe(finalize(() => this.submitted = false))
       .subscribe(
         () => {
+          this.loading = false;
           this.router.navigate(['/login']);
         },
         (error)=> {

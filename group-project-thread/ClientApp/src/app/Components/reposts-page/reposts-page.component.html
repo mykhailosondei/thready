@@ -5,6 +5,7 @@
     <div class="main-page">
       <app-top-blurry-bar [title]="'Your reposts'"></app-top-blurry-bar>
       <div style="height: 0; width: 100%;"></div>
+      <app-loading-spinner [loading]="loading"></app-loading-spinner>
       <app-page-post *ngFor="let post of posts" [postInput]="post" [userInput]="post.author" [repostView]="true"
                      [reposter]="pageUser"></app-page-post>
     </div>

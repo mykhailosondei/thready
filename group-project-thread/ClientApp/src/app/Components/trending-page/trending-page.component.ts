@@ -21,23 +21,26 @@ export class TrendingPageComponent {
   public query : string;
   public trends$ : BehaviorSubject<IndexedWordDTO[]> = new BehaviorSubject<IndexedWordDTO[]>([]);
   public currentUser! : UserDTO;
+  public loading : boolean;
   constructor(private router : Router, private recommendationService : RecommendationService,
               private userService : UserService, public navigator : NavigatorService,
               private historyOfPages : NavigationHistoryService, private location : Location) {
   }
 
   ngOnInit(): void {
+    this.loading = true;
     this.getCurrentUser();
     this.getTrends();
   }
 
   getTrends() {
-        this.recommendationService.getTrends()
-          .subscribe((response) => {
-            if (response.body != null) {
-              this.trends$.next(response.body);
-            }
-          });
+    this.recommendationService.getTrends()
+      .subscribe((response) => {
+        this.loading = false;
+        if (response.body != null) {
+          this.trends$.next(response.body);
+        }
+      });
   }
 
   getCurrentUser(){

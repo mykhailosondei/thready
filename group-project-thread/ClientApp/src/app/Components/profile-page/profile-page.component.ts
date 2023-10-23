@@ -22,13 +22,12 @@ import PostFormatter from "../../helpers/postFormatter";
 @Component({
   selector: 'app-profile-page',
   templateUrl: './profile-page.component.html',
-  styleUrls: ['./profile-page.component.scss', '../../../assets/ContentFrame.scss']
+  styleUrls: ['./profile-page.component.scss', '../../../assets/ContentFrame.scss', '../../../assets/spinner.scss']
 })
 export class ProfilePageComponent implements OnInit, OnDestroy{
 
   public username : string;
   public user = {} as UserDTO;
-  public loading = false;
   public image: Image | null = null;
   faArrowLeftLong = faArrowLeftLong;
   faCalendar = faCalendar;
@@ -42,8 +41,8 @@ export class ProfilePageComponent implements OnInit, OnDestroy{
   private unfollowSubmitted: boolean = false;
   private followSubmitted : boolean = false;
   protected isCurrentUserFollowing : boolean;
-  protected contentLoaded = false;
   protected postsText: string = "";
+  public postsLoading : boolean;
 
   private unsubscribe$ = new Subject<void>;
 
@@ -54,6 +53,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy{
 
   }
   ngOnInit(): void {
+    this.postsLoading = true;
     this.route.paramMap.subscribe(params => {
       this.username = params.get('username') || "DefaultUsername"; });
     this.checkIsCurrentUser();
@@ -83,8 +83,10 @@ export class ProfilePageComponent implements OnInit, OnDestroy{
           this.followersCount = this.user.followersIds.length;
           this.followingCount = this.user.followingIds.length;
           this.userPosts$.next(posts.body || []);
+          this.postsLoading = false;
         },
-        (error) => this.snackBarService.showErrorMessage(error.error.title)
+        (error) => {this.snackBarService.showErrorMessage(error.error.title)
+        this.postsLoading = false;}
       );
   }
 
@@ -157,7 +159,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy{
 
   updateIsCurrentUserFollowing(): void {
     if (this.user.id) {
-      this.userService.getCurrentUser().pipe(takeUntil(this.unsubscribe$), finalize(() => this.contentLoaded = true)).subscribe((response) => {
+      this.userService.getCurrentUser().pipe(takeUntil(this.unsubscribe$)).subscribe((response) => {
         if (response.body != null) {
           this.isCurrentUserFollowing = response.body.followingIds.includes(this.user.id);
           this.unfollowed = !this.isCurrentUserFollowing;

@@ -11,7 +11,7 @@ import {NavigationHistoryService} from "../../Services/navigation-history.servic
 @Component({
   selector: 'app-followers-page',
   templateUrl: './followers-page.component.html',
-  styleUrls: ['./followers-page.component.scss', '../../../assets/ContentFrame.scss', '../../../assets/spinner.scss']
+  styleUrls: ['./followers-page.component.scss', '../../../assets/ContentFrame.scss']
 })
 export class FollowersPageComponent {
   protected username : string;

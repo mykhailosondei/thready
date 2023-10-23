@@ -9,6 +9,7 @@
     <div class="title-box">
       <span class="title">Suggested for you</span>
     </div>
+    <app-loading-spinner [loading]="loading"></app-loading-spinner>
     <div style="position: relative; max-width: 600px">
       <div *ngIf="users$.getValue().length != 0">
         <div style="display: block" *ngFor="let user of users$ | async">

@@ -16,5 +16,6 @@
       <app-page-post *ngFor="let post of matchingPosts$ | async"
                      [postInput]="post" [userInput]="currentUser"></app-page-post>
     </div>
+    <app-loading-spinner [loading]="loading"></app-loading-spinner>
   </div>
 </div>

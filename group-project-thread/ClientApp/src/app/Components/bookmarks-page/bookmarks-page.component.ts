@@ -11,7 +11,7 @@ import {ProgressSpinnerMode} from "@angular/material/progress-spinner";
 @Component({
   selector: 'app-bookmarks-page',
   templateUrl: './bookmarks-page.component.html',
-  styleUrls: ['./bookmarks-page.component.scss', '../../../assets/spinner.scss']
+  styleUrls: ['./bookmarks-page.component.scss']
 })
 export class BookmarksPageComponent implements OnInit {
   posts: PostDTO[] = [];

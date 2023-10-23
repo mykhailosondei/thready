@@ -14,6 +14,10 @@
 
     </app-search-bar>
     <div *ngIf="selectedTab==0">
+      <app-loading-spinner [loading]="loadingTop"></app-loading-spinner>
+      <div *ngIf="matchingUsers$.getValue().length == 0 && matchingPosts$.getValue().length==0 && !loadingTop" class="no-results">
+        <app-no-result-found-page [query]="query"></app-no-result-found-page>
+      </div>
       <div *ngIf="matchingUsers$.getValue().length != 0" class="user-search-results">
         <div class="people-box">
           <span class="people-box-header">People</span>
@@ -41,6 +45,7 @@
       </div>
     </div>
     <div *ngIf="selectedTab==1">
+      <app-loading-spinner [loading]="loadingTop"></app-loading-spinner>
       <div *ngIf="matchingUsers$.getValue().length != 0"
            infiniteScroll
            [infiniteScrollDistance]="3"
@@ -50,17 +55,11 @@
         <app-page-user *ngFor="let user of matchingUsers$ | async"
                                  [currentUser]="currentUser" [pageUser]="user" [isFollowing]="amIFollowing(user.id)"></app-page-user>
       </div>
-    </div>
-    <div *ngIf="matchingUsers$.getValue().length == 0 && matchingPosts$.getValue().length==0" class="no-results">
-      <div class="no-results-box">
-        <div class="query-box">
-          <span class="query-box-text">No results for "{{query}}"</span>
-        </div>
-        <div class="reason-box">
-          <span class="reason-box-text">Try searching for something else, or check your country search policy it could be protecting you from potentially sensitive content.</span>
-        </div>
+      <div *ngIf="matchingUsers$.getValue().length == 0 && !loadingUsers" class="no-results">
+        <app-no-result-found-page [query]="query"></app-no-result-found-page>
       </div>
     </div>
+
   </div>
     <app-recommendations-side-bar [showSearchbar]="false" (trendClicked)="getTrend($event)"></app-recommendations-side-bar>
   </div>

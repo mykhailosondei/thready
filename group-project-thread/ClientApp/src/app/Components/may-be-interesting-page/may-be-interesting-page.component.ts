@@ -20,15 +20,16 @@ export class MayBeInterestingPageComponent implements OnInit{
   public query : string;
   public matchingPosts$ : BehaviorSubject<PostDTO[]> = new BehaviorSubject<PostDTO[]>([]);
   public currentUser! : UserDTO;
-
   public currentUserId$ = new BehaviorSubject<number | undefined>(undefined);
-  private navigateToMainPage: boolean;
+  public loading : boolean;
+
   constructor(private router : Router, private recommendationService : RecommendationService,
               private userService : UserService, public navigator : NavigatorService,
-              private historyOfPages : NavigationHistoryService, private location : Location) {
+              private historyOfPages : NavigationHistoryService) {
   }
 
   ngOnInit(): void {
+    this.loading = true;
     this.getCurrentUser();
     this.getPostsForYou();
   }
@@ -40,6 +41,7 @@ export class MayBeInterestingPageComponent implements OnInit{
           .subscribe((response) => {
             if (response.body != null) {
               this.matchingPosts$.next(response.body);
+              this.loading = false;
             }
           });
       }
@@ -58,7 +60,7 @@ export class MayBeInterestingPageComponent implements OnInit{
 
   navigateToTrending(){
     if (this.historyOfPages.getPageInHistoryCounter() == 0){
-      this.navigateToMainPage =true;
+      this.historyOfPages.setNavigateToMainPage();
     }
     this.historyOfPages.IncrementPageInHistoryCounter();
     this.navigator.navigateToTrendingPage(Tab.SecondTab);

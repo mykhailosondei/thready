@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {faMagnifyingGlass} from "@fortawesome/free-solid-svg-icons/faMagnifyingGlass";
 import {RecommendationService} from "../../Services/recommendation.service";
 import {IndexedWordDTO} from "../../models/indexedWordDTO";
-import {BehaviorSubject} from "rxjs";
+import {BehaviorSubject, finalize} from "rxjs";
 import {PageUserDTO} from "../../models/user/pageUserDTO";
 import {UserDTO} from "../../models/user/userDTO";
 import {UserService} from "../../Services/user.service";
@@ -10,7 +10,6 @@ import {Router} from "@angular/router";
 import {NavigatorService} from "../../Services/navigator.service";
 import {Tab} from "../../models/enums/Tab";
 import {NavigationHistoryService} from "../../Services/navigation-history.service";
-import {Location} from "@angular/common";
 
 @Component({
   selector: 'app-recommendations-side-bar',
@@ -24,6 +23,8 @@ export class RecommendationsSideBarComponent implements OnInit{
   public whoToFollow$ = new BehaviorSubject<PageUserDTO[]>([]);
   public currentUser : UserDTO;
   imagewidth: number = 40;
+  public whoToFollowLoading : boolean;
+  public smallTrendsLoading : boolean;
   @Input() showWhatsHappening : boolean = true;
   @Input() showWhoToFollow : boolean = true;
   @Input() showSearchbar : boolean = true;
@@ -39,13 +40,15 @@ export class RecommendationsSideBarComponent implements OnInit{
 
 
   ngOnInit(): void {
+    this.smallTrendsLoading = true;
+    this.whoToFollowLoading = true;
     this.getCurrentUser();
     this.getSmallTrends();
     this.getWhoToFollow();
   }
 
   public getSmallTrends() {
-    this.recommendationService.getSmallTrends()
+    this.recommendationService.getSmallTrends().pipe(finalize(() => this.smallTrendsLoading = false ))
       .subscribe( (response) => {
         if (response.body != null){
           this.smallTrends$.next( response.body || []);
@@ -54,7 +57,7 @@ export class RecommendationsSideBarComponent implements OnInit{
   }
 
   public getWhoToFollow() {
-    this.recommendationService.getWhoToFollow()
+    this.recommendationService.getWhoToFollow().pipe(finalize(() => this.whoToFollowLoading = false))
       .subscribe( (response) => {
         if (response.body != null){
           this.whoToFollow$.next( response.body || []);

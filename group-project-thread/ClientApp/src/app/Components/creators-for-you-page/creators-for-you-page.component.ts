@@ -12,7 +12,7 @@ import {Location} from "@angular/common";
 @Component({
   selector: 'app-creators-for-you-page',
   templateUrl: './creators-for-you-page.component.html',
-  styleUrls: ['./creators-for-you-page.component.scss', '../../../assets/ContentFrame.scss', '../../../assets/spinner.scss']
+  styleUrls: ['./creators-for-you-page.component.scss', '../../../assets/ContentFrame.scss']
 })
 export class CreatorsForYouPageComponent {
   protected readonly Tab = Tab;

@@ -12,7 +12,7 @@ import {faTimes} from "@fortawesome/free-solid-svg-icons";
 @Component({
   selector: 'app-post-creator',
   templateUrl: './post-creator.component.html',
-  styleUrls: ['./post-creator.component.scss', '../page-post/page-post.component.scss', '../../../assets/spinner.scss']
+  styleUrls: ['./post-creator.component.scss', '../page-post/page-post.component.scss']
 })
 export class PostCreatorComponent {
 

@@ -1,4 +1,4 @@
-<div *ngIf="contentLoaded" class="wrap">
+<div class="wrap">
   <app-side-navbar [activatedEndpoint]="Endpoint.Profile"></app-side-navbar>
   <div class="element">
     <div class="main-page">
@@ -90,6 +90,7 @@
             <app-page-post *ngFor="let post of userPosts$ | async"
                            [postInput]="post" [userInput]="user"></app-page-post>
           </div>
+          <app-loading-spinner [loading]="postsLoading"></app-loading-spinner>
         </div>
       </div>
     </div>

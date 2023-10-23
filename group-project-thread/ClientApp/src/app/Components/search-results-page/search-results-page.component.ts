@@ -39,12 +39,12 @@ export class SearchResultsPageComponent implements OnInit{
   private allPostsLoaded : boolean = false;
   private allPeopleLoaded : boolean = false;
   public selectedTab : Tab;
-  public loading : boolean;
+  public loadingTop : boolean;
+  public loadingUsers : boolean;
   private queries : string[] = [];
 
   constructor(private userService : UserService, private route : ActivatedRoute,
-              private router : Router, private dataLoadingService : DataLoadingService,
-              private location: Location, private historyOfPages : NavigationHistoryService) {
+              private router : Router, private dataLoadingService : DataLoadingService) {
 
   }
 
@@ -69,14 +69,14 @@ export class SearchResultsPageComponent implements OnInit{
     if(this.query === ""){
       return;
     }
-    else if (this.query == this.queries.pop()){
-      this.queries.push(this.query);
+    else if (this.query == this.queries[this.queries.length-1]){
       return;
     }
     this.queries.push(this.query);
     this.matchingPosts$ = new BehaviorSubject<PostDTO[]>([]);
     this.matchingUsers$ = new BehaviorSubject<PageUserDTO[]>([]);
     if (this.selectedTab == Tab.FirstTab){
+      this.loadingTop = true;
       this.allPostsLoaded = false;
       this.postsToLoadLowerCount = 0;
       this.postsToLoadUpperCount = 10;
@@ -84,16 +84,18 @@ export class SearchResultsPageComponent implements OnInit{
       this.dataLoadingService.loadInitialPosts(this.query, this.postsToLoadLowerCount,
         this.postsToLoadUpperCount, this.matchingPosts$);
       this.dataLoadingService.loadInitialPeople(this.query, 0, 3, this.matchingUsers$);
+      this.loadingTop = false;
     }
     else {
+      this.loadingUsers = true;
       this.allPeopleLoaded = false;
       this.peopleToLoadLowerCount = 0;
       this.peopleToLoadUpperCount = 10;
       this.router.navigate(['search'], { queryParams: { q: this.query, f: 'user' } });
       this.dataLoadingService.loadMorePeople(this.allPeopleLoaded, this.query, this.peopleToLoadLowerCount,
         this.peopleToLoadUpperCount, this.matchingUsers$);
+      this.loadingUsers =false;
     }
-    console.log(this.queries);
   }
   navigateToTopSearch() {
     this.selectedTab = Tab.FirstTab;

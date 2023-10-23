@@ -23,6 +23,7 @@
           <div class="recommendations-box-title wrapper">
             <span class="title">What's happening</span>
           </div>
+          <app-loading-spinner [loading]="whoToFollowLoading"></app-loading-spinner>
           <div *ngFor="let word of smallTrends$ | async" class="trending-word-box wrapper" (click)="searchByWord(word.word)" >
             <div class="text-box wrapper">
               <span class="small-text">Trending</span>
@@ -39,6 +40,7 @@
           <div class="recommendations-box-title wrapper">
             <span class="title">People To Follow</span>
           </div>
+          <app-loading-spinner [loading]="whoToFollowLoading"></app-loading-spinner>
           <div *ngFor="let user of whoToFollow$ | async">
             <app-page-user [pageUser]="user" [isFollowing]="false" [containerHeight]="40"
                            [currentUser]="currentUser" [showBio]="false"

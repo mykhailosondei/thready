@@ -54,6 +54,10 @@ import {WhoToFollowPageComponent} from "./Components/who-to-follow-page/who-to-f
 import {CreatorsForYouPageComponent} from "./Components/creators-for-you-page/creators-for-you-page.component";
 import {MayBeInterestingPageComponent} from "./Components/may-be-interesting-page/may-be-interesting-page.component";
 import {TrendingPageComponent} from "./Components/trending-page/trending-page.component";
+import {PhotoLoaderComponent} from "./Components/photo-loader/photo-loader.component";
+import {DeletableImageComponent} from "./Components/deletable-image/deletable-image.component";
+import {LoadingSpinnerComponent} from "./Components/loading-spinner/loading-spinner.component";
+import {NoResultFoundPageComponent} from "./Components/no-result-found-page/no-result-found-page.component";
 
 @NgModule({ declarations: [
     AppComponent,
@@ -97,7 +101,9 @@ import {TrendingPageComponent} from "./Components/trending-page/trending-page.co
     MayBeInterestingPageComponent,
     TrendingPageComponent,
     PhotoLoaderComponent,
-    DeletableImageComponent
+    DeletableImageComponent,
+    LoadingSpinnerComponent,
+    NoResultFoundPageComponent
     ],
   imports: [
     BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),
@@ -118,7 +124,8 @@ import {TrendingPageComponent} from "./Components/trending-page/trending-page.co
     MatDialogModule,
     MatButtonModule,
     MatInputModule,
-    InfiniteScrollModule
+    InfiniteScrollModule,
+    MatProgressSpinnerModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi:true},

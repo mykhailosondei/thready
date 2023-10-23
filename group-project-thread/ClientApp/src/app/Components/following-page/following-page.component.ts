@@ -14,7 +14,7 @@ import {NavigationHistoryService} from "../../Services/navigation-history.servic
 @Component({
   selector: 'app-following-page',
   templateUrl: './following-page.component.html',
-  styleUrls: ['./following-page.component.scss', '../../../assets/ContentFrame.scss', '../../../assets/spinner.scss']
+  styleUrls: ['./following-page.component.scss', '../../../assets/ContentFrame.scss']
 })
 export class FollowingPageComponent implements OnInit{
   protected username : string;

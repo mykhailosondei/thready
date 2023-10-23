@@ -15,11 +15,13 @@ import {NavigationHistoryService} from "../../Services/navigation-history.servic
 export class MainPageComponent {
 
   posts: PostDTO[] = [];
+  postsLoading : boolean;
 
   constructor(private postService: PostService, private historyOfPages : NavigationHistoryService) {
   }
 
   ngOnInit(): void {
+    this.postsLoading = true;
     this.fetchPosts();
     console.log(this.historyOfPages.getPageInHistoryCounter())
   }
@@ -27,6 +29,7 @@ export class MainPageComponent {
   public fetchPosts() {
     this.postService.getAllPost().subscribe(response => {
       this.posts = response.body!;
+      this.postsLoading = false;
     });
 
   }

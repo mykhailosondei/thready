@@ -6,6 +6,7 @@ import {UserService} from "../../Services/user.service";
 import {PageUserDTO} from "../../models/user/pageUserDTO";
 import {faRetweet} from "@fortawesome/free-solid-svg-icons";
 import {Endpoint} from "../side-navbar/side-navbar.component";
+import {F} from "@angular/cdk/keycodes";
 
 @Component({
   selector: 'app-reposts-page',
@@ -29,13 +30,14 @@ export class RepostsPageComponent implements OnInit{
         this.user = Response.body!;
         for(let repostId of this.user.repostsIds) {
           this.postService.getPostById(repostId).subscribe(Response => {
+            this.loading = false;
             if(Response.ok) {
               this.posts.push(Response.body!);
             }
           });
         }
       }
-    }).add(() => this.loading = false);
+    })
   }
 
   get pageUser(): PageUserDTO {
