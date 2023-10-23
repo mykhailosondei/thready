@@ -18,21 +18,17 @@ public class PostQueryRepository : BaseQueryRepository
     
     public async Task<IEnumerable<PostDTO>> GetAllPosts()
     {
-        var posts = await _applicationContext.Posts.AsNoTracking().Include(post => post.Author).ThenInclude(u => u.Avatar).Include(p => p.Images).ToListAsync();
+        var posts = await _applicationContext.Posts
+            .Include(post => post.Author).ThenInclude(u => u.Avatar)
+            .Include(p => p.Images).ToListAsync();
         
         return _mapper.Map<IEnumerable<PostDTO>>(posts);
     }
 
     public virtual async Task<PostDTO> GetPostById(int id, params Expression<Func<Post, object>>[] includeExpressions)
     {
-        var query = _applicationContext.Posts.AsNoTracking();
-
-        foreach (var includeExpression in includeExpressions)
-        {
-            query = query.Include(includeExpression);
-        }
-
-        query.Include(c => c.Author).ThenInclude(u => u.Avatar);
+        var query = _applicationContext.Posts.Include(p => p.Images)
+            .Include(p => p.Author).ThenInclude(u => u.Avatar);
 
         var postModel = await query.FirstOrDefaultAsync(p => p.Id == id);
 

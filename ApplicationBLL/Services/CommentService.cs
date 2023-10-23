@@ -52,23 +52,10 @@ public class CommentService : BaseService
         var postEntity = await _postQueryRepository.GetPostById(postId);
 
         var commentsIdsOfPost = postEntity!.CommentsIds;
-
-        List<CommentDTO> result = new();
-
-        foreach (var id in commentsIdsOfPost)
-        {
-            try
-            {
-                result.Add(await _commentQueryRepository.GetCommentByIdPlain(id, c => c.Images, c => c.Author));
-            }
-            catch (CommentNotFoundException e)
-            {
-                Console.WriteLine("One or more comments could not be loaded");
-                Console.WriteLine(e);
-            }
-        }
         
-        return result;
+        var comments = await _applicationContext.Comments.Include(c => c.Images).Include(c => c.Author).ThenInclude(u => u.Avatar).Where(c => commentsIdsOfPost.Contains(c.Id)).ToListAsync();
+        
+        return _mapper.Map<IEnumerable<CommentDTO>>(comments);
     }
     
     public async Task BookmarkComment(int commentId, int userId)

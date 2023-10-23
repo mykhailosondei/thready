@@ -46,20 +46,13 @@ public class PostService : BaseService
     
     public async Task<IEnumerable<PostDTO>> GetPostsByUserId(int id)
     {
-        var userModel = await _userQueryRepository.GetUserById(id);
-        User userEntity = _mapper.Map<User>(userModel);
+        var result = await _applicationContext.Posts
+            .Include(p => p.Author).ThenInclude(u => u.Avatar)
+            .Include(p => p.Images)
+            .Where(p => p.Author.Id == id)
+            .ToListAsync();
         
-        
-        _applicationContext.Attach(userEntity);
-        await _applicationContext.Entry(userEntity).Collection(u => u.Posts).LoadAsync();
-
-        foreach (var post in userEntity.Posts)
-        {
-            await _applicationContext.Entry(post).Collection(p => p.Images).LoadAsync();
-        }
-        
-        userModel = _mapper.Map<UserDTO>(userEntity);
-        return userModel.Posts;
+        return _mapper.Map<IEnumerable<PostDTO>>(result);
     }
 
     public async Task BookmarkPost(int postId, int userId)
