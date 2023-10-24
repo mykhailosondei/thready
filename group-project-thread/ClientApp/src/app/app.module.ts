@@ -63,6 +63,7 @@ import {ModalModule} from "ngx-bootstrap/modal";
 import {NavWrapperComponent} from "./Components/nav-wrapper/nav-wrapper.component";
 import {StickyDirective} from "./Directives/sticky.directive";
 import {AuthGuard} from "./Guards/AuthGuard";
+import {MatProgressBarModule} from "@angular/material/progress-bar";
 
 @NgModule({ declarations: [
     AppComponent,
@@ -133,7 +134,8 @@ import {AuthGuard} from "./Guards/AuthGuard";
     MatInputModule,
     InfiniteScrollModule,
     ModalModule.forRoot(),
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatProgressBarModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi:true},

@@ -61,3 +61,6 @@
     cursor: pointer;
   }
 }
+.loading-bar{
+  --mdc-linear-progress-active-indicator-color: cornflowerblue !important;
+}
