@@ -6,6 +6,7 @@ import {D} from "@angular/cdk/keycodes";
 import {PageUserDTO} from "../../models/user/pageUserDTO";
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import {animate, state, style, transition, trigger} from "@angular/animations";
+import {ImageUploadService} from "../../Services/image-upload.service";
 
 @Component({
   selector: 'app-comment-creation-dialog',
@@ -25,7 +26,10 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
 })
 export class CommentCreationDialogComponent {
   faTimes = faTimes;
-  constructor(public dialogRef: MatDialogRef<CommentCreationDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: CommentCreateDialogData) { }
+  imageUrls: string[] = [];
+  constructor(public dialogRef: MatDialogRef<CommentCreationDialogComponent>,
+              @Inject(MAT_DIALOG_DATA) public data: CommentCreateDialogData,
+              private readonly imageUploadService : ImageUploadService) { }
 
   onNoClick(): void {
     this.dialogRef.close();
@@ -50,5 +54,15 @@ export class CommentCreationDialogComponent {
 
   isButtonDisabled() : boolean {
     return PostFormatter.isInputLengthTooBig(this.data.textContent);
+  }
+
+  onPhotoLoaded($event: string) {
+    this.imageUrls.push($event);
+  }
+
+  deleteImage($event:string) {
+    this.imageUrls = this.imageUrls.filter(i => i !== $event);
+    var deletionName = $event.split('/').pop()!;
+    this.imageUploadService.deleteImage(deletionName).subscribe();
   }
 }

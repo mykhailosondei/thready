@@ -97,7 +97,7 @@ export class SingularCommentViewComponent {
   }
 
   openCommentDialog() {
-    const dialogRef: MatDialogRef<CommentCreationDialogComponent, CommentCreateDialogData> = this.dialog.open(CommentCreationDialogComponent, {
+    const dialogRef: MatDialogRef<CommentCreationDialogComponent, { imagesOutput: string[], textOutput:string }> = this.dialog.open(CommentCreationDialogComponent, {
       width: '500px',
       data: {post: this.commentView, currentUser: this.commentView.user, textContent: "", images: []}
     });
@@ -108,8 +108,8 @@ export class SingularCommentViewComponent {
       console.log(result);
       this.commentService.postComment({
         commentId: this.commentView.id,
-        textContent: result.textContent,
-        images: result.images
+        textContent: result.textOutput,
+        images: result.imagesOutput.map(i => {return {url: i}})
       }).subscribe(response => {
         console.log(response)
         if (!response.ok) return;

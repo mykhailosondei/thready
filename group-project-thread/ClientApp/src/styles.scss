@@ -47,11 +47,39 @@ code {
   border-radius: 50%;
 }
 
+.image-overlay {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+}
+
+.close-image-button {
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  height: 30px;
+  width: 30px;
+  margin: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+  }
+}
+
 html, body { height: 100%; }
 body { margin: 0; font-family: "TwitterChirp", -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif, sans-serif; }
 
-/* Importing Bootstrap SCSS file. */
+/*!* Importing Bootstrap SCSS file. *!
 @import "./node_modules/bootstrap/scss/bootstrap";
 
-/* Importing Datepicker SCSS file. */
-@import "node_modules/ngx-bootstrap/datepicker/bs-datepicker";
+!* Importing Datepicker SCSS file. *!
+@import "node_modules/ngx-bootstrap/datepicker/bs-datepicker";*/

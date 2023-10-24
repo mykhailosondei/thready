@@ -117,7 +117,7 @@ export class PagePostComponent implements OnInit {
   }
 
   openCommentDialog() {
-    const dialogRef: MatDialogRef<CommentCreationDialogComponent, CommentCreateDialogData> = this.dialog.open(CommentCreationDialogComponent, {
+    const dialogRef: MatDialogRef<CommentCreationDialogComponent, {imagesOutput: string[], textOutput : string}> = this.dialog.open(CommentCreationDialogComponent, {
       width: '500px',
       data: {post: this.post, currentUser: this.post.user, textContent: "", images: []}
     });
@@ -128,8 +128,8 @@ export class PagePostComponent implements OnInit {
       console.log(result);
       this.commentService.postComment({
         postId: this.post.id,
-        textContent: result.textContent,
-        images: result.images
+        textContent: result.textOutput,
+        images: result.imagesOutput.map(i => {return {url: i}})
       }).subscribe(response => {
         console.log(response)
         if (!response.ok) return;
