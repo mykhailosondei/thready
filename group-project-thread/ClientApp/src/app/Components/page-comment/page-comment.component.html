@@ -1,15 +1,7 @@
 <div appOnDomEnter (domEnter)="startObserve()" [class]="this.isParentView ? 'parent-view-page-post' : 'page-post'" #wholePost>
   <a href="comment/{{this.commentInput.id}}" class="post-link"></a>
   <div class="user-collar-and-post-holder">
-    <div class="user-avatar-collar">
-      <div *ngIf="isParentView" class="gray-collar-short"></div>
-      <div class="user-avatar" [ngStyle]="{'background-color': getCircleColor()}">
-        <a href="{{userInput.username}}/profile" class="user-link"></a>
-        <img class="profile-small-image" *ngIf="!isAvatarNull()" src="{{commentView.user.avatar!.url}}" alt="{{commentView.user.username}}}">
-        <div *ngIf="isAvatarNull()" class="initial">{{getFirstInitial()}}</div>
-      </div>
-      <div *ngIf="isParentView" class="gray-collar"></div>
-    </div>
+    <app-user-avatar [user]="commentInput.author" [isParentView]="isParentView"></app-user-avatar>
     <div class="post-holder">
       <div class="user-info-and-dots">
         <div class="user-date">

@@ -3,11 +3,7 @@
     <div *ngIf="postInput && authorInput && post" class="post-holder">
       <div class="page-post">
         <div class="post-header">
-          <div class="user-avatar" [ngStyle]="{'background-color': getCircleColor()}">
-            <a href="{{authorInput.username}}/profile" class="user-link"></a>
-            <img class="profile-small-image" *ngIf="!isAvatarNull()" src="{{authorInput.avatar!.url}}" alt="{{authorInput.username}}}">
-            <div *ngIf="isAvatarNull()" class="initial">{{getFirstInitial()}}</div>
-          </div>
+          <app-user-avatar [user]="authorInput"></app-user-avatar>
           <div class="user-info" #userInfo (mouseenter)="onUserInfoMouseEnter()" (mouseleave)="onUserInfoMouseLeave()">
             <a href="{{authorInput.username}}/profile" class="user-link"></a>
             <div class="user-name">
