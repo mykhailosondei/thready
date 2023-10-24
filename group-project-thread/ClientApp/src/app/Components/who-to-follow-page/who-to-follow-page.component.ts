@@ -8,6 +8,7 @@ import {UserService} from "../../Services/user.service";
 import {UserDTO} from "../../models/user/userDTO";
 import {NavigationHistoryService} from "../../Services/navigation-history.service";
 import {Location} from "@angular/common";
+import {Endpoint} from "../side-navbar/side-navbar.component";
 
 @Component({
   selector: 'app-who-to-follow-page',
@@ -33,7 +34,7 @@ export class WhoToFollowPageComponent {
   }
 
   getUsersToFollow(){
-    this.recommendationService.getWhoToFollow()
+    this.recommendationService.getConnectPeople()
       .subscribe((response) =>
       {
         this.loading = false;
@@ -63,4 +64,5 @@ export class WhoToFollowPageComponent {
     this.navigator.backToMainPage();
   }
 
+  protected readonly Endpoint = Endpoint;
 }

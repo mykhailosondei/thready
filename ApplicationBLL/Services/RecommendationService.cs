@@ -86,10 +86,14 @@ public class RecommendationService : BaseService
     }
     
     public async Task<List<PageUserDTO>> GetCreatorsForYou()
-    {
+    { 
         var currentUser = await _userQueryRepository.GetUserById(_userQueryRepository.GetCurrentUserId());
         var userCount = _applicationContext.Users.Count();
-        userCount = userCount - 5 < 0 ? 0 : new Random().Next(5, userCount/4);
+        if (userCount < 5)
+        {
+            return await _applicationContext.Users.Select(u => _mapper.Map<PageUserDTO>(u)).ToListAsync();
+        }
+        userCount = userCount < 20 ? 0 : new Random().Next(5, userCount/4);
         var people = await _applicationContext.Users
             .Include(u=>u.Avatar).
             OrderByDescending(u => u.FollowersIds.Count)

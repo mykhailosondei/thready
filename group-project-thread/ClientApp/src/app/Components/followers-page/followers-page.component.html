@@ -1,4 +1,4 @@
-<div class="wrap">
+<app-nav-wrapper [activatedEndpoint]="Endpoint.Profile">
   <div class="main-page">
     <app-tablist-page [title]="username" [firstTabName] = "'Following'" [secondTabName] = "'Followers'"
                       [selectedTab]="Tab.SecondTab"
@@ -15,6 +15,9 @@
         </div>
       </div>
     </div>
+    <app-no-result-found-page *ngIf="noFollowersFound"
+    [headerText]="'Looking for followers?'"
+    [smallText]="'When someone follows this account, they’ll show up here. Posting and interacting with others helps boost followers.'"></app-no-result-found-page>
     <app-loading-spinner [loading]="loading"></app-loading-spinner>
   </div>
-</div>
+</app-nav-wrapper>
