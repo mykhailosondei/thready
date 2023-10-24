@@ -72,6 +72,8 @@
 }
 
 .user-link {
+  cursor: pointer;
+  text-decoration: underline;
   position: absolute;
   width: 100%;
   height: 100%;
@@ -79,8 +81,17 @@
 
 .followers-holder {
   position: relative;
+  &:hover{
+    text-decoration: underline;
+  }
 }
 
 .following-holder {
   position: relative;
+  &:hover{
+    text-decoration: underline;
+  }
+}
+.connection-text{
+  color: grey;
 }
