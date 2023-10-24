@@ -1,11 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {UserService} from "../../Services/user.service";
-import {ActivatedRoute, Router} from "@angular/router";
-import {SnackbarService} from "../../Services/snackbar.service";
+import {ActivatedRoute} from "@angular/router";
 import {UserDTO} from "../../models/user/userDTO";
 import {PageUserDTO} from "../../models/user/pageUserDTO";
-import {finalize, Subject, takeUntil} from "rxjs";
-import {C} from "@angular/cdk/keycodes";
+import {Subject} from "rxjs";
 import {NavigatorService} from "../../Services/navigator.service";
 import {Tab} from "../../models/enums/Tab";
 import {Location} from "@angular/common";
@@ -25,11 +23,9 @@ export class FollowingPageComponent implements OnInit{
   protected currentUser! : UserDTO;
   public loading : boolean;
   noFollowingFound: boolean;
+  protected Endpoint : Endpoint;
   constructor(private userService: UserService, private route: ActivatedRoute, public navigatorService : NavigatorService,
               private location : Location, private historyOfPages : NavigationHistoryService) {
-    this.route.paramMap.subscribe(params => {
-      this.username = params.get('username') || "DefaultUsername";
-    })
     this.following = [];
   }
 
@@ -86,6 +82,12 @@ export class FollowingPageComponent implements OnInit{
       .subscribe( (response) =>{
         if (response.body != null){
           this.currentUser = response.body;
+          if (this.currentUser.username == this.username){
+            this.Endpoint = Endpoint.Profile;
+          }
+          else {
+            this.Endpoint = Endpoint.None;
+          }
         }
       });
   }
@@ -111,5 +113,4 @@ export class FollowingPageComponent implements OnInit{
   }
 
   protected readonly Tab = Tab;
-    protected readonly Endpoint = Endpoint;
 }

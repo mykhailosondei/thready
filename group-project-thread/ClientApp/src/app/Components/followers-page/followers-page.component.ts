@@ -22,11 +22,10 @@ export class FollowersPageComponent {
   protected currentUser! : UserDTO;
   public loading : boolean;
   public noFollowersFound : boolean;
+  protected  Endpoint : Endpoint;
+
   constructor(private userService: UserService, private route: ActivatedRoute, public navigatorService : NavigatorService,
   private historyOfPages : NavigationHistoryService, private location : Location) {
-    this.route.paramMap.subscribe(params => {
-      this.username = params.get('username') || "DefaultUsername";
-    })
     this.followers = [];
   }
 
@@ -107,10 +106,15 @@ export class FollowersPageComponent {
       .subscribe( (response) =>{
       if (response.body != null){
          this.currentUser = response.body;
+         if (this.currentUser.username == this.username){
+           this.Endpoint = Endpoint.Profile;
+         }
+         else {
+           this.Endpoint = Endpoint.None;
+         }
       }
     });
   }
 
   protected readonly Tab = Tab;
-    protected readonly Endpoint = Endpoint;
 }
