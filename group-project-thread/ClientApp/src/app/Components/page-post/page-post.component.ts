@@ -45,7 +45,7 @@ export class PagePostComponent implements OnInit {
   faBookmarkUnactivated = faBookmarkUnactivated;
 
   @Input() public postInput!: PostDTO;
-  @Input() public userInput!: UserDTO;
+  public currentUser!: UserDTO;
   @Input() public isParentView: boolean = false;
   @Input() public repostView: boolean = false;
   @Input() public reposter: PageUserDTO = {} as PageUserDTO;
@@ -78,14 +78,14 @@ export class PagePostComponent implements OnInit {
   ngOnInit(): void {
     this.userService.getCurrentUser().subscribe(response => {
       if (response.ok) {
+        this.currentUser = response.body!;
         this.editable = response.body!.id === this.postInput.author.id;
         this.liked = this.postInput.likesIds.includes(response.body!.id);
         this.reposted = this.postInput.repostersIds.includes(response.body!.id);
         this.bookmarked = response.body!.bookmarkedPostsIds.includes(this.postInput.id);
       }
     });
-    this.post = PostFormatter.mapPostToPagePost(this.postInput, this.userInput);
-    // Set up IntersectionObserver to watch for 50% visibility
+    this.post = PostFormatter.mapPostToPagePost(this.postInput);
     this.observer = new IntersectionObserver(this.handleIntersection.bind(this), {
       root: null, // Use the viewport as the root
       rootMargin: '0px', // No margin
@@ -108,19 +108,11 @@ export class PagePostComponent implements OnInit {
     });
   }
 
-  getFirstInitial(): string {
-    return this.post.user.username[0].toUpperCase();
-  }
-
-
   public getCreatedDate(): string {
     const date = new Date(this.post.dateCreated);
     return PostFormatter.getDateFormattedElapsed(date);
   }
 
-  isAvatarNull(): boolean {
-    return this.post.user.avatar === null;
-  }
 
   handleCommentClick() {
     this.openCommentDialog();
@@ -129,7 +121,7 @@ export class PagePostComponent implements OnInit {
   openCommentDialog() {
     const dialogRef: MatDialogRef<CommentCreationDialogComponent, {imagesOutput: string[], textOutput : string}> = this.dialog.open(CommentCreationDialogComponent, {
       width: '500px',
-      data: {post: this.post, currentUser: this.post.user, textContent: "", images: []}
+      data: {post: this.post, currentUser: this.currentUser, textContent: "", images: []}
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -218,10 +210,6 @@ export class PagePostComponent implements OnInit {
         this.postService.likePost(this.post.id).subscribe(response => console.log(response));
         break;
     }
-  }
-
-  getCircleColor() {
-    return PostFormatter.getCircleColor(this.post.user.username);
   }
 
   async onUserInfoMouseLeave() {

@@ -1,11 +1,7 @@
 <div class="user-box">
   <div class="user-profile-button" (click)="getUserPage(pageUser.username)">
     <div class="content">
-      <div class="small-image-container" [style.max-height.px]="containerHeight">
-        <div class="image-box">
-          <img class="user-image" src="https://picsum.photos/1080">
-        </div>
-      </div>
+      <app-user-avatar [user]="pageUser"></app-user-avatar>
       <div class="user-info-box">
           <div class="small-info">
             <div class="small-info-box">

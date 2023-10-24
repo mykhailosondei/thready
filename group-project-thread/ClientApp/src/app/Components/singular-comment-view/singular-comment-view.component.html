@@ -1,6 +1,6 @@
 <app-nav-wrapper [activatedEndpoint]="Endpoint.None">
   <div class="main-page">
-    <app-page-post [postInput]="parentPost" [userInput]="parentPost.author" [isParentView]="true"></app-page-post>
+    <app-page-post *ngIf="parentPost" [postInput]="parentPost" [isParentView]="true"></app-page-post>
     <app-page-comment *ngFor="let comment of parentComments" [commentInput]="comment" [userInput]="comment.author" [isParentView]="true"></app-page-comment>
     <div *ngIf="commentInput && authorInput" class="post-holder">
       <div class="page-post">
@@ -8,11 +8,7 @@
           <div class="gray-collar-shorter"></div>
         </div>
         <div class="post-header">
-          <div class="user-avatar" [ngStyle]="{'background-color': getCircleColor()}">
-            <a href="{{authorInput.username}}/profile" class="user-link"></a>
-            <img class="profile-small-image" *ngIf="!isAvatarNull()" src="{{authorInput.avatar!.url}}" alt="{{authorInput.username}}}">
-            <div *ngIf="isAvatarNull()" class="initial">{{getFirstInitial()}}</div>
-          </div>
+          <app-user-avatar [user]="authorInput"></app-user-avatar>
           <div class="user-info" #userInfo (mouseenter)="onUserInfoMouseEnter()" (mouseleave)="onUserInfoMouseLeave()">
             <a href="{{authorInput.username}}/profile" class="user-link"></a>
             <div class="user-name">

@@ -44,7 +44,8 @@ export class RecommendationsSideBarComponent implements OnInit{
   ngOnInit(): void {
     this.smallTrendsLoading = true;
     this.whoToFollowLoading = true;
-    this.getCurrentUser();
+    this.userService.getCurrentUserInstance().subscribe(
+      (user) => this.currentUser = user);
     this.getSmallTrends();
     this.getWhoToFollow();
   }
@@ -66,15 +67,6 @@ export class RecommendationsSideBarComponent implements OnInit{
           this.whoToFollow$.next( response.body || []);
         }
       } )
-  }
-
-  getCurrentUser(): void{
-    this.userService.getCurrentUser()
-      .subscribe( (response) =>{
-        if (response.body != null){
-          this.currentUser = response.body;
-        }
-      });
   }
 
   navigateToConnectPeople() {

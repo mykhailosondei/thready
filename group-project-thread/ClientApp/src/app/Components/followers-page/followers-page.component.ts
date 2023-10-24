@@ -37,7 +37,16 @@ export class FollowersPageComponent {
     this.loading = true;
     this.route.paramMap.subscribe(params => {
       this.username = params.get('username') || "DefaultUsername";
-      this.getCurrentUser();
+      this.userService.getCurrentUserInstance().subscribe(
+        (user) => {
+          this.currentUser = user;
+          if (this.currentUser.username == this.username){
+            this.Endpoint = Endpoint.Profile;
+          }
+          else {
+            this.Endpoint = Endpoint.None;
+          }
+        });
       this.fetchFollowersData(this.username);
     });
   }
@@ -100,21 +109,4 @@ export class FollowersPageComponent {
     this.historyOfPages.resetCounter();
     this.location.historyGo(-pagesCount);
   }
-
-  getCurrentUser(): void{
-    this.userService.getCurrentUser()
-      .subscribe( (response) =>{
-      if (response.body != null){
-         this.currentUser = response.body;
-         if (this.currentUser.username == this.username){
-           this.Endpoint = Endpoint.Profile;
-         }
-         else {
-           this.Endpoint = Endpoint.None;
-         }
-      }
-    });
-  }
-
-  protected readonly Tab = Tab;
 }

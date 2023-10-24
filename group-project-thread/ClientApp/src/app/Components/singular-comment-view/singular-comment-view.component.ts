@@ -132,10 +132,7 @@ export class SingularCommentViewComponent {
     } else if (comment.post) {
       this.parentPost = comment.post;
     }
-    console.log("aaaaaaaaaaaaaaa");
-    console.log(this.parentPost);
   }
-
 
   handleLikeClick() {
     switch (this.liked) {
@@ -150,18 +147,6 @@ export class SingularCommentViewComponent {
         this.commentService.likeComment(this.commentView.id).subscribe(response => console.log(response));
         break;
     }
-  }
-
-  getCircleColor() {
-    return PostFormatter.getCircleColor(this.authorInput.username);
-  }
-
-  isAvatarNull() {
-    return this.authorInput.avatar === null;
-  }
-
-  getFirstInitial() {
-    return this.authorInput.username[0].toUpperCase();
   }
 
   protected readonly faPen = faPen;

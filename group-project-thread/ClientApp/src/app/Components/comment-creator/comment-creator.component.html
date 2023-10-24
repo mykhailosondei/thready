@@ -1,10 +1,5 @@
 <div class="comment-creator">
-  <div class="user-avatar-collar">
-    <div class="user-avatar" [ngStyle]="{'background-color': getCircleColor(currentUser)}">
-      <img class="profile-small-image" *ngIf="!isAvatarNull(currentUser)" src="{{currentUser.avatar!.url}}" alt="{{currentUser.username}}}">
-      <div *ngIf="isAvatarNull(currentUser)" class="initial">{{getFirstInitial(currentUser)}}</div>
-    </div>
-    </div>
+  <app-user-avatar [user]="currentUser"></app-user-avatar>
     <div class="right-input">
       <app-auto-resize-input [placeholder]="'Post your reply'" #inputComponent></app-auto-resize-input>
       <div class="post-image-content">

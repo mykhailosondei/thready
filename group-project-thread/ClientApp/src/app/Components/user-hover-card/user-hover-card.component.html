@@ -10,11 +10,7 @@
   <div *ngIf="isFollowResponseSuccess">
   <div class="user-content">
     <div class="avatar-and-follow-btn">
-      <div class="avatar-holder" [ngStyle]="{'background-color': getCircleColor()}">
-        <a href="{{user.username}}/profile" class="user-link"></a>
-        <img class="profile-small-image" *ngIf="!isAvatarNull()" src="{{user.avatar!.url}}" alt="{{user.username}}}">
-        <div *ngIf="isAvatarNull()" class="initial">{{getFirstInitial()}}</div>
-      </div>
+      <app-user-avatar [user]="user "></app-user-avatar>
       <div class="follow-btn-holder">
         <button *ngIf="showFollowButton" class="follow-btn" (click)="followUser()">
           <b style="padding-left: 6px; padding-right: 6px; font-size: 14px;">Follow</b>

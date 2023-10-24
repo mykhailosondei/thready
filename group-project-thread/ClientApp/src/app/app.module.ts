@@ -65,6 +65,7 @@ import {StickyDirective} from "./Directives/sticky.directive";
 import {DeleteDialogComponent} from "./Components/delete-dialog/delete-dialog.component";
 import {AuthGuard} from "./Guards/AuthGuard";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
+import {UserAvatarComponent} from "./Components/user-avatar/user-avatar.component";
 
 @NgModule({ declarations: [
     AppComponent,
@@ -113,7 +114,8 @@ import {MatProgressBarModule} from "@angular/material/progress-bar";
     NoResultFoundPageComponent,
     NavWrapperComponent,
     StickyDirective,
-    DeleteDialogComponent
+    DeleteDialogComponent,
+    UserAvatarComponent
     ],
   imports: [
     BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),

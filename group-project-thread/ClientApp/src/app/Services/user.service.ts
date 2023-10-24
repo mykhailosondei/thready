@@ -10,8 +10,20 @@ import {UserUpdateDTO} from "../models/user/userUpdateDTO";
 })
 export class UserService {
   public routePrefix: string = '/api/user';
+  private currentUserSubject: BehaviorSubject<UserDTO> = new BehaviorSubject<UserDTO>({} as UserDTO);
   constructor(private httpService : HttpInternalService) { }
 
+
+  public getCurrentUserInstance() : Observable<UserDTO>{
+    this.getCurrentUser().subscribe(
+      (response) =>{
+        if (response.body){
+          this.currentUserSubject.next(response.body);
+        }
+      }
+    )
+    return this.currentUserSubject.asObservable();
+  }
   public getAllUsers() : Observable<HttpResponse<UserDTO[]>>{
     return this.httpService.getFullRequest<UserDTO[]>(`${this.routePrefix}`);
   }

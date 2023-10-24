@@ -9,13 +9,7 @@
     <div class="post-container">
       <div class="page-post">
         <div class="user-collar-and-post-holder">
-          <div class="user-avatar-collar">
-            <div class="user-avatar" [ngStyle]="{'background-color': getCircleColor(data.post.user)}">
-              <img class="profile-small-image" *ngIf="!isAvatarNull(data.post.user)" src="{{data.post.user.avatar!.url}}" alt="{{data.post.user.username}}}">
-              <div *ngIf="isAvatarNull(data.post.user)" class="initial">{{getFirstInitial(data.post.user)}}</div>
-            </div>
-            <div class="gray-collar"></div>
-          </div>
+          <app-user-avatar [user]="data.post.user" [isParentView]="true"></app-user-avatar>
           <div class="post-holder">
             <div class="user-info-and-dots">
               <div class="user-date">
@@ -40,12 +34,7 @@
   <div mat-dialog-content>
       <div class="reply">
         <div class="user-collar-and-post-holder">
-          <div class="user-avatar-collar">
-            <div class="user-avatar" [ngStyle]="{'background-color': getCircleColor(data.currentUser)}">
-              <img class="profile-small-image" *ngIf="!isAvatarNull(data.currentUser)" src="{{data.currentUser.avatar!.url}}" alt="{{data.currentUser.username}}}">
-              <div *ngIf="isAvatarNull(data.currentUser)" class="initial">{{getFirstInitial(data.currentUser)}}</div>
-            </div>
-          </div>
+          <app-user-avatar [user]="data.currentUser"></app-user-avatar>
           <textarea class="dialog-reply-text-area" matInput [(ngModel)]="data.textContent" placeholder="Post your reply"></textarea>
         </div>
           <div class="post-image-content">

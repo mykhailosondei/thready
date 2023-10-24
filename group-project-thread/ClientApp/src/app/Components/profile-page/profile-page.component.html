@@ -86,7 +86,7 @@
         </div>
         <div class="posts-thread">
           <app-page-post *ngFor="let post of userPosts$ | async"
-                         [postInput]="post" [userInput]="user"></app-page-post>
+                         [postInput]="post"></app-page-post>
         </div>
         <app-loading-spinner [loading]="postsLoading"></app-loading-spinner>
         <div *ngIf="noPostsFound">

@@ -64,19 +64,6 @@ export class UserHoverCardComponent{
     this.hoverCardTriggerService.disableHoverCardVisibility();
     this.hoverCardTriggerService.isInsideHoverCard = false;
   }
-
-  getCircleColor() {
-    return PostFormatter.getCircleColor(this.user.username);
-  }
-
-  isAvatarNull() {
-    return this.user.avatar === null
-  }
-
-  getFirstInitial() {
-    return this.user.username[0].toUpperCase();
-  }
-
   followUser() {
     this.userService.followUser(this.user.id).subscribe(followResponse => {
       if(followResponse.ok){

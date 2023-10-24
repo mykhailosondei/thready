@@ -23,13 +23,14 @@ export class WhoToFollowPageComponent {
   loading: boolean;
   constructor(public navigator : NavigatorService,
               private recommendationService : RecommendationService,
-              private userService : UserService, private historyOfPages : NavigationHistoryService,
+              public userService : UserService, private historyOfPages : NavigationHistoryService,
               private location : Location) {
   }
 
   ngOnInit(){
     this.loading = true;
-    this.getCurrentUser();
+    this.userService.getCurrentUserInstance().subscribe(
+      (user) => this.currentUser = user);
     this.getUsersToFollow();
   }
 
@@ -42,14 +43,6 @@ export class WhoToFollowPageComponent {
           this.users$.next(response.body)
         }
       })
-  }
-  getCurrentUser(): void{
-    this.userService.getCurrentUser()
-      .subscribe( (response) =>{
-        if (response.body != null){
-          this.currentUser = response.body;
-        }
-      });
   }
 
   navigateToCreatorsForYou(){
