@@ -33,12 +33,12 @@
     </div>
     <div class="user-connections-info">
       <div class="following-holder">
-        <a href="/following" class="user-link"></a>
-        <b>{{following}}</b> <span style="color:grey; padding-left: 2px">Following</span>
+        <div class="user-link" (click)="navigator.openFollowingPage(user.username)"></div>
+          <b>{{following}}</b> <span class="connection-text"> Following</span>
       </div>
       <div class="followers-holder">
-        <a href="/followers" class="user-link"></a>
-        <b>{{followers}}</b> <span style="color:grey;  padding-left: 2px">Followers</span>
+        <a (click)="navigator.openFollowingPage(user.username)" class="user-link"></a>
+        <b>{{followers}}</b> <a class="connection-text"> Followers</a>
       </div>
     </div>
   </div>

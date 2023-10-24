@@ -41,8 +41,8 @@ export class MainPageComponent {
   protected readonly Number = Number;
   protected readonly Endpoint = Endpoint;
 
-  onPostCreated() {
-    window.location.reload();
+  onPostCreated(post : PostDTO) {
+    this.posts.unshift(post);
   }
 
   onPostDeleted($event: PostDTO) {

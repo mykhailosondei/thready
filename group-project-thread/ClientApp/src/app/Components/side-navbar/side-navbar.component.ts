@@ -75,7 +75,8 @@ export class SideNavbarComponent{
 
         dialogRef.afterClosed().subscribe(result => {
          if(result) {
-           this.postService.createPost({textContent: result!.textOutput, images: result.imagesOutput.map(i => {return {url:i}})}).subscribe(response => console.log(response));
+           this.postService.createPost({textContent: result!.textOutput, images: result.imagesOutput.map(i => {return {url:i}})})
+             .subscribe(response => console.log(response));
          }
         });
     }

@@ -53,11 +53,11 @@ namespace group_project_thread.Controllers
         }
         // POST api/<PostController>
         [HttpPost]
-        public async Task CreatePost([FromBody] PostCreateDTO post)
+        public async Task<PostDTO> CreatePost([FromBody] PostCreateDTO post)
         {
             int authorId = _userIdGetter.CurrentId;
             post.AuthorId = authorId;
-            await _postService.CreatePost(post);
+            return await _postService.CreatePost(post);
         }
         
         [HttpPost("{id}/likePost")]

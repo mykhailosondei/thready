@@ -63,6 +63,7 @@ import {ModalModule} from "ngx-bootstrap/modal";
 import {NavWrapperComponent} from "./Components/nav-wrapper/nav-wrapper.component";
 import {StickyDirective} from "./Directives/sticky.directive";
 import {DeleteDialogComponent} from "./Components/delete-dialog/delete-dialog.component";
+import {AuthGuard} from "./Guards/AuthGuard";
 
 @NgModule({ declarations: [
     AppComponent,
@@ -139,7 +140,8 @@ import {DeleteDialogComponent} from "./Components/delete-dialog/delete-dialog.co
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi:true},
     {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: false},
-    }
+    },
+    AuthGuard
   ],
   bootstrap: [AppComponent],
   entryComponents: [CommentCreationDialogComponent]

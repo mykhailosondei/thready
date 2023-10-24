@@ -3,6 +3,8 @@ import {UserHoverCardTriggerService} from "../../Services/user-hover-card-trigge
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import PostFormatter from "../../helpers/postFormatter";
 import {UserService} from "../../Services/user.service";
+import {Router} from "@angular/router";
+import {NavigatorService} from "../../Services/navigator.service";
 
 @Component({
   selector: 'app-user-hover-card',
@@ -22,7 +24,7 @@ import {UserService} from "../../Services/user.service";
 })
 export class UserHoverCardComponent{
   constructor(private hoverCardTriggerService: UserHoverCardTriggerService,
-              private readonly userService: UserService) { }
+              private readonly userService: UserService, public readonly navigator : NavigatorService) { }
 
   get user() { return this.hoverCardTriggerService.user; }
 
@@ -76,7 +78,6 @@ export class UserHoverCardComponent{
   }
 
   followUser() {
-    console.log(this.user.username);
     this.userService.followUser(this.user.id).subscribe(followResponse => {
       if(followResponse.ok){
         this.userService.getCurrentUser().subscribe(response => {
