@@ -69,5 +69,11 @@
         </button>
       </div>
     </div>
+
   </div>
 </div>
+<mat-progress-bar *ngIf="postingInProgress"
+  class="loading-bar"
+  [color]="'accent'"
+  [mode]="'indeterminate'">
+</mat-progress-bar>
