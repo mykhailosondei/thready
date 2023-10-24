@@ -124,9 +124,11 @@ public class PostService : BaseService
 
     private async Task BookmarkEntitiesSaveChanges(User userEntity, Post postEntity)
     {
-        _applicationContext.Attach(userEntity);
-        _applicationContext.Attach(postEntity);
+        _applicationContext.Attach(userEntity); 
         _applicationContext.Entry(userEntity).Property(u => u.BookmarkedPostsIds).IsModified = true;
+        await _applicationContext.SaveChangesAsync();
+        _applicationContext.ChangeTracker.Clear();
+        _applicationContext.Attach(postEntity);
         _applicationContext.Entry(postEntity).Property(p => p.Bookmarks).IsModified = true;
         await _applicationContext.SaveChangesAsync();
     }
@@ -134,10 +136,12 @@ public class PostService : BaseService
     private async Task RepostEntitiesSaveChanges(User userEntity, Post postEntity)
     {
         _applicationContext.Attach(userEntity);
-        _applicationContext.Attach(postEntity);
-
-        _applicationContext.Entry(postEntity).Property(p => p.RepostersIds).IsModified = true;
         _applicationContext.Entry(userEntity).Property(u => u.RepostsIds).IsModified = true;
+        await _applicationContext.SaveChangesAsync();
+        _applicationContext.ChangeTracker.Clear();
+        
+        _applicationContext.Attach(postEntity);
+        _applicationContext.Entry(postEntity).Property(p => p.RepostersIds).IsModified = true;
         await _applicationContext.SaveChangesAsync();
     }
     

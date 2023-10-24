@@ -107,8 +107,10 @@ public class CommentService : BaseService
     private async Task BookmarkEntitiesSaveChanges(User userEntity, Comment commentEntity)
     {
         _applicationContext.Attach(userEntity);
-        _applicationContext.Attach(commentEntity);
         _applicationContext.Entry(userEntity).Property(u => u.BookmarkedCommentsIds).IsModified = true;
+        await _applicationContext.SaveChangesAsync();
+        _applicationContext.ChangeTracker.Clear();
+        _applicationContext.Attach(commentEntity);
         _applicationContext.Entry(commentEntity).Property(p => p.Bookmarks).IsModified = true;
         await _applicationContext.SaveChangesAsync();
     }
