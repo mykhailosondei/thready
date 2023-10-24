@@ -1,7 +1,7 @@
-<div class="wrap">
+<app-nav-wrapper [activatedEndpoint]="Endpoint.None" [showWhoToFollow]="false">
   <div class="main-page">
-    <app-tablist-page [title]="'Connect'" [firstTabName] = "'Who to follow'" [secondTabName] = "'Creators for you'"
-                      [selectedTab]="Tab.FirstTab" [showSubtitle] = "false"
+    <app-tablist-page [title]="'Connect'" [firstTabName]="'Who to follow'" [secondTabName]="'Creators for you'"
+                      [selectedTab]="Tab.FirstTab" [showSubtitle]="false"
                       (firstTabClicked)="navigator.openWhoToFollowPage($event)"
                       (secondTabClicked)="navigateToCreatorsForYou()"
                       (backButtonClicked)="goBack()"
@@ -21,5 +21,4 @@
     </div>
   </div>
 
-</div>
-
+</app-nav-wrapper>

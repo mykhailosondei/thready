@@ -1,10 +1,10 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {BehaviorSubject, finalize, Observable, Subject, switchMap, takeUntil} from "rxjs";
+import {BehaviorSubject, finalize, Subject, switchMap, takeUntil} from "rxjs";
 import {UserDTO} from "../../models/user/userDTO";
 import {Image} from "../../models/image";
 import {SnackbarService} from "../../Services/snackbar.service";
 import {UserService} from "../../Services/user.service";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute} from "@angular/router";
 import {faArrowLeftLong, faLocationDot} from "@fortawesome/free-solid-svg-icons";
 import {faCalendar} from "@fortawesome/free-regular-svg-icons"
 import {PostService} from "../../Services/post.service";
@@ -43,6 +43,9 @@ export class ProfilePageComponent implements OnInit, OnDestroy{
   protected isCurrentUserFollowing : boolean;
   protected postsText: string = "";
   public postsLoading : boolean;
+  public noPostsFound : boolean;
+  public headerText : string = "";
+  protected Endpoint = Endpoint.None;
 
   private unsubscribe$ = new Subject<void>;
 
@@ -56,20 +59,20 @@ export class ProfilePageComponent implements OnInit, OnDestroy{
     this.postsLoading = true;
     this.route.paramMap.subscribe(params => {
       this.username = params.get('username') || "DefaultUsername"; });
-    this.checkIsCurrentUser();
     this.getUserInstance();
   }
 
   getUserInstance(){
+    this.checkIsCurrentUser();
     this.user = {} as UserDTO;
     this.userPosts$ = new BehaviorSubject<PostDTO[]>([]);
+    this.headerText = `@${this.username} hasn't posted yet`
     this.userService.getUserByUsername(this.username)
       .pipe(
         takeUntil(this.unsubscribe$),
         switchMap((response ) => {
           const user = response.body;
           if (user) {
-            console.log(user);
             this.user = this.userService.copyUser(user);
             this.updateIsCurrentUserFollowing();
             return this.postService.getPostsByUserId(this.user.id);
@@ -84,6 +87,9 @@ export class ProfilePageComponent implements OnInit, OnDestroy{
           this.followingCount = this.user.followingIds.length;
           this.userPosts$.next(posts.body || []);
           this.postsLoading = false;
+          if (this.user.posts.length == 0){
+            this.noPostsFound = true;
+          }
         },
         (error) => {this.snackBarService.showErrorMessage(error.error.title)
         this.postsLoading = false;}
@@ -142,8 +148,10 @@ export class ProfilePageComponent implements OnInit, OnDestroy{
            this.isCurrentUser = this.username == response.body.username;
            if (this.username == response.body.username){
              this.postsText = "Your posts"
+             this.Endpoint = Endpoint.Profile;
            }else{
              this.postsText = "User posts"
+             this.Endpoint = Endpoint.None;
            }
         }
       });
@@ -200,7 +208,6 @@ export class ProfilePageComponent implements OnInit, OnDestroy{
     }
   }
 
-    protected readonly Endpoint = Endpoint;
 
   getFirstInitial() {
     return this.user.username.charAt(0).toUpperCase();
@@ -212,7 +219,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy{
 
   loadNewUser(username : string) {
     if (this.username == username){
-      return
+      return;
     }
     this.username = username;
     this.getUserInstance()

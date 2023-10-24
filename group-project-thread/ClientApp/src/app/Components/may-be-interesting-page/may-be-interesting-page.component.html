@@ -1,4 +1,4 @@
-<div class="wrap">
+<app-nav-wrapper [activatedEndpoint]="Endpoint.Search" [showSearchBar]="false" [showWhatsHappening]="false">
   <div class="main-page">
     <app-search-bar
       [selectedTab]="selectedTab" [firstTabName]="'May be Interesting'" [secondTabName]="'Trending'"
@@ -18,4 +18,4 @@
     </div>
     <app-loading-spinner [loading]="loading"></app-loading-spinner>
   </div>
-</div>
+</app-nav-wrapper>

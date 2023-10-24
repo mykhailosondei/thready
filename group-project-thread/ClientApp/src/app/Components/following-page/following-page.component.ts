@@ -10,6 +10,7 @@ import {NavigatorService} from "../../Services/navigator.service";
 import {Tab} from "../../models/enums/Tab";
 import {Location} from "@angular/common";
 import {NavigationHistoryService} from "../../Services/navigation-history.service";
+import {Endpoint} from "../side-navbar/side-navbar.component";
 
 @Component({
   selector: 'app-following-page',
@@ -23,8 +24,7 @@ export class FollowingPageComponent implements OnInit{
   private unsubscribe$ = new Subject<void>();
   protected currentUser! : UserDTO;
   public loading : boolean;
-
-
+  noFollowingFound: boolean;
   constructor(private userService: UserService, private route: ActivatedRoute, public navigatorService : NavigatorService,
               private location : Location, private historyOfPages : NavigationHistoryService) {
     this.route.paramMap.subscribe(params => {
@@ -56,6 +56,9 @@ export class FollowingPageComponent implements OnInit{
         if (response.body != null) {
           this.user = response.body;
           this.following = [];
+          if (this.user.followingIds.length == 0){
+            this.noFollowingFound = true;
+          }
           for (let i = 0; i < this.user.followingIds.length; i++) {
             const userId = this.user.followingIds[i];
             this.userService.getUserById(userId)
@@ -108,4 +111,5 @@ export class FollowingPageComponent implements OnInit{
   }
 
   protected readonly Tab = Tab;
+    protected readonly Endpoint = Endpoint;
 }

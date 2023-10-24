@@ -9,6 +9,7 @@ import {UserService} from "../../Services/user.service";
 import {NavigatorService} from "../../Services/navigator.service";
 import {NavigationHistoryService} from "../../Services/navigation-history.service";
 import {Location} from "@angular/common";
+import {Endpoint} from "../side-navbar/side-navbar.component";
 
 @Component({
   selector: 'app-may-be-interesting-page',
@@ -77,4 +78,6 @@ export class MayBeInterestingPageComponent implements OnInit{
   onQueryChanged(query: string) {
     this.query = query;
   }
+
+    protected readonly Endpoint = Endpoint;
 }

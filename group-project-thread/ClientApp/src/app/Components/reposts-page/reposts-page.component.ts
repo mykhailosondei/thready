@@ -17,6 +17,7 @@ export class RepostsPageComponent implements OnInit{
   posts: PostDTO[] = [];
   user: UserDTO;
   loading: boolean = false;
+  noRepostsFound: boolean;
 
   constructor(
     private userService : UserService,
@@ -28,6 +29,9 @@ export class RepostsPageComponent implements OnInit{
     this.userService.getCurrentUser().subscribe(Response => {
       if(Response.ok){
         this.user = Response.body!;
+        if (this.user.repostsIds.length == 0){
+          this.noRepostsFound = true;
+        }
         for(let repostId of this.user.repostsIds) {
           this.postService.getPostById(repostId).subscribe(Response => {
             this.loading = false;

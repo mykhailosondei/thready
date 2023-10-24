@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {BehaviorSubject} from "rxjs";
+import {BehaviorSubject, finalize} from "rxjs";
 import {PageUserDTO} from "../../models/user/pageUserDTO";
 import {UserDTO} from "../../models/user/userDTO";
 import {NavigatorService} from "../../Services/navigator.service";
@@ -34,13 +34,12 @@ export class CreatorsForYouPageComponent {
 
   getCreatorsForYou(){
     this.recommendationService.getCreatorsForYou()
+      .pipe(finalize(()=>
+        this.loading = false))
       .subscribe((response) =>
       {
-        console.log(response)
         if (response.body != null){
           this.users$.next(response.body)
-          console.log("dsadaasddsadassadsadas")
-          this.loading = false;
         }
       })
   }

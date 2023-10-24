@@ -4,7 +4,9 @@
     <ng-content></ng-content>
     <app-recommendations-side-bar [showSearchbar]="showSearchBar"
                                   [showWhatsHappening]="showWhatsHappening"
-                                  [showWhoToFollow]="showWhoToFollow"></app-recommendations-side-bar>
+                                  [showWhoToFollow]="showWhoToFollow"
+    (userClicked)="navigateToUserPage($event)"
+    (trendClicked)="searchByWord($event)"></app-recommendations-side-bar>
   </div>
 </div>
 
