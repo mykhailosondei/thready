@@ -26,8 +26,8 @@
           <div class="profile-photo-edit-profile">
             <div class="image-box">
               <div class="image-wrap" [ngStyle]="{'background-color': getAvatarColor()}">
-                <img *ngIf="user.avatar" class="profile-image" src="{{user!.avatar!.url}}">
-                <div *ngIf="!user.avatar" class="initial">{{getFirstInitial()}}</div>
+                <img *ngIf="!isAvatarNull()" class="profile-image" src="{{user!.avatar!.url}}">
+                <div *ngIf="isAvatarNull()" class="initial">{{getFirstInitial()}}</div>
               </div>
             </div>
             <div *ngIf="isCurrentUser">

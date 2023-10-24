@@ -18,7 +18,7 @@ export class UserAvatarComponent {
     return this.user.username[0].toUpperCase();
   }
   isAvatarNull(): boolean {
-    return this.user.avatar === null;
+    return this.user.avatar === null || this.user.avatar.url === "";
   }
 
   getCircleColor() {

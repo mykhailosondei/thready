@@ -17,7 +17,10 @@ public class UserProfile : Profile
         {
             dest.Avatar = context.Mapper.Map<ImageDTO, Image>(src.Avatar);
         });
-        CreateMap<RegisterUserDTO, User>().ForMember(dest => dest.Avatar, src => src.MapFrom(s => new Image { Url = string.IsNullOrEmpty(s.Avatar) ? "" : s.Avatar }));
+        CreateMap<RegisterUserDTO, User>().ForMember(dest => dest.Avatar, src => src.MapFrom(s => s.Avatar == null ? null : new Image()
+        {
+            Url = s.Avatar
+        }));
         CreateMap<UserUpdateDTO, UserDTO>().ReverseMap();
         CreateMap<UserDTO, PageUserDTO>()
             .ForMember(dest => dest.Followers, src => src.MapFrom(s => s.FollowersIds.Count))
