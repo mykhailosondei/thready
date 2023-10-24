@@ -11,8 +11,13 @@
   color:white;
   border-radius: 20px;
   border: none;
+  cursor: pointer;
   &:disabled {
     opacity: 0.5;
+    background-color: #1e90ff;
+  }
+  &:hover{
+    background-color: #1e90ff;
   }
 }
 

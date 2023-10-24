@@ -26,8 +26,8 @@ export class PostService {
     return this.httpInternalService.getFullRequest<PostDTO[]>(`/api/post/${userId}/posts`);
   }
 
-  public createPost(post : PostCreateDTO) : Observable<HttpResponse<void>>{
-    return  this.httpInternalService.postFullRequest<void>(this.route, post);
+  public createPost(post : PostCreateDTO) : Observable<HttpResponse<PostDTO>>{
+    return  this.httpInternalService.postFullRequest<PostDTO>(this.route, post);
   }
 
   public likePost(id : number) : Observable<HttpResponse<void>>{

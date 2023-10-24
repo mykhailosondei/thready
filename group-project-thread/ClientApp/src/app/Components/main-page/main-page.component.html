@@ -2,7 +2,7 @@
   <div class="main-page">
     <app-top-blurry-bar [title]="'Home'"></app-top-blurry-bar>
     <div style="height: 0; width: 100%;"></div>
-    <app-post-creator (onPostCreated)="onPostCreated()"></app-post-creator>
+    <app-post-creator (onPostCreated)="onPostCreated($event)"></app-post-creator>
     <div>
       <app-page-post *ngFor="let post of posts" [postInput]="post" [userInput]="post.author"></app-page-post>
     </div>

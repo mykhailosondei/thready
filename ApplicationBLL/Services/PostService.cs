@@ -166,7 +166,7 @@ public class PostService : BaseService
         await RepostEntitiesSaveChanges(userEntity, postEntity);
     }
 
-    public async Task CreatePost(PostCreateDTO post)
+    public async Task<PostDTO> CreatePost(PostCreateDTO post)
     {
         var postEntity = _mapper.Map<Post>(post);
         var postDTO = _mapper.Map<PostDTO>(postEntity); 
@@ -194,6 +194,7 @@ public class PostService : BaseService
         
         await _applicationContext.SaveChangesAsync();
         await _postsContentsIndexer.AddIndexedWordsToTableByPostId(postEntity.Id, postEntity.TextContent);
+        return _mapper.Map<PostDTO>(postEntity);
     }
 
     private void InitPost(ref Post postEntity)

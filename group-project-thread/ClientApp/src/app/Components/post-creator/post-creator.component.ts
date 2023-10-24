@@ -58,7 +58,9 @@ export class PostCreatorComponent {
       if(Response.ok){
         this.currentText.inputValue = '';
         this.imageUrls = [];
-        this.onPostCreated.emit();
+        if (Response.body != undefined){
+          this.onPostCreated.emit(Response.body);
+        }
       }
     }).add(() => this.postingInProgress = false);
   }
