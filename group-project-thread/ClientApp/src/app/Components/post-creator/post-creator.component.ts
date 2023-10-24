@@ -1,4 +1,4 @@
-import {Component, ElementRef, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Output, ViewChild} from '@angular/core';
 import {UserDTO} from "../../models/user/userDTO";
 import {AuthService} from "../../Services/auth.service";
 import {A} from "@angular/cdk/keycodes";
@@ -8,6 +8,7 @@ import {PostService} from "../../Services/post.service";
 import {Image} from "../../models/image";
 import {ImageUploadService} from "../../Services/image-upload.service";
 import {faTimes} from "@fortawesome/free-solid-svg-icons";
+import {PostDTO} from "../../models/post/postDTO";
 
 @Component({
   selector: 'app-post-creator',
@@ -17,6 +18,7 @@ import {faTimes} from "@fortawesome/free-solid-svg-icons";
 export class PostCreatorComponent {
 
   @ViewChild('creatorInput') currentText: {inputValue: string} = {inputValue: ''};
+  @Output() onPostCreated = new EventEmitter<PostDTO>();
   currentUser= {} as UserDTO;
   imageUrls: string[] = [];
 
@@ -56,6 +58,7 @@ export class PostCreatorComponent {
       if(Response.ok){
         this.currentText.inputValue = '';
         this.imageUrls = [];
+        this.onPostCreated.emit();
       }
     }).add(() => this.postingInProgress = false);
   }

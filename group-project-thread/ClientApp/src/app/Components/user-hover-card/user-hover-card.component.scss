@@ -1,6 +1,6 @@
 .hover-card {
   height: 150px;
-  width: 230px;
+  width: 250px;
   background-color: white;
   border: solid 1px #c8c8c8;
   border-radius: 16px;
@@ -59,6 +59,8 @@
 .bio-holder {
   margin-top: 4px;
   font-size: 14px;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .user-connections-info {
