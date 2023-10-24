@@ -15,6 +15,7 @@
 .post-header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   flex-direction: row;
   height: 100%;
   width: 100%;
@@ -99,4 +100,26 @@
   border-radius: 50%;
   margin-left: 4px;
   margin-right: 4px;
+}
+
+.username-and-contents {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row;
+  height: 100%;
+  width: 100%;
+}
+
+
+
+.action-buttons {
+  display: flex;
+  flex-direction: row;
+}
+
+.user-holder {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }

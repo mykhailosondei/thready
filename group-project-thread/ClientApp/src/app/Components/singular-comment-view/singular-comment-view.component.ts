@@ -18,6 +18,7 @@ import {A} from "@angular/cdk/keycodes";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {CommentCreationDialogComponent} from "../comment-creation-dialog/comment-creation-dialog.component";
 import {CommentCreateDialogData} from "../../models/coment/CommentCreateDialogData";
+import {Endpoint} from "../side-navbar/side-navbar.component";
 
 @Component({
   selector: 'app-singular-comment-view',
@@ -237,4 +238,6 @@ export class SingularCommentViewComponent {
       }
     });
   }
+
+    protected readonly Endpoint = Endpoint;
 }

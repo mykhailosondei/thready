@@ -2,7 +2,13 @@ import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {PageUserDTO} from "../../models/user/pageUserDTO";
 import {faBookmark as faBookmarkUnactivated, faComment, faHeart as faHeartUnactivated} from "@fortawesome/free-regular-svg-icons";
-import {faBookmark as faBookmarkActivated, faEllipsisH, faRetweet, faSquarePollVertical} from "@fortawesome/free-solid-svg-icons";
+import {
+  faBookmark as faBookmarkActivated,
+  faEllipsisH,
+  faRetweet,
+  faSquarePollVertical,
+  faTrash
+} from "@fortawesome/free-solid-svg-icons";
 import {faHeart as faHeartActivated} from "@fortawesome/free-solid-svg-icons";
 import {UserService} from "../../Services/user.service";
 import {UserDTO} from "../../models/user/userDTO";
@@ -18,6 +24,7 @@ import {A} from "@angular/cdk/keycodes";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {CommentCreationDialogComponent} from "../comment-creation-dialog/comment-creation-dialog.component";
 import {CommentCreateDialogData} from "../../models/coment/CommentCreateDialogData";
+import {Endpoint} from "../side-navbar/side-navbar.component";
 
 @Component({
   selector: 'app-singular-post-view',
@@ -40,6 +47,7 @@ export class SingularPostViewComponent implements OnInit{
     public post : PagePostDTO;
     @ViewChild('userInfo') userInfo: ElementRef<HTMLDivElement>;
 
+    editable: boolean = false;
     liked: boolean = false;
     reposted: boolean = false;
     bookmarked: boolean = false;
@@ -71,6 +79,7 @@ export class SingularPostViewComponent implements OnInit{
       this.postService.getPostById(this.incomingPostId).subscribe(response => {
         if(response.ok) {
           this.postInput = response.body!;
+          this.editable = this.postInput.author.id == this.authorInput.id;
           this.post = PostFormatter.mapPostToPagePost(this.postInput, this.authorInput);
         console.log(response);
         }
@@ -247,5 +256,17 @@ export class SingularPostViewComponent implements OnInit{
 
   onCommentDelete($event: CommentDTO) {
     this.comments =  this.comments.filter(comment => comment.id !== $event.id);
+  }
+
+  protected readonly Endpoint = Endpoint;
+  protected readonly faTrash = faTrash;
+
+
+  openDeleteDialog() {
+
+  }
+
+  openEditDialog() {
+
   }
 }

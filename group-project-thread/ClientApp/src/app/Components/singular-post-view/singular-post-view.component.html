@@ -1,19 +1,35 @@
-<div class="center-h">
+<app-nav-wrapper [activatedEndpoint]="Endpoint.None">
   <div class="main-page">
     <div *ngIf="postInput && authorInput && post" class="post-holder">
       <div class="page-post">
         <div class="post-header">
-          <div class="user-avatar" [ngStyle]="{'background-color': getCircleColor()}">
-            <a href="{{authorInput.username}}/profile" class="user-link"></a>
-            <img class="profile-small-image" *ngIf="!isAvatarNull()" src="{{authorInput.avatar!.url}}" alt="{{authorInput.username}}}">
-            <div *ngIf="isAvatarNull()" class="initial">{{getFirstInitial()}}</div>
-          </div>
-          <div class="user-info" #userInfo (mouseenter)="onUserInfoMouseEnter()" (mouseleave)="onUserInfoMouseLeave()">
-            <a href="{{authorInput.username}}/profile" class="user-link"></a>
-            <div class="user-name">
-              <b>{{authorInput.username}}</b>
+          <div class="user-holder">
+            <div class="user-avatar" [ngStyle]="{'background-color': getCircleColor()}">
+              <a href="{{authorInput.username}}/profile" class="user-link"></a>
+              <img class="profile-small-image" *ngIf="!isAvatarNull()" src="{{authorInput.avatar!.url}}"
+                   alt="{{authorInput.username}}}">
+              <div *ngIf="isAvatarNull()" class="initial">{{getFirstInitial()}}</div>
+            </div>
+            <div class="user-info" #userInfo (mouseenter)="onUserInfoMouseEnter()"
+                 (mouseleave)="onUserInfoMouseLeave()">
+              <a href="{{authorInput.username}}/profile" class="user-link"></a>
+              <div class="user-name">
+                <b>{{authorInput.username}}</b>
+              </div>
             </div>
           </div>
+              <div class="action-buttons">
+                <div *ngIf="editable" class="edit">
+                  <button class="delete-button" (click)="openDeleteDialog()">
+                    <fa-icon [icon]="faTrash"></fa-icon>
+                  </button>
+                </div>
+                <div *ngIf="editable" class="edit">
+                  <button class="action-button" (click)="openEditDialog()">
+                    <fa-icon [icon]="faPen"></fa-icon>
+                  </button>
+                </div>
+              </div>
         </div>
         <div class="post-body">
           <div class="post-text-content">
@@ -119,4 +135,4 @@
       </div>
   </div>
 </div>
-</div>
+</app-nav-wrapper>

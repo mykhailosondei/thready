@@ -1,4 +1,4 @@
-<div class="center-h">
+<app-nav-wrapper [activatedEndpoint]="Endpoint.None">
   <div class="main-page">
     <app-page-post [postInput]="parentPost" [userInput]="parentPost.author" [isParentView]="true"></app-page-post>
     <app-page-comment *ngFor="let comment of parentComments" [commentInput]="comment" [userInput]="comment.author" [isParentView]="true"></app-page-comment>
@@ -18,6 +18,7 @@
             <div class="user-name">
               <b>{{authorInput.username}}</b>
             </div>
+
           </div>
         </div>
         <div class="post-body">
@@ -114,4 +115,4 @@
       <app-page-comment *ngFor="let comment of comments" [commentInput]="comment" [userInput]="comment.author"></app-page-comment>
     </div>
   </div>
-</div>
+</app-nav-wrapper>
