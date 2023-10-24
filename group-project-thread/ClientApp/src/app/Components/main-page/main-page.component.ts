@@ -44,4 +44,8 @@ export class MainPageComponent {
   onPostCreated() {
     window.location.reload();
   }
+
+  onPostDeleted($event: PostDTO) {
+    this.posts =  this.posts.filter(post => post.id !== $event.id);
+  }
 }

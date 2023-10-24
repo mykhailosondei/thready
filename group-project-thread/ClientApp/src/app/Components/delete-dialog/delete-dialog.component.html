@@ -1,0 +1,13 @@
+<div class="outside-closer" (click)="onCancelClick()" [@fadeInOut]></div>
+<div class="delete-dialog">
+  <div class="dialog-content">
+    <div class="dialog-top-content">
+      <h1>Delete post?</h1>
+      <span class="delete-text">This can’t be undone and it will be removed from your profile, the timeline of any accounts that follow you, and from search results.</span>
+    </div>
+    <div class="dialog-buttons-holder">
+      <button class="delete-post-button" (click)="onDeleteClick()">Delete</button>
+      <button class="cancel-button" (click)="onCancelClick()">Cancel</button>
+    </div>
+  </div>
+</div>

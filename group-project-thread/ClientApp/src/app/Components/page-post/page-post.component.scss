@@ -306,6 +306,25 @@ $border-color: #dcdcdc;
   z-index: 1;
 }
 
+.delete-button {
+  border: none;
+  position: relative;
+  background-color: transparent;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  &:hover {
+    cursor: pointer;
+    background-color: rgba(128, 128, 128, 0.5);
+    color: #ff5b5b;
+  }
+
+  z-index: 1;
+}
+
 .user-link {
   position: absolute;
   width: 100%;
@@ -361,3 +380,4 @@ $border-color: #dcdcdc;
   position: relative;
   z-index: 1;
 }
+

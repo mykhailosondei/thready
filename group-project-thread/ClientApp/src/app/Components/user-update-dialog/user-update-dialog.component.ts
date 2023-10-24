@@ -28,7 +28,7 @@ import {ImageUploadService} from "../../Services/image-upload.service";
 })
 export class UserUpdateDialogComponent implements OnInit{
   faCross = faXmark;
-  imageUrl: string = this.data.currentUser.avatar!.url;
+  imageUrl: string;
   faXmark = faXmark;
   faCamere = faCamera;
   inputLocationFocused: boolean = false;
@@ -45,6 +45,11 @@ export class UserUpdateDialogComponent implements OnInit{
               private imageUploadService: ImageUploadService) {
   }
   ngOnInit(): void {
+    if(this.data.currentUser.avatar){
+      this.imageUrl = this.data.currentUser.avatar.url;
+    }else {
+      this.imageUrl = "";
+    }
   }
 
   onNoClick(): void {
