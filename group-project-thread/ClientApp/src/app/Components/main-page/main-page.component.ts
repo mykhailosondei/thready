@@ -44,4 +44,8 @@ export class MainPageComponent {
   onPostCreated(post : PostDTO) {
     this.posts.unshift(post);
   }
+
+  onPostDeleted($event: PostDTO) {
+    this.posts =  this.posts.filter(post => post.id !== $event.id);
+  }
 }

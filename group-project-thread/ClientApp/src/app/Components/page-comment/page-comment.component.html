@@ -24,6 +24,11 @@
         </div>
         <div class="edit-and-bookmark-holder">
           <div *ngIf="editable" class="edit">
+            <button class="delete-button" (click)="openDeleteDialog()">
+              <fa-icon [icon]="faTrash"></fa-icon>
+            </button>
+          </div>
+          <div *ngIf="editable" class="edit">
             <button class="action-button" (click)="openEditDialog()">
               <fa-icon [icon]="faPen"></fa-icon>
             </button>

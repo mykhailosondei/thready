@@ -1,10 +1,17 @@
-import {Component, ElementRef, Input, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild} from '@angular/core';
 import {PagePostDTO} from "../../models/post/pagePostDTO";
 import {PostDTO} from "../../models/post/postDTO";
 import {UserDTO} from "../../models/user/userDTO";
 import {CommentCreateDialogData} from "../../models/coment/CommentCreateDialogData";
 import {faBookmark as faBookmarkUnactivated, faComment, faHeart as faHeartUnactivated} from "@fortawesome/free-regular-svg-icons";
-import {faBookmark as faBookmarkActivated, faRetweet, faHeart as faHeartActivated, faSquarePollVertical, faPen} from "@fortawesome/free-solid-svg-icons";
+import {
+  faBookmark as faBookmarkActivated,
+  faRetweet,
+  faHeart as faHeartActivated,
+  faSquarePollVertical,
+  faPen,
+  faTrash
+} from "@fortawesome/free-solid-svg-icons";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {CommentService} from "../../Services/comment.service";
 import {PostService} from "../../Services/post.service";
@@ -15,6 +22,8 @@ import {PostEditorDialogComponent} from "../post-editor-dialog/post-editor-dialo
 import PostFormatter from 'src/app/helpers/postFormatter';
 import {PageUserDTO} from "../../models/user/pageUserDTO";
 import {BsModalRef, BsModalService} from "ngx-bootstrap/modal";
+import {DeleteDialogComponent} from "../delete-dialog/delete-dialog.component";
+import {C} from "@angular/cdk/keycodes";
 
 interface HoverableWithBounds {
   getBoundingClientRect: () => DOMRect;
@@ -40,6 +49,7 @@ export class PagePostComponent implements OnInit {
   @Input() public isParentView: boolean = false;
   @Input() public repostView: boolean = false;
   @Input() public reposter: PageUserDTO = {} as PageUserDTO;
+  @Output() public postDeleted: EventEmitter<PostDTO> = new EventEmitter<PostDTO>();
   post: PagePostDTO = {} as PagePostDTO;
 
   @ViewChild('userInfo') userInfo: ElementRef<HTMLDivElement>;
@@ -135,6 +145,22 @@ export class PagePostComponent implements OnInit {
         if (!response.ok) return;
         this.post.commentsAmount++;
       });
+    });
+  }
+
+  openDeleteDialog() {
+    const dialogRef : MatDialogRef<DeleteDialogComponent, boolean> = this.dialog.open(DeleteDialogComponent, {
+      width: '400px'
+  });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        this.postService.deletePost(this.post.id).subscribe(response => {
+          console.log(response);
+          if (!response.ok) return;
+          this.postDeleted.emit(this.postInput);
+        });
+      }
     });
   }
 
@@ -253,4 +279,6 @@ export class PagePostComponent implements OnInit {
     this.clickedImage = url;
     this.modalRef = this.modalService.show(this.imageRef, {class: 'modal-lg'});
   }
+
+  protected readonly faTrash = faTrash;
 }

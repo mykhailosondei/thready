@@ -62,6 +62,7 @@ import {NoResultFoundPageComponent} from "./Components/no-result-found-page/no-r
 import {ModalModule} from "ngx-bootstrap/modal";
 import {NavWrapperComponent} from "./Components/nav-wrapper/nav-wrapper.component";
 import {StickyDirective} from "./Directives/sticky.directive";
+import {DeleteDialogComponent} from "./Components/delete-dialog/delete-dialog.component";
 import {AuthGuard} from "./Guards/AuthGuard";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
 
@@ -111,7 +112,8 @@ import {MatProgressBarModule} from "@angular/material/progress-bar";
     LoadingSpinnerComponent,
     NoResultFoundPageComponent,
     NavWrapperComponent,
-    StickyDirective
+    StickyDirective,
+    DeleteDialogComponent
     ],
   imports: [
     BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),

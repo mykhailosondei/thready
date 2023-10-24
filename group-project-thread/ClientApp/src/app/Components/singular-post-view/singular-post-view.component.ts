@@ -244,4 +244,8 @@ export class SingularPostViewComponent implements OnInit{
       }
     });
   }
+
+  onCommentDelete($event: CommentDTO) {
+    this.comments =  this.comments.filter(comment => comment.id !== $event.id);
+  }
 }
