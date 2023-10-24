@@ -1,6 +1,7 @@
 .user-avatar-collar {
   display: flex;
   align-items: center;
+  height: 100%;
   flex-basis: 40px;
   margin-right: 12px;
   flex-direction: column;
@@ -35,4 +36,11 @@
   font-size: 20px;
   line-height: 19px;
   letter-spacing: 0.2625px;
+}
+
+.gray-collar{
+  height: 100%;
+  width: 3px;
+  margin-top: 5px;
+  background-color: #c8c8c8;
 }

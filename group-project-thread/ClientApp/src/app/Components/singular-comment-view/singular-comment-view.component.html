@@ -1,6 +1,6 @@
 <div class="center-h">
   <div class="main-page">
-    <app-page-post [postInput]="parentPost" [isParentView]="true"></app-page-post>
+    <app-page-post *ngIf="parentPost" [postInput]="parentPost" [isParentView]="true"></app-page-post>
     <app-page-comment *ngFor="let comment of parentComments" [commentInput]="comment" [userInput]="comment.author" [isParentView]="true"></app-page-comment>
     <div *ngIf="commentInput && authorInput" class="post-holder">
       <div class="page-post">
