@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {PostDTO} from "../../models/post/postDTO";
 import {UserDTO} from "../../models/user/userDTO";
 import {PagePostDTO} from "../../models/post/pagePostDTO";
@@ -12,8 +12,16 @@ import {CommentCreationDialogComponent} from "../comment-creation-dialog/comment
 import {CommentCreateDialogData} from "../../models/coment/CommentCreateDialogData";
 import {PostEditorDialogComponent} from "../post-editor-dialog/post-editor-dialog.component";
 import {faBookmark as faBookmarkUnactivated, faComment, faHeart as faHeartUnactivated} from "@fortawesome/free-regular-svg-icons";
-import {faBookmark as faBookmarkActivated, faRetweet, faHeart as faHeartActivated, faSquarePollVertical, faPen} from "@fortawesome/free-solid-svg-icons";
+import {
+    faBookmark as faBookmarkActivated,
+    faRetweet,
+    faHeart as faHeartActivated,
+    faSquarePollVertical,
+    faPen,
+    faTrash
+} from "@fortawesome/free-solid-svg-icons";
 import {CommentDTO} from "../../models/coment/commentDTO";
+import {DeleteDialogComponent} from "../delete-dialog/delete-dialog.component";
 
 @Component({
   selector: 'app-page-comment',
@@ -33,6 +41,7 @@ export class PageCommentComponent implements OnInit {
   @Input() public commentInput!: CommentDTO;
   @Input() public userInput!: UserDTO;
   @Input() public isParentView: boolean = false;
+  @Output() public commentDeleted: EventEmitter<CommentDTO> = new EventEmitter<CommentDTO>();
   commentView: PagePostDTO = {} as PagePostDTO;
 
   @ViewChild('userInfo') userInfo: ElementRef<HTMLDivElement>;
@@ -227,5 +236,23 @@ export class PageCommentComponent implements OnInit {
         });
         break;
     }
+  }
+
+    protected readonly faTrash = faTrash;
+
+  openDeleteDialog() {
+    const dialogRef : MatDialogRef<DeleteDialogComponent, boolean> = this.dialog.open(DeleteDialogComponent, {
+      width: '400px'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        this.commentService.deleteComment(this.commentView.id).subscribe(response => {
+          console.log(response);
+          if (!response.ok) return;
+          this.commentDeleted.emit(this.commentInput);
+        });
+      }
+    });
   }
 }

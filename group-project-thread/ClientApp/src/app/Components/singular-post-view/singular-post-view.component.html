@@ -115,7 +115,7 @@
       </div>
       <app-comment-creator [post]="post" (onReplyClickEvent)="handleCommentCreation()"></app-comment-creator>
       <div *ngIf="comments.length > 0">
-        <app-page-comment *ngFor="let comment of comments" [commentInput]="comment" [userInput]="comment.author"></app-page-comment>
+        <app-page-comment *ngFor="let comment of comments" [commentInput]="comment" [userInput]="comment.author" (commentDeleted)="onCommentDelete($event)"></app-page-comment>
       </div>
   </div>
 </div>
