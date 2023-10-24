@@ -1,0 +1,38 @@
+.user-avatar-collar {
+  display: flex;
+  align-items: center;
+  flex-basis: 40px;
+  margin-right: 12px;
+  flex-direction: column;
+}
+.user-avatar {
+  border-radius: 50%;
+  &:hover {
+    cursor: pointer;
+    filter: brightness(0.8);
+  }
+  transition: filter 0.3s ease;
+  filter: brightness(1);
+  width: 40px;
+  min-height: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.user-link {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+.profile-small-image{
+  height: 100%;
+  width: 100%;
+  border-radius: 50%;
+}
+.initial {
+  color: #fff;
+  font-size: 20px;
+  line-height: 19px;
+  letter-spacing: 0.2625px;
+}

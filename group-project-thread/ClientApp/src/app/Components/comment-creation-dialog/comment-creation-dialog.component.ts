@@ -34,20 +34,6 @@ export class CommentCreationDialogComponent {
   onNoClick(): void {
     this.dialogRef.close();
   }
-
-  getCircleColor(user :PageUserDTO) {
-    return  PostFormatter.getCircleColor(user.username);
-  }
-
-  isAvatarNull(user : PageUserDTO): boolean {
-    return user.avatar === null;
-  }
-
-
-
-  getFirstInitial(user : PageUserDTO): string {
-    return user.username[0].toUpperCase();
-  }
   getCreatedDate() {
     return PostFormatter.getDateFormattedElapsed(new Date(this.data.post.dateCreated));
   }

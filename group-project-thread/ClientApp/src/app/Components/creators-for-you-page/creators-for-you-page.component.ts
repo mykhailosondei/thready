@@ -28,7 +28,8 @@ export class CreatorsForYouPageComponent {
 
   ngOnInit(){
     this.loading = true;
-    this.getCurrentUser();
+    this.userService.getCurrentUserInstance().subscribe(
+      (user) => this.currentUser = user);
     this.getCreatorsForYou();
   }
 
@@ -42,14 +43,6 @@ export class CreatorsForYouPageComponent {
           this.users$.next(response.body)
         }
       })
-  }
-  getCurrentUser(): void{
-    this.userService.getCurrentUser()
-      .subscribe( (response) =>{
-        if (response.body != null){
-          this.currentUser = response.body;
-        }
-      });
   }
 
   navigateToWhoToFollow(){

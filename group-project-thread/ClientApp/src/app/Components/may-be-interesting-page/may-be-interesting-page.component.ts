@@ -31,7 +31,9 @@ export class MayBeInterestingPageComponent implements OnInit{
 
   ngOnInit(): void {
     this.loading = true;
-    this.getCurrentUser();
+    this.userService.getCurrentUserInstance().subscribe(
+      (user) => {this.currentUser = user
+        this.currentUserId$.next(this.currentUser.id);});
     this.getPostsForYou();
   }
 
@@ -49,15 +51,6 @@ export class MayBeInterestingPageComponent implements OnInit{
     });
   }
 
-  getCurrentUser(){
-    this.userService.getCurrentUser()
-      .subscribe((response) => {
-        if (response.body != null){
-          this.currentUser = response.body;
-          this.currentUserId$.next(this.currentUser.id);
-        }
-      } )
-  }
 
   navigateToTrending(){
     if (this.historyOfPages.getPageInHistoryCounter() == 0){

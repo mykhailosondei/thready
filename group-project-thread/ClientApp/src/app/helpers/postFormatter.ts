@@ -18,22 +18,16 @@ export default class PostFormatter{
     return Math.floor(number/100000000)/10 + "B";
   }
 
-  public static mapPostToPagePost(postInput: PostDTO, userInput: UserDTO): PagePostDTO {
-    var rnd = new Random();
-    let numberOfImages = rnd.int(1, 4);
-    let imagesUrls : string[] = [];
-    for(let i = 0; i < numberOfImages; i++){
-      imagesUrls.push("https://picsum.photos/500/500")
-    }
+  public static mapPostToPagePost(postInput: PostDTO): PagePostDTO {
     return  {
       id: postInput.id,
       user: {
-        id: userInput.id,
-        username: userInput.username,
-        avatar: userInput.avatar,
-        bio: userInput.bio,
-        followers: userInput.followersIds.length,
-        following: userInput.followingIds.length
+        id: postInput.author.id,
+        username: postInput.author.username,
+        avatar: postInput.author.avatar,
+        bio: postInput.author.bio,
+        followers: postInput.author.followersIds.length,
+        following: postInput.author.followingIds.length
       },
       textContent: postInput.textContent,
       dateCreated: postInput.createdAt,

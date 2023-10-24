@@ -38,7 +38,7 @@
              [scrollWindow]="true"
              class="infinite-scroll">
           <app-page-post *ngFor="let post of matchingPosts$ | async"
-                         [postInput]="post" [userInput]="post.author "></app-page-post>
+                         [postInput]="post"></app-page-post>
         </div>
       </div>
     </div>

@@ -1,0 +1,8 @@
+<div class="user-avatar-collar">
+  <div class="user-avatar" [ngStyle]="{'background-color': getCircleColor()}">
+    <a href="{{user.username}}/profile" class="user-link"></a>
+    <img class="profile-small-image" *ngIf="!isAvatarNull()" src="{{user.avatar!.url}}" alt="{{user.username}}}">
+    <div *ngIf="isAvatarNull()" class="initial">{{getFirstInitial()}}</div>
+  </div>
+  <div *ngIf="isParentView" class="gray-collar"></div>
+</div>

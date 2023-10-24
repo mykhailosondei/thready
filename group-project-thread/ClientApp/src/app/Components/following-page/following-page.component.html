@@ -1,7 +1,7 @@
 <app-nav-wrapper [activatedEndpoint]="Endpoint">
   <div class="main-page">
     <app-tablist-page [title]="username" [firstTabName] = "'Following'" [secondTabName] = "'Followers'"
-                      [selectedTab]="Tab.FirstTab"
+                      [selectedTab]="0"
                       (titleClicked)="navigatorService.openProfilePage(username)"
                       (secondTabClicked)="navigateToFollowers(username)"
                       (backButtonClicked)="goBack()">

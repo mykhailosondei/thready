@@ -33,7 +33,16 @@ export class FollowingPageComponent implements OnInit{
     this.loading = true;
     this.route.paramMap.subscribe(params => {
       this.username = params.get('username') || "DefaultUsername";
-      this.getCurrentUser();
+      this.userService.getCurrentUserInstance().subscribe(
+        (user) => {
+          this.currentUser = user;
+          if (this.currentUser.username == this.username){
+            this.Endpoint = Endpoint.Profile;
+          }
+          else {
+            this.Endpoint = Endpoint.None;
+          }
+        });
       this.fetchFollowingData(this.username);
     });
   }
@@ -77,21 +86,6 @@ export class FollowingPageComponent implements OnInit{
         }
       });
   }
-  getCurrentUser(): void{
-    this.userService.getCurrentUser()
-      .subscribe( (response) =>{
-        if (response.body != null){
-          this.currentUser = response.body;
-          if (this.currentUser.username == this.username){
-            this.Endpoint = Endpoint.Profile;
-          }
-          else {
-            this.Endpoint = Endpoint.None;
-          }
-        }
-      });
-  }
-
   navigateToFollowers(username : string){
     if (this.historyOfPages.getPageInHistoryCounter() == 0){
       this.historyOfPages.setNavigateToUserPage();
@@ -111,6 +105,4 @@ export class FollowingPageComponent implements OnInit{
     this.historyOfPages.resetCounter();
     this.location.historyGo(-pagesCount);
   }
-
-  protected readonly Tab = Tab;
 }

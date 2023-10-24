@@ -3,7 +3,7 @@
     <app-top-blurry-bar [title]="'Bookmarks'"></app-top-blurry-bar>
     <div style="height: 0; width: 100%;"></div>
     <div *ngIf="!loading">
-      <app-page-post *ngFor="let post of posts" [postInput]="post" [userInput]="post.author"></app-page-post>
+      <app-page-post *ngFor="let post of posts" [postInput]="post"></app-page-post>
       <div *ngIf="noBookmarksFound && !loading">
         <app-no-result-found-page [headerText]="'Save posts for later'"
         [smallText]="'Bookmark posts to easily find them again in the future.'">

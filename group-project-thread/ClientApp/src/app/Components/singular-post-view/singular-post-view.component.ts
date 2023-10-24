@@ -50,7 +50,6 @@ export class SingularPostViewComponent implements OnInit{
       this.route.paramMap.subscribe(params => {
         this.incomingUsername = params.get('username') || 'DefaultUsername';
         const postId = params.get('id');
-        console.log(postId);
         if (postId) {
           this.incomingPostId = Number.parseInt(postId);
         }
@@ -71,7 +70,7 @@ export class SingularPostViewComponent implements OnInit{
       this.postService.getPostById(this.incomingPostId).subscribe(response => {
         if(response.ok) {
           this.postInput = response.body!;
-          this.post = PostFormatter.mapPostToPagePost(this.postInput, this.authorInput);
+          this.post = PostFormatter.mapPostToPagePost(this.postInput);
         console.log(response);
         }
       }).add(()=>this.fetchComments());
@@ -154,17 +153,6 @@ export class SingularPostViewComponent implements OnInit{
     }
   }
 
-  getCircleColor() {
-    return PostFormatter.getCircleColor(this.authorInput.username);
-  }
-
-  isAvatarNull() {
-    return this.authorInput.avatar === null;
-  }
-
-  getFirstInitial() {
-    return this.authorInput.username[0].toUpperCase();
-  }
 
   protected readonly faPen = faPen;
 

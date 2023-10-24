@@ -142,17 +142,14 @@ export class ProfilePageComponent implements OnInit, OnDestroy{
     })
   }
   checkIsCurrentUser(): void{
-    this.userService.getCurrentUser().pipe(takeUntil(this.unsubscribe$))
-      .subscribe( (response) =>{
-        if (response.body != null){
-           this.isCurrentUser = this.username == response.body.username;
-           if (this.username == response.body.username){
-             this.postsText = "Your posts"
-             this.Endpoint = Endpoint.Profile;
-           }else{
-             this.postsText = "User posts"
-             this.Endpoint = Endpoint.None;
-           }
+    this.userService.getCurrentUserInstance().subscribe(
+      (user) => {
+        if (this.username == user.username){
+          this.postsText = "Your posts"
+          this.Endpoint = Endpoint.Profile;
+        }else{
+          this.postsText = "User posts"
+          this.Endpoint = Endpoint.None;
         }
       });
   }
@@ -167,7 +164,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy{
 
   updateIsCurrentUserFollowing(): void {
     if (this.user.id) {
-      this.userService.getCurrentUser().pipe(takeUntil(this.unsubscribe$)).subscribe((response) => {
+      this.userService.getCurrentUser().subscribe((response) => {
         if (response.body != null) {
           this.isCurrentUserFollowing = response.body.followingIds.includes(this.user.id);
           this.unfollowed = !this.isCurrentUserFollowing;

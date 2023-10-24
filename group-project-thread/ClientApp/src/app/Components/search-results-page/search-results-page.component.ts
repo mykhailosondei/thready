@@ -67,7 +67,8 @@ export class SearchResultsPageComponent implements OnInit{
       this.selectedTab = 0;
     }
   });
-    this.getCurrentUser();
+    this.userService.getCurrentUserInstance().subscribe(
+      (user) => this.currentUser = user);
     this.searchByQuery();
   }
 
@@ -211,15 +212,6 @@ export class SearchResultsPageComponent implements OnInit{
     this.query = query;
     this.searchByQuery();
   }
-
-  getCurrentUser(): void{
-    this.userService.getCurrentUser()
-      .subscribe( (response) =>{
-        if (response.body != null){
-          this.currentUser = response.body;
-        }
-      });
-  }
   amIFollowing(id : number): boolean{
     if (id == this.currentUser.id) return true;
     return this.currentUser.followingIds.includes(id);
@@ -227,9 +219,6 @@ export class SearchResultsPageComponent implements OnInit{
   isCurrentUser(id : number){
     return id == this.currentUser.id;
   }
-
-
-
   backToMainPage() {
     this.queries.pop();
     const query : string | undefined = this.queries.pop();

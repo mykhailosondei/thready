@@ -30,7 +30,8 @@ export class TrendingPageComponent {
 
   ngOnInit(): void {
     this.loading = true;
-    this.getCurrentUser();
+    this.userService.getCurrentUserInstance().subscribe(
+      (user) => this.currentUser = user);
     this.getTrends();
   }
 
@@ -42,15 +43,6 @@ export class TrendingPageComponent {
           this.trends$.next(response.body);
         }
       });
-  }
-
-  getCurrentUser(){
-    this.userService.getCurrentUser()
-      .subscribe((response) => {
-        if (response.body != null){
-          this.currentUser = response.body;
-        }
-      } )
   }
 
   navigateToMayBeInteresting(){

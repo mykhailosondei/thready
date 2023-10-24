@@ -42,20 +42,6 @@ export class CommentCreatorComponent implements OnInit {
       }
     });
   }
-
-  getCircleColor(user: UserDTO) {
-    return PostFormatter.getCircleColor(user.username);
-  }
-
-  isAvatarNull(user: UserDTO) {
-    return user.avatar === null;
-  }
-
-  getFirstInitial(user: UserDTO) {
-    return user.username[0].toUpperCase();
-  }
-
-
   onReplyClick() {
     if(!this.replyArgs.isCommentReply) {
       this.commentService.postComment({postId:this.post.id, textContent: this.commentInput.inputValue, images:this.imageUrls.map(i => {return{url:i}})}).subscribe(Response => {
