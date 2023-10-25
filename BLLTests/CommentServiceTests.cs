@@ -1,6 +1,8 @@
 using ApplicationBLL.Exceptions;
+using ApplicationBLL.QueryRepositories;
 using ApplicationBLL.Services;
 using ApplicationCommon.DTOs.Comment;
+using ApplicationCommon.DTOs.Image;
 using ApplicationCommon.DTOs.Post;
 using ApplicationCommon.DTOs.User;
 using ApplicationDAL.Context;
@@ -21,11 +23,13 @@ namespace BLLTests;
 public class CommentServiceTests
 {
     private readonly CommentService _commentService;
-    private readonly Mock<PostService> _postServiceMock = new();
-    private readonly Mock<UserService> _userServiceMock = new();
     private readonly Mock<ApplicationContext> _applicationContextMock = new();
+    private readonly Mock<PostQueryRepository> _postQueryRepositoryMock = new();
+    private readonly Mock<UserQueryRepository> _userQueryRepositoryMock = new();
+    private readonly Mock<CommentQueryRepository> _commentQueryRepositoryMock = new();
     private readonly Mock<IMapper> _mapperMock = new(MockBehavior.Strict);
-    private readonly Mock<IValidator<CommentDTO>> _validatorMock = new();
+    private readonly Mock<IValidator<CommentDTO>> _commentValidatorMock = new();
+    private readonly Mock<IValidator<CommentUpdateDTO>> _commentUpdateValidatorMock = new();
     private readonly ITestOutputHelper _outputHelper;
     private readonly Mock<ILogger<CommentService>> _logger = new();
     
@@ -34,12 +38,35 @@ public class CommentServiceTests
         _commentService = new CommentService(
         _applicationContextMock.Object,
         _mapperMock.Object,
-        _postServiceMock.Object,
-        _userServiceMock.Object,
-        _validatorMock.Object,
-        _logger.Object);
+        _commentValidatorMock.Object,
+        _logger.Object,
+        _postQueryRepositoryMock.Object,
+        _userQueryRepositoryMock.Object,
+        _commentQueryRepositoryMock.Object,
+        _commentUpdateValidatorMock.Object
+        );
         _outputHelper = outputHelper;
 
+        _mapperMock.Setup(m => m.Map<ImageDTO>(It.IsAny<Image>())).Returns((Image image) =>
+        {
+            ImageDTO imageDTO = new ImageDTO()
+            {
+                Id = image.Id,
+                Url = image.Url
+            };
+            return imageDTO;
+        });
+        
+        _mapperMock.Setup(m => m.Map<Image>(It.IsAny<ImageDTO>())).Returns((ImageDTO imageEntity) =>
+        {
+            Image image = new Image()
+            {
+                Id = imageEntity.Id,
+                Url = imageEntity.Url
+            };
+            return image;
+        });
+        
         _mapperMock.Setup(m => m.Map<CommentDTO>(It.IsAny<Comment>())).Returns((Comment entity) =>
             new CommentDTO()
             {
@@ -48,7 +75,7 @@ public class CommentServiceTests
                 PostId = entity.PostId,
                 CommentId = entity.CommentId,
                 TextContent = entity.TextContent,
-                Images = entity.Images,
+                Images = entity.Images.Select(I => _mapperMock.Object.Map<ImageDTO>(I)).ToList(),
                 CommentsIds = entity.CommentsIds,
                 LikesIds = entity.LikesIds,
                 Bookmarks = entity.Bookmarks,
@@ -63,7 +90,7 @@ public class CommentServiceTests
                 PostId = entity.PostId,
                 CommentId = entity.CommentId,
                 TextContent = entity.TextContent,
-                Images = entity.Images,
+                Images = entity.Images.Select(i => _mapperMock.Object.Map<Image>(i)).ToList(),
                 CommentsIds = entity.CommentsIds,
                 LikesIds = entity.LikesIds,
                 Bookmarks = entity.Bookmarks,
@@ -92,7 +119,7 @@ public class CommentServiceTests
                 UserId = entity.UserId,
                 Author = null,
                 TextContent = entity.TextContent,
-                Images = entity.Images,
+                Images = entity.Images.Select(I => _mapperMock.Object.Map<ImageDTO>(I)).ToList(),
                 LikesIds = entity.LikesIds,
                 CommentsIds = entity.CommentsIds,
                 RepostersIds = entity.RepostersIds,
@@ -110,7 +137,7 @@ public class CommentServiceTests
                 UserId = entity.UserId,
                 Author = null,
                 TextContent = entity.TextContent,
-                Images = entity.Images,
+                Images = entity.Images.Select(I => _mapperMock.Object.Map<Image>(I)).ToList(),
                 LikesIds = entity.LikesIds,
                 CommentsIds = entity.CommentsIds,
                 RepostersIds = entity.RepostersIds,
@@ -126,14 +153,13 @@ public class CommentServiceTests
                 UserId = entity.UserId,
                 Author = null,
                 TextContent = entity.TextContent,
-                Images = entity.Images,
+                Images = entity.Images.Select(I => _mapperMock.Object.Map<ImageDTO>(I)).ToList(),
                 LikesIds = entity.LikesIds,
                 CommentsIds = entity.CommentsIds,
                 RepostersIds = entity.RepostersIds,
                 Bookmarks = entity.Bookmarks,
                 ViewedBy = entity.ViewedBy
             }));
-        
     }
     
     [Fact]
@@ -152,7 +178,7 @@ public class CommentServiceTests
         _applicationContextMock.Setup(c => c.Comments).ReturnsDbSet(comments);
         //Act
         //Assert
-        var ex = await Assert.ThrowsAsync<CommentNotFoundException>(async () => await _commentService.GetCommentByIdPlain(id));
+        var ex = await Assert.ThrowsAsync<CommentNotFoundException>(async () => await _commentQueryRepositoryMock.Object.GetCommentByIdPlain(id));
         _outputHelper.WriteLine("" + ex);
     }
     
@@ -171,7 +197,7 @@ public class CommentServiceTests
         };
         _applicationContextMock.Setup(c => c.Comments).ReturnsDbSet(comments);
         //Act
-        var comment = await _commentService.GetCommentByIdPlain(id);
+        var comment = await _commentQueryRepositoryMock.Object.GetCommentByIdPlain(id);
         //Assert
         Assert.Equal(comment.TextContent, comments[0].TextContent);
     }
@@ -215,7 +241,7 @@ public class CommentServiceTests
             }
         };
         
-        _postServiceMock.Setup(p => p.GetPostById(It.IsAny<int>())).ReturnsAsync((int id) => _mapperMock.Object.Map<PostDTO>(posts.FirstOrDefault(p => p.Id == id)));
+        _postQueryRepositoryMock.Setup(p => p.GetPostById(It.IsAny<int>())).ReturnsAsync((int id) => _mapperMock.Object.Map<PostDTO>(posts.FirstOrDefault(p => p.Id == id)));
 
         _applicationContextMock.Setup(c => c.Comments).ReturnsDbSet(comments);
         
@@ -265,7 +291,7 @@ public class CommentServiceTests
             }
         };
         
-        _postServiceMock.Setup(p => p.GetPostById(It.IsAny<int>())).ReturnsAsync((int id) => _mapperMock.Object.Map<PostDTO>(posts.FirstOrDefault(p => p.Id == id)));
+        _postQueryRepositoryMock.Setup(p => p.GetPostById(It.IsAny<int>())).ReturnsAsync((int id) => _mapperMock.Object.Map<PostDTO>(posts.FirstOrDefault(p => p.Id == id)));
 
         _applicationContextMock.Setup(c => c.Comments).ReturnsDbSet(comments);
         
@@ -315,7 +341,7 @@ public class CommentServiceTests
             }
         };
         
-        _postServiceMock.Setup(p => p.GetPostById(It.IsAny<int>())).ReturnsAsync((int id) => _mapperMock.Object.Map<PostDTO>(posts.FirstOrDefault(p => p.Id == id)));
+        _postQueryRepositoryMock.Setup(p => p.GetPostById(It.IsAny<int>())).ReturnsAsync((int id) => _mapperMock.Object.Map<PostDTO>(posts.FirstOrDefault(p => p.Id == id)));
 
         _applicationContextMock.Setup(c => c.Comments).ReturnsDbSet(comments);
         
@@ -336,7 +362,7 @@ public class CommentServiceTests
             PostId = 1
         };
 
-        _userServiceMock.Setup(u => u.GetUserById(It.IsAny<int>())).ReturnsAsync((UserDTO)null);
+        _userQueryRepositoryMock.Setup(u => u.GetUserById(It.IsAny<int>())).ReturnsAsync((UserDTO)null);
         //Act
         
         //Assert
@@ -356,7 +382,7 @@ public class CommentServiceTests
             PostId = null
         };
 
-        _userServiceMock.Setup(u => u.GetUserById(It.IsAny<int>())).ReturnsAsync((UserDTO)null);
+        _userQueryRepositoryMock.Setup(u => u.GetUserById(It.IsAny<int>())).ReturnsAsync((UserDTO)null);
         //Act
         
         //Assert
@@ -404,10 +430,10 @@ public class CommentServiceTests
             }
         };
 
-        _userServiceMock.Setup(u => u.GetUserById(It.IsAny<int>())).ReturnsAsync((UserDTO)null);
+        _userQueryRepositoryMock.Setup(u => u.GetUserById(It.IsAny<int>())).ReturnsAsync((UserDTO)null);
         
         _applicationContextMock.Setup(c => c.Comments).ReturnsDbSet(comments);
-        _validatorMock.Setup(v => v.ValidateAsync(It.IsAny<CommentDTO>(), CancellationToken.None))
+        _commentValidatorMock.Setup(v => v.ValidateAsync(It.IsAny<CommentDTO>(), CancellationToken.None))
             .ReturnsAsync(new ValidationResult()
             {
                 Errors = new List<ValidationFailure>()
@@ -417,10 +443,7 @@ public class CommentServiceTests
             comments.Add(entity);
         });
         
-        _postServiceMock.Setup(p => p.GetPostById(It.IsAny<int>())).ReturnsAsync((int id) => _mapperMock.Object.Map<PostDTO>(posts.FirstOrDefault(p => p.Id == id)));
-        _postServiceMock.Setup(p => p.PutPost(It.IsAny<int>(), It.IsAny<PostUpdateDTO>())).Callback((int id, PostDTO dto) =>
-        {
-        });
+        _postQueryRepositoryMock.Setup(p => p.GetPostById(It.IsAny<int>())).ReturnsAsync((int id) => _mapperMock.Object.Map<PostDTO>(posts.FirstOrDefault(p => p.Id == id)));
         //Act
         await _commentService.PostComment(comment);
         //Assert
@@ -458,10 +481,10 @@ public class CommentServiceTests
             }
         };
 
-        _userServiceMock.Setup(u => u.GetUserById(It.IsAny<int>())).ReturnsAsync((UserDTO)null);
+        _userQueryRepositoryMock.Setup(u => u.GetUserById(It.IsAny<int>())).ReturnsAsync((UserDTO)null);
         
         _applicationContextMock.Setup(c => c.Comments).ReturnsDbSet(comments);
-        _validatorMock.Setup(v => v.ValidateAsync(It.IsAny<CommentDTO>(), CancellationToken.None))
+        _commentValidatorMock.Setup(v => v.ValidateAsync(It.IsAny<CommentDTO>(), CancellationToken.None))
             .ReturnsAsync(new ValidationResult()
             {
                 Errors = new List<ValidationFailure>()
@@ -500,7 +523,7 @@ public class CommentServiceTests
             }
         };
         _applicationContextMock.Setup(c => c.Comments).ReturnsDbSet(comments);
-        _validatorMock.Setup(v => v.ValidateAsync(It.IsAny<CommentDTO>(), CancellationToken.None))
+        _commentValidatorMock.Setup(v => v.ValidateAsync(It.IsAny<CommentDTO>(), CancellationToken.None))
             .ReturnsAsync(new ValidationResult()
             {
                 Errors = new List<ValidationFailure>() {new ValidationFailure()}
@@ -546,7 +569,7 @@ public class CommentServiceTests
         var comment = new CommentUpdateDTO()
         {
             TextContent = "",
-            Images = new List<Image>()
+            Images = new List<ImageDTO>()
         };
         var comments = new List<Comment>()
         {
@@ -562,7 +585,7 @@ public class CommentServiceTests
             }
         };
         _applicationContextMock.Setup(c => c.Comments).ReturnsDbSet(comments);
-        _validatorMock.Setup(v => v.ValidateAsync(It.IsAny<CommentDTO>(), CancellationToken.None))
+        _commentValidatorMock.Setup(v => v.ValidateAsync(It.IsAny<CommentDTO>(), CancellationToken.None))
             .ReturnsAsync(new ValidationResult()
             {
                 Errors = new List<ValidationFailure>() {new ValidationFailure()}
@@ -597,7 +620,7 @@ public class CommentServiceTests
             comments.RemoveAll(c => c.Id == entity.Id);
         });
         
-        _validatorMock.Setup(v => v.ValidateAsync(It.IsAny<CommentDTO>(), CancellationToken.None))
+        _commentValidatorMock.Setup(v => v.ValidateAsync(It.IsAny<CommentDTO>(), CancellationToken.None))
             .ReturnsAsync(new ValidationResult()
             {
                 Errors = new List<ValidationFailure>() {}
