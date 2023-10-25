@@ -1,12 +1,15 @@
 using System.Net;
 using ApplicationBLL.Exceptions;
+using ApplicationBLL.QueryRepositories;
 using ApplicationBLL.Services;
+using ApplicationCommon.DTOs.Image;
 using ApplicationCommon.DTOs.User;
 using ApplicationDAL.Context;
 using ApplicationDAL.Entities;
 using AutoMapper;
 using FluentValidation;
 using FluentValidation.Results;
+using group_project_thread.Validators;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using Moq.EntityFrameworkCore;
@@ -19,9 +22,12 @@ public class UserServiceTests
     private readonly UserService _userService;
     private readonly Mock<ApplicationContext> _applicationContextMock = new();
     private readonly Mock<IMapper> _mapperMock = new();
+    private readonly Mock<UserQueryRepository> _userQueryRepositoryMock = new();
+    private readonly Mock<PostQueryRepository> _postQueryRepositoryMock = new(); 
+    private readonly Mock<CommentQueryRepository> _commentQueryRepositoryMock = new();
     private readonly Mock<EmailValidatorService> _emailValidatorServiceMock = new();
     private readonly Mock<IValidator<RegisterUserDTO>> _registerUserDTOValidatorMock = new();
-    private readonly Mock<IValidator<UserDTO>> _userDTOValidatorMock = new();
+    private readonly Mock<IValidator<UserUpdateDTO>> _userUpdateDTOValidatorMock = new();
     private readonly ITestOutputHelper _outputHelper;
 
     public UserServiceTests(ITestOutputHelper output)
@@ -31,9 +37,33 @@ public class UserServiceTests
             _mapperMock.Object,
             _emailValidatorServiceMock.Object,
             _registerUserDTOValidatorMock.Object,
-            _userDTOValidatorMock.Object
+            _userQueryRepositoryMock.Object,
+            _postQueryRepositoryMock.Object,
+            _userUpdateDTOValidatorMock.Object,
+            _commentQueryRepositoryMock.Object
         );
         _outputHelper = output;
+        
+        _mapperMock.Setup(m => m.Map<ImageDTO>(It.IsAny<Image>())).Returns((Image image) =>
+        {
+            ImageDTO imageDTO = new ImageDTO()
+            {
+                Id = image.Id,
+                Url = image.Url
+            };
+            return imageDTO;
+        });
+        
+        _mapperMock.Setup(m => m.Map<Image>(It.IsAny<ImageDTO>())).Returns((ImageDTO imageEntity) =>
+        {
+            Image image = new Image()
+            {
+                Id = imageEntity.Id,
+                Url = imageEntity.Url
+            };
+            return image;
+        });
+        
         _mapperMock.Setup(m => m.Map<UserDTO>(It.IsAny<User>())).Returns((User entity) =>
             new UserDTO() { Id = entity.Id,
                 Email = entity.Email,
@@ -41,7 +71,7 @@ public class UserServiceTests
                 Password = entity.PasswordHash,
                 Username = entity.Username,
                 ImageId = entity.ImageId,
-                Avatar = entity.Avatar,
+                Avatar = _mapperMock.Object.Map<ImageDTO>(entity.Avatar),
                 FollowersIds = entity.FollowersIds,
                 FollowingIds = entity.FollowingIds,
                 Bio = entity.Bio,
@@ -56,7 +86,7 @@ public class UserServiceTests
                 PasswordHash = entity.Password,
                 Username = entity.Username,
                 ImageId = entity.ImageId,
-                Avatar = entity.Avatar,
+                Avatar = _mapperMock.Object.Map<Image>(entity.Avatar),
                 FollowersIds = entity.FollowersIds,
                 FollowingIds = entity.FollowingIds,
                 Bio = entity.Bio,
@@ -181,14 +211,14 @@ public class UserServiceTests
     {
         // Arrange
         int userIdToUpdate = 1;
-        var userDto = new UserDTO
+        var userDto = new UserUpdateDTO()
         {
             // Set user properties
         };
 
         // Mock GetUserById to return null, simulating a user not found scenario
         _applicationContextMock.Setup(c => c.Users).ReturnsDbSet(new List<User>());
-        _userDTOValidatorMock.Setup(v => v.ValidateAsync(It.IsAny<UserDTO>(), CancellationToken.None))
+        _userUpdateDTOValidatorMock.Setup(v => v.ValidateAsync(It.IsAny<UserUpdateDTO>(), CancellationToken.None))
             .ReturnsAsync(new ValidationResult()
             {
                 Errors = new List<ValidationFailure>() {}
@@ -207,13 +237,11 @@ public class UserServiceTests
     {
         // Arrange
         int userIdToUpdate = 1;
-        var userDto = new UserDTO
+        var userDto = new UserUpdateDTO()
         {
-            Email = "newemail@example.com",
-            Username = "newusername",
             Location = "New York",
             Bio = "New bio",
-            Avatar = new Image { Url = "newavatar.jpg" },
+            Avatar = new ImageDTO() { Url = "newavatar.jpg" },
         };
     
         var userToUpdate = new User
@@ -232,7 +260,7 @@ public class UserServiceTests
         };
     
         _applicationContextMock.Setup(c => c.Users).ReturnsDbSet(dbSetMock);
-        _userDTOValidatorMock.Setup(v => v.ValidateAsync(It.IsAny<UserDTO>(), CancellationToken.None))
+        _userUpdateDTOValidatorMock.Setup(v => v.ValidateAsync(It.IsAny<UserUpdateDTO>(), CancellationToken.None))
             .ReturnsAsync(new ValidationResult()
             {
                 Errors = new List<ValidationFailure>() {}
@@ -244,9 +272,7 @@ public class UserServiceTests
             dbSetMock.Add(entity);
         });
         
-    
-        _emailValidatorServiceMock.Setup(e => e.IsEmailAvailable(userDto.Email))
-            .ReturnsAsync(true);
+        
     
        
     
@@ -254,8 +280,6 @@ public class UserServiceTests
         await _userService.PutUser(userIdToUpdate, userDto);
     
         // Assert
-        Assert.Equal(userDto.Email, dbSetMock.Single().Email);
-        Assert.Equal(userDto.Username, dbSetMock.Single().Username);
         Assert.Equal(userDto.Location, dbSetMock.Single().Location);
         Assert.Equal(userDto.Bio, dbSetMock.Single().Bio);
         Assert.Equal(userDto.Avatar?.Url, dbSetMock.Single().Avatar?.Url);
