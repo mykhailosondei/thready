@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Net;
 using System.Text.Json.Nodes;
 using ApplicationCommon.DTOs.Image;
 using ApplicationCommon.DTOs.Post;
@@ -6,6 +7,7 @@ using ApplicationCommon.DTOs.User;
 using ApplicationDAL.Entities;
 using AutoMapper;
 using FluentAssertions;
+using Microsoft.AspNetCore.Mvc;
 using Xunit;
 
 namespace BLLIntegrationTests;
@@ -29,25 +31,22 @@ public class PostControllerTests : IntegrationTest
     {
         //Arrange
         var userDTO = await AuthenticateAsync();
-        var posts = await (await TestClient.GetAsync($"/api/Post/{userDTO.Id}/posts")).Content.ReadAsAsync<List<PostDTO>>();
-        
-        int initialPostCount = posts.Count;
-        //Act
         var postResponse = await TestClient.PostAsJsonAsync("/api/post/", new PostCreateDTO()
         {
             AuthorId = userDTO.Id,
-            TextContent = "new post",
+            TextContent = $"new post {Guid.NewGuid().ToString()}",
             Images = new List<ImageDTO>()
         });
-
-        var response = await TestClient.GetAsync($"/api/Post/{userDTO.Id}/posts");
-        //Assert
+        //Act & Assert
         
         postResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        var createdPost =  await postResponse.Content.ReadAsAsync<PostDTO>();
+        var response = await TestClient.GetAsync($"/api/Post/{createdPost.Id}");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var receivedPost = await response.Content.ReadAsAsync<PostDTO>();
+        Assert.Equal(createdPost.Id, receivedPost.Id);
+        Assert.Equal(createdPost.TextContent, receivedPost.TextContent);
 
-        var resultPost = await response.Content.ReadAsAsync<List<PostDTO>>();
-        Assert.Equal(initialPostCount, resultPost.Count-1);
     }
 
     [Fact]
@@ -102,7 +101,8 @@ public class PostControllerTests : IntegrationTest
 
         // Act
         var response = await TestClient.PutAsJsonAsync(requestUri, post);
-        
+
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var postResponse = await TestClient.GetAsync($"/api/Post/{postId}");
         postResponse.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -180,25 +180,24 @@ public class PostControllerTests : IntegrationTest
     public async Task DeletePost_ShouldDeletePost()
     {
         // Arrange
-        await AuthenticateAsync();
+        var userDTO = await AuthenticateAsync();
         
-        var userPosts = TestClient.GetAsync($"/api/Post/1/posts").Result.Content.ReadAsAsync<List<PostDTO>>().Result;
-        
-        int createdPostId = userPosts[^1].Id+1;
-        var requestUri = $"/api/Post/{createdPostId}";
-
-        // Act
-        await TestClient.PostAsJsonAsync("/api/Post/", new PostCreateDTO()
+        var postResponse = await TestClient.PostAsJsonAsync("/api/post/", new PostCreateDTO()
         {
-            TextContent = "test",
+            AuthorId = userDTO.Id,
+            TextContent = " post for delete",
             Images = new List<ImageDTO>()
         });
         
-        var response = await TestClient.DeleteAsync(requestUri);
+        // Act
+        postResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        var createdPost =  await postResponse.Content.ReadAsAsync<PostDTO>();
+        
+        var response = await TestClient.DeleteAsync($"api/post/{createdPost.Id}");
         
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        response = await TestClient.GetAsync($"/api/Post/{createdPostId}");
+        response = await TestClient.GetAsync($"/api/Post/{createdPost.Id}");
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
     
