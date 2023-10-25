@@ -1,5 +1,8 @@
 ﻿using ApplicationBLL.Exceptions;
+using ApplicationBLL.QueryRepositories;
 using ApplicationBLL.Services;
+using ApplicationBLL.Services.SearchLogic;
+using ApplicationCommon.DTOs.Image;
 using ApplicationCommon.DTOs.Post;
 using ApplicationCommon.DTOs.User;
 using ApplicationDAL.Context;
@@ -18,15 +21,42 @@ public class PostServiceTests
     private readonly PostService _postService;
     private readonly Mock<ApplicationContext> _applicationContextMock = new();
     private readonly Mock<IMapper> _mapperMock = new(MockBehavior.Strict);
-    private readonly Mock<UserService> _userService = new();
-    private readonly Mock<IValidator<PostDTO>> _validatorMock = new();
+    private readonly Mock<PostQueryRepository> _postQueryRepositoryMock = new();
+    private readonly Mock<UserQueryRepository> _userQueryRepositoryMock = new();
+    private readonly Mock<IValidator<PostDTO>> _postDTOValidatorMock = new();
+    private readonly Mock<IValidator<PostUpdateDTO>> _postUpdateValidatorMock = new();
+    private readonly Mock<PostsContentsIndexer> _postsContentIndexer = new();
     private readonly ITestOutputHelper _outputHelper;
     
 
     public PostServiceTests(ITestOutputHelper output)
     {
-        _postService = new PostService(_applicationContextMock.Object, _mapperMock.Object, _userService.Object, _validatorMock.Object);
+        _postService = new PostService(_applicationContextMock.Object, _mapperMock.Object,
+            _postDTOValidatorMock.Object, _postQueryRepositoryMock.Object,
+            _userQueryRepositoryMock.Object, _postUpdateValidatorMock.Object,
+            _postsContentIndexer.Object
+            );
         _outputHelper = output;
+        
+        _mapperMock.Setup(m => m.Map<ImageDTO>(It.IsAny<Image>())).Returns((Image image) =>
+        {
+            ImageDTO imageDTO = new ImageDTO()
+            {
+                Id = image.Id,
+                Url = image.Url
+            };
+            return imageDTO;
+        });
+        
+        _mapperMock.Setup(m => m.Map<Image>(It.IsAny<ImageDTO>())).Returns((ImageDTO imageDTO) =>
+        {
+            Image image = new Image()
+            {
+                Id = imageDTO.Id,
+                Url = imageDTO.Url
+            };
+            return image;
+        });
 
         _mapperMock.Setup(m => m.Map<PostDTO>(It.IsAny<Post>())).Returns((Post entity) =>
         {
@@ -37,7 +67,7 @@ public class PostServiceTests
                 UserId = entity.UserId,
                 Author = null,
                 TextContent = entity.TextContent,
-                Images = entity.Images,
+                Images = entity.Images.Select(i => _mapperMock.Object.Map<ImageDTO>(i)).ToList(),
                 LikesIds = entity.LikesIds,
                 CommentsIds = entity.CommentsIds,
                 RepostersIds = entity.RepostersIds,
@@ -47,28 +77,28 @@ public class PostServiceTests
             return postDto;
         });
 
-        _mapperMock.Setup(m => m.Map<Post>(It.IsAny<PostDTO>())).Returns((PostDTO entity) =>
+        _mapperMock.Setup(m => m.Map<Post>(It.IsAny<PostDTO>())).Returns((PostDTO postDTO) =>
             new Post
             {
-                Id = entity.Id,
-                CreatedAt = entity.CreatedAt,
-                UserId = entity.UserId,
+                Id = postDTO.Id,
+                CreatedAt = postDTO.CreatedAt,
+                UserId = postDTO.UserId,
                 Author = null,
-                TextContent = entity.TextContent,
-                Images = entity.Images,
-                LikesIds = entity.LikesIds,
-                CommentsIds = entity.CommentsIds,
-                RepostersIds = entity.RepostersIds,
-                Bookmarks = entity.Bookmarks,
-                ViewedBy = entity.ViewedBy
+                TextContent = postDTO.TextContent,
+                Images = postDTO.Images.Select(i => _mapperMock.Object.Map<Image>(i)).ToList(),
+                LikesIds = postDTO.LikesIds,
+                CommentsIds = postDTO.CommentsIds,
+                RepostersIds = postDTO.RepostersIds,
+                Bookmarks = postDTO.Bookmarks,
+                ViewedBy = postDTO.ViewedBy
             });
 
         _mapperMock.Setup(m => m.Map<Post>(It.IsAny<PostCreateDTO>()))
-            .Returns((PostCreateDTO entity) => new Post
+            .Returns((PostCreateDTO postCreateDTO) => new Post
             {
-                UserId = entity.AuthorId,
-                TextContent = entity.TextContent,
-                Images = entity.Images,
+                UserId = postCreateDTO.AuthorId,
+                TextContent = postCreateDTO.TextContent,
+                Images = postCreateDTO.Images.Select(i => _mapperMock.Object.Map<Image>(i)).ToList(),
                 CommentsIds = null
                 
             });
@@ -81,7 +111,7 @@ public class PostServiceTests
                 UserId = entity.UserId,
                 Author = null,
                 TextContent = entity.TextContent,
-                Images = entity.Images,
+                Images = entity.Images.Select(i => _mapperMock.Object.Map<ImageDTO>(i)).ToList(),
                 LikesIds = entity.LikesIds,
                 CommentsIds = entity.CommentsIds,
                 RepostersIds = entity.RepostersIds,
@@ -95,7 +125,7 @@ public class PostServiceTests
                 Password = entity.PasswordHash,
                 Username = entity.Username,
                 ImageId = entity.ImageId,
-                Avatar = entity.Avatar,
+                Avatar = _mapperMock.Object.Map<ImageDTO>(entity.Avatar),
                 FollowersIds = entity.FollowersIds,
                 FollowingIds = entity.FollowingIds,
                 Bio = entity.Bio,
@@ -110,7 +140,7 @@ public class PostServiceTests
                 PasswordHash = entity.Password,
                 Username = entity.Username,
                 ImageId = entity.ImageId,
-                Avatar = entity.Avatar,
+                Avatar = _mapperMock.Object.Map<Image>(entity.Avatar),
                 FollowersIds = entity.FollowersIds,
                 FollowingIds = entity.FollowingIds,
                 Bio = entity.Bio,
@@ -339,88 +369,7 @@ public class PostServiceTests
     private List<Post> _mockPosts;
     private List<PostDTO> _mockPostsModels;
     
-    [Fact]
-    public async Task GetAllPosts_ShouldReturnListOfPostDTO()
-    {
-        var mockPosts = new List<Post>
-        {
-            new Post
-            {
-                Id = 1,
-                CreatedAt = DateTime.Now,
-                UserId = 1,
-                Author = new User
-                {
-                    Id = 1, DateOfBirth = DateOnly.MinValue, Email = "test@gmail.com", PasswordHash = "test",
-                    Username = "test"
-                },
-                TextContent = "testPost1",
-                Images = new List<Image>(),
-                LikesIds = new List<int>(),
-                CommentsIds = new List<int>(),
-                RepostersIds = new List<int>(),
-                Bookmarks = 10,
-                ViewedBy = new List<int>()
-            },
-            
-            
-        };
-        _applicationContextMock.Setup(c => c.Posts).ReturnsDbSet(mockPosts);
-        //Act
-
-        List<PostDTO> result =  (await  _postService.GetAllPosts()).ToList();
-        
-        Assert.Equal(result[0].Id, mockPosts[0].Id);
-        Assert.Equal(result[0].TextContent, mockPosts[0].TextContent);
-
-    }
-
-    [Fact]
-    public async Task GetPostById_ShouldReturnExceptionIfIdDoesNotExist()
-    {
-        //Arrange
-        var posts = new List<Post>
-        {
-            new Post
-            {
-                Id = 2
-            }
-        };
-        
-        
-        _applicationContextMock.Setup(c => c.Posts).ReturnsDbSet(posts);
-        //Act and assert
-        var ex = await Assert.ThrowsAsync<PostNotFoundException>(
-            async () => await _postService.GetPostById(1)
-        );
-        _outputHelper.WriteLine("" + ex);
-    }
     
-    [Fact]
-    public async Task GetPostById_ShouldReturnPost()
-    {
-        //Arrange
-        var posts = new List<Post>
-        {
-            new Post
-            {
-                Id = 2,
-                TextContent = "test post2"
-            },
-            new Post
-            {
-                Id = 3
-            }
-            
-        };
-        var testPost = new PostDTO { Id = 2, TextContent = "test post2" };
-        _applicationContextMock.Setup(c => c.Posts).ReturnsDbSet(posts);
-        //Act
-        var post = await _postService.GetPostById(2);
-        //Assert
-        Assert.Equal(testPost.Id, post.Id);
-        Assert.Equal(testPost.TextContent, post.TextContent);
-    }
 
     [Fact]
     public async Task BookmarkPost_ShouldAddPostToUserBookmarks()
@@ -428,15 +377,8 @@ public class PostServiceTests
         
         //Arrange
         _applicationContextMock.Setup(c => c.Users).ReturnsDbSet(_testUsers);
-        _userService.Setup(c => c.GetUserById(It.IsAny<int>())).ReturnsAsync(_testUsersModels[2]);
-        _applicationContextMock.Setup(c => c.Posts).ReturnsDbSet(this._mockPosts);
-        _userService.Setup(c => c.PutUser(2, It.IsAny<UserDTO>()))
-            .Callback((int id, UserDTO entity) =>
-            {
-                _testUsersModels.Remove(_testUsersModels[2]);
-                _testUsersModels.Add(entity);
-            });
-        
+        _userQueryRepositoryMock.Setup(c => c.GetUserById(It.IsAny<int>())).ReturnsAsync(_testUsersModels[2]);
+        _applicationContextMock.Setup(c => c.Posts).ReturnsDbSet(_mockPosts);
         int expectedBookmarkedIdLength = 2;
         int expectedPostId = 2;
         //Act
@@ -453,14 +395,8 @@ public class PostServiceTests
         
         //Arrange
         _applicationContextMock.Setup(c => c.Users).ReturnsDbSet(_testUsers);
-        _userService.Setup(c => c.GetUserById(It.IsAny<int>())).ReturnsAsync(_testUsersModels[2]);
+        _userQueryRepositoryMock.Setup(c => c.GetUserById(It.IsAny<int>())).ReturnsAsync(_testUsersModels[2]);
         _applicationContextMock.Setup(c => c.Posts).ReturnsDbSet(this._mockPosts);
-        _userService.Setup(c => c.PutUser(It.IsAny<int>(), It.IsAny<UserDTO>()))
-            .Callback((int id, UserDTO entity) =>
-            {
-                _testUsersModels.Remove(_testUsersModels[2]);
-                _testUsersModels.Add(entity);
-            });
         
         int expectedBookmarkedIdLength = 1;
         //Act
@@ -475,14 +411,9 @@ public class PostServiceTests
         
         //Arrange
         _applicationContextMock.Setup(c => c.Users).ReturnsDbSet(_testUsers);
-        _userService.Setup(c => c.GetUserById(It.IsAny<int>())).ReturnsAsync(_testUsersModels[2]);
+        _userQueryRepositoryMock.Setup(c => c.GetUserById(It.IsAny<int>())).ReturnsAsync(_testUsersModels[2]);
         _applicationContextMock.Setup(c => c.Posts).ReturnsDbSet(this._mockPosts);
-        _userService.Setup(c => c.PutUser(It.IsAny<int>(), It.IsAny<UserDTO>()))
-            .Callback((int id, UserDTO entity) =>
-            {
-                _testUsersModels.Remove(_testUsersModels[2]);
-                _testUsersModels.Add(entity);
-            });
+        
         
         int expectedBookmarkedIdLength = 0;
         //Act
@@ -497,14 +428,8 @@ public class PostServiceTests
         
         //Arrange
         _applicationContextMock.Setup(c => c.Users).ReturnsDbSet(_testUsers);
-        _userService.Setup(c => c.GetUserById(It.IsAny<int>())).ReturnsAsync(_testUsersModels[2]);
+        _userQueryRepositoryMock.Setup(c => c.GetUserById(It.IsAny<int>())).ReturnsAsync(_testUsersModels[2]);
         _applicationContextMock.Setup(c => c.Posts).ReturnsDbSet(this._mockPosts);
-        _userService.Setup(c => c.PutUser(It.IsAny<int>(), It.IsAny<UserDTO>()))
-            .Callback((int id, UserDTO entity) =>
-            {
-                _testUsersModels.Remove(_testUsersModels[2]);
-                _testUsersModels.Add(entity);
-            });
         
         int expectedBookmarkedIdLength = 1;
         //Act
@@ -519,14 +444,8 @@ public class PostServiceTests
         
         //Arrange
         _applicationContextMock.Setup(c => c.Users).ReturnsDbSet(_testUsers);
-        _userService.Setup(c => c.GetUserById(It.IsAny<int>())).ReturnsAsync(_testUsersModels[1]);
+        _userQueryRepositoryMock.Setup(c => c.GetUserById(It.IsAny<int>())).ReturnsAsync(_testUsersModels[1]);
         _applicationContextMock.Setup(c => c.Posts).ReturnsDbSet(this._mockPosts);
-        _userService.Setup(c => c.PutUser(It.IsAny<int>(), It.IsAny<UserDTO>()))
-            .Callback((int id, UserDTO entity) =>
-            {
-                _testUsersModels.Remove(_testUsersModels[1]);
-                _testUsersModels.Add(entity);
-            });
         
         int expectedRepostIdLength = 2;
         int expectedPostId = 5;
@@ -543,14 +462,8 @@ public class PostServiceTests
         
         //Arrange
         _applicationContextMock.Setup(c => c.Users).ReturnsDbSet(_testUsers);
-        _userService.Setup(c => c.GetUserById(It.IsAny<int>())).ReturnsAsync(_testUsersModels[1]);
+        _userQueryRepositoryMock.Setup(c => c.GetUserById(It.IsAny<int>())).ReturnsAsync(_testUsersModels[1]);
         _applicationContextMock.Setup(c => c.Posts).ReturnsDbSet(this._mockPosts);
-        _userService.Setup(c => c.PutUser(It.IsAny<int>(), It.IsAny<UserDTO>()))
-            .Callback((int id, UserDTO entity) =>
-            {
-                _testUsersModels.Remove(_testUsersModels[1]);
-                _testUsersModels.Add(entity);
-            });
         
         int expectedRepostIdLength = 1;
         int expectedPostId = 1;
@@ -567,14 +480,8 @@ public class PostServiceTests
         
         //Arrange
         _applicationContextMock.Setup(c => c.Users).ReturnsDbSet(_testUsers);
-        _userService.Setup(c => c.GetUserById(It.IsAny<int>())).ReturnsAsync(_testUsersModels[1]);
+        _userQueryRepositoryMock.Setup(c => c.GetUserById(It.IsAny<int>())).ReturnsAsync(_testUsersModels[1]);
         _applicationContextMock.Setup(c => c.Posts).ReturnsDbSet(this._mockPosts);
-        _userService.Setup(c => c.PutUser(It.IsAny<int>(), It.IsAny<UserDTO>()))
-            .Callback((int id, UserDTO entity) =>
-            {
-                _testUsersModels.Remove(_testUsersModels[1]);
-                _testUsersModels.Add(entity);
-            });
         
         int expectedRepostIdLength = 0;
         //Act
@@ -589,14 +496,8 @@ public class PostServiceTests
         
         //Arrange
         _applicationContextMock.Setup(c => c.Users).ReturnsDbSet(_testUsers);
-        _userService.Setup(c => c.GetUserById(It.IsAny<int>())).ReturnsAsync(_testUsersModels[1]);
+        _userQueryRepositoryMock.Setup(c => c.GetUserById(It.IsAny<int>())).ReturnsAsync(_testUsersModels[1]);
         _applicationContextMock.Setup(c => c.Posts).ReturnsDbSet(this._mockPosts);
-        _userService.Setup(c => c.PutUser(It.IsAny<int>(), It.IsAny<UserDTO>()))
-            .Callback((int id, UserDTO entity) =>
-            {
-                _testUsersModels.Remove(_testUsersModels[1]);
-                _testUsersModels.Add(entity);
-            });
         
         int expectedRepostIdLength = 1;
         int expectedPostId = 1;
@@ -613,7 +514,7 @@ public class PostServiceTests
         //Arrange
         _applicationContextMock.Setup(c => c.Posts).ReturnsDbSet(_mockPosts);
 
-        _validatorMock.Setup(v => v.ValidateAsync(It.IsAny<PostDTO>(), CancellationToken.None))
+        _postDTOValidatorMock.Setup(v => v.ValidateAsync(It.IsAny<PostDTO>(), CancellationToken.None))
             .ReturnsAsync(new ValidationResult()
             {
                 Errors = new List<ValidationFailure>()
@@ -623,7 +524,7 @@ public class PostServiceTests
         {
             AuthorId = 1,
             TextContent = "test content",
-            Images = new List<Image>()
+            Images = new List<ImageDTO>()
         };
 
         var expectedPostEntity = new Post()
@@ -652,7 +553,7 @@ public class PostServiceTests
     {
         //Arrange
         _applicationContextMock.Setup(c => c.Posts).ReturnsDbSet(_mockPosts);
-        _validatorMock.Setup(v => v.ValidateAsync(It.IsAny<PostDTO>(), CancellationToken.None))
+        _postDTOValidatorMock.Setup(v => v.ValidateAsync(It.IsAny<PostDTO>(), CancellationToken.None))
             .ReturnsAsync(new ValidationResult()
             {
                 Errors = new List<ValidationFailure>() {new ValidationFailure()}
@@ -662,13 +563,13 @@ public class PostServiceTests
         {
             AuthorId = 1,
             TextContent = "",
-            Images = new List<Image>()
+            Images = new List<ImageDTO>()
         };
         
         var expectedPostEntity = new Post()
         {
             TextContent = createdPost.TextContent,
-            Images = createdPost.Images
+            Images = createdPost.Images.Select(i => _mapperMock.Object.Map<Image>(i)).ToList()
         };
         
 
@@ -687,7 +588,7 @@ public class PostServiceTests
     {
         //Arrange
         _applicationContextMock.Setup(c => c.Posts).ReturnsDbSet(_mockPosts);
-        _validatorMock.Setup(v => v.ValidateAsync(It.IsAny<PostDTO>(), CancellationToken.None))
+        _postDTOValidatorMock.Setup(v => v.ValidateAsync(It.IsAny<PostDTO>(), CancellationToken.None))
             .ReturnsAsync(new ValidationResult()
             {
                 Errors = new List<ValidationFailure>()
@@ -697,9 +598,9 @@ public class PostServiceTests
         {
             
             TextContent = "update text",
-            Images = new List<Image>()
+            Images = new List<ImageDTO>()
             {
-                new Image
+                new ImageDTO()
                 {
                     Id = 1,
                     Url = "updatedImage.jpg"
@@ -729,7 +630,7 @@ public class PostServiceTests
     {
         //Arrange
         _applicationContextMock.Setup(c => c.Posts).ReturnsDbSet(_mockPosts);
-        _validatorMock.Setup(v => v.ValidateAsync(It.IsAny<PostDTO>(), CancellationToken.None))
+        _postDTOValidatorMock.Setup(v => v.ValidateAsync(It.IsAny<PostDTO>(), CancellationToken.None))
             .ReturnsAsync(new ValidationResult()
             {
                 Errors = new List<ValidationFailure>() {new ValidationFailure()}
@@ -740,7 +641,7 @@ public class PostServiceTests
         {
             
             TextContent = "",
-            Images = new List<Image>()
+            Images = new List<ImageDTO>()
 
         };
         string actualText = _mockPosts[0].TextContent;
