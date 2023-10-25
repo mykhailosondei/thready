@@ -154,9 +154,6 @@ export class SearchResultsPageComponent implements OnInit{
           }
           const currentUsers = this.matchingUsers$.getValue();
           this.matchingUsers$.next([...currentUsers, ...newUsers])
-          if (this.matchingUsers$.getValue().length == 0){
-            this.noPeopleFound = true;
-          }
         }
       );
   }
