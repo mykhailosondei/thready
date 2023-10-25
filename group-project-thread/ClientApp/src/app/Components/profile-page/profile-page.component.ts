@@ -214,6 +214,10 @@ export class ProfilePageComponent implements OnInit, OnDestroy{
     return PostFormatter.getCircleColor(this.user.username);
   }
 
+  isAvatarNull(): boolean {
+    return this.user.avatar === null || this.user.avatar.url === "";
+  }
+
   loadNewUser(username : string) {
     if (this.username == username){
       return;

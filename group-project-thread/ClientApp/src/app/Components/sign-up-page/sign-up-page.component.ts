@@ -90,10 +90,12 @@ export class SignUpPageComponent {
       this.submitted = true;
       this.loading = true;
       this.authService.register( this.createUserFromForm())
-        .pipe(finalize(() => this.submitted = false))
+        .pipe(finalize(() => {
+          this.submitted = false;
+          this.loading = false;
+        }))
       .subscribe(
         () => {
-          this.loading = false;
           this.router.navigate(['/login']);
         },
         (error)=> {

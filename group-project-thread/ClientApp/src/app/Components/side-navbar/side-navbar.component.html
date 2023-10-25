@@ -58,11 +58,7 @@
     <div class="profile-footer">
       <div></div>
       <div class="profile">
-        <a href="{{user.username}}/profile" class="user-link"></a>
-          <div class="user-avatar" [ngStyle]="{'background-color': getCircleColor()}">
-            <img class="profile-small-image" *ngIf="!isAvatarNull()" src="{{user.avatar!.url}}" alt="{{user.username}}}">
-            <div *ngIf="isAvatarNull()" class="initial">{{getFirstInitial()}}</div>
-          </div>
+       <app-user-avatar [user]="user"></app-user-avatar>
         <div class="profile-username">{{user.username}}</div>
       </div>
     </div>
