@@ -14,6 +14,11 @@ public class PostsContentsIndexer
         _indexerContext = indexerContext;
     }
 
+    protected PostsContentsIndexer()
+    {
+        
+    }
+
     public async Task AddIndexedWordsToTableByPostId(int id, string textContent)
     {
         var words = await _indexerContext.IndexedWords.ToListAsync();

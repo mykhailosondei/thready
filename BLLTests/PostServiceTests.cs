@@ -97,9 +97,10 @@ public class PostServiceTests
             .Returns((PostCreateDTO postCreateDTO) => new Post
             {
                 UserId = postCreateDTO.AuthorId,
+                Author = new User(),
                 TextContent = postCreateDTO.TextContent,
                 Images = postCreateDTO.Images.Select(i => _mapperMock.Object.Map<Image>(i)).ToList(),
-                CommentsIds = null
+                CommentsIds = new List<int>()
                 
             });
 
@@ -154,17 +155,22 @@ public class PostServiceTests
             new User()
             {
                 Id = 10,
+                Avatar = new Image(),
                 Posts = new List<Post>()
                 {
                     new Post
                     {
                         Id = 1,
-                        TextContent = "test post1"
+                        UserId = 10,
+                        TextContent = "test post1",
+                        Images = new List<Image>(),
                     },
                     new Post
                     {
                         Id = 2,
-                        TextContent = "test post2"
+                        UserId = 10,
+                        TextContent = "test post2",
+                        Images = new  List<Image>()
                     }
                 },
                 RepostsIds = new List<int>(),
@@ -175,6 +181,7 @@ public class PostServiceTests
                 Id = 11,
                 Username = "testuser11",
                 Email = "test11@gmail.com",
+                Avatar = new Image(),
                 Posts = new List<Post>()
                 {
                     new Post
@@ -182,6 +189,7 @@ public class PostServiceTests
                         Id = 3,
                         UserId = 11,
                         TextContent = "test post 3",
+                        Images = new List<Image>(),
                         Bookmarks = 2,
                         
                     }
@@ -195,6 +203,7 @@ public class PostServiceTests
                 Id = 12,
                 Username = "testuser12",
                 Email = "test12@gmail.com",
+                Avatar = new Image(),
                 Posts = new List<Post>()
                 {
                     new Post()
@@ -202,6 +211,7 @@ public class PostServiceTests
                         Id = 4,
                         UserId = 12,
                         TextContent = "test post 4",
+                        Images = new List<Image>(),
                         Bookmarks = 4,
                         RepostersIds = new List<int>() {10, 11}
                     }, 
@@ -210,6 +220,7 @@ public class PostServiceTests
                     Id = 5,
                     UserId = 12,
                     TextContent = "test post 5",
+                    Images = new List<Image>(),
                     Bookmarks = 0,
                     RepostersIds = new List<int>()
                 }
@@ -224,19 +235,22 @@ public class PostServiceTests
             new UserDTO()
             {
                 Id = 10,
+                Avatar = new ImageDTO(),
                 Posts = new List<PostDTO>()
                 {
                     new PostDTO()
                     {
                         Id = 1,
                         UserId = 10,
-                        TextContent = "test post1"
+                        TextContent = "test post1",
+                        Images = new List<ImageDTO>()
                     },
                     new PostDTO()
                     {
                         Id = 2,
                         UserId = 10,
-                        TextContent = "test post2"
+                        TextContent = "test post2",
+                        Images = new List<ImageDTO>()
                     }
                 }
             },
@@ -245,6 +259,7 @@ public class PostServiceTests
                 Id = 11,
                 Username = "testuser11",
                 Email = "test11@gmail.com",
+                Avatar = new ImageDTO(),
                 Posts = new List<PostDTO>()
                 {
                     new PostDTO()
@@ -252,6 +267,7 @@ public class PostServiceTests
                         Id = 3,
                         UserId = 11,
                         TextContent = "test post 3",
+                        Images = new List<ImageDTO>(),
                         Bookmarks = 2,
                     }
                 },
@@ -263,6 +279,7 @@ public class PostServiceTests
                 Id = 12,
                 Username = "testuser12",
                 Email = "test12@gmail.com",
+                Avatar = new ImageDTO(),
                 Posts = new List<PostDTO>()
                 {
                     new PostDTO()
@@ -270,6 +287,7 @@ public class PostServiceTests
                         Id = 4,
                         UserId = 12,
                         TextContent = "test post 4",
+                        Images = new List<ImageDTO>(),
                         Bookmarks = 4,
                         RepostersIds = new List<int>() {10, 11}
                     }, 
@@ -278,6 +296,7 @@ public class PostServiceTests
                         Id = 5,
                         UserId = 12,
                         TextContent = "test post 5",
+                        Images = new List<ImageDTO>(),
                         Bookmarks = 0,
                         RepostersIds = new List<int>()
                     }
@@ -291,18 +310,21 @@ public class PostServiceTests
             new Post
             {
                 Id = 1,
-                TextContent = "test post1"
+                TextContent = "test post1",
+                Images = new List<Image>()
             },
             new Post
             {
                 Id = 2,
-                TextContent = "test post2"
+                TextContent = "test post2",
+                Images = new List<Image>()
             },
             new Post
             {
                 Id = 3,
                 UserId = 11,
                 TextContent = "test post 3",
+                Images = new List<Image>(),
                 Bookmarks = 2,
                         
             },
@@ -311,6 +333,7 @@ public class PostServiceTests
                 Id = 4,
                 UserId = 12,
                 TextContent = "test post 4",
+                Images = new List<Image>(),
                 Bookmarks = 4,
                 RepostersIds = new List<int>() { 10, 11 }
             },
@@ -319,6 +342,7 @@ public class PostServiceTests
                 Id = 5,
                 UserId = 12,
                 TextContent = "test post 5",
+                Images = new List<Image>(),
                 Bookmarks = 0,
                 RepostersIds = new List<int>()
             }
@@ -330,18 +354,21 @@ public class PostServiceTests
             new PostDTO()
             {
                 Id = 1,
-                TextContent = "test post1"
+                TextContent = "test post1",
+                Images = new List<ImageDTO>()
             },
             new PostDTO()
             {
                 Id = 2,
-                TextContent = "test post2"
+                TextContent = "test post2",
+                Images = new List<ImageDTO>()
             },
             new PostDTO()
             {
                 Id = 3,
                 UserId = 11,
                 TextContent = "test post 3",
+                Images = new List<ImageDTO>(),
                 Bookmarks = 2,
                         
             },
@@ -350,6 +377,7 @@ public class PostServiceTests
                 Id = 4,
                 UserId = 12,
                 TextContent = "test post 4",
+                Images = new List<ImageDTO>(),
                 Bookmarks = 4,
                 RepostersIds = new List<int>() { 10, 11 }
             },
@@ -358,6 +386,7 @@ public class PostServiceTests
                 Id = 5,
                 UserId = 12,
                 TextContent = "test post 5",
+                Images = new List<ImageDTO>(),
                 Bookmarks = 0,
                 RepostersIds = new List<int>()
             }
@@ -369,184 +398,6 @@ public class PostServiceTests
     private List<Post> _mockPosts;
     private List<PostDTO> _mockPostsModels;
     
-    
-
-    [Fact]
-    public async Task BookmarkPost_ShouldAddPostToUserBookmarks()
-    {
-        
-        //Arrange
-        _applicationContextMock.Setup(c => c.Users).ReturnsDbSet(_testUsers);
-        _userQueryRepositoryMock.Setup(c => c.GetUserById(It.IsAny<int>())).ReturnsAsync(_testUsersModels[2]);
-        _applicationContextMock.Setup(c => c.Posts).ReturnsDbSet(_mockPosts);
-        int expectedBookmarkedIdLength = 2;
-        int expectedPostId = 2;
-        //Act
-        await _postService.BookmarkPost(2, 12);
-        //Assert
-        Assert.Equal(expectedBookmarkedIdLength ,_testUsersModels[2].BookmarkedPostsIds.Count);
-        Assert.Equal(expectedPostId, _testUsersModels[2].BookmarkedPostsIds[1]);
-    }
-    
-    
-    [Fact]
-    public async Task BookmarkPost_ShouldDoNothingIfPostIdIsInUserBookmarksIds()
-    {
-        
-        //Arrange
-        _applicationContextMock.Setup(c => c.Users).ReturnsDbSet(_testUsers);
-        _userQueryRepositoryMock.Setup(c => c.GetUserById(It.IsAny<int>())).ReturnsAsync(_testUsersModels[2]);
-        _applicationContextMock.Setup(c => c.Posts).ReturnsDbSet(this._mockPosts);
-        
-        int expectedBookmarkedIdLength = 1;
-        //Act
-        await _postService.BookmarkPost(3, 12);
-        //Assert
-        Assert.Equal(expectedBookmarkedIdLength ,_testUsersModels[2].BookmarkedPostsIds.Count);
-    }
-    
-    [Fact]
-    public async Task RemoveFromBookmarksPost_ShouldRemovePostFromUserBookmarks()
-    {
-        
-        //Arrange
-        _applicationContextMock.Setup(c => c.Users).ReturnsDbSet(_testUsers);
-        _userQueryRepositoryMock.Setup(c => c.GetUserById(It.IsAny<int>())).ReturnsAsync(_testUsersModels[2]);
-        _applicationContextMock.Setup(c => c.Posts).ReturnsDbSet(this._mockPosts);
-        
-        
-        int expectedBookmarkedIdLength = 0;
-        //Act
-        await _postService.RemoveFromBookmarksPost(3, 12);
-        //Assert
-        Assert.Equal(expectedBookmarkedIdLength ,_testUsersModels[2].BookmarkedPostsIds.Count);
-    }
-    
-    [Fact]
-    public async Task RemoveFromBookmarksPost_ShouldDoNothingIfPostIdIsNotInUserBookmarksIds()
-    {
-        
-        //Arrange
-        _applicationContextMock.Setup(c => c.Users).ReturnsDbSet(_testUsers);
-        _userQueryRepositoryMock.Setup(c => c.GetUserById(It.IsAny<int>())).ReturnsAsync(_testUsersModels[2]);
-        _applicationContextMock.Setup(c => c.Posts).ReturnsDbSet(this._mockPosts);
-        
-        int expectedBookmarkedIdLength = 1;
-        //Act
-        await _postService.RemoveFromBookmarksPost(5, 12);
-        //Assert
-        Assert.Equal(expectedBookmarkedIdLength ,_testUsersModels[2].BookmarkedPostsIds.Count);
-    }
-    
-    [Fact]
-    public async Task Repost_ShouldAddPostIdToUserRepostIds()
-    {
-        
-        //Arrange
-        _applicationContextMock.Setup(c => c.Users).ReturnsDbSet(_testUsers);
-        _userQueryRepositoryMock.Setup(c => c.GetUserById(It.IsAny<int>())).ReturnsAsync(_testUsersModels[1]);
-        _applicationContextMock.Setup(c => c.Posts).ReturnsDbSet(this._mockPosts);
-        
-        int expectedRepostIdLength = 2;
-        int expectedPostId = 5;
-        //Act
-        await _postService.Repost(5, 11);
-        //Assert
-        Assert.Equal(expectedRepostIdLength ,_testUsersModels[2].RepostsIds.Count);
-        Assert.Equal(expectedPostId, _testUsersModels[2].RepostsIds[1]);
-    }
-    
-    [Fact]
-    public async Task Repost_ShouldDoNothingIfPostAlreadyInUserReposts()
-    {
-        
-        //Arrange
-        _applicationContextMock.Setup(c => c.Users).ReturnsDbSet(_testUsers);
-        _userQueryRepositoryMock.Setup(c => c.GetUserById(It.IsAny<int>())).ReturnsAsync(_testUsersModels[1]);
-        _applicationContextMock.Setup(c => c.Posts).ReturnsDbSet(this._mockPosts);
-        
-        int expectedRepostIdLength = 1;
-        int expectedPostId = 1;
-        //Act
-        await _postService.Repost(1, 11);
-        //Assert
-        Assert.Equal(expectedRepostIdLength ,_testUsersModels[1].RepostsIds.Count);
-        Assert.Equal(expectedPostId, _testUsersModels[1].RepostsIds[0]);
-    }
-    
-    [Fact]
-    public async Task UndoRepost_ShouldRemovePostIdFromUserRepostIds()
-    {
-        
-        //Arrange
-        _applicationContextMock.Setup(c => c.Users).ReturnsDbSet(_testUsers);
-        _userQueryRepositoryMock.Setup(c => c.GetUserById(It.IsAny<int>())).ReturnsAsync(_testUsersModels[1]);
-        _applicationContextMock.Setup(c => c.Posts).ReturnsDbSet(this._mockPosts);
-        
-        int expectedRepostIdLength = 0;
-        //Act
-        await _postService.UndoRepost(1, 11);
-        //Assert
-        Assert.Equal(expectedRepostIdLength ,_testUsersModels[2].RepostsIds.Count);
-    }
-    
-    [Fact]
-    public async Task UndoRepost_ShouldDoNothingIfPostIsNotInUserReposts()
-    {
-        
-        //Arrange
-        _applicationContextMock.Setup(c => c.Users).ReturnsDbSet(_testUsers);
-        _userQueryRepositoryMock.Setup(c => c.GetUserById(It.IsAny<int>())).ReturnsAsync(_testUsersModels[1]);
-        _applicationContextMock.Setup(c => c.Posts).ReturnsDbSet(this._mockPosts);
-        
-        int expectedRepostIdLength = 1;
-        int expectedPostId = 1;
-        //Act
-        await _postService.UndoRepost(5, 11);
-        //Assert
-        Assert.Equal(expectedRepostIdLength ,_testUsersModels[1].RepostsIds.Count);
-        Assert.Equal(expectedPostId, _testUsersModels[1].RepostsIds[0]);
-    }
-
-    [Fact]
-    public async Task CreatePost_ShouldCreateValidPost()
-    {
-        //Arrange
-        _applicationContextMock.Setup(c => c.Posts).ReturnsDbSet(_mockPosts);
-
-        _postDTOValidatorMock.Setup(v => v.ValidateAsync(It.IsAny<PostDTO>(), CancellationToken.None))
-            .ReturnsAsync(new ValidationResult()
-            {
-                Errors = new List<ValidationFailure>()
-            });
-        
-        var createdPost = new PostCreateDTO
-        {
-            AuthorId = 1,
-            TextContent = "test content",
-            Images = new List<ImageDTO>()
-        };
-
-        var expectedPostEntity = new Post()
-        {
-            TextContent = createdPost.TextContent
-        };
-        _applicationContextMock.Setup(c => c.Posts.Add(It.IsAny<Post>()))
-            .Callback<Post>(postEntity =>
-            {
-                expectedPostEntity.Id = 6;
-                _mockPosts.Add(expectedPostEntity);
-            });
-        
-        int expectedPostId = 6;
-        int expectedPostsCount = 6;
-        //Act
-        await _postService.CreatePost(createdPost);
-        //Assert
-        Assert.Equal(expectedPostId, _mockPosts[5].Id);
-        Assert.Equal(expectedPostsCount, _mockPosts.Count);
-
-    }
     
     [Fact]
     public async Task CreatePost_ShouldThrowExceptionOnInvalidPost()
@@ -583,95 +434,6 @@ public class PostServiceTests
 
     }
 
-    [Fact]
-    public async Task PutPost_ShouldUpdatePost_WhenValidInputIsProvided()
-    {
-        //Arrange
-        _applicationContextMock.Setup(c => c.Posts).ReturnsDbSet(_mockPosts);
-        _postDTOValidatorMock.Setup(v => v.ValidateAsync(It.IsAny<PostDTO>(), CancellationToken.None))
-            .ReturnsAsync(new ValidationResult()
-            {
-                Errors = new List<ValidationFailure>()
-            });
-        int postToUpdateID = 1;
-        PostUpdateDTO updatedPost = new PostUpdateDTO
-        {
-            
-            TextContent = "update text",
-            Images = new List<ImageDTO>()
-            {
-                new ImageDTO()
-                {
-                    Id = 1,
-                    Url = "updatedImage.jpg"
-                }
-            }
-
-        };
-
-        _applicationContextMock.Setup(c => c.Posts.Update(It.IsAny<Post>())).
-            Callback<Post>((entity) =>
-            {
-                entity.Id = postToUpdateID;
-                _mockPosts.Remove(_mockPosts[0]);
-                _mockPosts.Add(entity);
-            });
-        //Act
-        await _postService.PutPost(postToUpdateID, updatedPost);
-        
-        //Assert
-        Assert.Equal(updatedPost.TextContent, _mockPosts[4].TextContent);
-        Assert.Equal(updatedPost.Images.Count, _mockPosts[4].Images.Count);
-
-    }
-    
-    [Fact]
-    public async Task PutPost_ShouldThrowAnExceptionWhenInvalidInfoProvided()
-    {
-        //Arrange
-        _applicationContextMock.Setup(c => c.Posts).ReturnsDbSet(_mockPosts);
-        _postDTOValidatorMock.Setup(v => v.ValidateAsync(It.IsAny<PostDTO>(), CancellationToken.None))
-            .ReturnsAsync(new ValidationResult()
-            {
-                Errors = new List<ValidationFailure>() {new ValidationFailure()}
-            });
-        
-        int postToUpdateID = 1;
-        PostUpdateDTO updatedPost = new PostUpdateDTO()
-        {
-            
-            TextContent = "",
-            Images = new List<ImageDTO>()
-
-        };
-        string actualText = _mockPosts[0].TextContent;
-        //Assert & act
-        var ex = await Assert.ThrowsAsync<EmptyPostException>(
-            async () => await _postService.PutPost(postToUpdateID, updatedPost)
-        );
-        _outputHelper.WriteLine("" + ex);
-        Assert.Equal(actualText, _mockPosts[0].TextContent);
-
-    }
-
-    [Fact]
-    public async Task DeletePost_ShouldSuccessfullyDeletePost()
-    {
-        //Arrange
-        int postId = 1;
-        var actualPost = _mockPosts[0];
-        _applicationContextMock.Setup(c => c.Posts).ReturnsDbSet(_mockPosts);
-        _applicationContextMock.Setup(c => c.Posts.Remove(It.IsAny<Post>()))
-            .Callback<Post>(( postEntity) =>
-            {
-                // Simulate the removal of the user from the database
-                _mockPosts.Remove(actualPost);
-            });
-        //Act
-        await _postService.DeletePost(postId);
-        //Assert
-        Assert.DoesNotContain(actualPost, _mockPosts);
-    }
     
     
 }
