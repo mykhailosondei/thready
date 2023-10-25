@@ -145,10 +145,11 @@ export class ProfilePageComponent implements OnInit, OnDestroy{
     this.userService.getCurrentUserInstance().subscribe(
       (user) => {
         if (this.username == user.username){
-          this.postsText = "Your posts"
+          this.postsText = "Your posts";
+          this.isCurrentUser = true;
           this.Endpoint = Endpoint.Profile;
         }else{
-          this.postsText = "User posts"
+          this.postsText = "User posts";
           this.Endpoint = Endpoint.None;
         }
       });

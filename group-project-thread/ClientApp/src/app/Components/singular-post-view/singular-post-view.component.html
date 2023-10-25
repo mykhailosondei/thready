@@ -1,13 +1,17 @@
 <app-nav-wrapper [activatedEndpoint]="Endpoint.None">
   <div class="main-page">
-    <div *ngIf="postInput && authorInput && post" class="post-holder">
+    <app-top-blurry-bar [title]="'Post'"></app-top-blurry-bar>
+    <div *ngIf="postInput && authorInput" class="post-holder">
       <div class="page-post">
         <div class="post-header">
-          <app-user-avatar [user]="authorInput"></app-user-avatar>
-          <div class="user-info" #userInfo (mouseenter)="onUserInfoMouseEnter()" (mouseleave)="onUserInfoMouseLeave()">
-            <a href="{{authorInput.username}}/profile" class="user-link"></a>
-            <div class="user-name">
-              <b>{{authorInput.username}}</b>
+          <div class="user-holder">
+            <app-user-avatar [user]="authorInput"></app-user-avatar>
+            <div class="user-info" #userInfo (mouseenter)="onUserInfoMouseEnter()"
+                 (mouseleave)="onUserInfoMouseLeave()">
+              <a href="{{authorInput.username}}/profile" class="user-link"></a>
+              <div class="user-name">
+                <b>{{authorInput.username}}</b>
+              </div>
             </div>
           </div>
               <div class="action-buttons">

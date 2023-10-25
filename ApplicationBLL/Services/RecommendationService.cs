@@ -50,7 +50,7 @@ public class RecommendationService : BaseService
         var postsBasedOnBio = await _indexedContentReader.GetPosts(user.Bio, 0, 10);
         result.AddRange(postsBasedOnLocation);
         result.AddRange(postsBasedOnBio);
-        var popularPosts = await _applicationContext.Posts.Include(p => p.Author).OrderByDescending(p => p.ViewedBy)
+        var popularPosts = await _applicationContext.Posts.Include(p => p.Author).ThenInclude(a => a.Avatar).Include(p => p.Images).OrderByDescending(p => p.ViewedBy)
             .Take(30-result.Count).ToListAsync();
         var postsDTOs = popularPosts.Select(p => _mapper.Map<PostDTO>(p));
         result.AddRange(postsDTOs);

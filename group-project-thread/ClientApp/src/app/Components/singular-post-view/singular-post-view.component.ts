@@ -25,6 +25,9 @@ import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {CommentCreationDialogComponent} from "../comment-creation-dialog/comment-creation-dialog.component";
 import {CommentCreateDialogData} from "../../models/coment/CommentCreateDialogData";
 import {Endpoint} from "../side-navbar/side-navbar.component";
+import {DeleteDialogComponent} from "../delete-dialog/delete-dialog.component";
+import {Location} from "@angular/common";
+import {PostEditorDialogComponent} from "../post-editor-dialog/post-editor-dialog.component";
 
 @Component({
   selector: 'app-singular-post-view',
@@ -54,7 +57,8 @@ export class SingularPostViewComponent implements OnInit{
     constructor(private route : ActivatedRoute, private userService : UserService,
                 private postService : PostService, private commentService : CommentService,
                 private hoverCardTriggerService: UserHoverCardTriggerService,
-                private dialog: MatDialog) {
+                private dialog: MatDialog,
+                private readonly location: Location ) {
       this.route.paramMap.subscribe(params => {
         this.incomingUsername = params.get('username') || 'DefaultUsername';
         const postId = params.get('id');
@@ -251,10 +255,44 @@ export class SingularPostViewComponent implements OnInit{
 
 
   openDeleteDialog() {
+    const dialogRef : MatDialogRef<DeleteDialogComponent, boolean> = this.dialog.open(DeleteDialogComponent, {
+      width: '400px'
+    });
 
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        this.postService.deletePost(this.post.id).subscribe(response => {
+          if(response.ok) {
+            console.log("Post deleted");
+            this.location.back();
+          }
+        });
+      }
+    });
   }
 
   openEditDialog() {
+    const dialogRef: MatDialogRef<PostEditorDialogComponent, {
+      imagesOutput: string[],
+      textContentOutput: string
+    }> = this.dialog.open(PostEditorDialogComponent, {
+      width: '500px',
+      data: {post: this.post},
+      disableClose: true
+    });
 
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === undefined) return;
+      this.postService.putPost(this.post.id, {
+        textContent: result.textContentOutput,
+        images: result.imagesOutput.map(i => {return {url: i}})
+      }).subscribe(response => {
+          console.log(response);
+          if (!response.ok) return;
+          this.post.textContent = result.textContentOutput;
+          this.post.imagesUrls = result.imagesOutput;
+        }
+      );
+    });
   }
 }

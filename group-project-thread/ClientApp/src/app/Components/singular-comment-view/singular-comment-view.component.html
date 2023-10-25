@@ -1,5 +1,6 @@
 <app-nav-wrapper [activatedEndpoint]="Endpoint.None">
   <div class="main-page">
+    <app-top-blurry-bar [title]="'Reply'"></app-top-blurry-bar>
     <app-page-post *ngIf="parentPost" [postInput]="parentPost" [isParentView]="true"></app-page-post>
     <app-page-comment *ngFor="let comment of parentComments" [commentInput]="comment" [userInput]="comment.author" [isParentView]="true"></app-page-comment>
     <div *ngIf="commentInput && authorInput" class="post-holder">
@@ -8,13 +9,27 @@
           <div class="gray-collar-shorter"></div>
         </div>
         <div class="post-header">
-          <app-user-avatar [user]="authorInput"></app-user-avatar>
-          <div class="user-info" #userInfo (mouseenter)="onUserInfoMouseEnter()" (mouseleave)="onUserInfoMouseLeave()">
-            <a href="{{authorInput.username}}/profile" class="user-link"></a>
-            <div class="user-name">
-              <b>{{authorInput.username}}</b>
+          <div class="user-holder">
+            <app-user-avatar [user]="authorInput"></app-user-avatar>
+            <div class="user-info" #userInfo (mouseenter)="onUserInfoMouseEnter()"
+                 (mouseleave)="onUserInfoMouseLeave()">
+              <a href="{{authorInput.username}}/profile" class="user-link"></a>
+              <div class="user-name">
+                <b>{{authorInput.username}}</b>
+              </div>
             </div>
-
+          </div>
+          <div class="action-buttons">
+            <div *ngIf="editable" class="edit">
+              <button class="delete-button" (click)="openDeleteDialog()">
+                <fa-icon [icon]="faTrash"></fa-icon>
+              </button>
+            </div>
+            <div *ngIf="editable" class="edit">
+              <button class="action-button" (click)="openEditDialog()">
+                <fa-icon [icon]="faPen"></fa-icon>
+              </button>
+            </div>
           </div>
         </div>
         <div class="post-body">
