@@ -1,5 +1,6 @@
 <app-nav-wrapper [activatedEndpoint]="Endpoint.None">
   <div class="main-page">
+    <app-top-blurry-bar [title]="'Reply'"></app-top-blurry-bar>
     <app-page-post *ngIf="parentPost" [postInput]="parentPost" [isParentView]="true"></app-page-post>
     <app-page-comment *ngFor="let comment of parentComments" [commentInput]="comment" [userInput]="comment.author" [isParentView]="true"></app-page-comment>
     <div *ngIf="commentInput && authorInput" class="post-holder">
