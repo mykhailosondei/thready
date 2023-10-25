@@ -26,7 +26,7 @@ public class CommentControllerTests : IntegrationTest
         // Arrange
         await AuthenticateAsync();
         
-        int commentId = 2;
+        int commentId = 1;
         var requestUri = $"/api/Comment/{commentId}";
 
         // Act
@@ -88,7 +88,7 @@ public class CommentControllerTests : IntegrationTest
         // Arrange
         await AuthenticateAsync();
 
-        int commentId = 2;
+        int commentId = 1;
         var requestUri = $"/api/Comment/{commentId}/likeComment";
 
         // Act
@@ -107,7 +107,7 @@ public class CommentControllerTests : IntegrationTest
         // Arrange
         await AuthenticateAsync();
 
-        int commentId = 2;
+        int commentId = 1;
         var comment = new CommentUpdateDTO()
         {
            TextContent = "test update",
@@ -162,7 +162,7 @@ public class CommentControllerTests : IntegrationTest
         // Arrange
         await AuthenticateAsync();
 
-        int commentId = 2;
+        int commentId = 1;
         var requestUri = $"/api/Comment/{commentId}/unlikeComment";
 
         // Act

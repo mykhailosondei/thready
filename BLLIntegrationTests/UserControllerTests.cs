@@ -25,7 +25,6 @@ public class UserControllerTests : IntegrationTest
     public async Task GetUserById_ReturnsSuccessfulResponseAndUser()
     {
         // Arrange
-        
         int userId = 1;
         var requestUri = $"/api/User/{userId}";
 
@@ -44,6 +43,8 @@ public class UserControllerTests : IntegrationTest
         // Arrange
         await AuthenticateAsync();
         var requestUri = $"/api/User/currentUser";
+        var expectedId = 1;
+        var expecteUsername = "testuser";
 
         // Act
         var response = await TestClient.GetAsync(requestUri);
@@ -51,31 +52,31 @@ public class UserControllerTests : IntegrationTest
 
         // Assert
         Assert.True(response.IsSuccessStatusCode);
-        Assert.Equal(1, user.Id);
+        Assert.Equal(expectedId, user.Id);
+        Assert.Equal(expecteUsername, user.Username);
     }
     
     [Fact]
     public async Task UserFollow_ShouldFollowUserIfNotAlreadyFollowing_IfFollowingShouldUnfollow()
     {
-        
         //Arrange
         var userDTO = await AuthenticateAsync();
         var expectedFollowingCount = userDTO.FollowingIds.Count;
         var response = await TestClient.GetAsync($"/api/User/2");
         var userToFollowDTO = await response.Content.ReadAsAsync<UserDTO>();
-        var expetedFollowersCount = userToFollowDTO.FollowersIds.Count;
+        var expectedFollowersCount = userToFollowDTO.FollowersIds.Count;
         //Act
         HttpResponseMessage? responseMessage;
         if (userDTO.FollowingIds.Contains(2))
         {
             expectedFollowingCount--;
-            expetedFollowersCount--;
+            expectedFollowersCount--;
             responseMessage = await TestClient.PostAsJsonAsync("/api/User/2/unfollow", 2);
         }
         else
         {
             expectedFollowingCount++;
-            expetedFollowersCount++;
+            expectedFollowersCount++;
             responseMessage = await TestClient.PostAsJsonAsync($"/api/User/2/follow", 2);
         }
 
@@ -85,7 +86,7 @@ public class UserControllerTests : IntegrationTest
         //Assert
         responseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
         Assert.Equal(expectedFollowingCount, actualFollowingCount);
-        Assert.Equal(expetedFollowersCount, actualFollowersCount);
+        Assert.Equal(expectedFollowersCount, actualFollowersCount);
     }
 
     [Fact]
@@ -104,7 +105,7 @@ public class UserControllerTests : IntegrationTest
             Bio = "updated bio",
             Avatar = new ImageDTO()
             {
-                Url = "test14"
+                Url = "test"
             }
         });
         updateRequest.StatusCode.Should().Be(HttpStatusCode.OK);

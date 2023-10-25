@@ -52,8 +52,8 @@ public class IntegrationTest
     {
         var response = await TestClient.PostAsJsonAsync("/api/auth/login", new LoginUserDTO()
         {
-            Email = "littlebobus2005@gmail.com",
-            Password = "testpassword",
+            Email = "integration_tests@gmail.com",
+            Password = "integration_tests",
             });
         var loginResponse = await response.Content.ReadAsAsync<AuthUser>();
         return loginResponse;
