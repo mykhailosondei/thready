@@ -19,6 +19,11 @@ public class CommentQueryRepository : BaseQueryRepository
     {
         
     }
+
+    protected CommentQueryRepository() : base(null, null)
+    {
+        
+    }
     
     public async Task<CommentDTO> GetCommentByIdPlain(int id, params Expression<Func<Comment, object>>[] includeExpressions)
     {

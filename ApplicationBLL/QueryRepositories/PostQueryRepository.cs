@@ -16,6 +16,11 @@ public class PostQueryRepository : BaseQueryRepository
         
     }
     
+    protected PostQueryRepository() : base(null, null)
+    {
+        
+    }
+    
     public async Task<IEnumerable<PostDTO>> GetAllPosts()
     {
         var posts = await _applicationContext.Posts.AsNoTracking()

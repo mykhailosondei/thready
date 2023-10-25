@@ -13,9 +13,15 @@ public class UserQueryRepository : BaseQueryRepository
 
     private readonly IUserIdGetter _userIdGetter;
     
+    
     public UserQueryRepository(ApplicationContext applicationContext, IMapper mapper, IUserIdGetter userIdGetter) : base(applicationContext, mapper)
     {
         _userIdGetter = userIdGetter;
+    }
+    
+    protected UserQueryRepository() : base(null, null)
+    {
+        
     }
 
     public async Task<IEnumerable<UserDTO>> GetAllUsers()
