@@ -1,0 +1,250 @@
+$grey-color: #dcdcdc;
+$font : -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+
+.element{
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  width: 990px;
+  justify-content: space-between;
+}
+
+.profile-info{
+  max-width: 600px;
+  width: 100%;
+}
+
+.empty-area{
+  background-color: rgb(207, 217, 222);
+  padding-bottom: 33.3333%;
+  overflow: hidden;
+  display: flex;
+  width: 100%;
+  position: relative;
+}
+
+.user-info{
+  margin-bottom: 16px;
+  padding-top: 12px;
+  padding-left: 16px;
+  padding-right: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-photo-edit-profile{
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-direction: row;
+  box-sizing: border-box;
+  position: relative;
+  flex-wrap: wrap;
+}
+
+.image-box {
+  position: relative;
+  width: 132px;
+  height: 132px;
+  margin-top: -15%;
+  margin-bottom: 12px;
+  overflow: visible;
+  user-select: none;
+}
+
+.image-wrap {
+  position: absolute;
+  transform: translateX(-50%) translateY(-50%);
+  top: 50%;
+  left: 50%;
+  width: 132px;
+  height: 132px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 60px;
+  color: white;
+  border-radius: 50%;
+  border: 4px solid white;
+}
+
+.profile-image {
+  height: calc(100%);
+  width: calc(100%);
+  border-radius: 50%;
+}
+
+.edit-box{
+  border: 1px solid $grey-color;
+  border-radius: 25px;
+  transition-property: background-color;
+  transition-duration: 0.2s;
+  user-select: none;
+  &:hover{
+    background-color: $grey-color;
+    cursor: pointer;
+  }
+}
+.edit-profile{
+  padding: 6px 16px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-self: center;
+  border: 1px solid rgb(207, 217, 222);
+  border-radius: 25px;
+}
+
+.small-info-box{
+  margin-top: 4px;
+  margin-bottom: 12px;
+}
+
+.bio-box{
+  margin-bottom: 6px;
+}
+.bio{
+  font: $font;
+  font-size: 13px;
+  max-width: 100%;
+  display: inline-block;
+  word-wrap: break-word;
+}
+.user-tag{
+  font: $font;
+  font-weight: 800;
+}
+.dob-location{
+  display: flex;
+  flex-direction: row;
+}
+
+.location-item{
+  margin-right: 10px;
+}
+.small-item{
+  padding-right: 4px;
+  color: rgb(83, 100, 113);
+  font-size: 13px;
+}
+.small-info{
+  font: $font;
+  color: rgb(83, 100, 113);
+  font-size: 13px;
+}
+
+.following-followers{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.following-link{
+  margin-right: 20px;
+  font: $font;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 20px;
+  text-decoration: none;
+  color: black;
+  word-wrap: break-word;
+  cursor: pointer;
+  &:hover{
+    text-decoration-line: underline;
+  }
+}
+
+.followers-link{
+  margin-right: 20px;
+  font: $font;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 20px;
+  text-decoration: none;
+  color: black;
+  cursor: pointer;
+  &:hover{
+    text-decoration-line: underline;
+  }
+}
+
+.following-count{
+  font-weight: 500;
+}
+.following{
+  color: rgb(83, 100, 113);;
+}
+
+.followers-count{
+  font-weight: 500;
+}
+.followers{
+  color: rgb(83, 100, 113);;
+}
+
+.posts-title-box{
+  border-bottom: 1px solid $grey-color;
+  margin: 0px;
+  padding-left: 16px;
+  padding-bottom: 12px;
+}
+.posts-title{
+  font: $font;
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.connection-button-box{
+  min-width: 99px;
+  margin-left: 12px;
+  transition-duration: 0.2s !important;
+  cursor: pointer;
+}
+
+.unfollow-button-box{
+  min-width: 99px;
+  margin-left: 12px;
+  transition-duration: 0.2s !important;
+  cursor: pointer;
+}
+
+
+.follow-button-border{
+  padding: 6px 16px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-self: center;
+  border: 1px solid rgb(207, 217, 222);
+  border-radius: 25px;
+  &:hover{
+    background-color: rgba(244, 33, 46, 0.1);
+    border-color: rgb(253,201,206);
+    .button-text{
+      color: red;
+    }}
+}
+
+.unfollow-button-border{
+  padding: 6px 16px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-self: center;
+  border: 0px solid black;
+  background-color: black;
+  border-radius: 25px;
+  &:hover{
+    background-color: rgba(39,44,48)}
+}
+
+.button-text{
+  font-weight: 700;
+  font-size: 13px;
+}
+.unfollow{
+  color: white;
+  font-weight: 700;
+  font-size: 13px;
+}

@@ -1,0 +1,58 @@
+<div class="sticky-wrap">
+  <div class="header">
+    <div class="header-content">
+      <div  class="back-button" >
+        <div class="svg-pic" aria-label="back" role="button" (click)="backToMainPaige()" >
+          <fa-icon [icon]="faArrowLeftLong" class="arrowIcon"></fa-icon>
+        </div>
+      </div>
+      <div class="search-bar-area">
+        <div class="search-bar-box">
+          <div class="input-box">
+            <div class="svg-box">
+              <fa-icon [icon]="faMagnifyingGlass" class="search-icon"></fa-icon>
+            </div>
+            <div class="input-area">
+              <input class="search-query-input" placeholder="Search" [(ngModel)]="query" [value]="query" (keyup.enter)="searchByQuery()">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="go-button">
+        <div class="go-box" (click)="searchByQuery()">
+          <span>Go</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="border-bottom: 1px solid #dcdcdc">
+    <nav class="navigation-bar">
+      <div role="tablist" class="navigation-bar-content">
+        <div class="tab-box" (click)="navigateToFirstTab()">
+          <div class="tab">
+            <div class="tab-text-box">
+              <span class="first-tab-text" [ngClass]="{'first-tab-selected': selectedTab== 0}">
+                {{firstTabName}}
+              </span>
+            </div>
+            <div *ngIf="selectedTab==0" class="selected-tab">
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-box" (click)="navigateToSecondTab()">
+          <div class="tab">
+            <div class="tab-text-box">
+              <span class="second-tab-text" [ngClass]="{'second-tab-selected': selectedTab == 1}">
+                {{secondTabName}}
+              </span>
+            </div>
+            <div *ngIf="selectedTab == 1" class="selected-tab">
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </div>
+</div>

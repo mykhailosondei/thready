@@ -1,0 +1,42 @@
+.wrapper{
+  position: relative;
+  display: flex;
+  box-sizing: border-box;
+}
+
+.trending-word-box{
+  cursor: pointer;
+  flex-direction: column;
+  transition-duration: 0.2s;
+  width: 100%;
+}
+.trending-word-box:hover{
+  background-color: rgba(0,0,0, 0.03);
+}
+.text-box{
+  flex-direction: column;
+  padding: 12px;
+}
+.small-text{
+  color: rgb(83, 100, 113);
+  font-size: 12px;
+  font-weight: 400;
+}
+.main-text{
+  font-weight: 600;
+  font-size: 16px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+.title-box{
+  position: relative;
+  display: flex;
+  padding: 12px;
+}
+.title{
+  font-weight: 700;
+  font-size: 18px;
+}
+
+

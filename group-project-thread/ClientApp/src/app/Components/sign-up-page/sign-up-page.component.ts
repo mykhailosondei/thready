@@ -1,14 +1,15 @@
-import {HttpHeaders, HttpResponse} from '@angular/common/http';
-import {Component, Inject} from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import {finalize, map, Subject, takeUntil} from 'rxjs';
-import { AuthService } from 'src/app/Services/auth.service';
+import {HttpResponse} from '@angular/common/http';
+import {Component} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Router} from '@angular/router';
+import {finalize, Subject, takeUntil} from 'rxjs';
+import {AuthService} from 'src/app/Services/auth.service';
 import ValidateForm from 'src/app/helpers/validateForm';
-import { RegisterUserDTO } from 'src/app/models/auth/registerUserDTO';
-import { formatDate} from "@angular/common";
+import {RegisterUserDTO} from 'src/app/models/auth/registerUserDTO';
+import {formatDate} from "@angular/common";
 import {SnackbarService} from "../../Services/snackbar.service";
 import {ValidatorService} from "../../Services/validator.service";
+import {months} from "../../../assets/months";
 
 @Component({
   selector: 'app-sign-up-page',
@@ -33,26 +34,14 @@ export class SignUpPageComponent {
   selectedYear: number | null = null;
   years: number[] = [];
   selectedMonth: number | null = null;
-  months: { value: number; name: string }[] = [
-    { value: 1, name: 'January' },
-    { value: 2, name: 'February' },
-    { value: 3, name: 'March' },
-    { value: 4, name: 'April' },
-    { value: 5, name: 'May' },
-    { value: 6, name: 'June' },
-    { value: 7, name: 'July' },
-    { value: 8, name: 'August' },
-    { value: 9, name: 'September' },
-    { value: 10, name: 'October' },
-    { value: 11, name: 'November' },
-    { value: 12, name: 'December' }
-  ];
+  months: { value: number; name: string }[] = months;
+
   regisForm!: FormGroup;
-  private unsubscribe$ = new Subject<void>();
   private submitted: boolean = false;
   private timeout: any = null;
   emailAvailabilityMessage : string = "";
   usernameAvailabilityMessage : string = "";
+  loading: boolean;
 
   constructor(private fb: FormBuilder, private authService : AuthService,
               private router: Router, private snackBarService : SnackbarService,
@@ -81,11 +70,6 @@ export class SignUpPageComponent {
   }
 
 
-  public ngOnDestroy() {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
-}
-
   createUserFromForm(): RegisterUserDTO{
       const registerUser: RegisterUserDTO = {
       username: this.regisForm.get('username')!.value,
@@ -104,8 +88,12 @@ export class SignUpPageComponent {
   onSubmit(){
     if(this.regisForm.valid && !this.submitted && this.emailAvailabilityMessage == "" && this.usernameAvailabilityMessage == ""){
       this.submitted = true;
+      this.loading = true;
       this.authService.register( this.createUserFromForm())
-        .pipe(takeUntil(this.unsubscribe$), finalize(() => this.submitted = false))
+        .pipe(finalize(() => {
+          this.submitted = false;
+          this.loading = false;
+        }))
       .subscribe(
         () => {
           this.router.navigate(['/login']);
@@ -145,8 +133,7 @@ export class SignUpPageComponent {
       if (event.keyCode !== 13) {
         if (target) {
           this.availabilityService.isEmailAvailable(target.value)
-            .pipe(
-              takeUntil(this.unsubscribe$)).subscribe(
+            .subscribe(
             (responce : HttpResponse<boolean>) => {
               const result = responce.body;
               if (result){
@@ -174,8 +161,7 @@ export class SignUpPageComponent {
       if (event.keyCode !== 13) {
         if (target) {
           this.availabilityService.isUsernameAvailable(target.value)
-            .pipe(
-              takeUntil(this.unsubscribe$)).subscribe(
+            .subscribe(
             (responce : HttpResponse<boolean>) => {
               const result = responce.body;
               if (result){

@@ -1,0 +1,21 @@
+<app-nav-wrapper [activatedEndpoint]="Endpoint.Search" [showSearchBar]="false" [showWhatsHappening]="false">
+  <div class="main-page">
+    <app-search-bar
+      [selectedTab]="selectedTab" [firstTabName]="'May be Interesting'" [secondTabName]="'Trending'"
+      [query]="query"
+      (firstTabClicked)="navigator.navigateToMayBeInterestingPage(selectedTab)"
+      (secondTabClicked)="navigateToTrending()"
+      (searchByQueryClicked)="searchByQuery()"
+      (queryChanged)="onQueryChanged($event)"
+      (backButtonClicked)="goBack()">
+    </app-search-bar>
+    <div class="title-box">
+      <span class="title">This could be interesting for you</span>
+    </div>
+    <div>
+      <app-page-post *ngFor="let post of matchingPosts$ | async"
+                     [postInput]="post"></app-page-post>
+    </div>
+    <app-loading-spinner [loading]="loading"></app-loading-spinner>
+  </div>
+</app-nav-wrapper>

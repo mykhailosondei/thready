@@ -1,8 +1,10 @@
 using System.Linq.Expressions;
 using ApplicationBLL.Exceptions;
 using ApplicationBLL.Extentions;
+using ApplicationBLL.QueryRepositories;
 using ApplicationBLL.Services.Abstract;
 using ApplicationCommon.DTOs.Comment;
+using ApplicationCommon.DTOs.Image;
 using ApplicationCommon.DTOs.Post;
 using ApplicationCommon.DTOs.User;
 using ApplicationDAL.Context;
@@ -19,87 +21,98 @@ namespace ApplicationBLL.Services;
 
 public class CommentService : BaseService
 {
-    private readonly PostService _postService;
-    private readonly UserService _userService;
+    private readonly PostQueryRepository _postQueryRepository;
+    private readonly UserQueryRepository _userQueryRepository;
+    private readonly CommentQueryRepository _commentQueryRepository;
     private readonly IValidator<CommentDTO> _commentValidator;
     private readonly ILogger<CommentService> _logger;
+    private readonly IValidator<CommentUpdateDTO> _commentUpdateValidator;
     
-    public CommentService(ApplicationContext applicationContext, IMapper mapper, PostService postService, UserService userService, IValidator<CommentDTO> commentValidator, ILogger<CommentService> logger) : base(applicationContext, mapper)
+    public CommentService(ApplicationContext applicationContext, IMapper mapper, IValidator<CommentDTO> commentValidator,
+        ILogger<CommentService> logger, PostQueryRepository postQueryRepository, UserQueryRepository userQueryRepository, 
+        CommentQueryRepository commentQueryRepository, IValidator<CommentUpdateDTO> commentUpdateValidator) : base(applicationContext, mapper)
     {
         _commentValidator = commentValidator;
         _logger = logger;
-        _postService = postService;
-        _userService = userService;
+        _postQueryRepository = postQueryRepository;
+        _userQueryRepository = userQueryRepository;
+        _commentQueryRepository = commentQueryRepository;
+        _commentUpdateValidator = commentUpdateValidator;
     }
 
-    protected CommentService() : base(null, null)
+    protected CommentService(PostQueryRepository postQueryRepository, UserQueryRepository userQueryRepository, CommentQueryRepository commentQueryRepository) : base(null, null)
     {
-        
-    }
-    
-    public async Task<CommentDTO> GetCommentByIdPlain(int id, params Expression<Func<Comment, object>>[] includeExpressions)
-    {
-        var query = _applicationContext.Comments.AsNoTracking();
-
-        query = includeExpressions.Aggregate(query, (current, includeExpression) => current.Include(includeExpression));
-
-        var comment = await query.FirstOrDefaultAsync(c => c.Id == id);
-
-        if (comment == null)
-        {
-            throw new CommentNotFoundException("Comment with specified id not found");
-        }
-
-        return _mapper.Map<CommentDTO>(comment);
-    }
-
-    public virtual async Task<CommentDTO> GetCommentWithAllCommentTreeById(int id)
-    {
-        int depth = 0;
-        int currentCheckingId = id;
-        var commentForDepthChecking = await _applicationContext.Comments.AsNoTracking().FirstOrDefaultAsync(c => c.Id == currentCheckingId);
-        
-        if (commentForDepthChecking == null)
-        {
-            throw new CommentNotFoundException("Comment with specified id not found");
-        }
-
-        while (commentForDepthChecking.CommentId != null)
-        {
-            depth++;
-            currentCheckingId = commentForDepthChecking.CommentId.Value;
-            commentForDepthChecking = await _applicationContext.Comments.AsNoTracking().FirstOrDefaultAsync(c => c.Id == currentCheckingId);
-        }
-
-        Console.WriteLine(depth);
-        
-        var comment = await _applicationContext.Comments.Include(c => c.Author).CustomInclude(depth).AsNoTracking().FirstOrDefaultAsync(c => c.Id == id);
-        
-        return _mapper.Map<CommentDTO>(comment);
+        _postQueryRepository = postQueryRepository;
+        _userQueryRepository = userQueryRepository;
+        _commentQueryRepository = commentQueryRepository;
     }
     
     public async Task<IEnumerable<CommentDTO>> GetCommentsOfPostId(int postId)
     {
-        var postEntity = await _postService.GetPostById(postId);
+        var postEntity = await _postQueryRepository.GetPostById(postId);
 
         var commentsIdsOfPost = postEntity!.CommentsIds;
-
-        List<CommentDTO> result = new();
-
-        foreach (var id in commentsIdsOfPost)
-        {
-            try
-            {
-                result.Add(await GetCommentByIdPlain(id));
-            }
-            catch (CommentNotFoundException e)
-            {
-                Console.WriteLine("One or more comments could not be loaded");
-                Console.WriteLine(e);
-            }
-        }
         
-        return result;
+        var comments = await _applicationContext.Comments.Include(c => c.Images).Include(c => c.Author).ThenInclude(u => u.Avatar).Where(c => commentsIdsOfPost.Contains(c.Id)).ToListAsync();
+        
+        return _mapper.Map<IEnumerable<CommentDTO>>(comments);
+    }
+    
+    public async Task BookmarkComment(int commentId, int userId)
+    {
+        var userModel = await _userQueryRepository.GetUserById(userId);
+        var comment = await _commentQueryRepository.GetCommentByIdPlain(commentId);
+        if (comment == null)
+        {
+            throw new CommentNotFoundException();
+        }
+
+        bool isBookmarked = userModel.BookmarkedCommentsIds.Contains(commentId);
+
+        if (isBookmarked)
+            throw new InvalidOperationException("Already bookmarked");
+        
+        var userEntity = _mapper.Map<User>(userModel);
+        var commentEntity = _mapper.Map<Comment>(comment);
+
+        commentEntity.Bookmarks++;
+        userEntity.BookmarkedCommentsIds.Add(commentId);
+        await BookmarkEntitiesSaveChanges(userEntity, commentEntity);
+    }
+    
+    public async Task RemoveFromBookmarksComment(int commentId, int userId)
+    {
+        var userModel = await _userQueryRepository.GetUserById(userId);
+        var comment = await _commentQueryRepository.GetCommentByIdPlain(commentId);
+        if (comment == null)
+        {
+            throw new CommentNotFoundException();
+        }
+
+        bool isBookmarked = userModel.BookmarkedCommentsIds.Contains(commentId);
+
+        if (!isBookmarked)
+        {
+            throw new InvalidOperationException("Not bookmarked");
+        }
+
+        var userEntity = _mapper.Map<User>(userModel);
+        var commentEntity = _mapper.Map<Comment>(comment);
+
+        commentEntity.Bookmarks--;
+        userEntity.BookmarkedCommentsIds.Remove(commentId);
+        await BookmarkEntitiesSaveChanges(userEntity, commentEntity);
+    }
+    
+    private async Task BookmarkEntitiesSaveChanges(User userEntity, Comment commentEntity)
+    {
+        _applicationContext.Attach(userEntity);
+        _applicationContext.Entry(userEntity).Property(u => u.BookmarkedCommentsIds).IsModified = true;
+        await _applicationContext.SaveChangesAsync();
+        _applicationContext.ChangeTracker.Clear();
+        _applicationContext.Attach(commentEntity);
+        _applicationContext.Entry(commentEntity).Property(p => p.Bookmarks).IsModified = true;
+        await _applicationContext.SaveChangesAsync();
     }
 
     private async Task UpdateCommentsIdsInParentPost(CommentDTO comment)
@@ -114,11 +127,10 @@ public class CommentService : BaseService
             throw new InvalidOperationException("PostId was not provided");
         }
 
-        var postEntity = _mapper.Map<Post>(await _postService.GetPostById(comment.PostId.Value));
+        var postEntity = _mapper.Map<Post>(await _postQueryRepository.GetPostById(comment.PostId.Value));
         
         postEntity.CommentsIds.Add(comment.Id);
-
-        _applicationContext.Entry(postEntity.Author).State = EntityState.Unchanged;
+        
         _applicationContext.Attach(postEntity);
         _applicationContext.Entry(postEntity).Property(c => c.CommentsIds).IsModified = true;
         await _applicationContext.SaveChangesAsync();
@@ -136,11 +148,10 @@ public class CommentService : BaseService
             throw new InvalidOperationException("CommentId was not provided");
         }
 
-        var parentCommentEntity = _mapper.Map<Comment>(await GetCommentByIdPlain(comment.CommentId.Value));
+        var parentCommentEntity = _mapper.Map<Comment>(await _commentQueryRepository.GetCommentByIdPlain(comment.CommentId.Value));
         
         parentCommentEntity.CommentsIds.Add(comment.Id);
         
-        //_applicationContext.Entry(parentCommentEntity.Author).State = EntityState.Unchanged;
         _applicationContext.Attach(parentCommentEntity);
         _applicationContext.Entry(parentCommentEntity).Property(c => c.CommentsIds).IsModified = true;
         await _applicationContext.SaveChangesAsync();
@@ -187,7 +198,7 @@ public class CommentService : BaseService
 
     public async Task PostComment(CommentCreateDTO newComment)
     {
-        var authorDTO = await _userService.GetUserById(newComment.UserId);
+        var authorDTO = await _userQueryRepository.GetUserById(newComment.UserId);
 
         bool DoesPostIdExist = newComment.PostId.HasValue;
         bool DoesCommentIdExist = newComment.CommentId.HasValue;
@@ -203,14 +214,14 @@ public class CommentService : BaseService
         
         if (DoesPostIdExist)
         {
-            var commentedPost = await _postService.GetPostById(commentDTO.PostId!.Value);
+            var commentedPost = await _postQueryRepository.GetPostById(commentDTO.PostId!.Value);
             commentDTO.Post = commentedPost;
             
             await HandlePostCommenting(commentDTO);
         }
         else if (DoesCommentIdExist)
         {
-            var parentCommentDTO = await GetCommentByIdPlain(commentDTO.CommentId!.Value);
+            var parentCommentDTO = await _commentQueryRepository.GetCommentByIdPlain(commentDTO.CommentId!.Value);
             commentDTO.ParentComment = parentCommentDTO;
             
             await HandleCommentCommenting(commentDTO);
@@ -223,15 +234,16 @@ public class CommentService : BaseService
         commentDto.LikesIds = new List<int>();
         commentDto.CommentsIds = new List<int>();
         commentDto.ViewedBy = new List<int>();
+        commentDto.Bookmarks = 0;
     }
     
     private Func<Image, string> imageSelector = image => image.Url;
 
     public async Task PutComment(int id, CommentUpdateDTO commentUpdate)
     {
-        var commentDTO = await GetCommentByIdPlain(id);
+        var commentDTO = await _commentQueryRepository.GetCommentByIdPlain(id);
         
-        ValidationResult validationResult = await _commentValidator.ValidateAsync(commentDTO);
+        ValidationResult validationResult = await _commentUpdateValidator.ValidateAsync(commentUpdate);
 
         if (!validationResult.IsValid)
         {
@@ -239,14 +251,15 @@ public class CommentService : BaseService
         }
 
         var commentEntity = _mapper.Map<Comment>(commentDTO);
+        var updatedImages = commentUpdate.Images.Select(i => _mapper.Map<Image>(i)).ToList();
 
         _applicationContext.Attach(commentEntity);
         
         await _applicationContext.Entry(commentEntity).Collection(c => c.Images).LoadAsync();
 
 
-        var imagesToAdd = commentUpdate.Images.ExceptBy(commentEntity.Images.Select(imageSelector), imageSelector).ToList();
-        var imagesToDelete = commentEntity.Images.ExceptBy(commentUpdate.Images.Select(imageSelector), imageSelector).ToList();
+        var imagesToAdd = updatedImages.ExceptBy(commentEntity.Images.Select(imageSelector), imageSelector).ToList();
+        var imagesToDelete = commentEntity.Images.ExceptBy(updatedImages.Select(imageSelector), imageSelector).ToList();
 
         commentEntity.Images.AddRange(imagesToAdd.DistinctBy(imageSelector));
 
@@ -276,7 +289,7 @@ public class CommentService : BaseService
 
     public async Task DeleteComment(int id)
     {
-        var commentDTO = await GetCommentByIdPlain(id);
+        var commentDTO = await _commentQueryRepository.GetCommentByIdPlain(id);
         
         bool DoesPostIdExist = commentDTO.PostId.HasValue;
         bool DoesCommentIdExist = commentDTO.CommentId.HasValue;
@@ -297,25 +310,68 @@ public class CommentService : BaseService
         
         if (DoesPostIdExist)
         {
-            var postEntity =_mapper.Map<Post>(await _postService.GetPostById(commentDTO.PostId!.Value));
+            var postEntity =_mapper.Map<Post>(await _postQueryRepository.GetPostById(commentDTO.PostId!.Value));
 
             postEntity.CommentsIds.Remove(id);
             
-            _applicationContext.Entry(postEntity.Author).State = EntityState.Unchanged;
             _applicationContext.Attach(postEntity);
             _applicationContext.Entry(postEntity).Property(c => c.CommentsIds).IsModified = true;
             await _applicationContext.SaveChangesAsync();
         }
         else if (DoesCommentIdExist)
         {
-            var parentCommentEntity = _mapper.Map<Comment>(await GetCommentByIdPlain(commentDTO.CommentId!.Value, c => c.Author));
+            var parentCommentEntity = _mapper.Map<Comment>(await _commentQueryRepository.GetCommentByIdPlain(commentDTO.CommentId!.Value, c => c.Author));
         
             parentCommentEntity.CommentsIds.Remove(commentDTO.Id);
-        
-            _applicationContext.Entry(parentCommentEntity.Author).State = EntityState.Unchanged;
+            
             _applicationContext.Attach(parentCommentEntity);
             _applicationContext.Entry(parentCommentEntity).Property(c => c.CommentsIds).IsModified = true;
             await _applicationContext.SaveChangesAsync();
         }
+    }
+
+    public async Task ViewComment(int id, int authorId)
+    {   
+        var commentDTO = await _commentQueryRepository.GetCommentByIdPlain(id);
+        
+        if (commentDTO == null)
+        {
+            throw new CommentNotFoundException();
+        }
+
+        var commentEntity = _mapper.Map<Comment>(commentDTO);
+        var userEntity = _mapper.Map<User>(await _userQueryRepository.GetUserById(authorId));
+
+        if (commentEntity.ViewedBy.Contains(authorId))
+        {
+            return;
+        }
+        
+        commentEntity.ViewedBy.Add(authorId);
+        
+        _applicationContext.Attach(commentEntity);
+        
+        _applicationContext.Entry(commentEntity).Property(c => c.ViewedBy).IsModified = true;
+        
+        await _applicationContext.SaveChangesAsync();
+    }
+
+    public async Task<IEnumerable<ImageDTO>> GetImagesOfCommentId(int commentId)
+    {
+        var commentEntity = await _commentQueryRepository.GetCommentByIdPlain(commentId, c => c.Images);
+
+        if (commentEntity == null)
+        {
+            throw new CommentNotFoundException();
+        }
+        
+        var result = new List<ImageDTO>();
+        
+        foreach (var image in commentEntity.Images)
+        {
+            result.Add(_mapper.Map<ImageDTO>(image));
+        }
+
+        return result;
     }
 }

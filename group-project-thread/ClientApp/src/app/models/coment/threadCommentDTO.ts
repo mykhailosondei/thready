@@ -1,6 +1,6 @@
 ﻿import {Image} from "../image";
 
-export interface ThreadCommentDTO{
+export interface ThreadCommentDTO {
   id: number;
   textContent: string;
   images: Image[];

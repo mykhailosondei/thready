@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics.CodeAnalysis;
 
 namespace ApplicationDAL.Entities
 {
@@ -29,8 +28,8 @@ namespace ApplicationDAL.Entities
         public List<Image> Images { get; set; }
         public List<int> CommentsIds { get; set; }
         public List<int> LikesIds { get; set; }
-        public int Bookmarks { get; set; }
         public List<int> ViewedBy { get; set; }
+        public int Bookmarks { get; set; }
 
     }
 }

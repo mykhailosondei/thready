@@ -161,6 +161,10 @@ namespace ApplicationDAL.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
+                    b.Property<List<int>>("BookmarkedCommentsIds")
+                        .IsRequired()
+                        .HasColumnType("integer[]");
+
                     b.Property<List<int>>("BookmarkedPostsIds")
                         .IsRequired()
                         .HasColumnType("integer[]");
@@ -192,6 +196,9 @@ namespace ApplicationDAL.Migrations
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
+
+                    b.Property<int>("PostsCount")
+                        .HasColumnType("integer");
 
                     b.Property<List<int>>("RepostsIds")
                         .IsRequired()

@@ -1,0 +1,118 @@
+<div appOnDomEnter (domEnter)="startObserve()" [class]="this.isParentView ? 'parent-view-page-post' : 'page-post'" #wholePost>
+  <a href="comment/{{this.commentInput.id}}" class="post-link"></a>
+  <div class="user-collar-and-post-holder">
+    <app-user-avatar [user]="commentInput.author" [isParentView]="isParentView"></app-user-avatar>
+    <div class="post-holder">
+      <div class="user-info-and-dots">
+        <div class="user-date">
+          <div class="user-info" #userInfo (mouseenter)="onUserInfoMouseEnter()" (mouseleave)="onUserInfoMouseLeave()">
+            <a href="{{userInput.username}}/profile" class="user-link"></a>
+            <b>{{commentView.user.username}}</b>
+          </div>
+          <div class="user-date-divider"></div>
+          <div class="date color-grey">
+            {{ getCreatedDate() }}
+          </div>
+        </div>
+        <div class="edit-and-bookmark-holder">
+          <div *ngIf="editable" class="edit">
+            <button class="delete-button" (click)="openDeleteDialog()">
+              <fa-icon [icon]="faTrash"></fa-icon>
+            </button>
+          </div>
+          <div *ngIf="editable" class="edit">
+            <button class="action-button" (click)="openEditDialog()">
+              <fa-icon [icon]="faPen"></fa-icon>
+            </button>
+          </div>
+          <div class="bookmark">
+            <button class="action-button" (click)="handleBookmarkClick()">
+              <fa-icon [icon]="this.bookmarked ? faBookmarkActivated : faBookmarkUnactivated"></fa-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="post-text-content">
+        <p>{{ commentView.textContent }}</p>
+      </div>
+      <div class="post-image-content">
+        <div class="image-radius-wrap" [style.width]="commentView.imagesUrls.length === 1 ? 'fit-content' : '100%'" [style.border-width]="commentView.imagesUrls.length == 0 ? '0' : '2px' ">
+          <div *ngIf="commentView.imagesUrls.length === 4" class="four-image-container full-width">
+            <div class="two-image-container full-width">
+              <div class="left-upper-image-container full-width">
+                <div class="image-wrap full-width" [style.background-image]="'url(' + commentView.imagesUrls[0] + ')'"></div>
+              </div>
+              <div class="right-upper-image-container full-width">
+                <div class="image-wrap full-width" [style.background-image]="'url(' + commentView.imagesUrls[1] + ')'"></div>
+              </div>
+            </div>
+            <div class="two-image-container full-width">
+              <div class="left-bottom-image-container full-width">
+                <div class="image-wrap full-width" [style.background-image]="'url(' + commentView.imagesUrls[2] + ')'"></div>
+              </div>
+              <div class="right-bottom-image-container full-width">
+                <div class="image-wrap full-width" [style.background-image]="'url(' + commentView.imagesUrls[3] + ')'"></div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="commentView.imagesUrls.length === 3" class="three-image-container full-width">
+            <div class="left-big-image full-width">
+              <div class="image-wrap full-width" [style.background-image]="'url(' + commentView.imagesUrls[0] + ')'"></div>
+            </div>
+            <div class="two-right-images full-width">
+              <div class="right-upper-image-container full-width">
+                <div class="image-wrap full-width" [style.background-image]="'url(' + commentView.imagesUrls[1] + ')'"></div>
+              </div>
+              <div class="right-bottom-image-container full-width">
+                <div class="image-wrap full-width" [style.background-image]="'url(' + commentView.imagesUrls[2] + ')'"></div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="commentView.imagesUrls.length === 2" class="two-image-container full-width">
+            <div class="left-big-image full-width">
+              <div class="image-wrap full-width" [style.background-image]="'url(' + commentView.imagesUrls[0] + ')'"></div>
+            </div>
+            <div class="right-big-image full-width">
+              <div class="image-wrap full-width" [style.background-image]="'url(' + commentView.imagesUrls[1] + ')'"></div>
+            </div>
+          </div>
+          <div *ngIf="commentView.imagesUrls.length === 1" class="solo-image-container">
+            <img class="solo-image full-width" src="{{commentView.imagesUrls[0]}}" alt="image">
+          </div>
+        </div>
+      </div>
+      <div class="post-footer">
+        <div class="post-top-margin">
+          <div class="comment-info" (click)="handleCommentClick()">
+            <div class="comment-icon color-grey">
+              <div class="blue-circle"></div>
+              <fa-icon [icon]="faComment"></fa-icon>
+            </div>
+            <div class="comment-amount color-grey">
+              {{commentView.commentsAmount}}
+            </div>
+          </div>
+          <div class="likes-info {{liked?'likes-activated':''}}" (click)="handleLikeClick()">
+            <div class="likes-icon color-grey" style=" position: relative;">
+              <div class="red-circle">
+              </div>
+              <fa-icon [icon]="this.liked ? faHeartActivated : faHeartUnactivated"></fa-icon>
+            </div>
+            <div class="likes-amount color-grey">{{commentView.likesAmount}}</div>
+            <div></div>
+          </div>
+          <div class="view-stats">
+            <div class="view-icon color-grey" style=" position: relative;">
+              <div class="blue-circle">
+              </div>
+              <fa-icon [icon]="faSquarePollVertical"></fa-icon>
+
+            </div>
+            <div class="view-amount color-grey">{{commentView.viewsAmount}}</div>
+          </div>
+          <div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

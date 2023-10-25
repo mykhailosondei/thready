@@ -1,9 +1,14 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using ApplicationBLL.Exceptions;
+using ApplicationBLL.QueryRepositories;
 using ApplicationBLL.Services.Abstract;
+using ApplicationBLL.Services.SearchLogic;
+using ApplicationCommon.DTOs.Image;
 using ApplicationDAL.Context;
 using ApplicationDAL.Entities;
 using ApplicationCommon.DTOs.User;
+using ApplicationCommon.Interfaces;
 using AutoMapper;
 using FluentValidation;
 using FluentValidation.Results;
@@ -16,47 +21,37 @@ namespace ApplicationBLL.Services;
 public class UserService : BaseService
 {
     private readonly EmailValidatorService _emailValidatorService;
-    private readonly UsernameValidatorService _usernameValidatorService;
+    private readonly UserQueryRepository _userQueryRepository;
+    private readonly PostQueryRepository _postQueryRepository;
+    private readonly CommentQueryRepository _commentQueryRepository;
     private readonly IValidator<RegisterUserDTO> _registerUserDTOValidator;
-    private readonly IValidator<UserDTO> _userDTOValidator;
+    private readonly IValidator<UserUpdateDTO> _updateUserValidator;
     
     public UserService(ApplicationContext applicationContext, IMapper mapper, 
-        EmailValidatorService emailValidatorService, UsernameValidatorService usernameValidatorService,
-        IValidator<RegisterUserDTO> registerUserDtoValidator,
-        IValidator<UserDTO> userDTOValidator) : base(applicationContext, mapper)
+        EmailValidatorService emailValidatorService, IValidator<RegisterUserDTO> registerUserDtoValidator, 
+        UserQueryRepository userQueryRepository, PostQueryRepository postQueryRepository, 
+        IValidator<UserUpdateDTO> updateUserValidator, CommentQueryRepository commentQueryRepository) : base(applicationContext, mapper)
     {
         _emailValidatorService = emailValidatorService;
-        _usernameValidatorService = usernameValidatorService;
         _registerUserDTOValidator = registerUserDtoValidator;
-        _userDTOValidator = userDTOValidator;
+        _userQueryRepository = userQueryRepository;
+        _postQueryRepository = postQueryRepository;
+        _updateUserValidator = updateUserValidator;
+        _commentQueryRepository = commentQueryRepository;
     }
 
-    public UserService() : base(null, null)
+    public UserService(UserQueryRepository userQueryRepository, PostQueryRepository postQueryRepository, CommentQueryRepository commentQueryRepository) : base(null, null)
     {
-        
+        _userQueryRepository = userQueryRepository;
+        _postQueryRepository = postQueryRepository;
+        _commentQueryRepository = commentQueryRepository;
     }
-
-    public async Task<IEnumerable<UserDTO>> GetAllUsers()
-    {
-        return _applicationContext.Users.OrderBy(u => u.Id).Select(u => _mapper.Map<UserDTO>(u));
-    }
-
-    public virtual async Task<UserDTO> GetUserById(int id)
-    {
-        var userModel = await _applicationContext.Users.FirstOrDefaultAsync(u => u.Id == id);
-
-        if (userModel == null)
-        {
-            throw new UserNotFoundException("User with specified id does not exist");
-        }
-
-        return _mapper.Map<UserDTO>(userModel);
-    }
+    
     
     public async Task Follow(int userId, int currentUserId)
     {
-        var userToFollowModel = await GetUserById(userId);
-        var userThatFollowsModel = await GetUserById(currentUserId);
+        var userToFollowModel = await _userQueryRepository.GetUserById(userId);
+        var userThatFollowsModel = await _userQueryRepository.GetUserById(currentUserId);
         if (userToFollowModel == null)
         {
             throw new UserNotFoundException("User with specified id does not exist");
@@ -71,21 +66,21 @@ public class UserService : BaseService
         {
             throw new InvalidOperationException("You can not follow yourself");
         }
+        
+        IFollowing userToFollowModelEntity = _mapper.Map<User>(userToFollowModel);
+        IFollower userThatFollowsModelEntity = _mapper.Map<User>(userThatFollowsModel);
 
-        userToFollowModel.FollowersIds.Add(userThatFollowsModel.Id);
-        userThatFollowsModel.FollowingIds.Add(userToFollowModel.Id);
+        userToFollowModelEntity.FollowersIds.Add(userThatFollowsModel.Id);
+        userThatFollowsModelEntity.FollowingIds.Add(userToFollowModel.Id);
 
-        _applicationContext.Users.Update(_mapper.Map<User>(userToFollowModel));
-        _applicationContext.Users.Update(_mapper.Map<User>(userThatFollowsModel));
-
-        await _applicationContext.SaveChangesAsync();
+        await FollowSaveChanges(subject: userThatFollowsModelEntity, @object: userToFollowModelEntity);
     }
     
     public async Task Unfollow(int userId, int currentUserId)
     {
-        var userToUnfollowModel = await GetUserById(userId);
+        var userToUnfollowModel = await _userQueryRepository.GetUserById(userId);
         
-        var userThatUnfollowsModel = await GetUserById(currentUserId);
+        var userThatUnfollowsModel = await _userQueryRepository.GetUserById(currentUserId);
 
         if (userToUnfollowModel == null)
         {
@@ -103,11 +98,22 @@ public class UserService : BaseService
             throw new InvalidOperationException("You can not unfollow yourself");
         }
 
-        userToUnfollowModel.FollowersIds.Remove(userThatUnfollowsModel.Id);
-        userThatUnfollowsModel.FollowingIds.Remove(userToUnfollowModel.Id);
-        
-        _applicationContext.Users.Update(_mapper.Map<User>(userToUnfollowModel));
-        _applicationContext.Users.Update(_mapper.Map<User>(userThatUnfollowsModel));
+        IFollowing userToUnfollowModelEntity = _mapper.Map<User>(userToUnfollowModel);
+        IFollower userThatUnfollowsModelEntity = _mapper.Map<User>(userThatUnfollowsModel);
+
+        userThatUnfollowsModelEntity.FollowingIds.Remove(userToUnfollowModel.Id);
+        userToUnfollowModelEntity.FollowersIds.Remove(userThatUnfollowsModel.Id);
+
+        await FollowSaveChanges(subject: userThatUnfollowsModelEntity, @object: userToUnfollowModelEntity);
+    }
+
+    private async Task FollowSaveChanges(IFollower subject, IFollowing @object)
+    {
+        _applicationContext.Attach(subject);
+        _applicationContext.Attach(@object);
+
+        _applicationContext.Entry(subject).Property(s => s.FollowingIds).IsModified = true;
+        _applicationContext.Entry(@object).Property(o => o.FollowersIds).IsModified = true;
 
         await _applicationContext.SaveChangesAsync();
     }
@@ -115,7 +121,7 @@ public class UserService : BaseService
     public async Task<UserDTO> CreateUser(RegisterUserDTO registerUserDto)
     {
         ValidationResult validationResult = await _registerUserDTOValidator.ValidateAsync(registerUserDto);
-
+        
         if (!validationResult.IsValid)
         {
             throw new ValidationException(validationResult.Errors[0].ErrorMessage);
@@ -128,13 +134,7 @@ public class UserService : BaseService
             throw new UserAlreadyExistsException("Email is already in use.");
         }
 
-        userEntity.Posts = new List<Post>();
-        userEntity.FollowersIds = new List<int>();
-        userEntity.FollowingIds = new List<int>();
-        userEntity.Bio = "";
-        userEntity.Location = "";
-        userEntity.BookmarkedPostsIds = new List<int>();
-        userEntity.RepostsIds = new List<int>();
+        InitUser(ref userEntity);
         
         userEntity.PasswordHash = BCrypt.Net.BCrypt.HashPassword(registerUserDto.Password);
         
@@ -144,16 +144,29 @@ public class UserService : BaseService
         return _mapper.Map<UserDTO>(userEntity);
     }
 
-    public virtual async Task PutUser(int userId, UserDTO user)
+    private void InitUser(ref User userEntity)
     {
-        ValidationResult validationResult = await _userDTOValidator.ValidateAsync(user);
+        userEntity.Posts = new List<Post>();
+        userEntity.Avatar = new Image{Url = ""};
+        userEntity.FollowersIds = new List<int>();
+        userEntity.FollowingIds = new List<int>();
+        userEntity.Bio = "";
+        userEntity.Location = "";
+        userEntity.BookmarkedPostsIds = new List<int>();
+        userEntity.BookmarkedCommentsIds = new List<int>();
+        userEntity.RepostsIds = new List<int>();
+    }
+
+    public virtual async Task<UserDTO> PutUser(int userId, UserUpdateDTO user)
+    {
+        ValidationResult validationResult = await _updateUserValidator.ValidateAsync(user);
         
         if (!validationResult.IsValid)
         {
             throw new ValidationException(validationResult.Errors[0].ErrorMessage);
         }
         
-        var userToUpdate = await GetUserById(userId);
+        var userToUpdate = await _userQueryRepository.GetUserById(userId);
         
         if (userToUpdate == null)
         {
@@ -162,35 +175,107 @@ public class UserService : BaseService
 
         userToUpdate.Location = user.Location;
         userToUpdate.Bio = user.Bio;
+        bool isImageCreated = false;
 
-        if (user.Avatar != null && user.Avatar.Url != "")
+        if (!string.IsNullOrEmpty(user.Avatar?.Url))
         {
             if (userToUpdate.Avatar == null)
             {
-                userToUpdate.Avatar = new Image()
-                {
-                    Url = user.Avatar.Url,
-                    Id = userToUpdate.Id
-                };
+                userToUpdate.Avatar = new ImageDTO();
+                isImageCreated = true;
             }
-            else
-            {
-                userToUpdate.Avatar.Url = user.Avatar.Url;
-            }
+            userToUpdate.Avatar.Url = user.Avatar.Url;
+        }
+        
+        var userEntity = _mapper.Map<User>(userToUpdate);
+
+        _applicationContext.Attach(userEntity);
+        _applicationContext.Entry(userEntity).Property(u => u.Location).IsModified = true;
+        _applicationContext.Entry(userEntity).Property(u => u.Bio).IsModified = true;
+        if (isImageCreated)
+        {
+            _applicationContext.Entry(userEntity.Avatar!).State = EntityState.Added;
+        }
+        else if (userEntity.Avatar != null)
+        {
+            _applicationContext.Attach(userEntity.Avatar!);
+            _applicationContext.Entry(userEntity.Avatar!).Property(img => img.Url).IsModified = true;
         }
 
-        _applicationContext.Users.Update(_mapper.Map<User>(userToUpdate));
         await _applicationContext.SaveChangesAsync();
+        return _mapper.Map<UserDTO>(userEntity);
     }
 
     public async Task DeleteUser(int id)
     {
-        var userModel = await GetUserById(id);
+        var userModel = await _userQueryRepository.GetUserById(id); 
+        var followers = userModel.FollowersIds.Select(async i => await _userQueryRepository.GetUserById(i));
+        var followings = userModel.FollowingIds.Select(async i => await _userQueryRepository.GetUserById(i));
+        var bookmarkedPosts = userModel.BookmarkedPostsIds.Select(async i => await _postQueryRepository.GetPostById(i));
+        var bookmarkComments =
+            userModel.BookmarkedCommentsIds.Select(async i => await _commentQueryRepository.GetCommentByIdPlain(i));
+        var repostedPosts = userModel.RepostsIds.Select(async i => await _postQueryRepository.GetPostById(i));
+        
         if (userModel == null)
         {
             throw new UserNotFoundException("User with specified id does not exist");
         }
         _applicationContext.Users.Remove(_mapper.Map<User>(userModel));
+        
+        
+        foreach (var follower in followers)
+        {
+            IFollower awaitedFollowerEntity = _mapper.Map<User>(await follower);
+            awaitedFollowerEntity.FollowingIds.Remove(id);
+            _applicationContext.Attach(awaitedFollowerEntity);
+            _applicationContext.Entry(awaitedFollowerEntity).Property(u => u.FollowingIds).IsModified = true;
+        }
+        
+        foreach (var following in followings)
+        {
+            IFollowing awaitedFollowingEntity = _mapper.Map<User>(await following);
+            awaitedFollowingEntity.FollowersIds.Remove(id);
+            _applicationContext.Attach(awaitedFollowingEntity);
+            _applicationContext.Entry(awaitedFollowingEntity).Property(u => u.FollowersIds).IsModified = true;
+        }
+        
+        foreach (var bookmarkedPost in bookmarkedPosts)
+        {
+            var awaitedBookmarkedPost = await bookmarkedPost;
+
+            awaitedBookmarkedPost.Bookmarks--;
+
+            _applicationContext.Attach(awaitedBookmarkedPost);
+            _applicationContext.Entry(awaitedBookmarkedPost).Property(p => p.Bookmarks).IsModified = true;
+            await _applicationContext.SaveChangesAsync();
+            _applicationContext.ChangeTracker.Clear();
+        }
+        
+        foreach (var bookmarkComment in bookmarkComments)
+        {
+            var awaitedBookmarkedComment = await bookmarkComment;
+
+            awaitedBookmarkedComment.Bookmarks--;
+
+            _applicationContext.Attach(awaitedBookmarkedComment);
+            _applicationContext.Entry(awaitedBookmarkedComment).Property(c => c.Bookmarks).IsModified = true;
+            await _applicationContext.SaveChangesAsync();
+            _applicationContext.ChangeTracker.Clear();
+        }
+        
+        foreach (var repostedPost in repostedPosts)
+        {
+            var awaitedRepostedPost = await repostedPost;
+
+            awaitedRepostedPost.RepostersIds.Remove(id);
+
+            _applicationContext.Attach(awaitedRepostedPost);
+            _applicationContext.Entry(awaitedRepostedPost).Property(p => p.RepostersIds).IsModified = true;
+            
+            await _applicationContext.SaveChangesAsync();
+            _applicationContext.ChangeTracker.Clear();
+        }
+        
         await _applicationContext.SaveChangesAsync();
     }
 

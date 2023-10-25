@@ -1,6 +1,6 @@
-﻿using ApplicationCommon.DTOs.Post;
+﻿using ApplicationBLL.Services.SearchLogic;
+using ApplicationCommon.DTOs.Post;
 using ApplicationCommon.DTOs.User;
-using ApplicationDAL.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,15 +13,25 @@ namespace group_project_thread.Controllers
     [AllowAnonymous]
     public class SearchController : ControllerBase
     {
-        [HttpGet("Users")]
-        public IEnumerable<UserDTO> GetUsers(string query)
+        private readonly IndexedContentReader _indexedContentReader;
+
+        public SearchController(IndexedContentReader indexedContentReader)
         {
-            return new UserDTO[] { };
+            _indexedContentReader = indexedContentReader;
         }
-        [HttpGet("Posts")]
-        public IEnumerable<PostDTO> GetPosts(string query)
+        
+        //GET: api/search/users?query={your query}&lowerCount={lowerCount}&upperCount={upperCount}
+        [HttpGet("Users")]
+        public async Task<IEnumerable<PageUserDTO>> GetUsers(string query, string lowerCount, string upperCount)
         {
-            return new PostDTO[] { };
+            return await _indexedContentReader.GetUsers(query, int.Parse(lowerCount), int.Parse(upperCount));
+        }
+        
+        //GET: api/search/posts?query={your query}&lowerCount={lowerCount}&upperCount={upperCount}
+        [HttpGet("Posts")]
+        public async Task<IEnumerable<PostDTO>> GetPosts(string query, string lowerCount, string upperCount)
+        {
+            return await _indexedContentReader.GetPosts(query, int.Parse(lowerCount), int.Parse(upperCount));
         }
     }
 }

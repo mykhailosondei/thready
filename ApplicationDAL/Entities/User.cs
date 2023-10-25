@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ApplicationCommon.Interfaces;
 
 namespace ApplicationDAL.Entities
 {
-    public class User
+    public class User : IFollower, IFollowing
     {
         public int Id { get; set; }
 
@@ -34,6 +29,7 @@ namespace ApplicationDAL.Entities
         public Image? Avatar { get; set; }
 
         public List<Post> Posts { get; set; }
+        public int PostsCount { get; set; }
 
         public List<int> FollowersIds { get; set; }
         public List<int> FollowingIds { get; set; }
@@ -42,6 +38,7 @@ namespace ApplicationDAL.Entities
         [MaxLength(30)]
         public string? Location { get; set; }
         public List<int> BookmarkedPostsIds { get; set; }
+        public List<int> BookmarkedCommentsIds { get; set; }
         public List<int> RepostsIds { get; set; }
     }
 }

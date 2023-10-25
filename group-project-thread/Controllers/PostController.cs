@@ -1,4 +1,5 @@
-﻿using ApplicationBLL.Services;
+﻿using ApplicationBLL.QueryRepositories;
+using ApplicationBLL.Services;
 using ApplicationCommon.DTOs.Post;
 using ApplicationCommon.Interfaces;
 using ApplicationDAL.Entities;
@@ -15,16 +16,17 @@ namespace group_project_thread.Controllers
     [Authorize]
     public class PostController : ControllerBase
     {
-
+        private readonly PostQueryRepository _postQueryRepository;
         private readonly PostService _postService;
         private readonly LikeService _likeService;
         private readonly IUserIdGetter _userIdGetter;
 
-        public PostController(PostService postService, LikeService likeService, IUserIdGetter userIdGetter)
+        public PostController(PostService postService, LikeService likeService, IUserIdGetter userIdGetter, PostQueryRepository postQueryRepository)
         {
             _postService = postService;
             _likeService = likeService;
             _userIdGetter = userIdGetter;
+            _postQueryRepository = postQueryRepository;
         }
 
         // GET: api/<PostController>
@@ -32,7 +34,7 @@ namespace group_project_thread.Controllers
         [AllowAnonymous]
         public async Task<IEnumerable<PostDTO>> GetAllPosts()
         {
-            return await _postService.GetAllPosts();
+            return await _postQueryRepository.GetAllPosts();
         }
 
         // GET api/<PostController>/5
@@ -40,7 +42,7 @@ namespace group_project_thread.Controllers
         [AllowAnonymous]
         public async Task<PostDTO> GetPostById(int id)
         {
-            return await _postService.GetPostById(id);
+            return await _postQueryRepository.GetPostById(id, p => p.Author, p => p.Images);
         }
         
         [HttpGet("{userId}/posts")]
@@ -51,11 +53,11 @@ namespace group_project_thread.Controllers
         }
         // POST api/<PostController>
         [HttpPost]
-        public async Task CreatePost([FromBody] PostCreateDTO post)
+        public async Task<PostDTO> CreatePost([FromBody] PostCreateDTO post)
         {
             int authorId = _userIdGetter.CurrentId;
             post.AuthorId = authorId;
-            await _postService.CreatePost(post);
+            return await _postService.CreatePost(post);
         }
         
         [HttpPost("{id}/likePost")]
@@ -71,6 +73,13 @@ namespace group_project_thread.Controllers
             int authorId = _userIdGetter.CurrentId;
             await _postService.BookmarkPost(id, authorId);
         }
+        
+        [HttpPost("{id}/viewPost")]
+        public async Task ViewPost(int id)
+        {
+            int authorId = _userIdGetter.CurrentId;
+            await _postService.ViewPost(id, authorId);
+        } 
         
         // PUT api/<PostController>/5
         [HttpPut("{id}")]

@@ -89,8 +89,8 @@ public class GlobalExceptionsHandlingMiddleware
             {
                 Status = (int)HttpStatusCode.Conflict,
                 Type = "Already exist",
-                Title = "Conflict with the current state of the target resource",
-                Detail = ex.Message
+                Title = ex.Message,
+                Detail = "Conflict with the current state of the target resource"
             };
 
             string json = JsonSerializer.Serialize(errorResponse);
@@ -107,8 +107,8 @@ public class GlobalExceptionsHandlingMiddleware
             {
                 Status = (int)HttpStatusCode.Unauthorized,
                 Type = "Unauthorized",
-                Title = "There was a problem authenticating your request.",
-                Detail = ex.Message
+                Title = ex.Message,
+                Detail = "There was a problem authenticating your request."
             };
 
             string json = JsonSerializer.Serialize(errorResponse);

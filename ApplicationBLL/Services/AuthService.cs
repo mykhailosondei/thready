@@ -1,3 +1,4 @@
+using System.Drawing;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Principal;
@@ -35,7 +36,7 @@ public class AuthService : BaseService
         {
             new Claim("id", id.ToString())
         });
-
+        
         var claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Sub, userName),
@@ -49,7 +50,7 @@ public class AuthService : BaseService
 
         var jwtSecurityToken = new JwtSecurityToken(
             claims: claims,
-            expires: DateTime.Now.AddDays(1),
+            expires: DateTime.Now.AddDays(7),
             signingCredentials: creds
         );
 

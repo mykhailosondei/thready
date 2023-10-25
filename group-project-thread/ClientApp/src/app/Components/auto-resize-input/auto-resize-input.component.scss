@@ -1,0 +1,10 @@
+textarea {
+  min-height: 20px; /* Set your desired minimum height */
+  max-height: 200px;
+  margin-top: 10px;
+  border: none;
+  outline: none;
+  width: 100%;/* Set your desired maximum height */
+  resize: none;
+  overflow-y: unset;  /* Enable vertical scroll when content exceeds max-height */
+}

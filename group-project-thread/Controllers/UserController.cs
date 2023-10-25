@@ -1,4 +1,6 @@
-﻿using ApplicationBLL.Services;
+﻿using ApplicationBLL.QueryRepositories;
+using ApplicationBLL.Services;
+using ApplicationBLL.Services.SearchLogic;
 using ApplicationCommon.DTOs.User;
 using ApplicationCommon.Interfaces;
 using ApplicationDAL.Entities;
@@ -16,17 +18,20 @@ namespace group_project_thread.Controllers
     public class UserController : ControllerBase
     {
 
+        private readonly UserQueryRepository _userQueryRepository;
         private readonly UserService _userService;
         private readonly IUserIdGetter _userIdGetter;
         private readonly EmailValidatorService _emailValidatorService;
         private readonly UsernameValidatorService _usernameValidatorService;
         
-        public UserController(UserService userService, IUserIdGetter userIdGetter, EmailValidatorService emailValidatorService, UsernameValidatorService usernameValidatorService)
+        
+        public UserController(UserService userService, IUserIdGetter userIdGetter, EmailValidatorService emailValidatorService, UsernameValidatorService usernameValidatorService, UserQueryRepository userQueryRepository)
         {
             _userService = userService;
             _userIdGetter = userIdGetter;
             _emailValidatorService = emailValidatorService;
             _usernameValidatorService = usernameValidatorService;
+            _userQueryRepository = userQueryRepository;
         }
 
         // GET: api/<UserController>
@@ -34,7 +39,7 @@ namespace group_project_thread.Controllers
         [AllowAnonymous]
         public async Task<IEnumerable<UserDTO>> GetAllUsers()
         {
-            return await _userService.GetAllUsers();
+            return await _userQueryRepository.GetAllUsers();
         }
 
         // GET api/<UserController>/5
@@ -42,14 +47,22 @@ namespace group_project_thread.Controllers
         [AllowAnonymous]
         public async Task<UserDTO> GetUserById(int id)
         {
-            return await _userService.GetUserById(id);
+            return await _userQueryRepository.GetUserById(id);
+        }
+        
+        // GET api/<UserController>/dmytrosemeniuk
+        [HttpGet("username/{username}")]
+        [AllowAnonymous]
+        public async Task<UserDTO> GetUserByUsername(string username)
+        {
+            return await _userQueryRepository.GetUserByUsername(username);
         }
         
         [HttpGet("currentUser")]
         [Authorize]
         public async Task<UserDTO> GetCurrentUser()
         {
-            return await _userService.GetUserById(_userIdGetter.CurrentId);
+            return await _userQueryRepository.GetUserById(_userIdGetter.CurrentId);
         }
 
         //GET: api/User/isEmailAvailable?email={your email}
@@ -77,9 +90,9 @@ namespace group_project_thread.Controllers
 
         // PUT api/<UserController>/5
         [HttpPut("{id}")]
-        public async Task PutUser(int id, [FromBody] UserDTO value)
+        public async Task<UserDTO> PutUser(int id, [FromBody] UserUpdateDTO value)
         {
-            await _userService.PutUser(id, value);
+            return await _userService.PutUser(id, value);
         }
 
         // DELETE api/<UserController>/5

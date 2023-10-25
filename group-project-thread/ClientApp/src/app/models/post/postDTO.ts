@@ -1,5 +1,6 @@
-import {Image } from "../image";
+import {Image} from "../image";
 import {UserDTO} from "../user/userDTO";
+
 export interface PostDTO {
 id : number;
 createdAt: string;
@@ -11,5 +12,5 @@ likesIds: number[];
 commentsIds: number[];
 repostersIds: number[];
 bookmarks: number;
-viwedBy: number[];
+viewedBy: number[];
 }

@@ -1,0 +1,141 @@
+﻿.user-box{
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  max-width: 600px;
+}
+
+.user-profile-button{
+  padding: 12px 16px;
+  transition-duration: 0.2s;
+  cursor: pointer;
+  &:hover{
+    background-color: rgba(0, 0, 0, 0.03);
+  }
+  max-width: 100%;
+}
+.content{
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+.small-image-container{
+  display: flex;
+  flex-basis: auto;
+  margin-right: 12px;
+  justify-content: flex-start;
+  position: relative;
+}
+.image-box{
+  position: relative;
+  height: 40px;
+  width: 40px;
+  left: -2px;
+  margin-bottom: 12px;
+  overflow: visible;
+  user-select: none;
+  border-radius: 25px;
+}
+
+.user-image{
+  width: 100%;
+  height: 100%;
+  top: 50%;
+  right: 50%;
+  border-radius: 50%;
+}
+
+.user-info-box{
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  flex: 1;
+}
+
+.small-info{
+  height: 40px;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  align-items: center;
+}
+
+.small-info-box{
+  height: 100%;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+}
+.underline-box{
+  &:hover{
+    text-decoration: underline;
+  }
+}
+.username-span{
+  color: rgba(15,20,25,1.00);
+  font-size: 15px;
+  font-weight: 700;
+}
+.connections-span{
+  color: rgb(83, 100, 113);
+  font-weight: 400;
+  font-size: 13px;
+}
+.connection-button-box{
+  user-select: none;
+  min-width: 99px;
+  margin-left: 12px;
+  transition-duration: 0.2s !important;
+}
+
+.follow-button-border{
+  padding: 6px 16px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-self: center;
+  border: 1px solid rgb(207, 217, 222);
+  border-radius: 25px;
+  &:hover{
+    background-color: rgba(244, 33, 46, 0.1);
+    border-color: rgb(253,201,206);
+    .button-text{
+      color: red;
+    }}
+}
+
+.unfollow-button-border{
+  padding: 6px 16px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-self: center;
+  border: 0px solid black;
+  background-color: black;
+  border-radius: 25px;
+  &:hover{
+    background-color: rgba(39,44,48)}
+}
+
+.button-text{
+  font-weight: 700;
+  font-size: 13px;
+}
+.unfollow{
+  color: white;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.bio{
+  font-size: 13px;
+  font-weight: 400;
+  padding-top: 4px;
+  max-width: 512px;
+  display: inline-block;
+  word-wrap: break-word;
+}
+

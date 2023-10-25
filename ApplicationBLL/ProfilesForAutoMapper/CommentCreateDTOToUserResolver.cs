@@ -1,3 +1,4 @@
+using ApplicationBLL.QueryRepositories;
 using ApplicationBLL.Services;
 using ApplicationCommon.DTOs.Comment;
 using ApplicationCommon.DTOs.User;
@@ -7,16 +8,16 @@ namespace ApplicationBLL.ProfilesForAutoMapper;
 
 public class CommentCreateDTOToUserResolver : IValueResolver<CommentCreateDTO, CommentDTO, UserDTO>
 {
-    private readonly UserService _userService;
+    private readonly UserQueryRepository _userQueryRepository;
 
 
-    public CommentCreateDTOToUserResolver(UserService userService)
+    public CommentCreateDTOToUserResolver(UserQueryRepository userQueryRepository)
     {
-        _userService = userService;
+        _userQueryRepository = userQueryRepository;
     }
 
     public UserDTO Resolve(CommentCreateDTO source, CommentDTO destination, UserDTO destMember, ResolutionContext context)
     {
-        return _userService.GetUserById(source.UserId).Result;
+        return _userQueryRepository.GetUserById(source.UserId).Result;
     }
 }

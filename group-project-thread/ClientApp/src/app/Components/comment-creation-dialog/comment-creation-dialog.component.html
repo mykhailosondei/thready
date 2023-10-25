@@ -1,0 +1,100 @@
+<div class="outside-closer" (click)="onNoClick()" [@fadeInOut]></div>
+<div class="dialog">
+    <div class="reply-header">
+      <button class="close-button" (click)="onNoClick()">
+        <fa-icon [icon]="faTimes"></fa-icon>
+      </button>
+    </div>
+  <div class="centered-post">
+    <div class="post-container">
+      <div class="page-post">
+        <div class="user-collar-and-post-holder">
+          <app-user-avatar [user]="data.post.user" [isParentView]="true"></app-user-avatar>
+          <div class="post-holder">
+            <div class="user-info-and-dots">
+              <div class="user-date">
+                <div class="user-info">
+                  <b>{{data.post.user.username}}</b>
+                </div>
+                <div class="user-date-divider"></div>
+                <div class="date color-grey">
+                  {{ getCreatedDate() }}
+                </div>
+              </div>
+              <div class="edit"></div>
+            </div>
+            <div class="post-text-content">
+              <p>{{ data.post.textContent }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div mat-dialog-content>
+      <div class="reply">
+        <div class="user-collar-and-post-holder">
+          <app-user-avatar [user]="data.currentUser"></app-user-avatar>
+          <textarea class="dialog-reply-text-area" matInput [(ngModel)]="data.textContent" placeholder="Post your reply"></textarea>
+        </div>
+          <div class="post-image-content">
+            <div class="image-radius-wrap" [style.width]="imageUrls.length === 1 ? 'fit-content' : '100%'" [style.border-width]="imageUrls.length == 0 ? '0' : '2px' ">
+              <div *ngIf="imageUrls.length === 4" class="four-image-container full-width">
+                <div class="two-image-container full-width">
+                  <div class="left-upper-image-container full-width">
+                    <app-deletable-image [imageUrl]="imageUrls[0]" (deleteImage)="deleteImage($event)"></app-deletable-image>
+                  </div>
+                  <div class="right-upper-image-container full-width">
+                    <app-deletable-image [imageUrl]="imageUrls[1]"(deleteImage)="deleteImage($event)"></app-deletable-image>
+                  </div>
+                </div>
+                <div class="two-image-container full-width">
+                  <div class="left-bottom-image-container full-width">
+                    <app-deletable-image [imageUrl]="imageUrls[2]"(deleteImage)="deleteImage($event)"></app-deletable-image>
+                  </div>
+                  <div class="right-bottom-image-container full-width">
+                    <app-deletable-image [imageUrl]="imageUrls[3]"(deleteImage)="deleteImage($event)"></app-deletable-image>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="imageUrls.length === 3" class="three-image-container full-width">
+                <div class="left-big-image full-width">
+                  <app-deletable-image [imageUrl]="imageUrls[0]"(deleteImage)="deleteImage($event)"></app-deletable-image>
+                </div>
+                <div class="two-right-images full-width">
+                  <div class="right-upper-image-container full-width">
+                    <app-deletable-image [imageUrl]="imageUrls[1]"(deleteImage)="deleteImage($event)"></app-deletable-image>
+                  </div>
+                  <div class="right-bottom-image-container full-width">
+                    <app-deletable-image [imageUrl]="imageUrls[2]"(deleteImage)="deleteImage($event)"></app-deletable-image>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="imageUrls.length === 2" class="two-image-container full-width">
+                <div class="left-big-image full-width">
+                  <app-deletable-image [imageUrl]="imageUrls[0]"(deleteImage)="deleteImage($event)"></app-deletable-image>
+                </div>
+                <div class="right-big-image full-width">
+                  <app-deletable-image [imageUrl]="imageUrls[1]"(deleteImage)="deleteImage($event)"></app-deletable-image>
+                </div>
+              </div>
+              <div *ngIf="imageUrls.length === 1" class="solo-image-container">
+                <img class="solo-image full-width" src="{{imageUrls[0]}}" alt="image">
+                <div class="image-overlay">
+                  <div class="close-image-button">
+                    <fa-icon [icon]="faTimes" (click)="deleteImage(imageUrls[0])"></fa-icon>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+      </div>
+    <!--<mat-form-field>
+      <input matInput [(ngModel)]="data.images">
+    </mat-form-field>-->
+    <div class="mat-dialog-actions">
+      <app-photo-loader (imageUrlOutputEvent)="onPhotoLoaded($event)" [disabled]="imageUrls.length > 3"></app-photo-loader>
+      <button mat-button class="reply-button" [mat-dialog-close]="{imagesOutput: imageUrls,textOutput : data.textContent}" [disabled]="isButtonDisabled()">Reply</button>
+    </div>
+  </div>
+</div>

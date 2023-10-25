@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "united-blend-398018",
+  "private_key_id": "3a02888b746ccfaeaa41d794bca9ecde0857f72e",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDGkx4F1SuVN2Gt\nBeQgEAvq49pcoRFBwIzK9joteA36m+KEz4AXkGfZDiwWEgaiwktF2xf30CT1XCfy\nV4XJRIWz8awhiI4VUEBLnzE6spyxStHsGLZkqPK/JMMyk0/KGlIdJ7R04uZ67ui9\nbiyu7/q1vOTrqYXU0z96JosKxz0Jbgv/tB+LUJUwThG2PYxDV0NBM4P58DvKnulJ\ndqddcttJsH/5uXU1kKvTH0QHoCa9VsgDUiGYfhnp805fCCV1b30ZeEssdXfKDZ15\nAmalffbA1/9mXXvtkPhHUZ/AXfJGGcW+FigzYH6MBtV8BdHuJDG14qxxJaqL16cW\ngG0/TE1DAgMBAAECggEAFvVBXllD/a92eoOY2WAhkJmhUF5K2XhCjuCi30jnDNdi\n/AnlfFP0vbKWxEJ3Q/AEteHbxonpC/kIoUsfK6Lhdml1hjb8flhV5qhUD75AwXqu\nBIbi54Zk8lZ0vu8rJWmfnsFNasok7YebnvMS9XLHYKWjLd/emjmGOEAmiSt50hIT\n4Q/H627iLYRpBTDsNyfmjMIBF8voblr/35twPJVAee8QB+voL5byFa30PxbxCONm\n7j25r29RQgDcg3g3DfzbGEJQck3qwYpxQGA+3G/eHbGcFeymRRBZH9egpc5BEWtI\nMKctBk2ZEDLdX2zPJWt/azjwIblr1JK972u5sByoiQKBgQDq/2cPMlvW+djzxJSG\npwpvUWN4wVVJVyiWuqFAbdpfG/FE8rQo/I7XnXJQhptUV3+dQj8krwrbYqoZtamo\n0UVBtye6hI1c8HUjqgBbaXKItDgVqdXTtIZ1p5f6A3Qc0iaz3yQcHWYABMQlM2FW\nOa/kB2zbfsGQ4xoF8zKv3RPp3QKBgQDYUmE8KUo8ZECG7pZs9e6BiwrwTM89ppmw\nbhWAEoOrrRqOewL/I5UDhfwU4i6t2LvFtgD7dCS8IrvCFJ3Rm3wgp7LCKnqifLW9\n7aKww+AY0iZKCyjydhspHf5aPo4s50A3rhyYYoR/4v5AcNed2vL5bXFpeGc5P+py\nZ94sWAnxnwKBgBDHEU2Vc9ciWWn2BAClFmqiLe7mJreowF4ajv6xmSCnNw+MIG64\nsV4VgJ7dLWPVJ2hL3YQ59xV4stpJDQbfgglSEUUQx6L2C/by4TmliqbV7xck2/5U\najEmOQSBkJ2qJ1c6PDLBqpGfxX0+cNmeHr+yBASbxSgZ/rakCV9i8lQFAoGBAKTQ\nPx0jKFhS2Yb0iM+DoLA6S59CJjOGl1oAxYjKkl9eh/k+Z84UQhhpIOKYYZA6rPW5\n8Y2js8lTfVIlewiUOkJ3Ao9E5iKeeam3QFkFI9xFYL7ROeVhbtgo7f274376wcaq\ndUb06Ja3T5exYdX3V2AKrnn5LkxEElAQKwoGGa1pAoGBAMVfABDwuC6MSGy5YG+F\n1ifkFjMXChYRRu9V9Z/MqAVABHB3QTO9lZh2EahbroQ/27MM8ERQVu14WeIO4ati\nxyuZPk7ST2zyGdQ63PSV0rkyhJniVybjusU/E2+Xr/pG1LhDWgC/66kziw6eDzPB\n7EXm9aeJ/K5re2eD1oF4HKW6\n-----END PRIVATE KEY-----\n",
+  "client_email": "mykhailo-service-account@united-blend-398018.iam.gserviceaccount.com",
+  "client_id": "109571821875013927638",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/mykhailo-service-account%40united-blend-398018.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

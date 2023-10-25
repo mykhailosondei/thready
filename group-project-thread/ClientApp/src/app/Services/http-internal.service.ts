@@ -1,7 +1,7 @@
-import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { environment } from 'src/environments/environment';
+import {HttpClient, HttpHeaders, HttpParams, HttpResponse} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {environment} from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +26,7 @@ export class HttpInternalService {
   public deleteHeader(key: string): void {
     this.headers.delete(key);
   }
-  
+
   public getRequest<T>(url: string, httpParams?: HttpParams): Observable<T> {
     return this.http.get<T>(this.buildUrl(url), { headers: this.getHeaders(), params: httpParams });
   }
@@ -37,8 +37,8 @@ export class HttpInternalService {
 
   public postRequest<T>(url: string, data: object): Observable<T> {
     return this.http.post<T>(this.buildUrl(url), data, { headers: this.getHeaders() });
-  } 
-  
+  }
+
   public postFullRequest<T>(url: string, data: object): Observable<HttpResponse<T>>{
     return this.http.post<T>(this.buildUrl(url), data, {observe: 'response', headers: this.getHeaders() });
   }
@@ -69,7 +69,7 @@ export class HttpInternalService {
     }
     return this.baseUrl + url;
   }
-  
+
   public convertDataToJSON(data: object) : string{
     return JSON.stringify(data);
   }

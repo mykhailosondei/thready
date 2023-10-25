@@ -1,0 +1,24 @@
+<app-nav-wrapper [activatedEndpoint]="Endpoint.None" [showWhoToFollow]="false">
+  <div class="main-page">
+    <app-tablist-page [title]="'Connect'" [firstTabName]="'Who to follow'" [secondTabName]="'Creators for you'"
+                      [selectedTab]="Tab.FirstTab" [showSubtitle]="false"
+                      (firstTabClicked)="navigator.openWhoToFollowPage($event)"
+                      (secondTabClicked)="navigateToCreatorsForYou()"
+                      (backButtonClicked)="goBack()"
+    ></app-tablist-page>
+    <div class="title-box">
+      <span class="title">Suggested for you</span>
+    </div>
+    <app-loading-spinner [loading]="loading"></app-loading-spinner>
+    <div style="position: relative; max-width: 600px">
+      <div *ngIf="users$.getValue().length != 0">
+        <div style="display: block" *ngFor="let user of users$ | async">
+          <app-page-user [pageUser]="user" [currentUser]="currentUser"
+                         [isCurrentUserPage]="false" [isFollowing]="false">
+          </app-page-user>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</app-nav-wrapper>

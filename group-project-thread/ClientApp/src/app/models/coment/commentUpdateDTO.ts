@@ -1,7 +1,7 @@
 ﻿import {Image} from "../image";
 
-export interface CommentUpdateDTO{
-  id: number;
+export interface CommentUpdateDTO {
+  id?: number;
   textContent: string;
   images: Image[];
 }

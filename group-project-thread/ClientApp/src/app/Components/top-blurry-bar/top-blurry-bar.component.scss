@@ -1,0 +1,18 @@
+.top-blurry-bar {
+  width: 100%;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  top:0;
+  justify-content: flex-start;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  position: sticky;
+  border: 0 solid #dcdcdc;
+  border-bottom-width: 1px;
+  z-index: 3;
+}
+
+.top-blurry-bar__title{
+  margin-left: 20px;
+}

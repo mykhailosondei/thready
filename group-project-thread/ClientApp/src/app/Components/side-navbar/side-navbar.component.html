@@ -1,0 +1,66 @@
+<div class="side-navbar">
+  <div class="nav-content">
+    <div class="logo-link"></div>
+    <div class="contents">
+      <div class="content-holder">
+        <div class="content-pressable {{this.activatedEndpoint === Endpoint.Home ? 'activated' : 'not-activated'}}">
+          <div class="left-icon">
+            <fa-icon [icon]="faHome"></fa-icon>
+          </div>
+          <div class="content-text">Home</div>
+          <a href="/mainPage" class="user-link"></a>
+        </div>
+      </div>
+      <div class="content-holder">
+        <div class="content-pressable {{this.activatedEndpoint === Endpoint.Search ? 'activated' : 'not-activated'}}">
+          <div class="left-icon">
+            <fa-icon [icon]="faSearch"></fa-icon>
+          </div>
+          <div class="content-text" >Explore</div>
+          <div (click)="navigateToMayBeInteresting()" class="user-link"></div>
+        </div>
+      </div>
+      <div class="content-holder">
+        <div class="content-pressable {{this.activatedEndpoint === Endpoint.Bookmarks ? 'activated' : 'not-activated'}}">
+          <div class="left-icon">
+            <fa-icon [icon]="faBookmarkIcon"></fa-icon>
+          </div>
+          <div class="content-text">Bookmarks</div>
+          <a href="/bookmarks" class="user-link"></a>
+        </div>
+      </div>
+      <div class="content-holder">
+      <div class="content-pressable {{this.activatedEndpoint === Endpoint.Reposts ? 'activated' : 'not-activated'}}">
+        <div class="left-icon">
+          <fa-icon [icon]="faRetweet"></fa-icon>
+        </div>
+        <div class="content-text">Reposts</div>
+        <a href="/reposts" class="user-link"></a>
+      </div>
+      </div>
+      <div class="content-holder">
+        <div class="content-pressable {{this.activatedEndpoint === Endpoint.Profile? 'activated' : 'not-activated'}}">
+          <div class="left-icon">
+            <fa-icon [icon]="faUserIcon"></fa-icon>
+          </div>
+          <div class="content-text">Profile</div>
+          <a href="{{user.username}}/profile" class="user-link"></a>
+        </div>
+    </div>
+      <button class="post-a-post-button" (click)="openPostingDialog()">Post</button>
+      <div class="logout-button" (click)="logoutBtnClick()" #logoutButton>
+        {{numberOfLogoutClicks < 1 ? 'Logout' : 'Are you sure?'}}
+      </div>
+      <div *ngIf="numberOfLogoutClicks==1" (click)="discardCloseBtnClick()" class="discard-close">
+        <fa-icon [icon]="faTimes"></fa-icon>
+      </div>
+    </div>
+    <div class="profile-footer">
+      <div></div>
+      <div class="profile">
+       <app-user-avatar [user]="user"></app-user-avatar>
+        <div class="profile-username">{{user.username}}</div>
+      </div>
+    </div>
+  </div>
+</div>

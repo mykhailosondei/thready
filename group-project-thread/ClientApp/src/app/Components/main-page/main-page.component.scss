@@ -1,0 +1,20 @@
+$border-color: #dcdcdc;
+
+.wrap {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+.element{
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  width: 990px;
+  justify-content: space-between;
+}
+.main-page{
+  width: 600px;
+  border: 0 solid $border-color;
+  border-right-width: 1px;
+  border-left-width: 1px;
+}

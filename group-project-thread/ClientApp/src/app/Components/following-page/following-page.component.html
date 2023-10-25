@@ -1,0 +1,33 @@
+<app-nav-wrapper [activatedEndpoint]="Endpoint">
+  <div class="main-page">
+    <app-tablist-page [title]="username" [firstTabName] = "'Following'" [secondTabName] = "'Followers'"
+                      [selectedTab]="0"
+                      (titleClicked)="navigatorService.openProfilePage(username)"
+                      (secondTabClicked)="navigateToFollowers(username)"
+                      (backButtonClicked)="goBack()">
+
+    </app-tablist-page>
+    <div style="position: relative;">
+      <div *ngIf="following.length != 0">
+        <div style="display: block" *ngFor="let user of following">
+          <app-page-user [pageUser]="user" [currentUser]="currentUser"
+                                   [isCurrentUserPage]="currentUser.id == user.id" [isFollowing]="amIFollowing(user.id)">
+          </app-page-user>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="currentUser.username == username">
+      <app-no-result-found-page *ngIf="noFollowingFound"
+                                [headerText]="'Be in the know'"
+                                [smallText]="'Following accounts is an easy way to curate your timeline and know what’s happening with the topics and people you’re interested in.'">
+      </app-no-result-found-page>
+    </div>
+    <div *ngIf="currentUser.username != username">
+      <app-no-result-found-page *ngIf="noFollowingFound"
+                                [headerText]="'@' + username + ' is not following anyone'"
+                                [smallText]="'Once they follow accounts, they’ll show up here.'">
+      </app-no-result-found-page>
+    </div>
+    <app-loading-spinner [loading]="loading"></app-loading-spinner>
+  </div>
+</app-nav-wrapper>

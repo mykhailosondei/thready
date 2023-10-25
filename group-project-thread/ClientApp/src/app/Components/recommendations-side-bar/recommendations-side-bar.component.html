@@ -1,0 +1,59 @@
+ <div class="recommendation-bar">
+   <div class="margin-top"></div>
+    <div class="sticky">
+      <div class="content-box">
+        <div *ngIf="showSearchbar" class="sticky-search-box">
+          <div class="wrapper search-box-border">
+            <div class="wrapper search-box">
+              <div class="wrapper svg-box">
+                <fa-icon [icon]="faMagnifyingGlass" class="svg-icon"></fa-icon>
+              </div>
+              <div class="input-area">
+                <input placeholder="Search" class="search-query-input" [(ngModel)]="query" (keyup.enter)="searchByQuery()">
+              </div>
+              <div class="go-button" (click)="searchByQuery()">
+                <div class="go-box">
+                  <span>Go</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="showSearchbar" class="empty-box"></div>
+        <div *ngIf="showWhatsHappening" class="recommendations-box wrapper">
+          <div class="recommendations-box-title wrapper">
+            <span class="title">What's happening</span>
+          </div>
+          <app-loading-spinner [loading]="whoToFollowLoading"></app-loading-spinner>
+          <div *ngFor="let word of smallTrends$ | async" class="trending-word-box wrapper" (click)="searchByWord(word.word)" >
+            <div class="text-box wrapper">
+              <span class="small-text">Trending</span>
+              <span class="main-text">{{word.word}}</span>
+              <span *ngIf="word.postsCount != 1" class="small-text">{{word.postsCount}} posts</span>
+              <span *ngIf="word.postsCount == 1" class="small-text">{{word.postsCount}} post</span>
+            </div>
+          </div>
+          <div class="show-more wrapper" (click)="navigateToMayBeInteresting()">
+            <span class="show-more-span">Show More</span>
+          </div>
+        </div>
+        <div *ngIf="showWhoToFollow" class="recommendations-box wrapper">
+          <div class="recommendations-box-title wrapper">
+            <span class="title">People To Follow</span>
+          </div>
+          <app-loading-spinner [loading]="whoToFollowLoading"></app-loading-spinner>
+          <div *ngFor="let user of whoToFollow$ | async">
+            <app-page-user [pageUser]="user" [isFollowing]="false" [containerHeight]="40"
+                           [currentUser]="currentUser" [showBio]="false"
+            (userClicked)="navigateToUserPage(user.username)">
+
+            </app-page-user>
+          </div>
+          <div class="show-more wrapper" (click)="openWhoToFollowPage('')">
+            <span class="show-more-span">Show More</span>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+

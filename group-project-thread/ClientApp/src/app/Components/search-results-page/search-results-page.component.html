@@ -1,0 +1,64 @@
+<app-nav-wrapper (trendClicked)="getTrend($event)" [showSearchBar]="false" [activatedEndpoint]="Endpoint.Search">
+  <div class="main-page">
+    <app-search-bar
+      [selectedTab]="selectedTab" [firstTabName]="'Top'" [secondTabName]="'People'"
+      [query]="query"
+      (firstTabClicked)="navigateToTopSearch()"
+      (secondTabClicked)="navigateToUserSearch()"
+      (searchByQueryClicked)="searchByQuery()"
+      (queryChanged)="onQueryChanged($event)"
+      (backButtonClicked)="backToMainPage()">
+
+    </app-search-bar>
+    <div *ngIf="selectedTab==0">
+      <app-loading-spinner [loading]="loadingUsers || loadingPosts"></app-loading-spinner>
+      <div *ngIf="!loadingPosts && noPostsFound && noPeopleFound" class="no-results">
+        <app-no-result-found-page [headerText]="notFoundHeaderText"
+                                  [smallText]="notFoundSmallText"></app-no-result-found-page>
+      </div>
+      <div *ngIf="matchingUsers$.getValue().length != 0" class="user-search-results">
+        <div class="people-box">
+          <span class="people-box-header">People</span>
+        </div>
+        <app-page-user *ngFor="let user of matchingUsers$ | async"
+                       [currentUser]="currentUser" [isCurrentUserPage]="user.id == currentUser.id"
+                       [pageUser]="user" [isFollowing]="amIFollowing(user.id)"
+        ></app-page-user>
+        <div class="view-all-button" (click)="navigateToUserSearch()">
+          <div class="view-all-box">
+            <span class="view-all-box-header">View all</span>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="matchingPosts$.getValue().length != 0">
+        <div infiniteScroll
+             [infiniteScrollDistance]="3"
+             [infiniteScrollThrottle]="500"
+             (scrolled)="onScrollPostsPage()"
+             [scrollWindow]="true"
+             class="infinite-scroll">
+          <app-page-post *ngFor="let post of matchingPosts$ | async"
+                         [postInput]="post"></app-page-post>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="selectedTab==1">
+      <app-loading-spinner [loading]="loadingUsers"></app-loading-spinner>
+      <div *ngIf="matchingUsers$.getValue().length != 0"
+           infiniteScroll
+           [infiniteScrollDistance]="3"
+           [infiniteScrollThrottle]="500"
+           (scrolled)="onScrollUsersPage()"
+           [scrollWindow]="true">
+        <app-page-user *ngFor="let user of matchingUsers$ | async"
+                       [currentUser]="currentUser" [pageUser]="user"
+                       [isFollowing]="amIFollowing(user.id)"></app-page-user>
+      </div>
+      <div *ngIf="!loadingUsers && noPeopleFound">
+        <app-no-result-found-page [headerText]="notFoundHeaderText"
+                                  [smallText]="notFoundSmallText"></app-no-result-found-page>
+      </div>
+    </div>
+
+  </div>
+</app-nav-wrapper>

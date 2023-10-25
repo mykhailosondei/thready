@@ -1,0 +1,12 @@
+.element{
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  width: 990px;
+  justify-content: space-between;
+}
+.wrap {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}

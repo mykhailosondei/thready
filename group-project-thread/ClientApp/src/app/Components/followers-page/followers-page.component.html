@@ -1,0 +1,23 @@
+<app-nav-wrapper [activatedEndpoint]="Endpoint">
+  <div class="main-page">
+    <app-tablist-page [title]="username" [firstTabName] = "'Following'" [secondTabName] = "'Followers'"
+                      [selectedTab]="1"
+                      (titleClicked)="navigatorService.openProfilePage($event)"
+                      (firstTabClicked)="navigateToFollowing(username)"
+                      (backButtonClicked)="goBack()"
+    ></app-tablist-page>
+    <div style="position: relative; max-width: 600px">
+      <div *ngIf="followers.length != 0">
+        <div style="display: block" *ngFor="let follower of followers">
+          <app-page-user [pageUser]="follower" [currentUser]="currentUser"
+                                   [isCurrentUserPage]="currentUser.id == follower.id" [isFollowing]="amIFollowing(follower.id)">
+          </app-page-user>
+        </div>
+      </div>
+    </div>
+    <app-no-result-found-page *ngIf="noFollowersFound"
+    [headerText]="'Looking for followers?'"
+    [smallText]="'When someone follows this account, they’ll show up here. Posting and interacting with others helps boost followers.'"></app-no-result-found-page>
+    <app-loading-spinner [loading]="loading"></app-loading-spinner>
+  </div>
+</app-nav-wrapper>
