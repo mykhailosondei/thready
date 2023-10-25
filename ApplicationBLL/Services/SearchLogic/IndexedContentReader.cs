@@ -46,13 +46,13 @@ public class IndexedContentReader
             {
             }
         }
-
+        _indexerContext.ChangeTracker.Clear();
         return matchingPosts;
     }
 
     private async Task<List<WordCountInPostId>> FindPostsIds(string query, int lowerCount, int upperCount)
     {
-        if (query == null)
+        if (query == null || query == "")
         {
             return new List<WordCountInPostId>();
         }
@@ -80,7 +80,6 @@ public class IndexedContentReader
 
                 var result = sorted.Skip(lowerCount)
                     .Take(postAmountToLoad);
-
                 return result.ToList();
             }
             
@@ -140,6 +139,7 @@ public class IndexedContentReader
             }
         }
 
+        _indexerContext.ChangeTracker.Clear();
         return matchingUsers;
     }
     
