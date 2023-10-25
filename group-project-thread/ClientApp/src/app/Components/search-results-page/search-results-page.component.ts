@@ -139,18 +139,24 @@ export class SearchResultsPageComponent implements OnInit{
     this.loadingUsers = true;
     this.noPeopleFound = false;
     this.searchService.getUsers(this.query, this.peopleToLoadLowerCount, this.peopleToLoadUpperCount)
-      .pipe(finalize(() =>
-        this.loadingUsers = false))
+      .pipe(finalize(() =>{
+        this.loadingUsers = false;
+        if (this.matchingUsers$.getValue().length == 0){
+          this.noPeopleFound = true;
+        }
+      }))
       .subscribe(
         (users : HttpResponse<PageUserDTO[]>) => {
           const newUsers = users.body || [];
           if (newUsers.length == 0){
-            this.noPeopleFound = true;
             this.allPeopleLoaded = true;
             return;
           }
           const currentUsers = this.matchingUsers$.getValue();
           this.matchingUsers$.next([...currentUsers, ...newUsers])
+          if (this.matchingUsers$.getValue().length == 0){
+            this.noPeopleFound = true;
+          }
         }
       );
   }
@@ -170,7 +176,6 @@ export class SearchResultsPageComponent implements OnInit{
         const newPosts = posts.body || [];
         if (newPosts.length == 0){
           this.allPostsLoaded = true;
-          this.noPostsFound = true;
           return;
         }
         const currentPosts = this.matchingPosts$.getValue();
