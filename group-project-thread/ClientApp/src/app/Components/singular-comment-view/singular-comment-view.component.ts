@@ -2,7 +2,13 @@ import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {PageUserDTO} from "../../models/user/pageUserDTO";
 import {faBookmark as faBookmarkUnactivated, faComment, faHeart as faHeartUnactivated} from "@fortawesome/free-regular-svg-icons";
-import {faBookmark as faBookmarkActivated, faEllipsisH, faRetweet, faSquarePollVertical} from "@fortawesome/free-solid-svg-icons";
+import {
+  faBookmark as faBookmarkActivated,
+  faEllipsisH,
+  faRetweet,
+  faSquarePollVertical,
+  faTrash
+} from "@fortawesome/free-solid-svg-icons";
 import {faHeart as faHeartActivated} from "@fortawesome/free-solid-svg-icons";
 import {UserService} from "../../Services/user.service";
 import {UserDTO} from "../../models/user/userDTO";
@@ -19,6 +25,9 @@ import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {CommentCreationDialogComponent} from "../comment-creation-dialog/comment-creation-dialog.component";
 import {CommentCreateDialogData} from "../../models/coment/CommentCreateDialogData";
 import {Endpoint} from "../side-navbar/side-navbar.component";
+import {PostEditorDialogComponent} from "../post-editor-dialog/post-editor-dialog.component";
+import {DeleteDialogComponent} from "../delete-dialog/delete-dialog.component";
+import {Location} from "@angular/common";
 
 @Component({
   selector: 'app-singular-comment-view',
@@ -45,10 +54,12 @@ export class SingularCommentViewComponent {
   liked: boolean = false;
   reposted: boolean = false;
   bookmarked: boolean = false;
+  editable: boolean = false;
   constructor(private route : ActivatedRoute, private userService : UserService,
               private commentService : CommentService,
               private hoverCardTriggerService: UserHoverCardTriggerService,
-              private dialog: MatDialog) {
+              private dialog: MatDialog,
+              private location: Location) {
     this.route.paramMap.subscribe(params => {
       const postId = params.get('commentId');
       console.log(postId);
@@ -74,6 +85,15 @@ export class SingularCommentViewComponent {
     }).add(()=>{
       this.fetchComments();
       this.retrieveParents(this.commentInput);
+      this.fetchCurrentUser();
+    });
+  }
+
+  fetchCurrentUser() {
+    this.userService.getCurrentUser().subscribe(response => {
+      if(response.ok){
+        this.editable = response.body!.id == this.authorInput.id;
+      }
     });
   }
 
@@ -225,4 +245,46 @@ export class SingularCommentViewComponent {
   }
 
     protected readonly Endpoint = Endpoint;
+  protected readonly faTrash = faTrash;
+
+  openDeleteDialog() {
+    const dialogRef : MatDialogRef<DeleteDialogComponent, boolean> = this.dialog.open(DeleteDialogComponent, {
+      width: '400px'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        this.commentService.deleteComment(this.commentView.id).subscribe(response => {
+          console.log(response);
+          if (!response.ok) return;
+          this.location.back();
+        });
+      }
+    });
+  }
+
+  openEditDialog() {
+    const dialogRef: MatDialogRef<PostEditorDialogComponent, {
+      imagesOutput: string[],
+      textContentOutput: string
+    }> = this.dialog.open(PostEditorDialogComponent, {
+      width: '500px',
+      data: {post: this.commentView},
+      disableClose: true
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === undefined) return;
+      this.commentService.putComment(this.commentView.id, {
+        textContent: result.textContentOutput,
+        images: result.imagesOutput.map(i => {return {url: i}})
+      }).subscribe(response => {
+          console.log(response);
+          if (!response.ok) return;
+          this.commentView.textContent = result.textContentOutput;
+          this.commentView.imagesUrls = result.imagesOutput;
+        }
+      );
+    });
+  }
 }
