@@ -1,22 +1,16 @@
-import {Component, Input, OnInit, SimpleChanges} from '@angular/core';
-import {faArrowLeftLong, faSpinner} from "@fortawesome/free-solid-svg-icons";
-import {faMagnifyingGlass} from "@fortawesome/free-solid-svg-icons/faMagnifyingGlass";
+import {Component, OnInit} from '@angular/core';
+import {faSpinner} from "@fortawesome/free-solid-svg-icons";
 import {PostDTO} from "../../models/post/postDTO";
-import {BehaviorSubject, finalize, takeUntil} from "rxjs";
+import {BehaviorSubject, finalize} from "rxjs";
 import {SearchService} from "../../Services/search.service";
 import {HttpResponse} from "@angular/common/http";
 import {PageUserDTO} from "../../models/user/pageUserDTO";
 import {UserDTO} from "../../models/user/userDTO";
 import {UserService} from "../../Services/user.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import {DataLoadingService} from "../../Services/data-loading.service";
 import {Endpoint} from "../side-navbar/side-navbar.component";
 import {Tab} from "../../models/enums/Tab";
-import {Q} from "@angular/cdk/keycodes";
-import {Location} from "@angular/common";
 import {faCircleNotch} from "@fortawesome/free-solid-svg-icons/faCircleNotch";
-import {NavigationHistoryService} from "../../Services/navigation-history.service";
-import {User} from "oidc-client";
 
 @Component({
   selector: 'app-search-results-page',
@@ -212,7 +206,8 @@ export class SearchResultsPageComponent implements OnInit{
 
   getTrend(query : string){
     this.query = query;
-    this.searchByQuery();
+    this.selectedTab = 0;
+    this.searchByQuery(this.selectedTab, 0);
   }
   amIFollowing(id : number): boolean{
     if (id == this.currentUser.id) return true;

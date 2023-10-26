@@ -155,7 +155,7 @@ public class IndexedContentReader
         var usernames = await _applicationContext.Users.Select(u => new IndexedUsernameDTO()
         {
             UserId = u.Id,
-            Username = u.Username
+            Username = u.Username.ToLower()
         }).ToListAsync();
         string pattern = @"[^a-zA-Z\d-]+";
         string[] queryWords = Regex.Split(query.ToLower(), pattern);
