@@ -78,8 +78,8 @@ code {
 html, body { height: 100%; }
 body { margin: 0; font-family: "TwitterChirp", -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif, sans-serif; }
 
-/*!* Importing Bootstrap SCSS file. *!
+/* Importing Bootstrap SCSS file. */
 @import "./node_modules/bootstrap/scss/bootstrap";
 
-!* Importing Datepicker SCSS file. *!
-@import "node_modules/ngx-bootstrap/datepicker/bs-datepicker";*/
+/* Importing Datepicker SCSS file. */
+@import "node_modules/ngx-bootstrap/datepicker/bs-datepicker";
