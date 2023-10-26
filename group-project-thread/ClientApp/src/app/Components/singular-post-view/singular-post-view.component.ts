@@ -28,6 +28,7 @@ import {Endpoint} from "../side-navbar/side-navbar.component";
 import {DeleteDialogComponent} from "../delete-dialog/delete-dialog.component";
 import {Location} from "@angular/common";
 import {PostEditorDialogComponent} from "../post-editor-dialog/post-editor-dialog.component";
+import {User} from "oidc-client";
 
 @Component({
   selector: 'app-singular-post-view',
@@ -48,6 +49,7 @@ export class SingularPostViewComponent implements OnInit{
     public postInput : PostDTO;
     public comments : CommentDTO[] = [];
     public post : PagePostDTO;
+    public currentUser : UserDTO;
     @ViewChild('userInfo') userInfo: ElementRef<HTMLDivElement>;
 
     editable: boolean = false;
@@ -75,18 +77,23 @@ export class SingularPostViewComponent implements OnInit{
       this.userService.getUserByUsername(this.incomingUsername).subscribe(response => {
         if(response.ok) {
           this.authorInput = response.body!;
-          this.bookmarked = this.authorInput.bookmarkedPostsIds.includes(this.incomingPostId);
           console.log(response);
         }
       });
       this.postService.getPostById(this.incomingPostId).subscribe(response => {
         if(response.ok) {
           this.postInput = response.body!;
-          this.editable = this.postInput.author.id == this.authorInput.id;
           this.post = PostFormatter.mapPostToPagePost(this.postInput);
         console.log(response);
         }
       }).add(()=>this.fetchComments());
+
+      this.userService.getCurrentUserInstance()
+        .subscribe(response => {
+          this.currentUser = response;
+          this.bookmarked = this.currentUser.bookmarkedPostsIds.includes(this.incomingPostId);
+          this.editable = this.currentUser.username == this.incomingUsername;
+        })
     }
 
     fetchComments() {
@@ -118,7 +125,7 @@ export class SingularPostViewComponent implements OnInit{
   openCommentDialog() {
     const dialogRef: MatDialogRef<CommentCreationDialogComponent, { imagesOutput: string[], textOutput:string }> = this.dialog.open(CommentCreationDialogComponent, {
       width: '500px',
-      data: {post: this.post, currentUser: this.post.user, textContent: "", images: []}
+      data: {post: this.post, currentUser: this.currentUser, textContent: "", images: []}
     });
 
     dialogRef.afterClosed().subscribe(result => {

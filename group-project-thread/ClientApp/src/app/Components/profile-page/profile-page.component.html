@@ -30,25 +30,27 @@
                 <div *ngIf="isAvatarNull()" class="initial">{{getFirstInitial()}}</div>
               </div>
             </div>
-            <div *ngIf="isCurrentUser">
-              <div class="edit-box">
-                <div class="edit-profile" (click)="openEditDialog()">
-                  <span class="button-text">Edit profile</span>
+            <div *ngIf="!postsLoading">
+              <div *ngIf="isCurrentUser">
+                <div class="edit-box">
+                  <div class="edit-profile" (click)="openEditDialog()">
+                    <span class="button-text">Edit profile</span>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div *ngIf="!isCurrentUser" style="user-select: none;">
-              <div *ngIf="isCurrentUserFollowing || !unfollowed" class="follow-button-box">
-                <div class="follow-button-border" (mouseenter)="changeSpan()" (mouseleave)="changeSpan()"
-                     (click)="unfollow(user.id)">
-                  <span class="button-text">{{followingText}}</span>
+              <div *ngIf="!isCurrentUser" style="user-select: none;">
+                <div *ngIf="isCurrentUserFollowing || !unfollowed" class="follow-button-box">
+                  <div class="follow-button-border" (mouseenter)="changeSpan()" (mouseleave)="changeSpan()"
+                       (click)="unfollow(user.id)">
+                    <span class="button-text">{{followingText}}</span>
+                  </div>
                 </div>
-              </div>
-              <div *ngIf="!isCurrentUserFollowing || unfollowed" class="unfollow-button-box"
-                   (click)="follow(user.id)">
-                <div class="unfollow-button-border">
-                  <span class="unfollow">Follow</span>
+                <div *ngIf="!isCurrentUserFollowing || unfollowed" class="unfollow-button-box"
+                     (click)="follow(user.id)">
+                  <div class="unfollow-button-border">
+                    <span class="unfollow">Follow</span>
+                  </div>
                 </div>
               </div>
             </div>

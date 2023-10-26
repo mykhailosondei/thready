@@ -142,7 +142,8 @@ export class ProfilePageComponent implements OnInit, OnDestroy{
     })
   }
   checkIsCurrentUser(): void{
-    this.userService.getCurrentUserInstance().subscribe(
+    this.userService.getCurrentUserInstance()
+      .subscribe(
       (user) => {
         if (this.username == user.username){
           this.postsText = "Your posts";
@@ -224,6 +225,8 @@ export class ProfilePageComponent implements OnInit, OnDestroy{
       return;
     }
     this.username = username;
+    this.noPostsFound = false;
+    this.isCurrentUser = false;
     this.getUserInstance()
   }
 }
