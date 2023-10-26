@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {PageUserDTO} from "../../models/user/pageUserDTO";
 import {faBookmark as faBookmarkUnactivated, faComment, faHeart as faHeartUnactivated} from "@fortawesome/free-regular-svg-icons";
@@ -28,6 +28,7 @@ import {Endpoint} from "../side-navbar/side-navbar.component";
 import {PostEditorDialogComponent} from "../post-editor-dialog/post-editor-dialog.component";
 import {DeleteDialogComponent} from "../delete-dialog/delete-dialog.component";
 import {Location} from "@angular/common";
+import {BsModalRef, BsModalService} from "ngx-bootstrap/modal";
 
 @Component({
   selector: 'app-singular-comment-view',
@@ -50,6 +51,9 @@ export class SingularCommentViewComponent {
   public parentComments : (CommentDTO)[] = [];
   public parentPost : PostDTO;
   @ViewChild('userInfo') userInfo: ElementRef<HTMLDivElement>;
+  @ViewChild('imageRef') imageRef: TemplateRef<any>;
+  modalRef: BsModalRef;
+  clickedImage: string = "";
 
   liked: boolean = false;
   reposted: boolean = false;
@@ -59,7 +63,8 @@ export class SingularCommentViewComponent {
               private commentService : CommentService,
               private hoverCardTriggerService: UserHoverCardTriggerService,
               private dialog: MatDialog,
-              private location: Location) {
+              private location: Location,
+              private modalService: BsModalService){
     this.route.paramMap.subscribe(params => {
       const postId = params.get('commentId');
       console.log(postId);
@@ -70,6 +75,11 @@ export class SingularCommentViewComponent {
   }
   ngOnInit(): void {
     this.fetchEssentialData();
+  }
+
+  openFullImage(url: string) {
+    this.clickedImage = url;
+    this.modalRef = this.modalService.show(this.imageRef, {class: 'modal-lg'});
   }
 
   fetchEssentialData() {
