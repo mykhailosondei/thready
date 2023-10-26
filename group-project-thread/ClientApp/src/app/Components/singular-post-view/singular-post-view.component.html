@@ -36,44 +36,44 @@
               <div *ngIf="post.imagesUrls.length === 4" class="four-image-container full-width">
                 <div class="two-image-container full-width">
                   <div class="left-upper-image-container full-width">
-                    <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[0] + ')'"></div>
+                    <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[0] + ')'" (click)="openFullImage(post.imagesUrls[0])"></div>
                   </div>
                   <div class="right-upper-image-container full-width">
-                    <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[1] + ')'"></div>
+                    <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[1] + ')'" (click)="openFullImage(post.imagesUrls[1])"></div>
                   </div>
                 </div>
                 <div class="two-image-container full-width">
                   <div class="left-bottom-image-container full-width">
-                    <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[2] + ')'"></div>
+                    <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[2] + ')'" (click)="openFullImage(post.imagesUrls[2])"></div>
                   </div>
                   <div class="right-bottom-image-container full-width">
-                    <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[3] + ')'"></div>
+                    <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[3] + ')'" (click)="openFullImage(post.imagesUrls[3])"></div>
                   </div>
                 </div>
               </div>
               <div *ngIf="post.imagesUrls.length === 3" class="three-image-container full-width">
                 <div class="left-big-image full-width">
-                  <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[0] + ')'"></div>
+                  <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[0] + ')'" (click)="openFullImage(post.imagesUrls[0])"></div>
                 </div>
                 <div class="two-right-images full-width">
                   <div class="right-upper-image-container full-width">
-                    <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[1] + ')'"></div>
+                    <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[1] + ')'" (click)="openFullImage(post.imagesUrls[1])"></div>
                   </div>
                   <div class="right-bottom-image-container full-width">
-                    <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[2] + ')'"></div>
+                    <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[2] + ')'" (click)="openFullImage(post.imagesUrls[2])"></div>
                   </div>
                 </div>
               </div>
               <div *ngIf="post.imagesUrls.length === 2" class="two-image-container full-width">
                 <div class="left-big-image full-width">
-                  <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[0] + ')'"></div>
+                  <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[0] + ')'" (click)="openFullImage(post.imagesUrls[0])"></div>
                 </div>
                 <div class="right-big-image full-width">
-                  <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[1] + ')'"></div>
+                  <div class="image-wrap full-width" [style.background-image]="'url(' + post.imagesUrls[1] + ')'" (click)="openFullImage(post.imagesUrls[1])"></div>
                 </div>
               </div>
               <div *ngIf="post.imagesUrls.length === 1" class="solo-image-container">
-                <img class="solo-image full-width" src="{{post.imagesUrls[0]}}" alt="image">
+                <img class="solo-image full-width" src="{{post.imagesUrls[0]}}" alt="image" (click)="openFullImage(post.imagesUrls[0])">
               </div>
             </div>
           </div>
@@ -132,3 +132,6 @@
   </div>
 </div>
 </app-nav-wrapper>
+<ng-template #imageRef>
+  <img src="{{clickedImage}}" alt="2">
+</ng-template>

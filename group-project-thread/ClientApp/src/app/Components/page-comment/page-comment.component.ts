@@ -1,4 +1,4 @@
-import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild} from '@angular/core';
 import {PostDTO} from "../../models/post/postDTO";
 import {UserDTO} from "../../models/user/userDTO";
 import {PagePostDTO} from "../../models/post/pagePostDTO";
@@ -22,6 +22,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import {CommentDTO} from "../../models/coment/commentDTO";
 import {DeleteDialogComponent} from "../delete-dialog/delete-dialog.component";
+import {BsModalRef, BsModalService} from "ngx-bootstrap/modal";
 
 @Component({
   selector: 'app-page-comment',
@@ -46,6 +47,9 @@ export class PageCommentComponent implements OnInit {
 
   @ViewChild('userInfo') userInfo: ElementRef<HTMLDivElement>;
   @ViewChild('wholePost') wholePost: ElementRef<HTMLDivElement>;
+  @ViewChild('imageRef') imageRef: TemplateRef<any>;
+  modalRef: BsModalRef;
+  clickedImage: string = "";
 
   private observer: IntersectionObserver;
 
@@ -57,7 +61,8 @@ export class PageCommentComponent implements OnInit {
   constructor(public dialog: MatDialog,
               private readonly commentService: CommentService,
               private readonly userService: UserService,
-              private readonly hoverCardTriggerService: UserHoverCardTriggerService) {
+              private readonly hoverCardTriggerService: UserHoverCardTriggerService,
+              private readonly modalService: BsModalService) {
   }
 
   ngOnInit(): void {
@@ -254,5 +259,10 @@ export class PageCommentComponent implements OnInit {
         });
       }
     });
+  }
+
+  openFullImage(url: string) {
+    this.clickedImage = url;
+    this.modalRef = this.modalService.show(this.imageRef, {class: 'modal-lg'});
   }
 }
