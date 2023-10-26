@@ -1,6 +1,6 @@
 const {env} = require('process');
 
-const target = 'https://localhost:7153';
+const target = 'https://thread-demo-project.azurewebsites.net';
 
 //const target = env.ASPNETCORE_HTTPS_PORT ? `https://localhost:${env.ASPNETCORE_HTTPS_PORT}` :
 //env.ASPNETCORE_URLS ? env.ASPNETCORE_URLS.split(';')[0] : 'http://localhost:54296';

@@ -56,7 +56,7 @@ builder.Services.AddDbContext<IndexerContext>(options =>
 });
 builder.Services.AddCors(options => options.AddPolicy(name: "Frontend", policy =>
     {
-        policy.WithOrigins("https://localhost:44498").AllowAnyHeader().AllowAnyMethod();
+        policy.WithOrigins("https://thread-demo-project.azurewebsites.net").AllowAnyHeader().AllowAnyMethod();
     }
 ));
 
