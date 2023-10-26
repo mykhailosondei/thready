@@ -5,12 +5,12 @@
       <div class="page-post">
         <div class="post-header">
           <div class="user-holder">
-            <app-user-avatar [user]="authorInput"></app-user-avatar>
+            <app-user-avatar [user]="post.user"></app-user-avatar>
             <div class="user-info" #userInfo (mouseenter)="onUserInfoMouseEnter()"
                  (mouseleave)="onUserInfoMouseLeave()">
-              <a href="{{authorInput.username}}/profile" class="user-link"></a>
+              <a href="{{post.user.username}}/profile" class="user-link"></a>
               <div class="user-name">
-                <b>{{authorInput.username}}</b>
+                <b>{{post.user.username}}</b>
               </div>
             </div>
           </div>
