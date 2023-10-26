@@ -99,7 +99,8 @@ public class IndexedContentReader
                     .ToList();
 
                 matchingWordCountInPostIds.AddRange(sorted);
-
+                _indexerContext.ChangeTracker.Clear();
+                
                 if (matchingWordCountInPostIds.Count >= postAmountToLoad)
                 {
                     return matchingWordCountInPostIds;
