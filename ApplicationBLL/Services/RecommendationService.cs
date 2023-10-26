@@ -49,11 +49,11 @@ public class RecommendationService : BaseService
         var postsBasedOnLocation = await _indexedContentReader.GetPosts(user.Location, 0, 10);
         var postsBasedOnBio = await _indexedContentReader.GetPosts(user.Bio, 0, 10);
         result.AddRange(postsBasedOnLocation);
-        result.AddRange(postsBasedOnBio);
+        result.AddRange(postsBasedOnBio.Where(p => result.All(r => r.Id != p.Id)));
         var popularPosts = await _applicationContext.Posts.Include(p => p.Author).ThenInclude(a => a.Avatar).Include(p => p.Images).OrderByDescending(p => p.ViewedBy)
             .Take(30-result.Count).ToListAsync();
         var postsDTOs = popularPosts.Select(p => _mapper.Map<PostDTO>(p));
-        result.AddRange(postsDTOs);
+        result.AddRange(postsDTOs.Where(p => result.All(r => r.Id != p.Id)));
         return result;
     }
     public async Task<List<PageUserDTO>> WhoToFollow()
