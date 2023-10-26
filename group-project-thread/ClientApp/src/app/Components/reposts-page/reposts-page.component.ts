@@ -31,6 +31,7 @@ export class RepostsPageComponent implements OnInit{
         this.user = Response.body!;
         if (this.user.repostsIds.length == 0){
           this.noRepostsFound = true;
+          this.loading = false;
         }
         for(let repostId of this.user.repostsIds) {
           this.postService.getPostById(repostId).subscribe(Response => {
