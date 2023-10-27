@@ -11,7 +11,7 @@ The integration with Google Cloud Platform (GCP) and Microsoft Azure ensures hig
 ## Table of Contents
 
 - [Tech Stack](#tech-stack)
-- [Installation](#installation)
+- [Accessing the Web Application](#accessing-the-web-application)
 - [Usage](#usage)
 - [Features](#features)
 
@@ -43,16 +43,14 @@ This project was developed using the following technologies:
   - Microsoft Azure for application holding
   - Google Cloud Platform for SQL and image storage bucket
 
-## Installation
 
-To run this project locally, follow these steps:
+## Accessing the Web Application
 
-1. [Clone this repository](#)
-2. [Install dependencies for the frontend](#)
-3. [Install dependencies for the backend](#)
-4. [Set up the database](#)
-5. [Configure environment variables](#)
-6. [Run the project](#)
+The web application is accessible on the internet via the following link: [Thready](https://thread-project.azurewebsites.net/)
+
+Thread Project Web Application
+
+To use the application, there is no need for installation on your local device. Simply open your web browser and visit the provided link to access and interact with the application. You can sign up, log in, and use all the features directly through your web browser.
 
 ## Usage
 
@@ -163,10 +161,15 @@ Enjoy using the Tready to connect, share, and interact with others in the commun
 
 ## Acknowledgments
 
-[List any libraries, resources, or individuals you'd like to acknowledge.]
+**Made by**
+
+Semeniuk Dmytro [LinkedIn](https://www.linkedin.com/in/dmytro-semeniuk-732609266/)
+
+Sondei Mykhailo [LinkedIn](https://www.linkedin.com/in/mykhailo-sondei-a5634a257/)
+
 
 ## Contact
 
-[Provide your contact information or ways for users to reach out for questions or support.]
+Semeniuk Dmytro - dmytrosemeniuk31@gmail.com
 
-[Optional: Add badges, status, and other relevant sections here.]
+Sondei Mykhailo - mykhailosondei@gmail.com
