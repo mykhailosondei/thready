@@ -14,8 +14,6 @@ The integration with Google Cloud Platform (GCP) and Microsoft Azure ensures hig
 - [Installation](#installation)
 - [Usage](#usage)
 - [Features](#features)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Tech Stack
 
@@ -61,26 +59,72 @@ To run this project locally, follow these steps:
 [Provide detailed instructions on how to use your application. Include any login credentials or other relevant information. You can also include screenshots or GIFs to showcase your application.]
 
 ## Features
+**Post Management:**
+*Create, Edit, and Delete Posts:*
 
-[List the key features of your project here.]
+You can create your own posts and edit or delete them as needed.
+Interaction with Posts:
 
-- Feature 1: [Description]
-- Feature 2: [Description]
-- ...
+You can *comment on posts, like them, repost them, and bookmark them* for future reference.
+View Post Details:
 
-## Contributing
+*Click on a post* to view detailed information about it.
 
-If you'd like to contribute to this project, please follow these guidelines:
+**Comment Interaction:**
+*Create, Edit, and Delete Comments:*
 
-1. [Fork the repository](#)
-2. Create a new branch for your feature or bug fix: `git checkout -b feature-name`
-3. Commit your changes: `git commit -m 'Add new feature'`
-4. Push to the branch: `git push origin feature-name`
-5. Create a pull request.
+You can create comments on posts and edit or delete them if required.
+Interaction with Comments:
 
-## License
+*Like and bookmark* comments for easy access.
+View Comment Threads:
 
-This project is licensed under the [License Name] License - see the [LICENSE](LICENSE) file for details.
+You can explore the *comment section* to see the comment and all previous *replies leading to it*.
+
+**Navigation:**
+*Navigation-Bar Menu:*
+
+Use the navigation bar on the left side of the screen to move between different app pages conveniently.
+
+**Search Functionality:**
+*Search for Posts and Users:*
+
+Utilize the search page to find specific posts or users by entering keywords or usernames.
+
+**Recommendations:**
+*Discover New Content:*
+
+On the right side of the main page, you will find a *recommendations sidebar* that features currently popular topics and suggests people you might be interested in following.
+
+*Explore Page:*
+
+Open the *"May be interesting"* page to discover posts tailored to your interests based on your bio and location.
+
+*Discover What's Trending Now*
+
+To stay updated on the latest trends and popular topics, follow these steps to access the trending page:
+
+**Interaction with Other Users:**
+*Follow and Be Followed:*
+
+You have the option to follow other users and view their followings to find new people to connect with.
+
+*Followers List:*
+
+You can see who is following you in the followers section.
+
+**Account Management:**
+
+*Profile Customization:*
+
+Edit your user avatar, bio, and location on your profile page to make your account uniquely yours.
+
+*Account Deletion:*
+
+If you no longer wish to use the app, there is an option to permanently delete your account.
+
+Enjoy using the Tready to connect, share, and interact with others in the community.
+
 
 ## Acknowledgments
 
