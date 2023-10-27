@@ -56,7 +56,42 @@ To run this project locally, follow these steps:
 
 ## Usage
 
-[Provide detailed instructions on how to use your application. Include any login credentials or other relevant information. You can also include screenshots or GIFs to showcase your application.]
+***Usage Guide:***
+
+**Registration and Sign-In:**
+
+Start by creating an account using the sign-up option.
+After registration, log in to your account using your provided credentials.
+
+**Main Page:**
+
+Upon logging in, you will land on the Main Page. Here, you can create your own posts, interact with posts from other users, comment on them, like, repost, or bookmark content that interests you.
+
+**Explore:**
+
+Explore is your gateway to discovering new content. Check out the *"May Be Interesting"* page to see posts tailored to your interests. If you want to know what's trending, click on *"Trending"* to stay updated on the latest community trends.
+
+**Search Bar:**
+
+In the Explore section, you'll find a prominent Search bar. This feature is particularly useful when you want to find specific posts or users. You can initiate a search by entering relevant keywords, usernames, or hashtags. The search results will help you pinpoint the content or users you're looking for quickly.
+
+**Bookmarks:**
+
+If you come across a post you'd like to save for later, click on the "Bookmark" option. To access your bookmarked posts, navigate to the "Bookmarks" section in the navigation bar.
+
+**Reposts:**
+
+To revisit and interact with the posts you've shared on your profile, go to the "Reposts" section in the navigation bar.
+
+**Profile:**
+
+Your Profile is your personal space. Here's how to use it:
+
+*User Posts*: Manage the posts you've created and shared by clicking on this option.
+
+*Following*: Explore the users you're following and engage with their content.
+
+*Followers*: See who's following you and interact with your followers.
 
 ## Features
 **Post Management:**
