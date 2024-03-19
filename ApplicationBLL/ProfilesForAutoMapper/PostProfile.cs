@@ -21,6 +21,5 @@ public class PostProfile : Profile
         CreateMap<PostCreateDTO, Post>()
             .ForMember(dest => dest.Author, opt 
                 => opt.MapFrom<PostCreateDtoToUserResolver>());
-        
     }
 }

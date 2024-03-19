@@ -54,11 +54,15 @@ builder.Services.AddDbContext<IndexerContext>(options =>
     options.EnableSensitiveDataLogging();
     options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 });
-builder.Services.AddCors(options => options.AddPolicy(name: "Frontend", policy =>
-    {
-        policy.WithOrigins("https://thread-demo-project.azurewebsites.net").AllowAnyHeader().AllowAnyMethod();
-    }
-));
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "Frontend",
+        policy => { policy.WithOrigins("https://thread-project.azurewebsites.net").AllowAnyHeader().AllowAnyMethod(); }
+    );
+    options.AddPolicy(name: "FrontendLocal",
+        policy => { policy.WithOrigins("https://localhost:44498").AllowAnyHeader().AllowAnyMethod(); }
+    );
+});
 
 var app = builder.Build();
 
@@ -73,7 +77,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-app.UseCors("Frontend");
+app.UseCors("FrontendLocal");
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseMiddleware<GlobalExceptionsHandlingMiddleware>();
