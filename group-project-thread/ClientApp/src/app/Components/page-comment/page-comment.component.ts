@@ -23,6 +23,7 @@ import {
 import {CommentDTO} from "../../models/coment/commentDTO";
 import {DeleteDialogComponent} from "../delete-dialog/delete-dialog.component";
 import {BsModalRef, BsModalService} from "ngx-bootstrap/modal";
+import {Image} from "../../models/image";
 
 @Component({
   selector: 'app-page-comment',
@@ -57,6 +58,7 @@ export class PageCommentComponent implements OnInit {
   editable: boolean = false;
   liked: boolean = false;
   bookmarked: boolean;
+  currentUser: UserDTO;
 
   constructor(public dialog: MatDialog,
               private readonly commentService: CommentService,
@@ -66,12 +68,12 @@ export class PageCommentComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.commentInput);
     this.userService.getCurrentUser().subscribe(response => {
       if (response.ok) {
         this.editable = response.body!.id === this.commentInput.author.id;
         this.liked = this.commentInput.likesIds.includes(response.body!.id);
         this.bookmarked = response.body!.bookmarkedPostsIds.includes(this.commentInput.id);
+        this.currentUser = response.body!;
       }
     });
     this.commentView = PostFormatter.mapCommentToPagePost(this.commentInput, this.userInput);
@@ -123,9 +125,9 @@ export class PageCommentComponent implements OnInit {
   }
 
   openCommentDialog() {
-    const dialogRef: MatDialogRef<CommentCreationDialogComponent, CommentCreateDialogData> = this.dialog.open(CommentCreationDialogComponent, {
+    const dialogRef: MatDialogRef<CommentCreationDialogComponent, { textOutput: string, imagesOutput: Image[] }> = this.dialog.open(CommentCreationDialogComponent, {
       width: '500px',
-      data: {post: this.commentView, currentUser: this.commentView.user, textContent: "", images: []}
+      data: {post: this.commentView, currentUser: this.currentUser, textContent: "", images: []}
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -135,8 +137,8 @@ export class PageCommentComponent implements OnInit {
       console.log(this.commentView);
       this.commentService.postComment({
         commentId: this.commentView.id,
-        textContent: result.textContent,
-        images: result.images
+        textContent: result.textOutput,
+        images: result.imagesOutput
       }).subscribe(response => {
         console.log(response)
         if (!response.ok) return;

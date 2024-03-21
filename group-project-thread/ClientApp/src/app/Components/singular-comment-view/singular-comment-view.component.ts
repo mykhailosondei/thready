@@ -50,6 +50,7 @@ export class SingularCommentViewComponent {
   public commentView : PagePostDTO;
   public parentComments : (CommentDTO)[] = [];
   public parentPost : PostDTO;
+  public currentUser : UserDTO;
   @ViewChild('userInfo') userInfo: ElementRef<HTMLDivElement>;
   @ViewChild('imageRef') imageRef: TemplateRef<any>;
   modalRef: BsModalRef;
@@ -102,6 +103,7 @@ export class SingularCommentViewComponent {
   fetchCurrentUser() {
     this.userService.getCurrentUser().subscribe(response => {
       if(response.ok){
+        this.currentUser = response.body!;
         this.editable = response.body!.id == this.authorInput.id;
       }
     });
@@ -130,7 +132,7 @@ export class SingularCommentViewComponent {
   openCommentDialog() {
     const dialogRef: MatDialogRef<CommentCreationDialogComponent, { imagesOutput: string[], textOutput:string }> = this.dialog.open(CommentCreationDialogComponent, {
       width: '500px',
-      data: {post: this.commentView, currentUser: this.commentView.user, textContent: "", images: []}
+      data: {post: this.commentView, currentUser: this.currentUser, textContent: "", images: []}
     });
 
     dialogRef.afterClosed().subscribe(result => {

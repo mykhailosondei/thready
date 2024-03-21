@@ -89,9 +89,6 @@
             </div>
           </div>
       </div>
-    <!--<mat-form-field>
-      <input matInput [(ngModel)]="data.images">
-    </mat-form-field>-->
     <div class="mat-dialog-actions">
       <app-photo-loader (imageUrlOutputEvent)="onPhotoLoaded($event)" [disabled]="imageUrls.length > 3"></app-photo-loader>
       <button mat-button class="reply-button" [mat-dialog-close]="{imagesOutput: imageUrls,textOutput : data.textContent}" [disabled]="isButtonDisabled()">Reply</button>
