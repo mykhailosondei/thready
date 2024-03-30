@@ -1,4 +1,6 @@
-# Thready
+# [Thready](https://thread-project.azurewebsites.net/)
+
+## Discover the joy of seamlessly sharing your life with people from all corners of the globe. Connect with friends and creators you admire, and save posts that resonate deeply with your heart. Dive into the fun!
 
 ## Description
 
